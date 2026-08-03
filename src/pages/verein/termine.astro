@@ -1,0 +1,73 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { CLUB_CALENDAR_URL, loadClubCalendar } from '../../utils/calendar';
+
+const { events, available } = await loadClubCalendar();
+const dateFormat = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
+const dayFormat = new Intl.DateTimeFormat('de-DE', { day: '2-digit', timeZone: 'Europe/Berlin' });
+const monthFormat = new Intl.DateTimeFormat('de-DE', { month: 'short', timeZone: 'Europe/Berlin' });
+const monthHeading = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
+const timeFormat = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' });
+const monthKey = (date: Date) => new Intl.DateTimeFormat('sv-SE', { year: 'numeric', month: '2-digit', timeZone: 'Europe/Berlin' }).format(date);
+const groups = events.reduce((map, event) => {
+  const key = monthKey(event.start);
+  map.set(key, [...(map.get(key) ?? []), event]);
+  return map;
+}, new Map<string, typeof events>());
+---
+
+<Layout title="Termine | BSV Nordstern Radolfzell" description="Aktuelle Veranstaltungen und Vereinstermine des BSV Nordstern Radolfzell.">
+  <Header />
+  <main>
+    <header class="calendar-hero">
+      <div class="shell hero-grid">
+        <div><span>Gemeinsam erleben</span><h1>Unsere<br /><em>Termine</em></h1><p>Veranstaltungen, Sitzungen und besondere Tage rund um den BSV Nordstern – direkt aus unserem Vereinskalender.</p></div>
+        <div class="hero-date" aria-hidden="true"><b>{events.length}</b><span>kommende<br />Termine</span></div>
+      </div>
+    </header>
+
+    <section class="calendar-section">
+      <div class="shell calendar-layout">
+        <aside>
+          <span>Immer aktuell</span>
+          <h2>Nichts mehr<br />verpassen.</h2>
+          <p>Alle veröffentlichten Termine werden automatisch aus unserem Google Kalender übernommen.</p>
+          <a href={CLUB_CALENDAR_URL}>iCal-Datei öffnen <b>↗</b></a>
+        </aside>
+
+        <div class="calendar-content">
+          {!available ? (
+            <div class="empty"><strong>Der Kalender ist gerade nicht erreichbar.</strong><p>Bitte versuche es später noch einmal.</p></div>
+          ) : groups.size === 0 ? (
+            <div class="empty"><strong>Momentan sind keine kommenden Termine eingetragen.</strong><p>Neue Veranstaltungen erscheinen hier automatisch.</p></div>
+          ) : [...groups.entries()].map(([, monthEvents]) => (
+            <section class="month-group">
+              <h2>{monthHeading.format(monthEvents[0].start)}</h2>
+              <div class="event-list">
+                {monthEvents.map((event) => (
+                  <article>
+                    <time datetime={event.start.toISOString()}><b>{dayFormat.format(event.start)}</b><span>{monthFormat.format(event.start)}</span></time>
+                    <div class="event-copy">
+                      <p class="event-meta">{event.allDay ? 'Ganztägig' : `${timeFormat.format(event.start)} – ${timeFormat.format(event.end)} Uhr`} · {dateFormat.format(event.start)}</p>
+                      <h3>{event.title}</h3>
+                      {event.location && <p class="location">⌖ {event.location}</p>}
+                      {event.description && <p class="description">{event.description}</p>}
+                    </div>
+                    <a class="event-link" href={event.googleUrl} target="_blank" rel="noopener" aria-label={`${event.title} zu Google Kalender hinzufügen`}>Hinzufügen <span>↗</span></a>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.calendar-hero{padding:92px 0 86px;background:#092f20;color:white}.hero-grid{display:grid;grid-template-columns:1fr auto;align-items:end;gap:60px}.calendar-hero span,.calendar-layout aside>span{color:#f4d638;font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.calendar-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.4rem,7vw,6.4rem);line-height:.88;letter-spacing:-.055em}.calendar-hero h1 em{color:#f4d638;font-weight:400}.calendar-hero p{max-width:620px;margin:0;color:#b6c6bc;font-size:1.05rem;line-height:1.7}.hero-date{display:flex;align-items:flex-end;gap:16px;padding:28px 34px;border:1px solid rgb(255 255 255 / 18%)}.hero-date b{color:#f4d638;font-family:Georgia,serif;font-size:4.2rem;line-height:.8}.hero-date span{color:#c6d3ca;line-height:1.35;letter-spacing:.08em}.calendar-section{padding:90px 0 120px}.calendar-layout{display:grid;grid-template-columns:260px 1fr;gap:80px}.calendar-layout aside h2{margin:15px 0 18px;font-family:Georgia,serif;font-size:2.25rem;line-height:1.05}.calendar-layout aside p{color:#607067;line-height:1.7}.calendar-layout aside a{display:inline-flex;gap:15px;margin-top:14px;padding:14px 17px;background:#092f20;color:white;font-size:.78rem;font-weight:900;text-decoration:none}.calendar-layout aside a b{color:#f4d638}.calendar-content{min-width:0}.month-group+ .month-group{margin-top:58px}.month-group>h2{margin:0 0 20px;color:#092f20;font-size:.74rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.event-list{display:grid;gap:14px}.event-list article{display:grid;grid-template-columns:86px minmax(0,1fr) auto;align-items:center;gap:26px;padding:24px 26px;background:white;border-left:4px solid #91c82f;box-shadow:0 12px 38px rgb(9 47 32 / 7%)}.event-list time{display:grid;place-items:center;align-self:stretch;background:#f4d638;color:#092f20}.event-list time b{font-family:Georgia,serif;font-size:2.25rem;line-height:1}.event-list time span{margin-top:2px;color:#092f20;font-size:.65rem;font-weight:900;text-transform:uppercase}.event-meta{margin:0 0 7px;color:#718078;font-size:.72rem;font-weight:800}.event-copy h3{margin:0;font-size:1.25rem}.location,.description{margin:8px 0 0;color:#5f6f65;font-size:.82rem;line-height:1.55}.description{white-space:pre-line}.event-link{padding:11px 13px;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none;white-space:nowrap}.event-link span{margin-left:8px;color:#6fa41c}.empty{padding:48px;background:white;border-left:4px solid #f4d638}.empty strong{font-family:Georgia,serif;font-size:1.5rem}.empty p{margin:10px 0 0;color:#64736a}@media(max-width:850px){.calendar-layout{grid-template-columns:1fr;gap:45px}.calendar-layout aside{max-width:520px}.hero-date{display:none}}@media(max-width:650px){.shell{width:min(100% - 30px,1160px)}.calendar-hero{padding:68px 0}.calendar-section{padding:58px 0 80px}.event-list article{grid-template-columns:68px 1fr;gap:18px;padding:16px}.event-link{grid-column:2;padding:2px 0}.event-list time b{font-size:1.8rem}}
+</style>
