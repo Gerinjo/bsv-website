@@ -2,13 +2,13 @@
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.']);
+    header('HTTP/1.1 405 Method Not Allowed');
+    echo json_encode(array('ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.'));
     exit;
 }
 
 // Die Empfänger stehen ausschließlich auf dem Server. Der Browser übermittelt nur einen Schlüssel.
-$teamRecipients = [
+$teamRecipients = array(
     'fussball--herren--bezirksliga' => 'Torsten.Parzich@bsvnordstern.de',
     'fussball--herren--kreisliga-2' => 'Alexander.Kaiser@bsvnordstern.de',
     'fussball--frauen--bezirksliga' => 'info@bsvnordstern.de',
@@ -31,21 +31,21 @@ $teamRecipients = [
     'jugend--juniorinnen--u17' => 'sven.goldhagen@bsvnordstern.de',
     'jugend--juniorinnen--u15' => 'alexander.kramer@bsvnordstern.de',
     'jugend--juniorinnen--u13' => 'dana.bulander@bsvnordstern.de',
-];
-$recipients = [
+);
+$recipients = array(
     'general' => 'info@bsvnordstern.de',
     'membership' => 'verwaltung@bsvnordstern.de',
     'youth' => 'jugend@bsvnordstern.de',
     'sponsoring' => 'sponsoring@bsvnordstern.de',
     'social' => 'socialmedia@bsvnordstern.de',
-];
+);
 foreach ($teamRecipients as $key => $address) {
     $recipients['team--' . $key . '--trial'] = $address;
     $recipients['team--' . $key . '--friendly'] = $address;
     $recipients['team--' . $key . '--general'] = $address;
 }
 
-$value = static function ($key) {
+$value = function ($key) {
     return trim((string)(isset($_POST[$key]) ? $_POST[$key] : ''));
 };
 $topic = $value('topic');
@@ -56,24 +56,24 @@ $email = filter_var($value('email'), FILTER_VALIDATE_EMAIL);
 $message = $value('message');
 
 if ($value('website') !== '') {
-    echo json_encode(['ok' => true]);
+    echo json_encode(array('ok' => true));
     exit;
 }
 if (!isset($recipients[$topic]) || strlen($firstName) < 2 || strlen($lastName) < 2 || !$email || strlen($message) < 10 || strlen($message) > 5000) {
-    http_response_code(422);
-    echo json_encode(['ok' => false, 'message' => 'Bitte prüfe deine Eingaben.']);
+    header('HTTP/1.1 422 Unprocessable Entity');
+    echo json_encode(array('ok' => false, 'message' => 'Bitte prüfe deine Eingaben.'));
     exit;
 }
 if ($value('privacy') !== 'accepted') {
-    http_response_code(422);
-    echo json_encode(['ok' => false, 'message' => 'Bitte bestätige die Datenschutzerklärung.']);
+    header('HTTP/1.1 422 Unprocessable Entity');
+    echo json_encode(array('ok' => false, 'message' => 'Bitte bestätige die Datenschutzerklärung.'));
     exit;
 }
 
-$clean = static function ($text) {
-    return str_replace(["\r", "\n"], ' ', $text);
+$clean = function ($text) {
+    return str_replace(array("\r", "\n"), ' ', $text);
 };
-$endsWith = static function ($text, $suffix) {
+$endsWith = function ($text, $suffix) {
     return $suffix === '' || substr($text, -strlen($suffix)) === $suffix;
 };
 $inquiry = $endsWith($topic, '--friendly') ? 'Freundschaftsspiel' : ($endsWith($topic, '--trial') ? 'Probetraining' : 'Kontaktanfrage');
@@ -84,17 +84,17 @@ $body = "Neue Anfrage über bsvnordstern.de\n\n" .
     "E-Mail: {$email}\n" .
     "Telefon: " . ($phone !== '' ? $phone : 'nicht angegeben') . "\n\n" .
     "Nachricht:\n{$message}\n";
-$headers = [
+$headers = array(
     'From: BSV Website <info@bsvnordstern.de>',
     'Reply-To: ' . $clean((string)$email),
     'Content-Type: text/plain; charset=UTF-8',
     'X-Mailer: PHP/' . phpversion(),
-];
+);
 
 if (!mail($recipients[$topic], $subject, $body, implode("\r\n", $headers))) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Bitte versuche es später erneut.']);
+    header('HTTP/1.1 500 Internal Server Error');
+    echo json_encode(array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Bitte versuche es später erneut.'));
     exit;
 }
 
-echo json_encode(['ok' => true]);
+echo json_encode(array('ok' => true));
