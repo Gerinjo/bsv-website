@@ -756,7 +756,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
           <section class="d-girls-cta" data-letter={teamProfile.letter}>
             <div><small>Lust auf Fußball?</small><h2>Mach den ersten Pass.</h2><p>{teamProfile.trial}</p></div>
-            <a href={`mailto:${teamProfile.coaches.find((coach) => coach.email)?.email ?? (page.path.startsWith('jugend/') ? 'jugend@bsvnordstern.de' : 'info@bsvnordstern.de')}?subject=${encodeURIComponent(`Probetraining ${page.title}`)}`}>Probetraining anfragen <span>↗</span></a>
+            <a href={withBase(`/kontakt?thema=team--${page.path.replaceAll('/', '--')}--trial`)}>Probetraining anfragen <span>↗</span></a>
           </section>
 
           {teamProfile.gallery.length > 0 && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><figure><img src="" alt="" /><figcaption></figcaption></figure></dialog>}
@@ -773,7 +773,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             <h2>Fragen, Ideen<br />oder Lust mitzumachen?</h2>
             <p>Unsere Jugendleitung hilft bei Fragen rund um Mannschaften, Training und das Engagement in der Jugendabteilung gerne weiter.</p>
           </div>
-          <a href="mailto:jugend@bsvnordstern.de"><span>Jugendleitung kontaktieren</span><strong>↗</strong></a>
+          <a href={withBase('/kontakt?thema=youth')}><span>Jugendleitung kontaktieren</span><strong>↗</strong></a>
         </aside>
       )}
       {!migratedBody && !isDepartmentPage && !isDocumentPage && !isCancellationPage && page.body && <div class="prose">{page.body.map((paragraph) => <p>{paragraph}</p>)}</div>}
@@ -782,7 +782,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
       {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={withBase(person.image)} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
 
-      {page.kind === 'document' && !isDocumentPage && !isCancellationPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href="mailto:info@bsvnordstern.de">Kontakt aufnehmen ↗</a></aside>}
+      {page.kind === 'document' && !isDocumentPage && !isCancellationPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href={withBase('/kontakt?thema=general')}>Kontakt aufnehmen ↗</a></aside>}
 
       {page.path.includes('mitglied-werden') && <aside class="join-cta"><div><small>Auf geht’s grün</small><h2>Bereit für den BSV?</h2></div><a href="https://mitglied.bsvnordstern.de" target="_blank" rel="noreferrer">Online anmelden ↗</a></aside>}
     </section>
@@ -1053,15 +1053,15 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .history-track::before { content:''; position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--history-line); transform:translateX(-50%); }
   .history-chapter { position:relative; margin-bottom:120px; display:grid; grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr); align-items:start; gap:30px; }
   .history-chapter:last-child { margin-bottom:0; }
-  .history-visual { grid-column:1; }
+  .history-visual { width:100%; min-width:0; grid-column:1; }
   .history-marker { grid-column:2; display:grid; place-items:start center; }
   .history-marker span { position:relative; z-index:1; display:grid; place-items:center; width:42px; aspect-ratio:1; border:1px solid #b7c4bb; border-radius:50%; background:#f4f7f4; color:var(--green); font-size:.65rem; font-weight:900; box-shadow:0 0 0 9px #f4f7f4; }
   .history-story { grid-column:3; padding:3px 0 0 8px; }
   .history-chapter.is-reverse .history-visual { grid-column:3; }
   .history-chapter.is-reverse .history-story { grid-column:1; grid-row:1; padding-left:0; padding-right:8px; }
-  .history-visual figure { margin:0; overflow:hidden; background:white; border-radius:6px; box-shadow:0 18px 45px rgb(9 47 32 / 10%); transform:rotate(-1deg); }
+  .history-visual figure { width:100%; max-width:100%; margin:0; overflow:hidden; background:white; border-radius:6px; box-shadow:0 18px 45px rgb(9 47 32 / 10%); transform:rotate(-1deg); }
   .history-chapter.is-reverse .history-visual figure { transform:rotate(1deg); }
-  .history-visual figure img { display:block; width:100%; aspect-ratio:1.42; object-fit:cover; filter:saturate(.88) contrast(1.04); }
+  .history-visual figure img { display:block; width:100%; max-width:100%; height:auto; object-fit:contain; filter:saturate(.88) contrast(1.04); }
   .history-visual figcaption { padding:14px 17px; color:#6b7a71; font-size:.7rem; line-height:1.45; }
   .history-fact { position:relative; overflow:hidden; min-height:320px; padding:42px; display:flex; flex-direction:column; justify-content:flex-end; border-radius:6px; background:var(--green); color:white; box-shadow:12px 12px 0 var(--yellow); }
   .history-fact::before { content:''; position:absolute; right:-95px; top:-125px; width:270px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 22%); border-radius:50%; box-shadow:0 0 0 45px rgb(255 255 255 / 3%); }
@@ -1088,7 +1088,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .history-finale > a { min-width:220px; padding:17px 19px; display:flex; justify-content:space-between; gap:30px; background:var(--dark); color:white; font-size:.8rem; font-weight:900; text-decoration:none; }
   .history-finale > a span { color:var(--yellow); }
   @media(max-width:850px){.history-opening{grid-template-columns:1fr;gap:45px}.history-numbers{grid-template-columns:repeat(2,1fr)}.history-numbers>div:nth-child(3){border-left:0;border-top:1px solid var(--history-line)}.history-numbers>div:nth-child(4){border-top:1px solid var(--history-line)}.history-head{align-items:flex-start;flex-direction:column}.history-track::before{left:21px}.history-chapter,.history-chapter.is-reverse{grid-template-columns:44px minmax(0,1fr);gap:22px}.history-marker,.history-chapter.is-reverse .history-marker{grid-column:1;grid-row:1 / 3}.history-visual,.history-chapter.is-reverse .history-visual{grid-column:2;grid-row:1}.history-story,.history-chapter.is-reverse .history-story{grid-column:2;grid-row:2;padding:28px 0 0}.history-finale{grid-template-columns:1fr}.history-finale>a{justify-self:start}}
-  @media(max-width:600px){.history-opening{padding-bottom:70px}.history-numbers{margin-bottom:85px}.history-numbers>div{padding:24px 14px}.history-chronicle{margin-bottom:80px}.history-head{margin-bottom:55px}.history-chapter{margin-bottom:80px;grid-template-columns:30px minmax(0,1fr);gap:13px}.history-track::before{left:14px}.history-marker span{width:29px;box-shadow:0 0 0 5px #f4f7f4;font-size:.55rem}.history-fact{min-height:270px;padding:30px}.history-date{align-items:flex-start;flex-direction:column;gap:7px}.history-story h3{font-size:2.35rem}.history-finale{padding:45px 28px}.history-finale>a{width:100%;min-width:0}.history-finale::after{font-size:7rem}}
+  @media(max-width:600px){.history-opening{padding-bottom:70px}.history-numbers{margin-bottom:85px}.history-numbers>div{padding:24px 14px}.history-chronicle{margin-bottom:80px}.history-head{margin-bottom:55px}.history-track::before,.history-marker{display:none}.history-chapter,.history-chapter.is-reverse{margin-bottom:80px;grid-template-columns:minmax(0,1fr);gap:0}.history-visual,.history-chapter.is-reverse .history-visual{grid-column:1;grid-row:1}.history-story,.history-chapter.is-reverse .history-story{grid-column:1;grid-row:2;padding:28px 0 0}.history-visual figure,.history-chapter.is-reverse .history-visual figure{transform:none}.history-fact{min-height:270px;padding:30px}.history-date{align-items:flex-start;flex-direction:column;gap:7px}.history-story h3{font-size:2.35rem}.history-finale{padding:45px 28px}.history-finale>a{width:100%;min-width:0}.history-finale::after{font-size:7rem}}
 
   .girls-team-hero .hero-image { aspect-ratio:8 / 5; }
   .girls-team-hero .hero-image img { object-position:center; }

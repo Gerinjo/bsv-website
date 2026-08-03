@@ -38,7 +38,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   <div class="topbar">
     <div class="shell topbar-inner">
       <div class="topbar-contact">
-        <a href="mailto:info@bsvnordstern.de">
+        <a href={withBase('/kontakt?thema=general')}>
           <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
           <span class="top-copy"><small>Schreib uns</small><strong>info@bsvnordstern.de</strong></span>
         </a>
@@ -54,7 +54,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
       <div class="quick-links">
         <a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer"><span aria-hidden="true">✦</span> JAKO Shop</a>
         <a href={withBase('/fussball/spielplan')}><span aria-hidden="true">◎</span> Spielplan</a>
-        <a href={withBase('/#kontakt')}><span aria-hidden="true">↗</span> Kontakt</a>
+        <a href={withBase('/kontakt')}><span aria-hidden="true">↗</span> Kontakt</a>
       </div>
     </div>
   </div>
