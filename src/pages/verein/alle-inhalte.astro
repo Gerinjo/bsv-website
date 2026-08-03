@@ -1,0 +1,11 @@
+---
+import AllContentPage from '../../components/AllContentPage.astro';
+import { menu } from '../../data/navigation';
+
+const item = menu.find((entry) => entry.label === 'Verein')!;
+---
+
+<AllContentPage
+  item={item}
+  intro="Vom Hauptverein über den Förderverein bis zu unseren Abteilungen: Hier findest du alle wichtigen Informationen rund um den BSV Nordstern."
+/>

@@ -1,0 +1,11 @@
+---
+import AllContentPage from '../../components/AllContentPage.astro';
+import { menu } from '../../data/navigation';
+
+const item = menu.find((entry) => entry.label === 'Fußball')!;
+---
+
+<AllContentPage
+  item={item}
+  intro="Mannschaften, Spielberichte und Sportstätten: Hier gelangst du direkt zu allen Angeboten und Informationen unserer Fußballabteilung."
+/>

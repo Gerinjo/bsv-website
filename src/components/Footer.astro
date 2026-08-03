@@ -7,8 +7,7 @@ const year = new Date().getFullYear();
   <div class="shell footer-main">
     <div class="footer-intro">
       <a class="footer-brand" href="/" aria-label="BSV Nordstern Startseite">
-        <span aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /></span>
-        <strong>BSV Nordstern<small>Radolfzell · seit 1956</small></strong>
+        <strong class="footer-wordmark">BSV Nordstern<small>Radolfzell · seit 1956</small></strong>
       </a>
       <p>Gemeinschaft, Bewegung und echte Vereinsliebe – zuhause an der Schlesierstraße.</p>
       <strong class="footer-claim">Auf geht’s grün.</strong>
@@ -31,7 +30,7 @@ const year = new Date().getFullYear();
     </div>
 
     <nav class="footer-nav" aria-label="Fußzeilennavigation">
-      <div><p class="footer-label">Entdecken</p><a href="/verein">Verein</a><a href="/fussball">Fußball</a><a href="/jugend">Jugend</a><a href="/verein/mitglied-werden">Mitglied werden</a></div>
+      <div><p class="footer-label">Entdecken</p><a href="/verein">Verein</a><a href="/fussball">Fußball</a><a href="/jugend">Junge Sterne</a><a href="/verein/mitglied-werden">Mitglied werden</a></div>
       <div><p class="footer-label">Service</p><a href="/spielplan">Spielplan</a><a href="/kontakt">Kontakt & Anfahrt</a><a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer">JAKO Shop ↗</a></div>
     </nav>
   </div>
@@ -47,9 +46,8 @@ const year = new Date().getFullYear();
   .shell { width:min(1160px,calc(100% - 48px)); margin-inline:auto; }
   .footer-orbit { position:absolute; right:-190px; top:-270px; width:520px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 15%); border-radius:50%; box-shadow:0 0 0 70px rgb(255 255 255 / 2%),0 0 0 140px rgb(255 255 255 / 2%); }
   .footer-main { position:relative; display:grid; grid-template-columns:1.1fr 1.1fr .8fr; gap:80px; padding-bottom:65px; }
-  .footer-brand { display:flex; align-items:center; gap:14px; color:white; text-decoration:none; }
-  .footer-brand > span { display:grid; place-items:center; width:64px; height:64px; flex:0 0 auto; }
-  .footer-brand > span img { display:block; width:100%; height:100%; object-fit:contain; }
+  .footer-brand { display:inline-flex; align-items:center; color:white; text-decoration:none; }
+  .footer-wordmark { min-width:0; position:relative; z-index:1; }
   .footer-brand strong,.footer-brand small { display:block; }.footer-brand strong { font-size:1.08rem; }.footer-brand small { margin-top:4px; color:#7f9989; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; }
   .footer-intro > p { max-width:330px; margin:28px 0 18px; line-height:1.7; }.footer-claim { color:#f4d638; font-family:Georgia,serif; font-size:1.35rem; font-style:italic; font-weight:400; }
   .footer-label { margin:0 0 20px; color:#f4d638; font-size:.66rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }

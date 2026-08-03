@@ -1,0 +1,11 @@
+---
+import AllContentPage from '../../components/AllContentPage.astro';
+import { menu } from '../../data/navigation';
+
+const item = menu.find((entry) => entry.label === 'Junge Sterne')!;
+---
+
+<AllContentPage
+  item={item}
+  intro="Von den Bambinis bis zu den ältesten Juniorinnen und Junioren: Entdecke unsere Teams, das Jugendkonzept und die Menschen hinter den Jungen Sternen."
+/>
