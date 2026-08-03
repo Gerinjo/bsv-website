@@ -115,6 +115,35 @@ const removeLegacyPersonCard = (html: string, personName: string) => {
 
   return result;
 };
+const replaceLegacyPersonCard = (html: string, oldName: string, newName: string, newRole: string, image: string) => {
+  const personIndex = html.indexOf(oldName);
+  if (personIndex === -1) return html;
+
+  const cardStart = html.lastIndexOf('<li', personIndex);
+  const cardEnd = html.indexOf('</li>', personIndex);
+  if (cardStart === -1 || cardEnd === -1) return html;
+
+  const card = html.slice(cardStart, cardEnd + 5)
+    .replaceAll(oldName, newName)
+    .replace(/(<a href=")[^"]*(">\s*<img)/, `$1${image}$2`)
+    .replace(/(<img[^>]*\ssrc=")[^"]*(")/, `$1${image}$2`)
+    .replace(
+      /<div class="qualification-wrapper">[\s\S]*?<\/div>\s*<\/div>/,
+      `<div class="qualification-wrapper"><div>${newRole}</div></div>`,
+    );
+
+  return `${html.slice(0, cardStart)}${card}${html.slice(cardEnd + 5)}`;
+};
+const addLegacyYouthRepresentative = (html: string, name: string, role: string, image: string) => {
+  const sectionStart = html.indexOf('<h3>Jugendvertreter</h3>');
+  if (sectionStart === -1 || html.slice(sectionStart).includes(`<h4 class="uk-card-title">${name}</h4>`)) return html;
+
+  const listEnd = html.indexOf('</ul>', sectionStart);
+  if (listEnd === -1) return html;
+
+  const card = `<li><div class="uk-card text-center"><div class="uk-card"><div class="uk-inline-clip"><a href="${image}"><img title="${name}" class="uk-border-circle7" src="${image}" alt="${name}"><span class="item-image-backdrop"></span></a></div></div><div class="p-3"><h4 class="uk-card-title">${name}</h4><div class="qualification-wrapper"><div>${role}</div></div></div></div></li>`;
+  return `${html.slice(0, listEnd)}${card}${html.slice(listEnd)}`;
+};
 const migrateLegacyPersonImages = (html: string) => Object.entries(migratedPersonImagePaths)
   .reduce((result, [legacyPath, personPath]) => result.replaceAll(legacyPath, personPath), html);
 const addLegacyPersonToSection = (html: string, personName: string, role: string, sectionTitle: string, image: string) => {
@@ -149,7 +178,20 @@ const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganiz
 const importedBody = legacyBody ? migrateLegacyPersonImages(legacyBody) : undefined;
 const migratedLegacyBody = page.path === 'verein/vorstandschaft' && importedBody
   ? addLegacyPersonToSection(removeLegacyPersonCard(importedBody, 'Nicole Erbes'), 'Felix Schüle', 'Sportlicher Leiter Herren', 'Herren', '/images/verein/personen/felix-schuele.jpg')
-  : importedBody;
+  : page.path === 'jugend/vorstandschaft' && importedBody
+    ? addLegacyYouthRepresentative(
+        addLegacyYouthRepresentative(
+          replaceLegacyPersonCard(importedBody, 'Sina Rauch', 'Laila Goldhagen', 'Jugendvertretung C–B-Juniorinnen', '/images/verein/personen/laila-goldhagen.jpeg')
+            .replace('Vertretung B-/A-Junioren', 'Jugendvertretung B–A-Junioren'),
+          'Ella Kramer',
+          'Jugendvertretung G–D-Junioren & Juniorinnen',
+          '/images/verein/personen/ella-kramer.jpeg',
+        ),
+        'Annika Peglau',
+        'Jugendvertretung G–D-Junioren & Juniorinnen',
+        '/images/verein/personen/annika-peglau.jpeg',
+      )
+    : importedBody;
 const migratedBody = migratedLegacyBody ? withBaseInHtml(migratedLegacyBody) : undefined;
 const section = page.path.startsWith('fussball')
   ? { label: 'Fußball', href: '/fussball' }
