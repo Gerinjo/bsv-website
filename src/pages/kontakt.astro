@@ -15,7 +15,7 @@ import { withBase } from '../utils/paths';
     <section class="contact-section">
       <div class="shell contact-layout">
         <aside><span>Kontakt</span><h2>Eine Nachricht.<br />Der richtige Weg.</h2><p>Wir verwenden deine Angaben ausschließlich, um deine Anfrage zu bearbeiten.</p></aside>
-        <form id="contact-form" action="https://bsvnordstern.de/api/contact.php" method="post">
+        <form id="contact-form" action="../api/contact.php" method="post">
           <div class="field full">
             <label for="topic-area">Worum geht es?</label>
             <select id="topic-area" required><option value="">Bitte auswählen …</option>{fixedContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}<option value="active-team">Aktive Mannschaft</option><option value="youth-team">Jugendmannschaft</option></select>
