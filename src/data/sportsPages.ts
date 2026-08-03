@@ -1,9 +1,9 @@
 import { menFirstTeamName } from './teamPages';
 
-const footballImage = '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg';
-const reserveImage = '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg';
-const youthImage = '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg';
-const juniorsImage = '/images/migration/26cc1fa04b-BSV-D-Juniorinnen-2526.jpg';
+const footballImage = '/images/aktive/teams/2526/herren-1.jpeg';
+const reserveImage = '/images/aktive/teams/2526/herren-2.jpg';
+const youthImage = '/images/jugend/teams/2526/u17-b-juniorinnen.jpg';
+const juniorsImage = '/images/jugend/teams/2526/u13-d-juniorinnen.jpg';
 
 export const sportsPages = [
   { path: 'fussball', eyebrow: 'Auf geht’s grün', title: 'Fußball', intro: 'Von den Aktiven bis zu den Alten Herren – Leidenschaft, Teamgeist und Heimat auf jedem Platz.', image: footballImage, body: ['Der Fußball prägt den BSV Nordstern seit seiner Gründung. Heute bieten wir Mannschaften und Spielgemeinschaften für unterschiedliche Alters- und Leistungsklassen.', 'Hier findest du unsere Teams, Trainingszeiten, Ansprechpersonen und Informationen zu den Sportstätten.'] },

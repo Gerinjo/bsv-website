@@ -223,7 +223,7 @@ const configs: TeamConfig[] = [
     opening: ['Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1 und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
-    trial: 'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image: '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg', showSquad: true,
+    trial: 'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image: '/images/aktive/teams/2526/herren-1.jpeg', showSquad: true,
     gallery: [{ src: '/images/migration/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
   },
   {
@@ -234,7 +234,7 @@ const configs: TeamConfig[] = [
     opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga C Staffel 1.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
-    trial: 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image: '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg', showSquad: true,
+    trial: 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image: '/images/aktive/teams/2526/herren-2.jpg', showSquad: true,
   },
   {
     path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Frauen Bezirksliga Bodensee`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
@@ -246,7 +246,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
-    image: '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
+    image: '/images/aktive/teams/2526/frauen.jpg',
     coaches: [{ name: 'Matthias Becht', role: 'Trainer' }],
   },
   {
@@ -259,7 +259,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
-    image: '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
+    image: '/images/aktive/teams/2526/frauen.jpg',
     coaches: [{ name: 'Miriam Lipp', role: 'Chef-Trainerin' }, { name: 'Emel Bayram', role: 'Co-Trainerin' }],
   },
   {
@@ -382,7 +382,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg', gallery: bGirlsGallery,
+    trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/jugend/teams/2526/u17-b-juniorinnen.jpg', gallery: bGirlsGallery,
     coaches: [{ name: 'Sven Goldhagen', role: 'Cheftrainer', qualification: 'DFB-Basis-Coach', image: '/images/verein/personen/sven-goldhagen.jpg', email: 'sven.goldhagen@bsvnordstern.de', phone: '+491727404080' }, { name: 'Sonja Thomen', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach', email: 'sonja.thomen@bsvnordstern.de' }],
   },
   {
@@ -399,7 +399,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image: '/images/migration/26cc1fa04b-BSV-D-Juniorinnen-2526.jpg', gallery: dGirlsGallery,
+    trial: `Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image: '/images/jugend/teams/2526/u13-d-juniorinnen.jpg', gallery: dGirlsGallery,
     coaches: [{ name: 'Dana Bulander', role: 'Trainerin', qualification: 'C-Lizenz', image: '/images/verein/personen/dana-bulander.jpg', email: 'dana.bulander@bsvnordstern.de' }],
   },
 ];
