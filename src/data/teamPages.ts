@@ -250,18 +250,20 @@ const configs: TeamConfig[] = [
   {
     path: 'jugend/u11-e2', kicker: 'Kinderfußball', headline: 'Lernen.<br /><em>Gemeinsam spielen.</em>', letter: 'E2',
     opening: ['Bei den E2-Junioren stehen viele Ballkontakte, Spielfreude und das Lernen in der Gruppe im Mittelpunkt.', `Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`],
-    trainingLead: 'Zwei Einheiten pro Woche mit viel Bewegung und altersgerechtem Fußball.',
-    training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
+    trainingLead: 'Die neuen Trainingszeiten werden durch das Trainerteam bekanntgegeben.',
+    training: [{ day: 'Aktuell', time: 'Termin folgt', place: 'BSV Nordstern' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
+    coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', email: 'marcelino.rueth@bsvnordstern.de', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer', email: 'mohamad.mahmoudi@bsvnordstern.de' }],
   },
   {
     path: 'jugend/u11-e3', kicker: 'Kinderfußball', headline: 'Entdecken.<br /><em>Zusammen wachsen.</em>', letter: 'E3',
     opening: [`In der E3 spielen Kinder der Jahrgänge ${youthYears.e} und sammeln gemeinsam wertvolle Fußballerfahrungen.`, 'Im Mittelpunkt stehen Freude, Bewegung und ein sicherer Einstieg in das Mannschaftsspiel.'],
-    trainingLead: 'Die neuen Trainingszeiten werden durch das Trainerteam bekanntgegeben.',
-    training: [{ day: 'Aktuell', time: 'Termin folgt', place: 'BSV Nordstern' }],
+    trainingLead: 'Zwei Einheiten pro Woche mit viel Bewegung und altersgerechtem Fußball.',
+    training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
+    coaches: [{ name: 'Stefan Sulger', role: 'Trainer', qualification: 'Kindertrainer-Zertifikat', email: 'stefan.sulger@bsvnordstern.de' }, { name: 'Michael Sick', role: 'Trainer', email: 'michael.sick@bsvnordstern.de' }],
   },
   {
     path: 'jugend/u9-f', kicker: 'Kinderfußball', headline: 'Dribbeln.<br /><em>Freude teilen.</em>', letter: 'U9',
@@ -332,8 +334,8 @@ const configs: TeamConfig[] = [
   {
     path: 'jugend/u13-d2', kicker: 'Leistungsfußball', headline: 'Lernen.<br /><em>Als Mannschaft.</em>', letter: 'D2',
     opening: [`In der D2 spielen Kinder der Jahrgänge ${youthYears.d}.`, 'Altersgerechtes Training schafft die Grundlage für individuelle Entwicklung und gutes Zusammenspiel.'],
-    trainingLead: 'Die Trainingszeiten werden aktuell abgestimmt und rechtzeitig bekanntgegeben.',
-    training: [{ day: 'Aktuell', time: 'Termin folgt', place: 'BSV Nordstern' }],
+    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.',
+    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
   },
   {

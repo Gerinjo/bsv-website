@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DocumentPage from '../components/DocumentPage.astro';
+import CancellationPage from '../components/CancellationPage.astro';
 import Layout from '../layouts/Layout.astro';
 import { legacyContent } from '../data/legacyContent';
 import { sportsPages, sportsPaths } from '../data/sportsPages';
@@ -44,7 +45,7 @@ const pages: Page[] = [
   { path: 'verein/satzung', eyebrow: 'Das Fundament', title: 'Satzung', intro: 'Unsere Satzung legt Ziele, Organisation sowie Rechte und Pflichten innerhalb des BSV Nordstern fest.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document', body: ['Sie bildet die rechtliche Grundlage der Vereinsarbeit, beschreibt die Aufgaben der Organe und sichert die gemeinnützige Förderung des Sports und der Jugend.', 'Für verbindliche Auskünfte gilt immer die aktuell beschlossene und unterzeichnete Fassung der Vereinssatzung.'] },
   { path: 'verein/beitragsordnung', eyebrow: 'Transparent & fair', title: 'Beitragsordnung', intro: 'Mitgliedsbeiträge sichern Trainingsbetrieb, Anlagen und eine verlässliche Vereinsarbeit.', image: '/images/verein/bereiche/verein.jpeg', kind: 'document', body: ['Die Beitragsordnung regelt Beitragshöhen, Fälligkeiten und Ermäßigungen. Zum 1. Januar 2026 wurde die Beitragsordnung durch die Mitgliederversammlung angepasst.', 'Die vollständige, rechtsverbindliche Fassung bleibt maßgeblich. Bei Fragen hilft die Vorstandschaft gerne weiter.'] },
   { path: 'verein/mitglied-werden', eyebrow: 'Willkommen beim BSV', title: 'Mitglied werden', intro: 'Lebe deinen Sport, lerne neue Menschen kennen und werde Teil unserer lebendigen Gemeinschaft.', image: '/images/verein/bereiche/verein.jpeg', body: ['Als Mitglied kannst du in unseren Mannschaften und Abteilungen trainieren, an Veranstaltungen teilnehmen oder dich ehrenamtlich engagieren.', 'Unsere Trainerinnen, Trainer und Verantwortlichen begleiten dich beim Einstieg und finden gemeinsam mit dir das passende Angebot.'] },
-  { path: 'verein/kuendigung', eyebrow: 'Mitgliedschaft', title: 'Kündigung', intro: 'Schade, dass du uns verlassen möchtest. Hier findest du die wichtigsten Hinweise zum Austritt.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document', body: ['Der Austritt erfolgt durch eine schriftliche Erklärung an den geschäftsführenden Vorstand. Er ist zum Ende eines Kalenderjahres unter Einhaltung einer Kündigungsfrist von sechs Wochen möglich.', 'Verpflichtungen gegenüber dem Verein sind bis zum Ablauf des laufenden Kalenderjahres zu erfüllen. Maßgeblich ist § 7 der aktuellen Satzung.'] },
+  { path: 'verein/kuendigung', eyebrow: 'Mitgliedschaft beenden', title: 'Mitgliedschaft kündigen', intro: 'Hier erfährst du, wie eine wirksame Austrittserklärung eingereicht wird und zu welchem Zeitpunkt deine Mitgliedschaft endet.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document' },
   { path: 'verein/termine', eyebrow: 'Gemeinsam erleben', title: 'Termine', intro: 'Veranstaltungen, Feste und besondere Tage rund um den BSV Nordstern.', image: '/images/verein/bereiche/verein.jpeg', kind: 'events' },
   { path: 'foerderverein/vorstandschaft', eyebrow: 'Unterstützen & ermöglichen', title: 'Förderverein', intro: 'Der Förderverein schafft zusätzliche Möglichkeiten für Sport, Jugend und Vereinsleben.', image: '/images/verein/bereiche/geschichte.jpg', body: ['Mit persönlichem Einsatz, Veranstaltungen und finanzieller Unterstützung hilft der Förderverein dort, wo gute Ideen zusätzliche Kraft brauchen.', 'Bei Fragen zur Arbeit und Vorstandschaft des Fördervereins erreichst du uns über die zentrale Vereinsadresse.'] },
   { path: 'foerderverein/mitglied-werden', eyebrow: 'Gemeinsam fördern', title: 'Fördermitglied werden', intro: 'Unterstütze Projekte, Ausstattung und die Zukunft des BSV Nordstern Radolfzell.', image: '/images/verein/bereiche/verein.jpeg', body: ['Du kannst bei Veranstaltungen mithelfen, Sportgeräte und Ausstattung ermöglichen oder die finanzielle Basis unserer Vereinsarbeit stärken.', 'Jeder Beitrag – ob Zeit, Idee oder Förderung – kommt unserer Vereinsgemeinschaft zugute.'] },
@@ -75,6 +76,7 @@ const teamProfile = teamProfiles[page.path];
 const isTeamPage = Boolean(teamProfile);
 const documentProfile = documentPages[page.path];
 const isDocumentPage = Boolean(documentProfile);
+const isCancellationPage = page.path === 'verein/kuendigung';
 const isDepartmentPage = ['abteilungen/bogensport', 'abteilungen/gymnastik', 'abteilungen/wandergruppe'].includes(page.path);
 const removeLegacyPersonCard = (html: string, personName: string) => {
   let result = html;
@@ -118,7 +120,7 @@ const addLegacyPersonToSection = (html: string, personName: string, role: string
 
   return `${html.slice(0, insertAt)}${sectionCard}${html.slice(insertAt)}`;
 };
-const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganizationPage || isTeamPage || isDocumentPage || isDepartmentPage
+const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganizationPage || isTeamPage || isDocumentPage || isCancellationPage || isDepartmentPage
   ? undefined
   : legacyContent[page.path];
 const importedBody = legacyBody ? migrateLegacyPersonImages(legacyBody) : undefined;
@@ -656,6 +658,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
       )}
       {migratedBody && <article class="legacy-content" set:html={migratedBody} />}
       {isDocumentPage && <DocumentPage document={documentProfile} />}
+      {isCancellationPage && <CancellationPage />}
       {isYouthBoard && (
         <aside class="youth-contact-panel">
           <span class="youth-contact-star" aria-hidden="true">✦</span>
@@ -667,13 +670,13 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           <a href="mailto:jugend@bsvnordstern.de"><span>Jugendleitung kontaktieren</span><strong>↗</strong></a>
         </aside>
       )}
-      {!migratedBody && !isDepartmentPage && !isDocumentPage && page.body && <div class="prose">{page.body.map((paragraph) => <p>{paragraph}</p>)}</div>}
+      {!migratedBody && !isDepartmentPage && !isDocumentPage && !isCancellationPage && page.body && <div class="prose">{page.body.map((paragraph) => <p>{paragraph}</p>)}</div>}
 
       {!migratedBody && page.kind === 'events' && <div class="event-list"><article><time><b>11</b> JUL</time><div><small>07:00 – 14:00 Uhr</small><h2>Gebrauchträdermarkt</h2><p>Mit Zweirad Mees und dem Förderverein BSV Nordstern.</p></div></article><article><time><b>11</b> JUL</time><div><small>08:00 – 16:00 Uhr</small><h2>Flohmarkt</h2><p>Auf dem Gelände des BSV Nordstern, Schlesierstraße 43.</p></div></article></div>}
 
       {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={person.image} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
 
-      {page.kind === 'document' && !isDocumentPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href="mailto:info@bsvnordstern.de">Kontakt aufnehmen ↗</a></aside>}
+      {page.kind === 'document' && !isDocumentPage && !isCancellationPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href="mailto:info@bsvnordstern.de">Kontakt aufnehmen ↗</a></aside>}
 
       {page.path.includes('mitglied-werden') && <aside class="join-cta"><div><small>Auf geht’s grün</small><h2>Bereit für den BSV?</h2></div><a href="https://mitglied.bsvnordstern.de" target="_blank" rel="noreferrer">Online anmelden ↗</a></aside>}
     </section>
