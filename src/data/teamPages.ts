@@ -229,6 +229,8 @@ const configs: TeamConfig[] = [
   {
     path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga C Staffel 1`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
     fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-markelfingen-bsv-n-radolfz-2-sv-markelfingen-suedbaden/-/saison/2627/team-id/011MIBT808000000VTVG0001VTR8C1K7',
+    fussballDeWidgetId: '48130047-3237-4579-8f2e-a581bbb98097',
+    fussballDeTableWidgetId: '9bc34c27-6f02-4e05-bd7d-7c5594256630',
     opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga C Staffel 1.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
@@ -237,6 +239,8 @@ const configs: TeamConfig[] = [
   {
     path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Frauen Bezirksliga Bodensee`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
     fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/01A2FGUHDO000000VV0AG80NVSEJ47CH',
+    fussballDeWidgetId: 'a7855cb2-0226-49a3-98ca-b106b3786afb',
+    fussballDeTableWidgetId: 'a71cf2af-c7c4-403d-9d0a-bad8f465dc18',
     opening: [`Unsere erste Frauenmannschaft tritt als ${womenAssociationName} an.`, 'Sie spielt in der Bezirksliga und verbindet Spielerinnen aller drei Partnervereine in einer gemeinsamen Mannschaft.'],
     partners: womenPartners,
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
@@ -247,6 +251,8 @@ const configs: TeamConfig[] = [
   {
     path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Frauen Kreisliga A`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
     fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-2-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/03163NI9R0000000VS5489BSVSCPI5U4',
+    fussballDeWidgetId: '48107d01-3242-45df-8f09-55a20a959688',
+    fussballDeTableWidgetId: '9f37d0e5-fcf0-44d1-8c49-56652f0eee7a',
     opening: [`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} 2 an.`, 'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'],
     partners: womenPartners,
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
