@@ -1,6 +1,24 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+$allowedOrigins = array(
+    'https://gerinjo.github.io',
+    'https://bsvnordstern.de',
+    'https://www.bsvnordstern.de',
+);
+$requestOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+if (in_array($requestOrigin, $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $requestOrigin);
+    header('Vary: Origin');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Accept, Content-Type');
+    header('Access-Control-Max-Age: 86400');
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('HTTP/1.1 405 Method Not Allowed');
     echo json_encode(array('ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.'));
