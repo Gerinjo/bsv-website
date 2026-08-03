@@ -113,6 +113,7 @@ for (const [file, route] of Object.entries(routes)) {
   article = article
     .replace(/href=["']\/j4\/index\.php\/([^"']+)["']/gi, 'href="/$1"')
     .replace(/href=["']\/j4\/images\/([^"']+)["']/gi, 'href="https://bsvnordstern.de/j4/images/$1"')
+    .replaceAll('/j4/docs/BSV%20Nordstern%20Vereinssatzung%20Stand%2031.01.2023.pdf', '/dokumente/bsv-nordstern-satzung-2023.pdf')
     // Three files are already missing on the former site. Use the current equivalent instead.
     .replaceAll('/images/migration/58ca5255c3-bsv_beitragsordnung_240101.pdf', '/images/migration/7bdd8e83ca-BSV_Beitragsordnung_260101.pdf')
     .replaceAll('/images/migration/2b523be8d9-297-Herren-mit-Arztkoffer-Cropped.jpg', '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg')

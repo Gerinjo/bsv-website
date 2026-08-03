@@ -9,6 +9,7 @@ import { sportsPages, sportsPaths } from '../data/sportsPages';
 import { teamProfiles } from '../data/teamPages';
 import { documentPages } from '../data/documentPages';
 import { migratedPersonImagePaths } from '../data/personImages';
+import { withBase, withBaseInHtml } from '../utils/paths';
 
 type Person = { name: string; role: string; image?: string };
 type Page = { path: string; eyebrow: string; title: string; intro: string; image: string; body?: string[]; people?: Person[]; kind?: 'history' | 'board' | 'events' | 'document' | 'organization' };
@@ -55,7 +56,24 @@ const pages: Page[] = [
     { name: 'Peter Weidele', role: 'Wanderführer · 0152 / 05170308' }, { name: 'Jutta Fuchs', role: 'Wanderführerin · 07732 / 12379' }, { name: 'Anita Steppacher', role: 'Wanderführerin · 0170 / 5757127' }, { name: 'Siggi Bayer', role: 'Wanderführer · 07732 / 4938' }, { name: 'Thomas Graf', role: 'Wanderführer · 0176 / 54027893' },
   ], body: ['Unterstützt werden die Wanderungen durch Josef Fuchs und Patrick Kittel. Die Strecken können je nach Wetterlage angepasst werden.', 'Aktuelle Wanderbeschreibungen erscheinen im Hallo Radolfzell und im Schaukasten des BSV Nordstern.'] },
 ];
-pages.push(...sportsPages);
+
+const servicePages: Page[] = [
+  { path: 'events', eyebrow: 'Gemeinsam erleben', title: 'Events', intro: 'Turniere, Fußballcamps und besondere Begegnungen beim BSV Nordstern.', image: '/images/migration/53b694a9ad-urmel-bambini-spieltag-1.png', body: ['Unsere Veranstaltungen verbinden Sport, Gemeinschaft und unvergessliche Erlebnisse für Kinder, Jugendliche und Erwachsene.', 'Alle einzelnen Angebote findest du direkt über das Menü. Aktuelle Termine und Anmeldemöglichkeiten werden auf den jeweiligen Veranstaltungsseiten veröffentlicht.'] },
+  { path: 'events/tag-des-maedchenfussballs', eyebrow: 'Fußball für Mädchen', title: 'Tag des Mädchenfußballs', intro: 'Ausprobieren, mitspielen und gemeinsam Freude am Fußball entdecken.', image: '/images/migration/af826cf7b5-bsv-e-juniorinnen-zweiterplatz.jpeg', body: ['Der Tag des Mädchenfußballs lädt interessierte Spielerinnen dazu ein, den Sport und unseren Verein unverbindlich kennenzulernen.', 'Informationen zum nächsten Termin und zur Anmeldung geben wir rechtzeitig bekannt.'] },
+  { path: 'events/allianz-juniors-cup-d', eyebrow: 'Turnier erleben', title: 'Allianz Juniors Cup – D-Junioren', intro: 'Junge Teams, faire Spiele und ein gemeinsamer Fußballtag.', image: '/images/migration/26cc1fa04b-BSV-D-Juniorinnen-2526.jpg', body: ['Beim Allianz Juniors Cup treffen Nachwuchsmannschaften in sportlicher und familiärer Atmosphäre aufeinander.', 'Spielplan, teilnehmende Teams und organisatorische Hinweise werden vor dem Turnier veröffentlicht.'] },
+  { path: 'events/allianz-juniors-cup-c', eyebrow: 'Juniorinnenfußball', title: 'Allianz Juniors Cup – C-Juniorinnen', intro: 'Ein Turniertag für Spielfreude, Teamgeist und Mädchenfußball.', image: '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg', body: ['Der Allianz Juniors Cup bringt Juniorinnenteams aus der Region zu einem gemeinsamen Fußballerlebnis zusammen.', 'Spielplan, teilnehmende Teams und organisatorische Hinweise werden vor dem Turnier veröffentlicht.'] },
+  { path: 'events/grundschulturnier', eyebrow: 'Schulen in Bewegung', title: 'Radolfzeller Grundschulturnier', intro: 'Gemeinsam kicken, fair spielen und einen besonderen Schultag erleben.', image: '/images/migration/098fa63758-BSV2023-285.jpg', body: ['Beim Grundschulturnier stehen Bewegung, Teamgeist und die Freude am gemeinsamen Fußball im Mittelpunkt.', 'Informationen für Schulen, Mannschaften und Begleitpersonen werden vor der Veranstaltung veröffentlicht.'] },
+  { path: 'events/wiesenhof-fussballschule', eyebrow: 'Ferien am Ball', title: 'WIESENHOF Fußballschule', intro: 'Intensive Fußballtage mit Training, Bewegung und jeder Menge Spaß.', image: '/images/migration/9eb00a9fff-BSV_Fussballcamp21-12.jpg', body: ['Die Fußballschule bietet jungen Spielerinnen und Spielern abwechslungsreiche Trainingstage auf unserem Vereinsgelände.', 'Termine, Altersgruppen und Anmeldemöglichkeiten werden hier bekanntgegeben.'] },
+  { path: 'events/maedchenfussballcamp', eyebrow: 'Gemeinsam stark', title: 'Mädchenfußballcamp', intro: 'Fußball, Gemeinschaft und persönliche Entwicklung in den Ferien.', image: '/images/migration/f0aa440df9-lm-2019-halle-web.jpg', body: ['Das Mädchenfußballcamp verbindet altersgerechtes Training mit Teamaktivitäten und gemeinsamen Erlebnissen.', 'Termine, Altersgruppen und Anmeldemöglichkeiten werden hier bekanntgegeben.'] },
+  { path: 'events/torwartcamp', eyebrow: 'Zwischen den Pfosten', title: 'Save & Play Torwartcamp', intro: 'Spezifisches Training für Technik, Mut und sichere Entscheidungen.', image: '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg', body: ['Das Torwartcamp richtet sich an junge Torhüterinnen und Torhüter, die ihre Fähigkeiten gezielt weiterentwickeln möchten.', 'Termine, Altersgruppen und Anmeldemöglichkeiten werden hier bekanntgegeben.'] },
+  { path: 'gastronomie', eyebrow: 'Willkommen beim BSV', title: 'Gastronomie', intro: 'Der Treffpunkt für Mannschaften, Mitglieder und Gäste auf unserem Vereinsgelände.', image: '/images/verein/bereiche/verein.jpeg', body: ['Unsere Vereinsgastronomie ist ein Ort für Begegnung, Austausch und gemeinsame Stunden nach Training und Spiel.', 'Aktuelle Informationen zu Öffnungszeiten, Speisekarte und Veranstaltungen findest du auf den folgenden Seiten.'] },
+  { path: 'gastronomie/ueber-uns', eyebrow: 'Gastfreundschaft', title: 'Über uns', intro: 'Ein lebendiger Treffpunkt mitten im Vereinsleben.', image: '/images/verein/bereiche/verein.jpeg', body: ['In unserer Gastronomie kommen Sportlerinnen und Sportler, Familien, Fans und Gäste zusammen.', 'Wir freuen uns auf deinen Besuch auf dem Vereinsgelände an der Schlesierstraße.'] },
+  { path: 'gastronomie/oeffnungszeiten', eyebrow: 'Gut geplant', title: 'Öffnungszeiten', intro: 'Hier findest du die aktuellen Zeiten unserer Vereinsgastronomie.', image: '/images/verein/bereiche/verein.jpeg', body: ['Die Öffnungszeiten können sich abhängig von Spielbetrieb, Veranstaltungen und Saison ändern.', 'Bitte informiere dich vor deinem Besuch über die aktuell bekanntgegebenen Zeiten oder frage direkt beim Verein nach.'] },
+  { path: 'gastronomie/speisekarte', eyebrow: 'Essen & Trinken', title: 'Speisekarte', intro: 'Stärkung und Erfrischung für Mitglieder, Fans und Gäste.', image: '/images/verein/bereiche/verein.jpeg', body: ['Unser Angebot orientiert sich am laufenden Vereins- und Spielbetrieb.', 'Die aktuelle Auswahl und Preise erhältst du direkt vor Ort.'] },
+  { path: 'gastronomie/events', eyebrow: 'Gemeinsam feiern', title: 'Gastronomie-Events', intro: 'Besondere Termine und gemeinsame Abende im Vereinsheim.', image: '/images/verein/bereiche/verein.jpeg', body: ['Neben dem regulären Vereinsbetrieb finden bei uns immer wieder besondere Veranstaltungen statt.', 'Neue Termine und weitere Informationen werden hier rechtzeitig veröffentlicht.'] },
+];
+
+pages.push(...sportsPages, ...servicePages);
 
 export function getStaticPaths() {
   return [
@@ -63,7 +81,12 @@ export function getStaticPaths() {
     'verein/satzung', 'verein/beitragsordnung', 'verein/mitglied-werden',
     'verein/kuendigung', 'verein/termine', 'foerderverein/vorstandschaft',
     'foerderverein/mitglied-werden', 'abteilungen/gymnastik',
-    'abteilungen/bogensport', 'abteilungen/wandergruppe', ...sportsPaths,
+    'abteilungen/bogensport', 'abteilungen/wandergruppe',
+    'events', 'events/tag-des-maedchenfussballs', 'events/allianz-juniors-cup-d',
+    'events/allianz-juniors-cup-c', 'events/grundschulturnier',
+    'events/wiesenhof-fussballschule', 'events/maedchenfussballcamp', 'events/torwartcamp',
+    'gastronomie', 'gastronomie/ueber-uns', 'gastronomie/oeffnungszeiten',
+    'gastronomie/speisekarte', 'gastronomie/events', ...sportsPaths,
   ].map((slug) => ({ params: { slug } }));
 }
 const page = pages.find((entry) => entry.path === Astro.params.slug) as Page;
@@ -124,13 +147,18 @@ const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganiz
   ? undefined
   : legacyContent[page.path];
 const importedBody = legacyBody ? migrateLegacyPersonImages(legacyBody) : undefined;
-const migratedBody = page.path === 'verein/vorstandschaft' && importedBody
+const migratedLegacyBody = page.path === 'verein/vorstandschaft' && importedBody
   ? addLegacyPersonToSection(removeLegacyPersonCard(importedBody, 'Nicole Erbes'), 'Felix Schüle', 'Sportlicher Leiter Herren', 'Herren', '/images/verein/personen/felix-schuele.jpg')
   : importedBody;
+const migratedBody = migratedLegacyBody ? withBaseInHtml(migratedLegacyBody) : undefined;
 const section = page.path.startsWith('fussball')
   ? { label: 'Fußball', href: '/fussball' }
   : page.path.startsWith('jugend')
     ? { label: 'Junge Sterne', href: '/jugend' }
+    : page.path.startsWith('events')
+      ? { label: 'Events', href: '/events' }
+      : page.path.startsWith('gastronomie')
+        ? { label: 'Gastronomie', href: '/gastronomie' }
     : page.path.startsWith('abteilungen')
       ? { label: 'Abteilungen', href: '/verein' }
       : { label: 'Verein', href: '/verein' };
@@ -349,10 +377,10 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   <main>
     <section class:list={["page-hero", { "referee-hero": isRefereePage, "girls-team-hero": isTeamPage, "department-hero": isDepartmentPage }]}>
       <div class="shell hero-grid">
-        <div class="hero-copy"><a class="back" href={section.href}>← {section.label}</a><p class="eyebrow">{page.eyebrow}</p><h1 class={heroTitleClass}>{page.title}</h1><p class="lead">{page.intro}</p></div>
+        <div class="hero-copy"><a class="back" href={withBase(section.href)}>← {section.label}</a><p class="eyebrow">{page.eyebrow}</p><h1 class={heroTitleClass}>{page.title}</h1><p class="lead">{page.intro}</p></div>
         <div class:list={["hero-image", { "is-team-placeholder": isTeamPage && !heroImage }]}>
           {heroImage
-            ? <img class:list={{ 'is-portrait': isPortraitHero }} src={heroImage} alt={isTeamPage ? `Mannschaftsbild ${page.title}` : ''} width="900" height="650" />
+            ? <img class:list={{ 'is-portrait': isPortraitHero }} src={withBase(heroImage)} alt={isTeamPage ? `Mannschaftsbild ${page.title}` : ''} width="900" height="650" />
             : <div class="team-image-placeholder" aria-label={`Für ${page.title} ist noch kein Mannschaftsbild vorhanden`}><small>BSV Nordstern</small><strong>{teamProfile?.letter}</strong><b>Teambild folgt</b></div>}
           <span>BSV · 1956</span>
         </div>
@@ -373,8 +401,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
               {youthReferees.map((referee, index) => (
                 <article class:list={["referee-card", { coordinator: index === 0 }]}>
                   <span class="referee-number">0{index + 1}</span>
-                  <div class:list={["referee-portrait", { "is-balanced": referee.balancedPortrait }]} style={referee.balancedPortrait ? `--portrait-image:url('${referee.image}');--portrait-scale:${referee.portraitScale}` : undefined}>
-                    {referee.image ? <img src={referee.image} alt={referee.name} width="500" height="650" loading="lazy" /> : <span>{referee.name.split(' ').map((part) => part[0]).join('')}</span>}
+                  <div class:list={["referee-portrait", { "is-balanced": referee.balancedPortrait }]} style={referee.balancedPortrait ? `--portrait-image:url('${withBase(referee.image)}');--portrait-scale:${referee.portraitScale}` : undefined}>
+                    {referee.image ? <img src={withBase(referee.image)} alt={referee.name} width="500" height="650" loading="lazy" /> : <span>{referee.name.split(' ').map((part) => part[0]).join('')}</span>}
                   </div>
                   <div class="referee-info"><h3>{referee.name}</h3><p>{referee.role}</p>
                     {(referee.email || referee.phone) && <div class="contact-icons">
@@ -423,7 +451,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             <div class="principles-grid">
               {conceptPrinciples.map((principle, index) => (
                 <article class:list={["principle-card", { "has-image": principle.image, "is-wide": index === 0 || index === 3 || index === 6 }]}>
-                  {principle.image && <img src={principle.image} alt="Jugendliche des BSV Nordstern beim Fußball" width="900" height="600" loading="lazy" />}
+                  {principle.image && <img src={withBase(principle.image)} alt="Jugendliche des BSV Nordstern beim Fußball" width="900" height="600" loading="lazy" />}
                   <div><span>0{index + 1}</span><h3>{principle.title}</h3><p>{principle.text}</p></div>
                 </article>
               ))}
@@ -431,15 +459,15 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           </section>
 
           <section class="concept-join">
-            <div class="join-photo"><img src="/images/migration/571bd8370a-20230722_133328.jpg" alt="Gemeinschaft in der BSV-Jugend" width="1200" height="800" loading="lazy" /><span>#aufgehtsgrün</span></div>
+            <div class="join-photo"><img src={withBase('/images/migration/571bd8370a-20230722_133328.jpg')} alt="Gemeinschaft in der BSV-Jugend" width="1200" height="800" loading="lazy" /><span>#aufgehtsgrün</span></div>
             <div class="join-message"><span>03 · Mitmachen</span><h2>Deine Stimme zählt.</h2><p>Möchtest du Teil dieser Reise sein? Bring deine Ideen ein, übernimm Verantwortung und gestalte mit uns die Zukunft der BSV-Jugend.</p><a href="mailto:jugend@bsvnordstern.de">Jugendabteilung kontaktieren <b>↗</b></a></div>
           </section>
 
           <section class="concept-documents">
             <div><span>Vertiefende Dokumente</span><h2>Zum Nachlesen.</h2></div>
             <div class="document-links">
-              <a href="/images/migration/83266e0a0b-BSV_Jugendkonzept-2015.pdf" target="_blank"><span>PDF · Stand 2015</span><strong>BSV Jugendkonzept</strong><b>↓</b></a>
-              <a href="/images/migration/eaf3ae53f8-DFB-Ausbildungskonzeption.pdf" target="_blank"><span>PDF · Ausbildung</span><strong>DFB-Konzeption</strong><b>↓</b></a>
+              <a href={withBase('/images/migration/83266e0a0b-BSV_Jugendkonzept-2015.pdf')} target="_blank"><span>PDF · Stand 2015</span><strong>BSV Jugendkonzept</strong><b>↓</b></a>
+              <a href={withBase('/images/migration/eaf3ae53f8-DFB-Ausbildungskonzeption.pdf')} target="_blank"><span>PDF · Ausbildung</span><strong>DFB-Konzeption</strong><b>↓</b></a>
             </div>
           </section>
         </div>
@@ -465,7 +493,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
                 <article class:list={["history-chapter", { "is-reverse": index % 2 === 1 }]}>
                   <div class="history-visual">
                     {chapter.image ? (
-                      <figure><img src={chapter.image} alt={chapter.caption ?? ''} width="900" height="620" loading="lazy" /><figcaption>{chapter.caption}</figcaption></figure>
+                      <figure><img src={withBase(chapter.image)} alt={chapter.caption ?? ''} width="900" height="620" loading="lazy" /><figcaption>{chapter.caption}</figcaption></figure>
                     ) : (
                       <div class="history-fact"><span>{chapter.fact?.value}</span><strong>{chapter.fact?.label}</strong><small>BSV Nordstern Radolfzell</small></div>
                     )}
@@ -485,7 +513,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
           <section class="history-finale">
             <div><small>Die Geschichte geht weiter</small><h2>Das nächste Kapitel<br />schreiben wir gemeinsam.</h2></div>
-            <a href="/verein/mitglied-werden">Teil des BSV werden <span>↗</span></a>
+            <a href={withBase('/verein/mitglied-werden')}>Teil des BSV werden <span>↗</span></a>
           </section>
         </div>
       )}
@@ -516,7 +544,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             <div class:list={["department-people-grid", { "is-single": departmentPage.people.length === 1 }]}>
               {departmentPage.people.map((person) => (
                 <article class="department-person">
-                  {person.image ? <div class="department-portrait"><img src={person.image} alt={person.name} width="667" height="1000" loading="lazy" /></div> : <div class="department-portrait is-placeholder" aria-hidden="true">{person.name.split(' ').map((part) => part[0]).join('')}</div>}
+                  {person.image ? <div class="department-portrait"><img src={withBase(person.image)} alt={person.name} width="667" height="1000" loading="lazy" /></div> : <div class="department-portrait is-placeholder" aria-hidden="true">{person.name.split(' ').map((part) => part[0]).join('')}</div>}
                   <div><small>{person.role}</small><h3>{person.name}</h3><div class="contact-icons">{person.email && <a href={`mailto:${person.email}`} aria-label={`E-Mail an ${person.name}`}>✉</a>}{person.phone && <a href={`tel:${person.phone}`} aria-label={`${person.name} anrufen`}>☎</a>}</div></div>
                 </article>
               ))}
@@ -528,8 +556,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
               <div class="department-section-head"><div><span>Einblicke</span><h2>Mitten im Erlebnis.</h2></div><p>Bilder aus Training, Touren und gemeinsamen Momenten unserer Abteilung.</p></div>
               <div class:list={["department-gallery", { "has-four": departmentPage.gallery.length === 4 }]}>
                 {departmentPage.gallery.map((photo, index) => (
-                  <button type="button" data-gallery-image={photo.src} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
-                    <img src={photo.src} alt={photo.alt} width="1024" height="768" loading="lazy" />
+                  <button type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
+                    <img src={withBase(photo.src)} alt={photo.alt} width="1024" height="768" loading="lazy" />
                     <span><small>0{index + 1}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
                   </button>
                 ))}
@@ -564,7 +592,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </div>
             <div class="governance-support">
               <div><small>Unterstützende Aufgaben</small><ul><li>Finanzcontrolling</li><li>Kassenwesen</li><li>Recht</li><li>Datenschutz</li><li>Vertragswesen</li></ul></div>
-              <a href="/foerderverein/vorstandschaft"><span>Eigenständiger Partner</span><strong>Förderverein</strong><small>Förderung · Projekte · Sponsoring</small><b aria-hidden="true">↗</b></a>
+              <a href={withBase('/foerderverein/vorstandschaft')}><span>Eigenständiger Partner</span><strong>Förderverein</strong><small>Förderung · Projekte · Sponsoring</small><b aria-hidden="true">↗</b></a>
             </div>
           </section>
 
@@ -589,7 +617,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
           <section class="org-cta">
             <div><small>Menschen hinter der Struktur</small><h2>Engagement hat viele Gesichter.</h2><p>Lerne die gesamte Vorstandschaft und ihre Arbeit für den BSV Nordstern kennen.</p></div>
-            <a href="/verein/vorstandschaft">Zur Vorstandschaft <span>↗</span></a>
+            <a href={withBase('/verein/vorstandschaft')}>Zur Vorstandschaft <span>↗</span></a>
           </section>
         </div>
       )}
@@ -626,7 +654,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
               <div class:list={["coach-grid", { "is-single": teamProfile.coaches.length === 1 }]}>
                 {teamProfile.coaches.map((coach) => (
                   <article class="coach-card">
-                    {coach.image ? <div class="coach-portrait"><img src={coach.image} alt={coach.name} width="677" height="1000" loading="lazy" /></div> : <div class="coach-portrait coach-placeholder" aria-hidden="true">{coach.name.split(' ').map((part) => part[0]).join('')}</div>}
+                    {coach.image ? <div class="coach-portrait"><img src={withBase(coach.image)} alt={coach.name} width="677" height="1000" loading="lazy" /></div> : <div class="coach-portrait coach-placeholder" aria-hidden="true">{coach.name.split(' ').map((part) => part[0]).join('')}</div>}
                     <div class="coach-details"><small>{coach.role}</small><h3>{coach.name}</h3>{coach.qualification && <p>{coach.qualification}</p>}{coach.club && <p class="coach-club"><small>Stammverein</small><strong>{coach.club}</strong></p>}{(coach.email || coach.phone) && <div class="contact-icons">{coach.email && <a href={`mailto:${coach.email}`} aria-label={`E-Mail an ${coach.name}`}>✉</a>}{coach.phone && <a href={`tel:${coach.phone}`} aria-label={`${coach.name} anrufen`}>☎</a>}</div>}</div>
                   </article>
                 ))}
@@ -639,8 +667,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
               <div class="d-girls-section-head gallery-head"><div><span>Team-Momente</span><h2>Mehr als 90 Minuten.</h2></div><p>Vorhandene Bilder zeigen Training, Spieltage und gemeinsame Erlebnisse der Mannschaft.</p></div>
               <div class:list={["d-girls-gallery", { "is-single": teamProfile.gallery.length === 1 }]}>
                 {teamProfile.gallery.map((photo, index) => (
-                  <button class:list={["gallery-tile", photo.size && `is-${photo.size}`]} type="button" data-gallery-image={photo.src} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
-                    <img src={photo.src} alt={photo.alt} width="1600" height="1200" loading="lazy" />
+                  <button class:list={["gallery-tile", photo.size && `is-${photo.size}`]} type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
+                    <img src={withBase(photo.src)} alt={photo.alt} width="1600" height="1200" loading="lazy" />
                     <span><small>{String(index + 1).padStart(2, '0')}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
                   </button>
                 ))}
@@ -674,7 +702,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
       {!migratedBody && page.kind === 'events' && <div class="event-list"><article><time><b>11</b> JUL</time><div><small>07:00 – 14:00 Uhr</small><h2>Gebrauchträdermarkt</h2><p>Mit Zweirad Mees und dem Förderverein BSV Nordstern.</p></div></article><article><time><b>11</b> JUL</time><div><small>08:00 – 16:00 Uhr</small><h2>Flohmarkt</h2><p>Auf dem Gelände des BSV Nordstern, Schlesierstraße 43.</p></div></article></div>}
 
-      {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={person.image} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
+      {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={withBase(person.image)} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
 
       {page.kind === 'document' && !isDocumentPage && !isCancellationPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href="mailto:info@bsvnordstern.de">Kontakt aufnehmen ↗</a></aside>}
 

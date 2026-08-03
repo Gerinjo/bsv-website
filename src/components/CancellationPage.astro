@@ -1,3 +1,7 @@
+---
+import { withBase } from '../utils/paths';
+---
+
 <article class="cancellation-page">
   <section class="cancellation-purpose" aria-labelledby="cancellation-purpose-title">
     <div class="purpose-heading">
@@ -7,7 +11,7 @@
     <div class="purpose-copy">
       <strong>Mit einer wirksamen Kündigung endet deine Mitgliedschaft zum 31. Dezember des betreffenden Jahres.</strong>
       <p>Bis zu diesem Zeitpunkt bleibt die Mitgliedschaft bestehen. Auch bestehende Verpflichtungen gegenüber dem Verein sind bis zum Ablauf des Kalenderjahres zu erfüllen.</p>
-      <a href="/verein/satzung">Grundlage: § 7 der Satzung <span aria-hidden="true">→</span></a>
+      <a href={withBase('/verein/satzung')}>Grundlage: § 7 der Satzung <span aria-hidden="true">→</span></a>
     </div>
   </section>
 

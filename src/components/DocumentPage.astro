@@ -1,5 +1,6 @@
 ---
 import type { DocumentProfile } from '../data/documentPages';
+import { withBase } from '../utils/paths';
 
 interface Props {
   document: DocumentProfile;
@@ -20,7 +21,7 @@ const isFees = document.type === 'Beitragsordnung';
       <div><small>Dokument</small><strong>{document.type}</strong></div>
       <div><small>Fassung</small><strong>{document.edition}</strong></div>
       <div><small>Umfang</small><strong>{document.readingTime}</strong></div>
-      <a href={document.pdf.href} target="_blank" rel="noreferrer"><span>PDF öffnen</span><b aria-hidden="true">↗</b></a>
+      <a href={withBase(document.pdf.href)} target="_blank" rel="noreferrer"><span>PDF öffnen</span><b aria-hidden="true">↗</b></a>
     </div>
   </header>
 
@@ -85,7 +86,7 @@ const isFees = document.type === 'Beitragsordnung';
   <footer class="document-download">
     <div class="pdf-symbol" aria-hidden="true"><span>PDF</span></div>
     <div><small>{document.edition}</small><h2>Die vollständige Fassung.</h2><p>Für verbindliche Auskünfte gilt das von der Mitgliederversammlung beschlossene Originaldokument.</p></div>
-    <a href={document.pdf.href} target="_blank" rel="noreferrer"><span><small>{document.pdf.meta}</small><strong>{document.pdf.label}</strong></span><b aria-hidden="true">↓</b></a>
+    <a href={withBase(document.pdf.href)} target="_blank" rel="noreferrer"><span><small>{document.pdf.meta}</small><strong>{document.pdf.label}</strong></span><b aria-hidden="true">↓</b></a>
   </footer>
 
   <aside class="document-contact">

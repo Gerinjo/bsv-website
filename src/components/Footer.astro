@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/paths';
+
 const year = new Date().getFullYear();
 ---
 
@@ -6,14 +8,14 @@ const year = new Date().getFullYear();
   <div class="footer-orbit" aria-hidden="true"></div>
   <div class="shell footer-main">
     <div class="footer-intro">
-      <a class="footer-brand" href="/" aria-label="BSV Nordstern Startseite">
+      <a class="footer-brand" href={withBase('/')} aria-label="BSV Nordstern Startseite">
         <strong class="footer-wordmark">BSV Nordstern<small>Radolfzell · seit 1956</small></strong>
       </a>
       <p>Gemeinschaft, Bewegung und echte Vereinsliebe – zuhause an der Schlesierstraße.</p>
       <strong class="footer-claim">Auf geht’s grün.</strong>
     </div>
 
-    <div class="footer-contact">
+    <div class="footer-contact" id="kontakt">
       <p class="footer-label">Direkter Draht</p>
       <a href="mailto:info@bsvnordstern.de">
         <span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
@@ -30,14 +32,14 @@ const year = new Date().getFullYear();
     </div>
 
     <nav class="footer-nav" aria-label="Fußzeilennavigation">
-      <div><p class="footer-label">Entdecken</p><a href="/verein">Verein</a><a href="/fussball">Fußball</a><a href="/jugend">Junge Sterne</a><a href="/verein/mitglied-werden">Mitglied werden</a></div>
-      <div><p class="footer-label">Service</p><a href="/spielplan">Spielplan</a><a href="/kontakt">Kontakt & Anfahrt</a><a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer">JAKO Shop ↗</a></div>
+      <div><p class="footer-label">Entdecken</p><a href={withBase('/verein')}>Verein</a><a href={withBase('/fussball')}>Fußball</a><a href={withBase('/jugend')}>Junge Sterne</a><a href={withBase('/verein/mitglied-werden')}>Mitglied werden</a></div>
+      <div><p class="footer-label">Service</p><a href={withBase('/#spielplan')}>Spielplan</a><a href={withBase('/#kontakt')}>Kontakt & Anfahrt</a><a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer">JAKO Shop ↗</a></div>
     </nav>
   </div>
 
   <div class="shell footer-bottom">
     <span>© {year} BSV Nordstern e.V. Radolfzell</span>
-    <div><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div>
+    <div><a href={withBase('/impressum')}>Impressum</a><a href={withBase('/datenschutz')}>Datenschutz</a></div>
   </div>
 </footer>
 

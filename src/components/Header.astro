@@ -1,5 +1,6 @@
 ---
 import { allContentPaths, menu } from '../data/navigation';
+import { withBase } from '../utils/paths';
 
 const clubImages: Record<string, string> = {
   '/verein': '/images/verein/bereiche/verein.jpeg',
@@ -52,15 +53,15 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
       </div>
       <div class="quick-links">
         <a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer"><span aria-hidden="true">✦</span> JAKO Shop</a>
-        <a href="/spielplan"><span aria-hidden="true">◎</span> Spielplan</a>
-        <a href="/kontakt"><span aria-hidden="true">↗</span> Kontakt</a>
+        <a href={withBase('/#spielplan')}><span aria-hidden="true">◎</span> Spielplan</a>
+        <a href={withBase('/#kontakt')}><span aria-hidden="true">↗</span> Kontakt</a>
       </div>
     </div>
   </div>
 
   <div class="shell navigation">
-    <a class="brand" href="/" aria-label="BSV Nordstern Startseite">
-      <span class="brand-mark" aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /></span>
+    <a class="brand" href={withBase('/')} aria-label="BSV Nordstern Startseite">
+      <span class="brand-mark" aria-hidden="true"><img src={withBase('/images/verein/wappen/bsv-nordstern.gif')} alt="" width="100" height="100" /></span>
       <span><strong>BSV Nordstern</strong><small>Radolfzell · seit 1956</small></span>
     </a>
 
@@ -72,7 +73,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
       <ul class="menu">
         {menu.map((item) => (
           <li class="menu-item">
-            <a class="menu-link" href={item.href}>{item.label}<span aria-hidden="true">⌄</span></a>
+            <a class="menu-link" href={withBase(item.href)}>{item.label}<span aria-hidden="true">⌄</span></a>
             <div class="mega-menu">
               <div class:list={["mega-inner", { "club-mega": visualMenus.includes(item.label) }]}>
                 {visualMenus.includes(item.label) ? (
@@ -80,36 +81,36 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                     <div class="mega-directory">
                       <div class="mega-directory-head">
                         <span>{item.label === 'Verein' ? 'Verein entdecken' : 'Teams & Bereiche'}</span>
-                        <a href={allContentPaths[item.label] ?? item.href}>Alle Inhalte <b aria-hidden="true">↗</b></a>
+                        <a href={withBase(allContentPaths[item.label] ?? item.href)}>Alle Inhalte <b aria-hidden="true">↗</b></a>
                       </div>
                       <div class="mega-groups">
                         {item.groups.map((group) => (
                           <section class="mega-group">
                             <h2>{group.title}</h2>
                             <ul>{group.links.map((link) => (
-                              <li><a href={link.href} data-menu-image={clubImages[link.href] ?? ''} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
+                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
                             ))}</ul>
                           </section>
                         ))}
                       </div>
                     </div>
                     <aside class="club-preview" data-default-group={item.label} data-default-label={item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}>
-                      <div class="club-placeholder" aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /><small>Teambild folgt</small></div>
-                      <img src={clubImages[item.href]} data-default-image={clubImages[item.href]} alt="" width="520" height="390" />
+                      <div class="club-placeholder" aria-hidden="true"><img src={withBase('/images/verein/wappen/bsv-nordstern.gif')} alt="" width="100" height="100" /><small>Teambild folgt</small></div>
+                      <img src={withBase(clubImages[item.href])} data-default-image={withBase(clubImages[item.href])} alt="" width="520" height="390" />
                       <div class="club-preview-copy"><span data-preview-group>{item.label}</span><strong data-preview-label>{item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}</strong></div>
                     </aside>
                   </>
                 ) : item.groups.map((group) => (
                   <section>
                     <h2>{group.title}</h2>
-                    <ul>{group.links.map((link) => <li><a href={link.href}>{link.label}<span aria-hidden="true">↗</span></a></li>)}</ul>
+                    <ul>{group.links.map((link) => <li><a href={withBase(link.href)}>{link.label}<span aria-hidden="true">↗</span></a></li>)}</ul>
                   </section>
                 ))}
               </div>
             </div>
           </li>
         ))}
-        <li><a class="join" href="/verein/mitglied-werden">Mitglied werden</a></li>
+        <li><a class="join" href={withBase('/verein/mitglied-werden')}>Mitglied werden</a></li>
       </ul>
     </nav>
   </div>

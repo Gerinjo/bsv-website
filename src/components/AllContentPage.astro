@@ -3,6 +3,7 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Layout from '../layouts/Layout.astro';
 import type { MenuItem } from '../data/navigation';
+import { withBase } from '../utils/paths';
 
 interface Props {
   item: MenuItem;
@@ -26,7 +27,7 @@ const sectionName = item.label === 'Junge Sterne' ? 'Nachwuchsbereich' : item.la
       <div class="hero-lines" aria-hidden="true"></div>
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <a class="back-link" href={item.href}><span aria-hidden="true">←</span> Zurück zu {item.label}</a>
+          <a class="back-link" href={withBase(item.href)}><span aria-hidden="true">←</span> Zurück zu {item.label}</a>
           <p class="eyebrow"><span></span> Alle Inhalte</p>
           <h1>{item.label}<br /><em>im Überblick.</em></h1>
           <p class="hero-intro">{intro}</p>
@@ -81,7 +82,7 @@ const sectionName = item.label === 'Junge Sterne' ? 'Nachwuchsbereich' : item.la
             <ul>
               {group.links.map((link, linkIndex) => (
                 <li>
-                  <a href={link.href}>
+                  <a href={withBase(link.href)}>
                     <small>{String(linkIndex + 1).padStart(2, '0')}</small>
                     <strong>{link.label}</strong>
                     <span aria-hidden="true">↗</span>
@@ -101,7 +102,7 @@ const sectionName = item.label === 'Junge Sterne' ? 'Nachwuchsbereich' : item.la
           <p class="eyebrow dark"><span></span> Noch nicht gefunden?</p>
           <h2>Wir helfen gerne weiter.</h2>
         </div>
-        <a href="/kontakt">Kontakt aufnehmen <span aria-hidden="true">↗</span></a>
+        <a href={withBase('/#kontakt')}>Kontakt aufnehmen <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </main>

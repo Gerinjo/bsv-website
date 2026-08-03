@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/paths';
+
 interface Props { title?: string; description?: string }
 const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell' } = Astro.props;
 ---
@@ -7,7 +9,7 @@ const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite d
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/gif" href="/images/verein/wappen/bsv-nordstern.gif" />
+		<link rel="icon" type="image/gif" href={withBase('/images/verein/wappen/bsv-nordstern.gif')} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<title>{title}</title>

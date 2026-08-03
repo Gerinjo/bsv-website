@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Layout from '../layouts/Layout.astro';
+import { withBase } from '../utils/paths';
 
 const news = [
   { tag: 'Junge Sterne', date: '22. April 2026', title: 'Zeller Grundschulturnier 2026', text: 'Gemeinsam mit den Radolfzeller Grundschulen bringen wir Bewegung, Teamgeist und jede Menge Fußballfreude auf den Platz.', tone: 'lime' },
@@ -29,8 +30,8 @@ const departments = [
           <h1>Mehr als<br />nur ein <em>Verein.</em></h1>
           <p class="intro">Seit 1956 bewegen wir Radolfzell. Auf dem Platz, in der Halle und weit darüber hinaus.</p>
           <div class="hero-actions">
-            <a class="button button-yellow" href="/verein/mitglied-werden">Jetzt Mitglied werden <span>↗</span></a>
-            <a class="text-link" href="/verein/geschichte">Den BSV entdecken <span>→</span></a>
+            <a class="button button-yellow" href={withBase('/verein/mitglied-werden')}>Jetzt Mitglied werden <span>↗</span></a>
+            <a class="text-link" href={withBase('/verein/geschichte')}>Den BSV entdecken <span>→</span></a>
           </div>
         </div>
 
@@ -49,22 +50,22 @@ const departments = [
       </div>
     </section>
 
-    <section class="match-section">
+    <section class="match-section" id="spielplan">
       <div class="shell">
-        <div class="section-head compact"><div><p class="kicker dark"><span></span> Nächste Begegnung</p><h2>Heimspiel.</h2></div><a class="text-link dark-link" href="/spielplan">Zum Spielplan <span>→</span></a></div>
+        <div class="section-head compact"><div><p class="kicker dark"><span></span> Nächste Begegnung</p><h2>Heimspiel.</h2></div><a class="text-link dark-link" href={withBase('/#spielplan')}>Zum Spielplan <span>→</span></a></div>
         <article class="match-card">
           <div class="match-meta"><span>SO</span><strong>18</strong><small>MAI</small></div>
-          <div class="team home"><span class="mini-crest"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /></span><strong>BSV Nordstern</strong><small>Radolfzell</small></div>
+          <div class="team home"><span class="mini-crest"><img src={withBase('/images/verein/wappen/bsv-nordstern.gif')} alt="" width="100" height="100" /></span><strong>BSV Nordstern</strong><small>Radolfzell</small></div>
           <div class="kickoff"><small>Bezirksliga · 15:00 Uhr</small><strong>VS</strong><span>BSV Sportplatz</span></div>
           <div class="team away"><span class="mini-crest outline">SV</span><strong>SV Konstanz</strong><small>Konstanz</small></div>
-          <a class="round-link" href="/spielplan" aria-label="Spieldetails öffnen">↗</a>
+          <a class="round-link" href={withBase('/#spielplan')} aria-label="Spieldetails öffnen">↗</a>
         </article>
       </div>
     </section>
 
-    <section class="news-section">
+    <section class="news-section" id="neuigkeiten">
       <div class="shell">
-        <div class="section-head"><div><p class="kicker dark"><span></span> Neues vom Nordstern</p><h2>Immer am Ball.</h2></div><a class="button button-outline" href="/neuigkeiten">Alle Neuigkeiten <span>→</span></a></div>
+        <div class="section-head"><div><p class="kicker dark"><span></span> Neues vom Nordstern</p><h2>Immer am Ball.</h2></div><a class="button button-outline" href={withBase('/#neuigkeiten')}>Alle Neuigkeiten <span>→</span></a></div>
         <div class="news-grid">
           {news.map((item, index) => (
             <article class={`news-card ${item.tone}`}>
@@ -73,7 +74,7 @@ const departments = [
                 <p class="meta"><span>{item.tag}</span> {item.date}</p>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
-                <a href="/neuigkeiten">Weiterlesen <span>↗</span></a>
+                <a href={withBase('/#neuigkeiten')}>Weiterlesen <span>↗</span></a>
               </div>
             </article>
           ))}
@@ -85,7 +86,7 @@ const departments = [
       <div class="shell departments-grid">
         <div class="departments-intro"><p class="kicker light"><span></span> Ein Verein, viele Wege</p><h2>Finde deinen<br /><em>Sport.</em></h2><p>Ob auf Tore, ins Gold oder einfach gemeinsam in Bewegung – beim BSV ist für alle etwas dabei.</p></div>
         <div class="department-list">
-          {departments.map((item) => <a href={item.href}><span>{item.number}</span><div><strong>{item.name}</strong><small>{item.detail}</small></div><b>↗</b></a>)}
+          {departments.map((item) => <a href={withBase(item.href)}><span>{item.number}</span><div><strong>{item.name}</strong><small>{item.detail}</small></div><b>↗</b></a>)}
         </div>
       </div>
     </section>
@@ -94,7 +95,7 @@ const departments = [
       <div class="shell join-card">
         <span class="join-star" aria-hidden="true">✦</span>
         <div><p class="kicker dark"><span></span> Werde Teil des BSV</p><h2>Dein Verein.<br /><em>Dein Nordstern.</em></h2></div>
-        <div class="join-copy"><p>Sport verbindet. Bei uns findest du Gemeinschaft, Bewegung und einen Platz, an dem du dazugehört.</p><a class="button button-dark" href="/verein/mitglied-werden">Mitglied werden <span>↗</span></a></div>
+        <div class="join-copy"><p>Sport verbindet. Bei uns findest du Gemeinschaft, Bewegung und einen Platz, an dem du dazugehört.</p><a class="button button-dark" href={withBase('/verein/mitglied-werden')}>Mitglied werden <span>↗</span></a></div>
       </div>
     </section>
   </main>
