@@ -657,6 +657,31 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </div>
           </section>
 
+          {teamProfile.fussballDeWidgetId && (
+            <section class="team-matches-widget" aria-label={`Spiele von ${page.title}`}>
+              <div class="team-data-tabs" role="tablist" aria-label="Spiele und Tabelle">
+                <button type="button" role="tab" id="team-tab-matches" aria-controls="team-panel-matches" aria-selected="true">Letzte / nächste Spiele</button>
+                <button type="button" role="tab" id="team-tab-table" aria-controls="team-panel-table" aria-selected="false" tabindex="-1">Tabelle</button>
+              </div>
+              <div id="team-panel-matches" role="tabpanel" aria-labelledby="team-tab-matches">
+                <div
+                  class="fussballde_widget"
+                  data-id={teamProfile.fussballDeWidgetId}
+                  data-type="team-matches"
+                  style="width: 100%"
+                ></div>
+              </div>
+              <div id="team-panel-table" role="tabpanel" aria-labelledby="team-tab-table" hidden>
+                <div
+                  class="fussballde_widget"
+                  data-id={teamProfile.fussballDeTableWidgetId}
+                  data-type="table"
+                  style="width: 100%"
+                ></div>
+              </div>
+            </section>
+          )}
+
           {teamProfile.notice && <aside class="team-notice"><span aria-hidden="true">!</span><div><small>Wichtiger Hinweis</small><p>{teamProfile.notice}</p></div></aside>}
 
           {teamProfile.coaches.length > 0 && (
@@ -785,6 +810,32 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
         if (!unit.open) return;
         document.querySelectorAll<HTMLDetailsElement>('.org-unit').forEach((otherUnit) => {
           if (otherUnit !== unit) otherUnit.open = false;
+        });
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>('.team-matches-widget').forEach((tabs) => {
+      const buttons = [...tabs.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+      const panels = [...tabs.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+
+      const activateTab = (activeButton: HTMLButtonElement) => {
+        buttons.forEach((button) => {
+          const isActive = button === activeButton;
+          button.setAttribute('aria-selected', String(isActive));
+          button.tabIndex = isActive ? 0 : -1;
+        });
+        panels.forEach((panel) => panel.hidden = panel.id !== activeButton.getAttribute('aria-controls'));
+      };
+
+      buttons.forEach((button, index) => {
+        button.addEventListener('click', () => activateTab(button));
+        button.addEventListener('keydown', (event) => {
+          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+          event.preventDefault();
+          const offset = event.key === 'ArrowRight' ? 1 : -1;
+          const nextButton = buttons[(index + offset + buttons.length) % buttons.length];
+          activateTab(nextButton);
+          nextButton.focus();
         });
       });
     });
@@ -1037,6 +1088,12 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .team-squad[open] summary span { transform:rotate(45deg); }
   .team-squad > div { padding:3px 0 15px; }
   .team-squad > div p,.team-squad > div p:first-child { margin:0 0 10px; color:#66766c; font-size:.77rem; line-height:1.6; }
+  .team-matches-widget { min-height:220px; margin:-45px 0 110px; overflow:hidden; }
+  .team-data-tabs { margin-bottom:22px; display:flex; gap:8px; border-bottom:1px solid var(--girls-line); }
+  .team-data-tabs button { position:relative; padding:15px 18px; border:0; background:transparent; color:#748178; font:inherit; font-size:.72rem; font-weight:900; cursor:pointer; }
+  .team-data-tabs button[aria-selected="true"] { color:var(--green); }
+  .team-data-tabs button[aria-selected="true"]::after { content:''; position:absolute; right:0; bottom:-1px; left:0; height:4px; background:var(--yellow); }
+  .team-data-tabs button:focus-visible { outline:3px solid rgb(22 79 50 / 25%); outline-offset:2px; }
   .d-girls-training { min-height:450px; margin-bottom:115px; padding:62px 68px; display:grid; grid-template-columns:.85fr 1.15fr; gap:80px; border-radius:9px; background:var(--yellow); }
   .training-intro h2 { font-size:clamp(2.7rem,4.6vw,4.3rem); }
   .training-intro p { max-width:430px; margin:25px 0 0; color:#415245; line-height:1.65; }
@@ -1118,7 +1175,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-cta > a span { color:var(--yellow); }
   @media(max-width:900px){.d-girls-opening,.d-girls-training{grid-template-columns:1fr;gap:45px}.coach-card{grid-template-columns:145px 1fr;padding:30px}.coach-portrait{width:145px}.d-girls-cta{grid-template-columns:1fr}.d-girls-cta>a{justify-self:start}}
   @media(max-width:700px){.d-girls-section-head{align-items:flex-start;flex-direction:column}.coach-grid{grid-template-columns:1fr}.coach-grid.is-single .coach-card{grid-column:1}.d-girls-gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:230px}.gallery-tile,.gallery-tile:nth-child(1),.gallery-tile:nth-child(2){grid-column:span 1;grid-row:span 1}.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:span 2;grid-row:span 1}.gallery-tile:nth-child(6) img{object-position:center 22%}}
-  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-sponsor{grid-template-columns:1fr}.team-sponsor>span{justify-self:start}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}}
+  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-sponsor{grid-template-columns:1fr}.team-sponsor>span{justify-self:start}.team-matches-widget{margin:-30px 0 80px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}}
 
   .referee-hero .hero-grid { grid-template-columns:minmax(0,1fr) minmax(360px,390px); gap:50px; }
   .referee-hero h1 { font-size:clamp(3.2rem,4.6vw,4.15rem); }
