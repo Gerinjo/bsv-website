@@ -1,6 +1,11 @@
 ---
 import { allContentPaths, menu } from '../data/navigation';
+import { teamProfiles } from '../data/teamPages';
 import { withBase } from '../utils/paths';
+
+const teamMenuImages = Object.fromEntries(Object.values(teamProfiles)
+  .filter((team) => team.image)
+  .map((team) => [`/${team.path}`, team.image]));
 
 const clubImages: Record<string, string> = {
   '/verein': '/images/verein/bereiche/verein.jpeg',
@@ -27,8 +32,8 @@ const clubImages: Record<string, string> = {
   '/jugend/jugendkonzept': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
   '/jugend/jugendschiedsrichter': '/images/migration/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg',
   '/jugend/juniorinnen/u17': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
-  '/jugend/juniorinnen/u15': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
   '/jugend/juniorinnen/u13': '/images/migration/26cc1fa04b-BSV-D-Juniorinnen-2526.jpg',
+  ...teamMenuImages,
 };
 
 const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
@@ -96,7 +101,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                     </div>
                     <aside class="club-preview" data-default-group={item.label} data-default-label={item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}>
                       <div class="club-placeholder" aria-hidden="true"><img src={withBase('/images/verein/wappen/bsv-nordstern.gif')} alt="" width="100" height="100" /><small>Teambild folgt</small></div>
-                      <img src={withBase(clubImages[item.href])} data-default-image={withBase(clubImages[item.href])} alt="" width="520" height="390" />
+                      <img class="club-preview-image" src={withBase(clubImages[item.href])} data-default-image={withBase(clubImages[item.href])} alt="" width="520" height="390" />
                       <div class="club-preview-copy"><span data-preview-group>{item.label}</span><strong data-preview-label>{item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}</strong></div>
                     </aside>
                   </>
@@ -127,7 +132,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
 
   document.querySelectorAll<HTMLElement>('.club-mega').forEach((menu) => {
     const previewCard = menu.querySelector<HTMLElement>('.club-preview');
-    const preview = menu.querySelector<HTMLImageElement>('.club-preview img');
+    const preview = menu.querySelector<HTMLImageElement>('.club-preview-image');
     const previewGroup = menu.querySelector<HTMLElement>('[data-preview-group]');
     const previewLabel = menu.querySelector<HTMLElement>('[data-preview-label]');
 

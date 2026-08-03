@@ -246,6 +246,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
+    image: '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
     coaches: [{ name: 'Matthias Becht', role: 'Trainer' }],
   },
   {
@@ -258,6 +259,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
+    image: '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
     coaches: [{ name: 'Miriam Lipp', role: 'Chef-Trainerin' }, { name: 'Emel Bayram', role: 'Co-Trainerin' }],
   },
   {
