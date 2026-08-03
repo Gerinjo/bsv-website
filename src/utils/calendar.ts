@@ -11,6 +11,28 @@ export type CalendarEvent = {
   googleUrl: string;
 };
 
+const escapeHtml = (value: string) => value
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;');
+
+export const sanitizeCalendarHtml = (value: string) => {
+  const withoutUnsafeBlocks = value.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, '');
+  return withoutUnsafeBlocks
+    .split(/(<[^>]+>)/g)
+    .map((part) => {
+      const tag = part.match(/^<\s*(\/?)\s*(p|ul|ol|li|strong|b|em|i|br)\b[^>]*>$/i);
+      if (!tag) return escapeHtml(part);
+      const [, closing, name] = tag;
+      const normalized = name.toLowerCase();
+      if (normalized === 'br') return '<br>';
+      return `<${closing ? '/' : ''}${normalized}>`;
+    })
+    .join('');
+};
+
 type RawEvent = Record<string, string>;
 
 const unescapeText = (value = '') => value
