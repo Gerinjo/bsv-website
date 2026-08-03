@@ -67,7 +67,9 @@ const youthYears = {
   playgroup: '2022 und 2023',
 } as const;
 
-export const womenAssociationName = 'SG BSV Nordstern Radolfzell / FC Öhningen-Gaienhofen / SC Bankholzen-Moos';
+export const womenAssociationName = 'SG Nordstern Radolfzell/Öhningen-Gaienhofen/Bankholzen-Moos';
+export const menFirstTeamName = 'BSV Nordstern Radolfzell';
+export const menSecondTeamName = 'SG Markelfingen/BSV Nordstern Radolfzell 2';
 
 const womenPartners: TeamPartner[] = [
   { label: 'FC Öhningen-Gaienhofen e.V.', href: 'https://www.fc-oehningen-gaienhofen.de/' },
@@ -199,7 +201,7 @@ const dGirlsGallery: TeamPhoto[] = [
 
 const configs: TeamConfig[] = [
   {
-    path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: 'Herren 1 · Bezirksliga', headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
+    path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: `${menFirstTeamName} · Bezirksliga`, headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
     opening: ['Unsere erste Herrenmannschaft spielt in der Bezirksliga und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
@@ -207,14 +209,14 @@ const configs: TeamConfig[] = [
     gallery: [{ src: '/images/migration/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
   },
   {
-    path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: 'Herren 2 · Kreisliga 2', headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
-    opening: ['Unsere zweite Herrenmannschaft spielt als SG BSV Nordstern Radolfzell / SV Markelfingen in der Kreisliga 2.', 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
+    path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga 2`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
+    opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga 2.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trial: 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image: '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg', showSquad: true,
   },
   {
-    path: 'fussball/frauen/bezirksliga', kicker: 'SG Frauen 1 · Bezirksliga', headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
+    path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Bezirksliga`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
     opening: [`Unsere erste Frauenmannschaft tritt als ${womenAssociationName} an.`, 'Sie spielt in der Bezirksliga und verbindet Spielerinnen aller drei Partnervereine in einer gemeinsamen Mannschaft.'],
     partners: womenPartners,
     trainingLead: 'Die aktuellen Trainingszeiten erhältst du direkt beim Trainerteam.',
@@ -223,8 +225,8 @@ const configs: TeamConfig[] = [
     coaches: [{ name: 'Matthias Becht', role: 'Trainer' }],
   },
   {
-    path: 'fussball/frauen/kreisliga', kicker: 'SG Frauen 2 · Kreisliga', headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
-    opening: [`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} an.`, 'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'],
+    path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Kreisliga`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
+    opening: [`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} 2 an.`, 'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'],
     partners: womenPartners,
     trainingLead: 'Die aktuellen Trainingszeiten erhältst du direkt beim Trainerteam.',
     training: [{ day: 'Nach Absprache', time: 'Termin erfragen', place: 'Spielgemeinschaft Frauen' }],

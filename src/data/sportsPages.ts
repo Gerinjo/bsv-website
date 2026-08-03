@@ -1,4 +1,4 @@
-import { womenAssociationName } from './teamPages';
+import { menFirstTeamName } from './teamPages';
 
 const footballImage = '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg';
 const reserveImage = '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg';
@@ -9,10 +9,10 @@ export const sportsPages = [
   { path: 'fussball', eyebrow: 'Auf geht’s grün', title: 'Fußball', intro: 'Von den Aktiven bis zu den Alten Herren – Leidenschaft, Teamgeist und Heimat auf jedem Platz.', image: footballImage, body: ['Der Fußball prägt den BSV Nordstern seit seiner Gründung. Heute bieten wir Mannschaften und Spielgemeinschaften für unterschiedliche Alters- und Leistungsklassen.', 'Hier findest du unsere Teams, Trainingszeiten, Ansprechpersonen und Informationen zu den Sportstätten.'] },
   { path: 'fussball/sportplaetze', eyebrow: 'Unsere Heimat', title: 'Sportplätze', intro: 'Trainieren und spielen an der Schlesierstraße in Radolfzell.', image: footballImage },
   { path: 'fussball/belegungsplan', eyebrow: 'Plätze & Zeiten', title: 'Belegungsplan', intro: 'Die aktuelle Übersicht zur Nutzung unserer Sportstätten.', image: footballImage },
-  { path: 'fussball/herren/bezirksliga', eyebrow: 'Herren · Bezirksliga', title: 'Herren 1', intro: 'Unsere erste Herrenmannschaft spielt in der Bezirksliga.', image: footballImage },
-  { path: 'fussball/herren/kreisliga-2', eyebrow: 'SG · Kreisliga 2', title: 'Herren 2', intro: 'Die Spielgemeinschaft des BSV Nordstern Radolfzell und des SV Markelfingen.', image: reserveImage },
-  { path: 'fussball/frauen/bezirksliga', eyebrow: 'Frauen · Bezirksliga', title: 'SG Frauen 1', intro: `${womenAssociationName} · Bezirksliga`, image: footballImage },
-  { path: 'fussball/frauen/kreisliga', eyebrow: 'Frauen · Kreisliga', title: 'SG Frauen 2', intro: `${womenAssociationName} · Kreisliga`, image: footballImage },
+  { path: 'fussball/herren/bezirksliga', eyebrow: 'Herren · Bezirksliga', title: menFirstTeamName, intro: 'Unsere erste Herrenmannschaft spielt in der Bezirksliga.', image: footballImage },
+  { path: 'fussball/herren/kreisliga-2', eyebrow: 'Herren · Kreisliga 2', title: 'SG Herren 2', intro: 'Die Spielgemeinschaft des SV Markelfingen und des BSV Nordstern Radolfzell.', image: reserveImage },
+  { path: 'fussball/frauen/bezirksliga', eyebrow: 'Frauen · Bezirksliga', title: 'SG Frauen 1', intro: 'Unsere erste Frauenmannschaft in der Bezirksliga.', image: footballImage },
+  { path: 'fussball/frauen/kreisliga', eyebrow: 'Frauen · Kreisliga', title: 'SG Frauen 2', intro: 'Unsere zweite Frauenmannschaft in der Kreisliga.', image: footballImage },
   { path: 'fussball/alte-herren', eyebrow: 'Ü35 Senioren', title: 'Alte Herren', intro: 'Fußball, Freundschaft und gemeinsame Erlebnisse über den Spieltag hinaus.', image: footballImage },
   { path: 'jugend', eyebrow: 'Die Zukunft des BSV', title: 'Junge Sterne', intro: 'Gemeinsam wachsen: Fußball, Freundschaft und Entwicklung für Kinder und Jugendliche.', image: youthImage, body: ['Unsere Jugendabteilung begleitet Kinder und Jugendliche vom ersten Ballkontakt bis in den Leistungsfußball.', 'Qualifizierte Trainerinnen und Trainer, ein klares Jugendkonzept und die Freude am gemeinsamen Sport bilden dabei unsere Grundlage.'] },
   { path: 'jugend/vorstandschaft', eyebrow: 'Jugendabteilung', title: 'Jugendvorstandschaft', intro: 'Die Menschen hinter einer starken und lebendigen Nachwuchsarbeit.', image: youthImage },
