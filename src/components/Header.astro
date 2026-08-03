@@ -73,7 +73,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
       <ul class="menu">
         {menu.map((item) => (
           <li class="menu-item">
-            <a class="menu-link" href={withBase(item.href)}>{item.label}<span aria-hidden="true">⌄</span></a>
+            <a class="menu-link" href={withBase(allContentPaths[item.label] ?? item.href)}>{item.label}<span aria-hidden="true">⌄</span></a>
             <div class="mega-menu">
               <div class:list={["mega-inner", { "club-mega": visualMenus.includes(item.label) }]}>
                 {visualMenus.includes(item.label) ? (
