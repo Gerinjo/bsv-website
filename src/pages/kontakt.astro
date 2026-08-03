@@ -29,6 +29,7 @@ import { withBase } from '../utils/paths';
           <div class="field"><label for="phone">Telefon <small>(optional)</small></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
           <div class="field"><label for="email">E-Mail</label><input id="email" name="email" type="email" autocomplete="email" maxlength="160" required /></div>
           <div class="field full"><label for="message">Deine Nachricht</label><textarea id="message" name="message" rows="8" minlength="10" maxlength="5000" required></textarea></div>
+          <div class="field captcha"><label for="captcha-answer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" required /></div>
           <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
           <label class="privacy"><input type="checkbox" name="privacy" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz')}>Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
           <div class="submit-row"><button type="submit">Nachricht senden <span>↗</span></button><p id="form-status" role="status"></p></div>
@@ -51,6 +52,19 @@ import { withBase } from '../utils/paths';
   const status = document.querySelector('#form-status');
   const button = form.querySelector('button[type="submit"]');
   const fixedById = new Map(fixedTopics.map((topic) => [topic.id, topic]));
+
+  const createCaptcha = async () => {
+    document.querySelector('#captcha-answer').value = '';
+    try {
+      const response = await fetch(form.action, { credentials: 'include', headers: { Accept: 'application/json' } });
+      const challenge = await response.json();
+      if (!response.ok || !challenge.ok) throw new Error();
+      document.querySelector('#captcha-question').textContent = `${challenge.a} + ${challenge.b}`;
+    } catch {
+      document.querySelector('#captcha-question').textContent = '? + ?';
+      status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
+    }
+  };
 
   const populateTeams = (group, selectedKey = '') => {
     teamSelect.innerHTML = '<option value="">Bitte Mannschaft auswählen …</option>';
@@ -98,6 +112,7 @@ import { withBase } from '../utils/paths';
     requestType.value = requestedTopic.split('--').at(-1) ?? '';
   } else if (requestedTopic && fixedById.has(requestedTopic)) area.value = requestedTopic;
   updateTopic();
+  createCaptcha();
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -106,7 +121,7 @@ import { withBase } from '../utils/paths';
     button.disabled = true;
     status.textContent = 'Nachricht wird gesendet …';
     try {
-      const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      const response = await fetch(form.action, { method: 'POST', credentials: 'include', body: new FormData(form), headers: { Accept: 'application/json' } });
       const responseText = await response.text();
       let result;
       try {
@@ -120,13 +135,15 @@ import { withBase } from '../utils/paths';
       teamField.hidden = true;
       requestField.hidden = true;
       description.textContent = 'Bitte wähle zunächst einen Eintrag aus der Liste.';
+      await createCaptcha();
       status.textContent = 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
     } catch (error) {
       status.textContent = error instanceof Error ? error.message : 'Die Nachricht konnte nicht gesendet werden.';
+      await createCaptcha();
     } finally { button.disabled = false; }
   });
 </script>
 
 <style>
-  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.contact-hero{padding:100px 0 92px;color:white;background:#092f20}.contact-hero span,.contact-layout aside>span{color:#f4d638;font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.contact-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3rem,7vw,6.5rem);line-height:.88;letter-spacing:-.055em}.contact-hero h1 em{color:#f4d638;font-weight:400}.contact-hero p{max-width:600px;margin:0;color:#b6c6bc;font-size:1.05rem;line-height:1.7}.contact-section{padding:90px 0 110px}.contact-layout{display:grid;grid-template-columns:300px 1fr;gap:90px}.contact-layout aside h2{margin:15px 0 20px;font-family:Georgia,serif;font-size:2.2rem;line-height:1.05}.contact-layout aside p{color:#607067;line-height:1.7}form{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:38px;background:white;box-shadow:0 20px 60px rgb(9 47 32 / 8%)}.field{display:grid;gap:8px}.field.full,.privacy,.submit-row{grid-column:1/-1}label{font-size:.77rem;font-weight:800}label small{color:#76837b;font-weight:500}input,select,textarea{width:100%;border:1px solid #ccd5cf;border-radius:0;padding:14px 15px;background:#fbfcfb;color:#17251b;font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}textarea{min-height:170px;resize:vertical}.conditional{padding:20px;border-left:3px solid #91c82f;background:#f3f7ef}.conditional[hidden]{display:none}.topic-description{margin:3px 0 0;padding:16px 18px;border-left:3px solid #91c82f;background:#f3f7ef;color:#526158;font-size:.86rem;line-height:1.6}.honeypot{position:absolute;left:-10000px}.privacy{display:flex;align-items:flex-start;gap:10px;color:#526158;font-size:.78rem;line-height:1.5}.privacy input{width:auto;margin-top:3px}.privacy a{color:#092f20}.submit-row{display:flex;align-items:center;gap:22px}.submit-row button{border:0;padding:16px 22px;background:#91c82f;color:#092f20;font-weight:900;cursor:pointer}.submit-row button:hover{background:#f4d638}.submit-row button:disabled{opacity:.55;cursor:wait}.submit-row p{margin:0;font-size:.85rem;font-weight:700}.submit-row span{margin-left:16px}@media(max-width:850px){.contact-layout{grid-template-columns:1fr;gap:35px}.contact-layout aside{max-width:540px}}@media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.contact-hero{padding:70px 0}.contact-section{padding:55px 0}form{grid-template-columns:1fr;padding:22px}.field{grid-column:1/-1}.submit-row{align-items:flex-start;flex-direction:column}}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.contact-hero{padding:100px 0 92px;color:white;background:#092f20}.contact-hero span,.contact-layout aside>span{color:#f4d638;font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.contact-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3rem,7vw,6.5rem);line-height:.88;letter-spacing:-.055em}.contact-hero h1 em{color:#f4d638;font-weight:400}.contact-hero p{max-width:600px;margin:0;color:#b6c6bc;font-size:1.05rem;line-height:1.7}.contact-section{padding:90px 0 110px}.contact-layout{display:grid;grid-template-columns:300px 1fr;gap:90px}.contact-layout aside h2{margin:15px 0 20px;font-family:Georgia,serif;font-size:2.2rem;line-height:1.05}.contact-layout aside p{color:#607067;line-height:1.7}form{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:38px;background:white;box-shadow:0 20px 60px rgb(9 47 32 / 8%)}.field{display:grid;gap:8px}.field.full,.privacy,.submit-row{grid-column:1/-1}label{font-size:.77rem;font-weight:800}label small{color:#76837b;font-weight:500}input,select,textarea{width:100%;border:1px solid #ccd5cf;border-radius:0;padding:14px 15px;background:#fbfcfb;color:#17251b;font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}textarea{min-height:170px;resize:vertical}.conditional{padding:20px;border-left:3px solid #91c82f;background:#f3f7ef}.conditional[hidden]{display:none}.topic-description{margin:3px 0 0;padding:16px 18px;border-left:3px solid #91c82f;background:#f3f7ef;color:#526158;font-size:.86rem;line-height:1.6}.captcha{max-width:320px}.honeypot{position:absolute;left:-10000px}.privacy{display:flex;align-items:flex-start;gap:10px;color:#526158;font-size:.78rem;line-height:1.5}.privacy input{width:auto;margin-top:3px}.privacy a{color:#092f20}.submit-row{display:flex;align-items:center;gap:22px}.submit-row button{border:0;padding:16px 22px;background:#91c82f;color:#092f20;font-weight:900;cursor:pointer}.submit-row button:hover{background:#f4d638}.submit-row button:disabled{opacity:.55;cursor:wait}.submit-row p{margin:0;font-size:.85rem;font-weight:700}.submit-row span{margin-left:16px}@media(max-width:850px){.contact-layout{grid-template-columns:1fr;gap:35px}.contact-layout aside{max-width:540px}}@media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.contact-hero{padding:70px 0}.contact-section{padding:55px 0}form{grid-template-columns:1fr;padding:22px}.field{grid-column:1/-1}.submit-row{align-items:flex-start;flex-direction:column}}
 </style>

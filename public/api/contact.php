@@ -9,6 +9,7 @@ $allowedOrigins = array(
 $requestOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 if (in_array($requestOrigin, $allowedOrigins, true)) {
     header('Access-Control-Allow-Origin: ' . $requestOrigin);
+    header('Access-Control-Allow-Credentials: true');
     header('Vary: Origin');
 }
 
@@ -16,6 +17,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Methods: POST, OPTIONS');
     header('Access-Control-Allow-Headers: Accept, Content-Type');
     header('Access-Control-Max-Age: 86400');
+    exit;
+}
+
+session_name('bsv_contact');
+session_set_cookie_params(array(
+    'lifetime' => 0,
+    'path' => '/api/',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None',
+));
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $a = random_int(2, 9);
+    $b = random_int(1, 9);
+    $_SESSION['contact_captcha'] = $a + $b;
+    header('Cache-Control: no-store');
+    echo json_encode(array('ok' => true, 'a' => $a, 'b' => $b));
     exit;
 }
 
@@ -72,6 +92,7 @@ $lastName = $value('lastName');
 $phone = $value('phone');
 $email = filter_var($value('email'), FILTER_VALIDATE_EMAIL);
 $message = $value('message');
+$captchaAnswer = filter_var($value('captchaAnswer'), FILTER_VALIDATE_INT);
 
 if ($value('website') !== '') {
     echo json_encode(array('ok' => true));
@@ -80,6 +101,13 @@ if ($value('website') !== '') {
 if (!isset($recipients[$topic]) || strlen($firstName) < 2 || strlen($lastName) < 2 || !$email || strlen($message) < 10 || strlen($message) > 5000) {
     header('HTTP/1.1 422 Unprocessable Entity');
     echo json_encode(array('ok' => false, 'message' => 'Bitte prüfe deine Eingaben.'));
+    exit;
+}
+$expectedCaptcha = isset($_SESSION['contact_captcha']) ? $_SESSION['contact_captcha'] : null;
+unset($_SESSION['contact_captcha']);
+if ($captchaAnswer === false || !is_int($expectedCaptcha) || $expectedCaptcha !== $captchaAnswer) {
+    header('HTTP/1.1 422 Unprocessable Entity');
+    echo json_encode(array('ok' => false, 'message' => 'Die Antwort beim Spamschutz ist nicht richtig.'));
     exit;
 }
 if ($value('privacy') !== 'accepted') {
