@@ -1,0 +1,62 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-orbit" aria-hidden="true"></div>
+  <div class="shell footer-main">
+    <div class="footer-intro">
+      <a class="footer-brand" href="/" aria-label="BSV Nordstern Startseite">
+        <span aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /></span>
+        <strong>BSV Nordstern<small>Radolfzell · seit 1956</small></strong>
+      </a>
+      <p>Gemeinschaft, Bewegung und echte Vereinsliebe – zuhause an der Schlesierstraße.</p>
+      <strong class="footer-claim">Auf geht’s grün.</strong>
+    </div>
+
+    <div class="footer-contact">
+      <p class="footer-label">Direkter Draht</p>
+      <a href="mailto:info@bsvnordstern.de">
+        <span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
+        <span><small>E-Mail</small><strong>info@bsvnordstern.de</strong></span>
+      </a>
+      <a href="tel:+497732910080">
+        <span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.1 3.5 4.4 5.1c-.8.5-.9 1.5-.6 2.4 2.2 6.2 6.5 10.5 12.7 12.7.9.3 1.9.2 2.4-.6l1.6-2.7-4.3-2-1.4 2c-3.4-1.4-6.3-4.3-7.7-7.7l2-1.4-2-4.3Z" /></svg></span>
+        <span><small>Telefon</small><strong>+49 7732 910080</strong></span>
+      </a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell" target="_blank" rel="noreferrer">
+        <span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" /><circle cx="12" cy="10" r="2.2" /></svg></span>
+        <span><small>Vereinsgelände</small><strong>Schlesierstraße 43</strong></span>
+      </a>
+    </div>
+
+    <nav class="footer-nav" aria-label="Fußzeilennavigation">
+      <div><p class="footer-label">Entdecken</p><a href="/verein">Verein</a><a href="/fussball">Fußball</a><a href="/jugend">Jugend</a><a href="/verein/mitglied-werden">Mitglied werden</a></div>
+      <div><p class="footer-label">Service</p><a href="/spielplan">Spielplan</a><a href="/kontakt">Kontakt & Anfahrt</a><a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer">JAKO Shop ↗</a></div>
+    </nav>
+  </div>
+
+  <div class="shell footer-bottom">
+    <span>© {year} BSV Nordstern e.V. Radolfzell</span>
+    <div><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { position:relative; overflow:hidden; padding:78px 0 28px; color:#adc0b4; background:#061f15; }
+  .shell { width:min(1160px,calc(100% - 48px)); margin-inline:auto; }
+  .footer-orbit { position:absolute; right:-190px; top:-270px; width:520px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 15%); border-radius:50%; box-shadow:0 0 0 70px rgb(255 255 255 / 2%),0 0 0 140px rgb(255 255 255 / 2%); }
+  .footer-main { position:relative; display:grid; grid-template-columns:1.1fr 1.1fr .8fr; gap:80px; padding-bottom:65px; }
+  .footer-brand { display:flex; align-items:center; gap:14px; color:white; text-decoration:none; }
+  .footer-brand > span { display:grid; place-items:center; width:64px; height:64px; flex:0 0 auto; }
+  .footer-brand > span img { display:block; width:100%; height:100%; object-fit:contain; }
+  .footer-brand strong,.footer-brand small { display:block; }.footer-brand strong { font-size:1.08rem; }.footer-brand small { margin-top:4px; color:#7f9989; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; }
+  .footer-intro > p { max-width:330px; margin:28px 0 18px; line-height:1.7; }.footer-claim { color:#f4d638; font-family:Georgia,serif; font-size:1.35rem; font-style:italic; font-weight:400; }
+  .footer-label { margin:0 0 20px; color:#f4d638; font-size:.66rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .footer-contact { display:grid; gap:14px; }.footer-contact .footer-label { margin-bottom:5px; }.footer-contact > a { display:flex; align-items:center; gap:13px; color:inherit; text-decoration:none; }.footer-contact > a:hover { color:white; }.footer-contact small,.footer-contact strong { display:block; }.footer-contact small { margin-bottom:2px; color:#718b7b; font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }.footer-contact strong { font-size:.83rem; }
+  .footer-icon { display:grid; place-items:center; width:38px; aspect-ratio:1; flex:0 0 auto; border:1px solid rgb(255 255 255 / 13%); border-radius:50%; color:#f4d638; background:rgb(255 255 255 / 4%); }.footer-icon svg { width:17px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
+  .footer-nav { display:grid; grid-template-columns:1fr 1fr; gap:35px; }.footer-nav > div { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }.footer-nav .footer-label { margin-bottom:8px; }.footer-nav a { color:#9bb0a3; font-size:.8rem; text-decoration:none; }.footer-nav a:hover { color:white; }
+  .footer-bottom { position:relative; padding-top:25px; display:flex; align-items:center; justify-content:space-between; gap:30px; border-top:1px solid rgb(255 255 255 / 10%); color:#6f8879; font-size:.7rem; }.footer-bottom div { display:flex; gap:22px; }.footer-bottom a { color:inherit; text-decoration:none; }.footer-bottom a:hover { color:white; }
+  @media(max-width:900px){.footer-main{grid-template-columns:1fr 1fr;gap:55px}.footer-nav{grid-column:1 / 3}}
+  @media(max-width:600px){.site-footer{padding-top:60px}.shell{width:min(100% - 30px,1160px)}.footer-main{grid-template-columns:1fr;gap:45px}.footer-nav{grid-column:auto}.footer-bottom{align-items:flex-start;flex-direction:column}.footer-orbit{right:-360px}}
+</style>

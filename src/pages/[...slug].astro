@@ -1,0 +1,514 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Layout from '../layouts/Layout.astro';
+import { legacyContent } from '../data/legacyContent';
+import { sportsPages, sportsPaths } from '../data/sportsPages';
+
+type Person = { name: string; role: string; image?: string };
+type Page = { path: string; eyebrow: string; title: string; intro: string; image: string; body?: string[]; people?: Person[]; kind?: 'history' | 'board' | 'events' | 'document' | 'organization' };
+type HistoryChapter = { date: string; eyebrow: string; title: string; subtitle: string; paragraphs: string[]; image?: string; caption?: string; roster?: string; fact?: { value: string; label: string } };
+
+const people: Person[] = [
+  { name: 'Sandra Fuchs', role: '1. Vorstand', image: '/images/verein/personen/sandra-fuchs.jpg' },
+  { name: 'Felix Schüle', role: '2. Vorstand', image: '/images/verein/personen/felix-schuele.jpg' },
+  { name: 'Claudia Gastaudo', role: 'Kassiererin', image: '/images/verein/personen/claudia-gastaudo.jpg' },
+  { name: 'Michaela Auer', role: 'Schriftführerin', image: '/images/verein/personen/michaela-auer.jpg' },
+  { name: 'Nicole Erbes', role: 'Sportliche Leitung Frauen', image: '/images/verein/personen/nicole-erbes.jpg' },
+  { name: 'Ann-Kathrin Sugg', role: 'Sportliche Leitung Frauen' },
+  { name: 'Karsten Grammel', role: 'Sportliche Leitung Alte Herren' },
+  { name: 'Oliver Schillinger', role: 'Spielbetrieb' },
+  { name: 'Manuel Schellhammer', role: 'Passwesen', image: '/images/verein/personen/manuel-schellhammer.jpg' },
+  { name: 'Konrad Mauz', role: 'Abteilungsleiter Bogensport', image: '/images/verein/personen/konrad-mauz.jpg' },
+  { name: 'Heike Seidel', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/heike-seidel.jpg' },
+  { name: 'Thomas Graf', role: 'Abteilungsleiter Wandern' },
+  { name: 'Sigrid Burkhardt', role: 'Mitgliederbestandspflege', image: '/images/verein/personen/sigrid-burkhardt.jpg' },
+  { name: 'Jérôme Ernsberger', role: 'IT & Administration', image: '/images/verein/personen/jerome-ernsberger.jpg' },
+  { name: 'Markus Sawicki', role: 'Einkauf & Organisation', image: '/images/verein/personen/markus-sawicki.jpg' },
+  { name: 'Ole Schmal', role: 'Marketing & Social Media' },
+  { name: 'Julian Kemmer', role: 'Presse', image: '/images/verein/personen/julian-kemmer.jpg' },
+  { name: 'Mario Jost', role: 'Platzwart', image: '/images/verein/personen/mario-jost.jpg' },
+  { name: 'Eberhard Klinkenberg', role: 'Hausmeister', image: '/images/verein/personen/eberhard-klinkenberg.jpg' },
+  { name: 'Markus Moßbrugger', role: 'Schlüsselmanagement' },
+];
+
+const pages: Page[] = [
+  { path: 'verein', eyebrow: 'BSV Nordstern Radolfzell', title: 'Unser Verein', intro: 'Sport, Gemeinschaft und Heimat – seit 1956 ist der BSV ein fester Teil von Radolfzell.', image: '/images/verein/bereiche/verein.jpeg', body: ['Was als Ball-Spiel-Verein in der Altbohl-Siedlung begann, ist heute eine vielseitige Sportgemeinschaft für alle Generationen.', 'Fußball, Bogensport, Gymnastik und Wandern geben unseren Mitgliedern Raum für Bewegung, Begegnung und gemeinsames Engagement.'] },
+  { path: 'verein/vorstandschaft', eyebrow: 'Menschen, die bewegen', title: 'Vorstandschaft', intro: 'Engagierte Menschen gestalten die Zukunft unseres Vereins und halten das tägliche Vereinsleben in Bewegung.', image: '/images/verein/personen/sandra-fuchs.jpg', kind: 'board', people },
+  { path: 'verein/geschichte', eyebrow: 'Seit 1956', title: 'Unsere Geschichte', intro: 'Von einer mutigen Idee im Altbohl-Stüble zu einem lebendigen Mehrspartenverein.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'history' },
+  { path: 'verein/organigramm', eyebrow: 'Struktur & Verantwortung', title: 'Organigramm', intro: 'Viele Aufgaben, klare Verantwortlichkeiten und ein gemeinsames Ziel: ein Verein, der gut funktioniert.', image: '/images/verein/bereiche/verein.jpeg', kind: 'organization' },
+  { path: 'verein/satzung', eyebrow: 'Das Fundament', title: 'Satzung', intro: 'Unsere Satzung legt Ziele, Organisation sowie Rechte und Pflichten innerhalb des BSV Nordstern fest.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document', body: ['Sie bildet die rechtliche Grundlage der Vereinsarbeit, beschreibt die Aufgaben der Organe und sichert die gemeinnützige Förderung des Sports und der Jugend.', 'Für verbindliche Auskünfte gilt immer die aktuell beschlossene und unterzeichnete Fassung der Vereinssatzung.'] },
+  { path: 'verein/beitragsordnung', eyebrow: 'Transparent & fair', title: 'Beitragsordnung', intro: 'Mitgliedsbeiträge sichern Trainingsbetrieb, Anlagen und eine verlässliche Vereinsarbeit.', image: '/images/verein/bereiche/verein.jpeg', kind: 'document', body: ['Die Beitragsordnung regelt Beitragshöhen, Fälligkeiten und Ermäßigungen. Zum 1. Januar 2026 wurde die Beitragsordnung durch die Mitgliederversammlung angepasst.', 'Die vollständige, rechtsverbindliche Fassung bleibt maßgeblich. Bei Fragen hilft die Vorstandschaft gerne weiter.'] },
+  { path: 'verein/mitglied-werden', eyebrow: 'Willkommen beim BSV', title: 'Mitglied werden', intro: 'Lebe deinen Sport, lerne neue Menschen kennen und werde Teil unserer lebendigen Gemeinschaft.', image: '/images/verein/bereiche/verein.jpeg', body: ['Als Mitglied kannst du in unseren Mannschaften und Abteilungen trainieren, an Veranstaltungen teilnehmen oder dich ehrenamtlich engagieren.', 'Unsere Trainerinnen, Trainer und Verantwortlichen begleiten dich beim Einstieg und finden gemeinsam mit dir das passende Angebot.'] },
+  { path: 'verein/kuendigung', eyebrow: 'Mitgliedschaft', title: 'Kündigung', intro: 'Schade, dass du uns verlassen möchtest. Hier findest du die wichtigsten Hinweise zum Austritt.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document', body: ['Der Austritt erfolgt durch eine schriftliche Erklärung an den geschäftsführenden Vorstand. Er ist zum Ende eines Kalenderjahres unter Einhaltung einer Kündigungsfrist von sechs Wochen möglich.', 'Verpflichtungen gegenüber dem Verein sind bis zum Ablauf des laufenden Kalenderjahres zu erfüllen. Maßgeblich ist § 7 der aktuellen Satzung.'] },
+  { path: 'verein/termine', eyebrow: 'Gemeinsam erleben', title: 'Termine', intro: 'Veranstaltungen, Feste und besondere Tage rund um den BSV Nordstern.', image: '/images/verein/bereiche/verein.jpeg', kind: 'events' },
+  { path: 'foerderverein/vorstandschaft', eyebrow: 'Unterstützen & ermöglichen', title: 'Förderverein', intro: 'Der Förderverein schafft zusätzliche Möglichkeiten für Sport, Jugend und Vereinsleben.', image: '/images/verein/bereiche/geschichte.jpg', body: ['Mit persönlichem Einsatz, Veranstaltungen und finanzieller Unterstützung hilft der Förderverein dort, wo gute Ideen zusätzliche Kraft brauchen.', 'Bei Fragen zur Arbeit und Vorstandschaft des Fördervereins erreichst du uns über die zentrale Vereinsadresse.'] },
+  { path: 'foerderverein/mitglied-werden', eyebrow: 'Gemeinsam fördern', title: 'Fördermitglied werden', intro: 'Unterstütze Projekte, Ausstattung und die Zukunft des BSV Nordstern Radolfzell.', image: '/images/verein/bereiche/verein.jpeg', body: ['Du kannst bei Veranstaltungen mithelfen, Sportgeräte und Ausstattung ermöglichen oder die finanzielle Basis unserer Vereinsarbeit stärken.', 'Jeder Beitrag – ob Zeit, Idee oder Förderung – kommt unserer Vereinsgemeinschaft zugute.'] },
+  { path: 'abteilungen/gymnastik', eyebrow: 'Beweglich & gemeinsam', title: 'Gymnastik', intro: 'Fitness erhalten und gemeinsam Spaß an der Bewegung haben.', image: '/images/verein/bereiche/gymnastik.jpeg', body: ['Abteilungsleiterin: Luzia Menz', 'Training: Dienstag von 19:00 bis 20:15 Uhr in der Gymnastikhalle des BSV Nordstern.'] },
+  { path: 'abteilungen/bogensport', eyebrow: 'Ruhe. Fokus. Präzision.', title: 'Bogensport', intro: 'Breiten- und Leistungssport auf unserem Nebenplatz an der Schlesierstraße.', image: '/images/verein/bereiche/bogensport.jpg', body: ['Abteilungsleiter: Konrad Mauz', 'Training: Freitag von 17:30 bis 19:00 Uhr auf dem Nebenplatz des BSV Nordstern. Die Abteilung führt derzeit eine Warteliste für Interessierte.'] },
+  { path: 'abteilungen/wandergruppe', eyebrow: 'Draußen zuhause', title: 'Wandergruppe', intro: 'Gemeinsam unterwegs – bei jeder Witterung und mit Freude an Natur und Geselligkeit.', image: '/images/verein/bereiche/wandern.jpg', people: [
+    { name: 'Peter Weidele', role: 'Wanderführer · 0152 / 05170308' }, { name: 'Jutta Fuchs', role: 'Wanderführerin · 07732 / 12379' }, { name: 'Anita Steppacher', role: 'Wanderführerin · 0170 / 5757127' }, { name: 'Siggi Bayer', role: 'Wanderführer · 07732 / 4938' }, { name: 'Thomas Graf', role: 'Wanderführer · 0176 / 54027893' },
+  ], body: ['Unterstützt werden die Wanderungen durch Josef Fuchs und Patrick Kittel. Die Strecken können je nach Wetterlage angepasst werden.', 'Aktuelle Wanderbeschreibungen erscheinen im Hallo Radolfzell und im Schaukasten des BSV Nordstern.'] },
+];
+pages.push(...sportsPages);
+
+export function getStaticPaths() {
+  return [
+    'verein', 'verein/vorstandschaft', 'verein/geschichte', 'verein/organigramm',
+    'verein/satzung', 'verein/beitragsordnung', 'verein/mitglied-werden',
+    'verein/kuendigung', 'verein/termine', 'foerderverein/vorstandschaft',
+    'foerderverein/mitglied-werden', 'abteilungen/gymnastik',
+    'abteilungen/bogensport', 'abteilungen/wandergruppe', ...sportsPaths,
+  ].map((slug) => ({ params: { slug } }));
+}
+const page = pages.find((entry) => entry.path === Astro.params.slug) as Page;
+const isYouthConcept = page.path === 'jugend/jugendkonzept';
+const isRefereePage = page.path === 'jugend/jugendschiedsrichter';
+const isYouthBoard = page.path === 'jugend/vorstandschaft';
+const isHistoryPage = page.path === 'verein/geschichte';
+const migratedBody = isYouthConcept || isRefereePage || isHistoryPage ? undefined : legacyContent[page.path];
+const section = page.path.startsWith('fussball') ? { label: 'Fußball', href: '/fussball' } : page.path.startsWith('jugend') ? { label: 'Jugend', href: '/jugend' } : { label: 'Verein', href: '/verein' };
+const heroTitleClass = page.title.length >= 20 ? 'is-extra-long' : page.title.length >= 16 ? 'is-long' : undefined;
+const isPortraitHero = page.image.includes('/personen/');
+
+const conceptPrinciples = [
+  { title: 'Sportliche Angebote', text: 'Wir bieten eine breite Palette von Fußballaktivitäten und Programmen, die auf die Bedürfnisse und Interessen unserer jugendlichen Mitglieder zugeschnitten sind. Von Trainingseinheiten über Turniere bis hin zu Freundschaftsspielen – bei uns ist für alle etwas dabei, um das fußballerische Können zu verbessern und Spaß zu haben.', image: '/images/migration/95a716aa54-BSV2023-71.jpg' },
+  { title: 'Persönliche Entwicklung', text: 'Wir legen Wert darauf, dass unsere Jugendlichen nicht nur auf dem Platz, sondern auch im Leben Erfolg haben. Durch Teamwork, Fairplay und Selbstvertrauen unterstützen wir sie dabei, zu selbstbewussten und verantwortungsvollen jungen Menschen heranzuwachsen.' },
+  { title: 'Talente & Potenziale', text: 'Jeder junge Mensch hat individuelle Talente und Fähigkeiten, die es zu entdecken und zu fördern gilt. Wir unterstützen talentierte Spielerinnen und Spieler dabei, ihr Potenzial zu entfalten und ihre sportlichen Ziele zu erreichen.' },
+  { title: 'Teamgeist & Gemeinschaft', text: 'Zusammenhalt und Zugehörigkeit sind uns besonders wichtig. Gemeinsame Aktivitäten, Teambuilding, Trainingslager und Ausflüge stärken den Gemeinschaftssinn und schaffen echte Freundschaften.', image: '/images/migration/098fa63758-BSV2023-285.jpg' },
+  { title: 'Integration & Vielfalt', text: 'Unser Verein ist ein Ort der Vielfalt. Jugendliche aus unterschiedlichen Hintergründen und Kulturen sollen sich willkommen fühlen. Wir fördern einen respektvollen Umgang – unabhängig von Herkunft, Geschlecht oder sozialem Status.' },
+  { title: 'Elternbeteiligung', text: 'Die Unterstützung der Eltern spielt eine entscheidende Rolle. Elternabende, Informationsveranstaltungen und Möglichkeiten zur Mitarbeit fördern den Austausch und schaffen eine Gemeinschaft, die unsere Jugendlichen trägt.' },
+  { title: 'Mitbestimmung', text: 'Wir ermutigen Jugendliche, sich aktiv am Vereinsleben zu beteiligen, eigene Ideen einzubringen und Entscheidungen mitzugestalten. Regelmäßige Jugendversammlungen sorgen dafür, dass ihre Stimmen gehört werden.', image: '/images/migration/21579480c3-BSV2023-318.jpg' },
+  { title: 'Gesundheit & Prävention', text: 'Neben dem sportlichen Training gehören Ernährung, Verletzungsprävention und mentale Gesundheit zu einer ganzheitlichen Entwicklung. Wir vermitteln Wissen und schaffen ein gesundes, sicheres Umfeld.' },
+];
+
+const youthReferees = [
+  { name: 'Stefan Gastaudo', role: 'Ansprechpartner Jugendschiedsrichter', image: '/images/verein/personen/stefan-gastaudo.jpg', email: 'Stefan.Gastaudo@bsvnordstern.de', phone: '+491795111126' },
+  { name: 'Remo Schellhammer', role: 'Jugendschiedsrichter', image: '/images/verein/personen/remo-schellhammer.jpg' },
+  { name: 'Leonardo Gastaudo', role: 'Jugendschiedsrichter', image: '/images/verein/personen/leonardo-gastaudo.jpg' },
+  { name: 'Mia Julie Huber', role: 'Jugendschiedsrichterin', image: '/images/verein/personen/mia-julie-huber.jpg', balancedPortrait: true, portraitScale: '.92' },
+  { name: 'Johannes Horn', role: 'Jugendschiedsrichter', image: '/images/verein/personen/johannes-horn.jpg', balancedPortrait: true, portraitScale: '.76' },
+];
+
+const historyChapters: HistoryChapter[] = [
+  {
+    date: '11. Juli 1956', eyebrow: 'Gründung', title: 'Ein Verein entsteht.', subtitle: 'Ball-Spiel-Verein Nordstern Radolfzell',
+    paragraphs: [
+      'Am 11. Juli 1956 lud Albin Richter die Bewohner der Altbohl-Siedlung sowie die Angehörigen der „Framo“ zu einer Versammlung ins Altbohl-Stüble ein. Ziel war die Gründung des Sportvereins „Radolfzell-Altbohl“.',
+      '32 Personen folgten der Einladung dieses Idealisten und eigentlichen Gründers des Ball-Spiel-Verein Nordstern Radolfzell. Nicht alle begrüßten die Entstehung eines neuen Sportvereins – und nur wenige gaben dem Vorhaben damals eine echte Chance.',
+    ],
+    fact: { value: '32', label: 'Gründungsmitglieder' },
+  },
+  {
+    date: '08. August 1956', eyebrow: 'Erste Hauptversammlung', title: 'Zusammenhalt von Anfang an.', subtitle: 'Fußball, Damenhandball und gelebte Kameradschaft',
+    paragraphs: [
+      'Am 08. August 1956 berief Albin Richter die erste ordentliche Hauptversammlung im Altbohl-Stüble ein. Viele Aufgaben lagen vor der neuen Vorstandschaft. Neben dem Fußball sollte auch eine Damenhandball-Mannschaft ihren sportlichen Ehrgeiz zeigen.',
+      'Die Damenmannschaft spielte mit großem Erfolg in der internationalen Bodenseeklasse – unter anderem gegen Schweizer Meister aus Zürich und St. Gallen. 1964 wurde der Handballbetrieb seitens der Vereinsleitung leider eingestellt.',
+      'Zur französischen Garnison in der Kaserne bestand ein guter Kontakt und eine herzliche Kameradschaft. So durften die Handballerinnen die dortige Sporthalle für ihr Training nutzen. Beide Mannschaften mussten zu Beginn manche hohe Niederlage verkraften. Vielleicht war es gerade deshalb der außergewöhnliche Zusammenhalt, der diese Teams auszeichnete.',
+    ],
+    image: '/images/migration/6874ee100f-bild_team1956.jpg', caption: 'Eine der ersten Mannschaften des jungen BSV Nordstern.',
+    roster: 'Von links oben: K. Stocker, M. Tausendfreund, E. Hafel, E. Reinhard, H. Günther, B. Schlicht, R. Strobel, H. Voigt, A. Lauinger, R. Günther, W. Frank und 1. Vorsitzender A. Richter. A-Jugend, kniend von links: E. Emmerich, S. Hainke, J. Kühl, G. Kassner, H. Günther, B. Schlicht, H. Wildemann, M. Ring, M. Kähl, W. Beck, W. Berg und W. Motz.',
+  },
+  {
+    date: 'Sommer 1964', eyebrow: 'Anton Beck sen.', title: 'Endlich ein eigener Sportplatz.', subtitle: 'Aus Ausdauer wird ein Zuhause',
+    paragraphs: [
+      'Nachfolger von Albin Richter wurde Anton Beck sen. Unter seiner Führung erhielt der Verein endlich einen eigenen Sportplatz. Von den ehemaligen Umkleidekabinen des Mettnau-Stadions bekam der BSV die Hälfte zum Wiederaufbau. Zusätzlich entstanden Umkleidekabinen für Spieler und Schiedsrichter.',
+      'Für seine unermüdlichen Arbeitseinsätze und seine große Spendenbereitschaft wurde Anton Beck sen. später zum Ehrenpräsidenten des Vereins ernannt.',
+    ],
+    image: '/images/migration/58966a3bb9-bild_team1964.jpg', caption: 'Die Meistermannschaft des Jahres 1964.',
+  },
+  {
+    date: '16. Oktober 1970', eyebrow: 'Christian Peetz', title: 'Der große Ausbau beginnt.', subtitle: 'Vom neuen Platz bis zum ersten Spatenstich',
+    paragraphs: [
+      'Auch sportlich ging es aufwärts: von der C-Klasse über die B-Klasse bis in die A-Klasse. Am 16. Oktober 1970 wurde Christian Peetz zum 1. Vorsitzenden gewählt. Noch am selben Abend gab Bürgermeister Fritz Riester grünes Licht für den Bau eines neuen eigenen Platzes.',
+      'Am 12. August 1973 weihte Bürgermeister Riester – Mitglied und Freund des BSV Nordstern – den neuen Sportplatz ein. Nach dessen Fertigstellung folgte die nächste große Aufgabe: ein Sportheim, das der Qualität der Anlage entsprechen sollte.',
+      'In beinahe ständigen Verhandlungen überzeugte Christian Peetz die entscheidenden Institutionen von der Notwendigkeit eines Klubheims. Am 04. November 1975 erfolgte der erste Spatenstich. Bereits der Sportplatzbau hatte 311.000 DM gekostet; damit war allen bewusst, welche neue finanzielle Belastung auf den Verein zukam.',
+    ],
+    fact: { value: '1973', label: 'Einweihung des neuen Sportplatzes' },
+  },
+  {
+    date: '10. Dezember 1977', eyebrow: 'Vereinsheim & Aufstieg', title: '16.000 Stunden für den Nordstern.', subtitle: 'Ein Haus, das die Mitglieder selbst bauten',
+    paragraphs: [
+      'Am 10. Dezember 1977 eröffnete Bürgermeister Günther Neurohr das neue Sportheim. Die BSV-Mitglieder hatten dafür unglaubliche 16.000 Arbeitsstunden Eigenleistung erbracht – die unzähligen Verhandlungsstunden des damaligen Vorsitzenden Christian Peetz noch nicht mitgerechnet.',
+      'Besondere Verdienste erwarben sich Werner Beck, Anton Beck jun., Siggi Bayer und Anton Beck sen. Letztere wurden für ihren Einsatz zu Ehrenmitgliedern ernannt. Am 21. Januar 1979 folgte die Einweihung der Kegelbahnen, deren Bau 66.000 DM kostete. 1981 wurde schließlich der Parkplatz hergerichtet, der bis heute auch Besuchern des Naherholungsgebiets Altbohlwald dient.',
+      'Parallel wuchs die Jugendarbeit: Bereits 1981 spielten über 100 Jugendliche in fünf Mannschaften. Der größte sportliche Erfolg jener Jahre war der Aufstieg der ersten Mannschaft in die Bezirksliga Bodensee. Unter Trainer Herbert Häring beendete das Team die Saison mit 91:35 Toren und 46:14 Punkten.',
+    ],
+    image: '/images/migration/bafa76fabf-bild_team1980.jpg', caption: 'Das Aufstiegsteam in die Bezirksliga 1980.',
+  },
+  {
+    date: '1981–1998', eyebrow: 'Berg- und Talfahrt', title: 'Immer wieder aufstehen.', subtitle: 'Zwischen Kreisliga B und Bezirksliga',
+    paragraphs: [
+      'Nach dem Abstieg aus der Bezirksliga fand sich der BSV Mitte der achtziger Jahre in der Kreisliga B wieder. Fast jedes Jahr lautete das Ziel Aufstieg in die A-Klasse, doch Platz eins blieb zunächst außer Reichweite. Unter Trainer Wolfgang Eggert gelang als Tabellenzweiter schließlich der Sprung nach oben, weil der FC Wollmatingen II aufgrund des Abstiegs seiner ersten Mannschaft nicht aufsteigen durfte.',
+      'Das Glück währte nur kurz: Wegen einer Strukturänderung gab es in der folgenden Saison vier Absteiger aus der A-Klasse statt der üblichen ein bis zwei – der BSV war einer davon.',
+      'Ab der Saison 1992/93 übernahm der bisherige Kapitän Eric Bourguignon das Traineramt. In seinen ersten drei Jahren verpasste die Mannschaft mit zwei Vizemeisterschaften und einem dritten Platz den Aufstieg nur knapp. Nach einem schweren Einbruch 1995/96 folgte der Höhepunkt: 1998 sicherte sich der BSV in einem Herzschlagfinale am letzten Spieltag die Meisterschaft.',
+    ],
+    image: '/images/migration/2ba05b8d72-bild_team1998.jpg', caption: 'Die Meistermannschaft der Saison 1997/98.',
+    roster: 'Obere Reihe von links: Spielausschuss Schädler, Betreuer Glatt, Sawicki, Bitter, Bracht, Wernick, Binder, Vogler, Schmid, Krause, Özkol, Klinkenberg, Tripodi und Trainer Bourguignon. Untere Reihe von links: Beck, Eggert, Widmann, A. Schmitt, Burkhart, Bickel, Unger, M. Schmitt, Schwarz, Nohl und Otto.',
+  },
+  {
+    date: '30. Juni 2015', eyebrow: 'Durchmarsch', title: 'Zurück in die Kreisliga A.', subtitle: 'Eine Saison mit 118 Toren',
+    paragraphs: [
+      'Nach einem weiteren Abstieg gelang 1999/2000 erneut der Aufstieg in die Kreisliga A. Der mittlerweile als Fahrstuhlmannschaft bekannte BSV stieg 2001/02 jedoch wieder ab und scheiterte anschließend mehrfach knapp am Wiederaufstieg.',
+      'In der Saison 2014/15 war es schließlich so weit: Unter Spielertrainer Antonio Fiore Tapia gelang mit einer herausragenden Tordifferenz von 118:22 Toren und 60 Punkten aus 22 Spielen die Rückkehr in die Kreisliga A.',
+      'Antonio Fiore Tapia wurde mit 35 Treffern Torschützenkönig. Sein Bruder Daniel folgte mit 26 Toren auf Platz zwei, Sven Dieterle belegte mit 23 Treffern Rang vier.',
+    ],
+    image: '/images/migration/fb6712e6c9-Meister2015.jpg', caption: 'Die Meistermannschaft und Aufsteiger des Jahres 2015.',
+  },
+];
+---
+
+<Layout title={`${page.title} – BSV Nordstern Radolfzell`} description={page.intro}>
+  <Header />
+  <main>
+    <section class:list={["page-hero", { "referee-hero": isRefereePage }]}>
+      <div class="shell hero-grid">
+        <div class="hero-copy"><a class="back" href={section.href}>← {section.label}</a><p class="eyebrow">{page.eyebrow}</p><h1 class={heroTitleClass}>{page.title}</h1><p class="lead">{page.intro}</p></div>
+        <div class="hero-image"><img class:list={{ 'is-portrait': isPortraitHero }} src={page.image} alt="" width="900" height="650" /><span>BSV · 1956</span></div>
+      </div>
+    </section>
+
+    <section class="content shell">
+      {isRefereePage && (
+        <div class="referee-page">
+          <section class="referee-intro">
+            <div><span>Fairness braucht Haltung</span><h2>Entscheiden.<br /><em>Verantwortung tragen.</em></h2></div>
+            <div class="referee-copy"><p>Der BSV Nordstern Radolfzell ist stolz auf seine engagierten Jugendschiedsrichterinnen und Jugendschiedsrichter. Sie leiten Spiele im gesamten Raum Bodensee und sorgen dafür, dass der Spielbetrieb fair und reibungslos verläuft.</p><p>Fundiertes Regelwissen, ein klarer Kopf und der Mut, auch unter Druck die richtige Entscheidung zu treffen, machen sie zu Vorbildern auf und neben dem Platz.</p></div>
+          </section>
+
+          <section class="referee-team">
+            <div class="referee-head"><div><span>Unser Team</span><h2>Die Menschen<br />mit der Pfeife.</h2></div><p>Fünf Persönlichkeiten, ein gemeinsames Ziel: Fußball fair und verlässlich möglich machen.</p></div>
+            <div class="referee-grid">
+              {youthReferees.map((referee, index) => (
+                <article class:list={["referee-card", { coordinator: index === 0 }]}>
+                  <span class="referee-number">0{index + 1}</span>
+                  <div class:list={["referee-portrait", { "is-balanced": referee.balancedPortrait }]} style={referee.balancedPortrait ? `--portrait-image:url('${referee.image}');--portrait-scale:${referee.portraitScale}` : undefined}>
+                    {referee.image ? <img src={referee.image} alt={referee.name} width="500" height="650" loading="lazy" /> : <span>{referee.name.split(' ').map((part) => part[0]).join('')}</span>}
+                  </div>
+                  <div class="referee-info"><h3>{referee.name}</h3><p>{referee.role}</p>
+                    {(referee.email || referee.phone) && <div class="contact-icons">
+                      {referee.email && <a href={`mailto:${referee.email}`} aria-label={`E-Mail an ${referee.name}`}></a>}
+                      {referee.phone && <a href={`tel:${referee.phone}`} aria-label={`${referee.name} anrufen`}></a>}
+                    </div>}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section class="referee-thanks">
+            <div><span>Mentoring</span><h2>Rückhalt für<br />junge Schiris.</h2></div>
+            <div><p>Ein besonderer Dank gilt Stefan Gastaudo. Als Ansprechpartner unterstützt und begleitet er unsere jungen Schiedsrichterinnen und Schiedsrichter, damit sie jede Woche gut vorbereitet und motiviert auf dem Platz stehen.</p><p>Er ist Mentor, verlässlicher Ansprechpartner und Vorbild für unsere jungen Talente.</p></div>
+          </section>
+
+          <section class="referee-cta">
+            <span aria-hidden="true">✦</span><div><small>Neue Perspektive gesucht?</small><h2>Werde Schiedsrichter:in.</h2><p>Du liebst Fußball und möchtest Verantwortung übernehmen? Ob Mädchen oder Junge – bei uns bist du willkommen. Wir begleiten dich bei deinen ersten Schritten und darüber hinaus.</p></div><a href="mailto:Stefan.Gastaudo@bsvnordstern.de">Interesse anmelden <b>↗</b></a>
+          </section>
+        </div>
+      )}
+      {isYouthConcept && (
+        <div class="concept-page">
+          <section class="concept-opening">
+            <div class="concept-heading">
+              <span>01 · Warum</span>
+              <h2>Ein Plan für<br /><em>junge Menschen.</em></h2>
+            </div>
+            <div class="concept-copy">
+              <p>Willkommen beim BSV Nordstern Radolfzell! Als fester Bestandteil unserer Stadt am Bodensee ist es uns ein Anliegen, nicht nur die Tradition des Sports zu pflegen, sondern aktiv zur Entwicklung unserer Jugend beizutragen.</p>
+              <h3>Was ist ein Jugendkonzept?</h3>
+              <p>Ein Jugendkonzept ist ein strategischer Plan, der die Bedürfnisse, Interessen und Potenziale junger Menschen innerhalb des Vereins erfasst und fördert. Es ist unsere gemeinsame Blaupause dafür, wie wir Jugendliche erreichen, unterstützen und in das Vereinsleben integrieren.</p>
+              <p>Wir nehmen ihre Ideen und Anliegen ernst und begleiten sie auf dem Weg zu selbstbewussten, verantwortungsvollen Mitgliedern der Gemeinschaft. Dafür schaffen wir einen sicheren und inspirierenden Raum, in dem junge Menschen ihre Talente im Sport, bei Veranstaltungen und durch die Übernahme von Verantwortung entfalten können.</p>
+            </div>
+          </section>
+
+          <section class="concept-promise">
+            <div class="promise-title"><span>Unser Versprechen</span><strong>Zuhören.<br />Fördern.<br />Vertrauen.</strong></div>
+            <div class="promise-copy"><p>Der BSV Nordstern ist nicht nur ein Ort für sportliche Aktivitäten, sondern ein Zuhause für unsere Jugendlichen. Sie sollen sich willkommen, sicher und unterstützt fühlen.</p><p>Wir hören ihre Stimmen, verstehen ihre Bedürfnisse und begleiten sie bei ihren sportlichen und persönlichen Zielen.</p></div>
+            <span class="promise-star" aria-hidden="true">✦</span>
+          </section>
+
+          <section class="principles-section">
+            <div class="concept-section-head"><div><span>02 · Wie</span><h2>Acht Prinzipien.<br />Ein gemeinsamer Weg.</h2></div><p>Unsere Leitlinien verbinden sportliche Qualität mit sozialer Verantwortung.</p></div>
+            <div class="principles-grid">
+              {conceptPrinciples.map((principle, index) => (
+                <article class:list={["principle-card", { "has-image": principle.image, "is-wide": index === 0 || index === 3 || index === 6 }]}>
+                  {principle.image && <img src={principle.image} alt="Jugendliche des BSV Nordstern beim Fußball" width="900" height="600" loading="lazy" />}
+                  <div><span>0{index + 1}</span><h3>{principle.title}</h3><p>{principle.text}</p></div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section class="concept-join">
+            <div class="join-photo"><img src="/images/migration/571bd8370a-20230722_133328.jpg" alt="Gemeinschaft in der BSV-Jugend" width="1200" height="800" loading="lazy" /><span>#aufgehtsgrün</span></div>
+            <div class="join-message"><span>03 · Mitmachen</span><h2>Deine Stimme zählt.</h2><p>Möchtest du Teil dieser Reise sein? Bring deine Ideen ein, übernimm Verantwortung und gestalte mit uns die Zukunft der BSV-Jugend.</p><a href="mailto:jugend@bsvnordstern.de">Jugendabteilung kontaktieren <b>↗</b></a></div>
+          </section>
+
+          <section class="concept-documents">
+            <div><span>Vertiefende Dokumente</span><h2>Zum Nachlesen.</h2></div>
+            <div class="document-links">
+              <a href="/images/migration/83266e0a0b-BSV_Jugendkonzept-2015.pdf" target="_blank"><span>PDF · Stand 2015</span><strong>BSV Jugendkonzept</strong><b>↓</b></a>
+              <a href="/images/migration/eaf3ae53f8-DFB-Ausbildungskonzeption.pdf" target="_blank"><span>PDF · Ausbildung</span><strong>DFB-Konzeption</strong><b>↓</b></a>
+            </div>
+          </section>
+        </div>
+      )}
+      {isHistoryPage && (
+        <div class="history-page">
+          <section class="history-opening">
+            <div><span>Seit 1956</span><h2>Aus einer Idee<br />wurde <em>Heimat.</em></h2></div>
+            <div><p>Die Geschichte des BSV Nordstern ist eine Geschichte von Menschen, die angepackt haben. Von 32 Gründungsmitgliedern im Altbohl-Stüble bis zu Generationen von Sportlerinnen, Sportlern und Ehrenamtlichen.</p><p>Plätze und Vereinsheim entstanden mit Beharrlichkeit und tausenden Stunden Eigenleistung. Aufstiege, Rückschläge und Neuanfänge haben den Verein geprägt – der Zusammenhalt ist geblieben.</p></div>
+          </section>
+
+          <section class="history-numbers" aria-label="Zahlen aus der Vereinsgeschichte">
+            <div><strong>1956</strong><span>Gründungsjahr</span></div>
+            <div><strong>32</strong><span>Menschen beim Start</span></div>
+            <div><strong>16.000</strong><span>Stunden Eigenleistung</span></div>
+            <div><strong>118:22</strong><span>Tore in der Saison 2014/15</span></div>
+          </section>
+
+          <section class="history-chronicle">
+            <div class="history-head"><span>Unsere Chronik</span><h2>Sieben Kapitel.<br />Ein Nordstern.</h2></div>
+            <div class="history-track">
+              {historyChapters.map((chapter, index) => (
+                <article class:list={["history-chapter", { "is-reverse": index % 2 === 1 }]}>
+                  <div class="history-visual">
+                    {chapter.image ? (
+                      <figure><img src={chapter.image} alt={chapter.caption ?? ''} width="900" height="620" loading="lazy" /><figcaption>{chapter.caption}</figcaption></figure>
+                    ) : (
+                      <div class="history-fact"><span>{chapter.fact?.value}</span><strong>{chapter.fact?.label}</strong><small>BSV Nordstern Radolfzell</small></div>
+                    )}
+                  </div>
+                  <div class="history-marker"><span>0{index + 1}</span></div>
+                  <div class="history-story">
+                    <div class="history-date"><span>{chapter.eyebrow}</span><time>{chapter.date}</time></div>
+                    <h3>{chapter.title}</h3>
+                    <p class="history-subtitle">{chapter.subtitle}</p>
+                    {chapter.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                    {chapter.roster && <details class="history-roster"><summary>Mannschaftsaufstellung ansehen <span>+</span></summary><p>{chapter.roster}</p></details>}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section class="history-finale">
+            <div><small>Die Geschichte geht weiter</small><h2>Das nächste Kapitel<br />schreiben wir gemeinsam.</h2></div>
+            <a href="/verein/mitglied-werden">Teil des BSV werden <span>↗</span></a>
+          </section>
+        </div>
+      )}
+      {migratedBody && <article class="legacy-content" set:html={migratedBody} />}
+      {isYouthBoard && (
+        <aside class="youth-contact-panel">
+          <span class="youth-contact-star" aria-hidden="true">✦</span>
+          <div>
+            <small>Direkter Draht zur Jugend</small>
+            <h2>Fragen, Ideen<br />oder Lust mitzumachen?</h2>
+            <p>Unsere Jugendleitung hilft bei Fragen rund um Mannschaften, Training und das Engagement in der Jugendabteilung gerne weiter.</p>
+          </div>
+          <a href="mailto:jugend@bsvnordstern.de"><span>Jugendleitung kontaktieren</span><strong>↗</strong></a>
+        </aside>
+      )}
+      {!migratedBody && page.body && <div class="prose">{page.body.map((paragraph) => <p>{paragraph}</p>)}</div>}
+
+      {!migratedBody && page.kind === 'organization' && <div class="organization"><div class="org-top"><strong>Geschäftsführender Vorstand</strong><span>Sandra Fuchs · Felix Schüle · Claudia Gastaudo · Michaela Auer</span></div><div class="org-grid">{['Fußball', 'Breitensport', 'Vereinspflege', 'Events', 'Kommunikation', 'Facility Management'].map((area) => <article><span>Bereich</span><strong>{area}</strong></article>)}</div></div>}
+
+      {!migratedBody && page.kind === 'events' && <div class="event-list"><article><time><b>11</b> JUL</time><div><small>07:00 – 14:00 Uhr</small><h2>Gebrauchträdermarkt</h2><p>Mit Zweirad Mees und dem Förderverein BSV Nordstern.</p></div></article><article><time><b>11</b> JUL</time><div><small>08:00 – 16:00 Uhr</small><h2>Flohmarkt</h2><p>Auf dem Gelände des BSV Nordstern, Schlesierstraße 43.</p></div></article></div>}
+
+      {!migratedBody && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={person.image} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
+
+      {page.kind === 'document' && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href="mailto:info@bsvnordstern.de">Kontakt aufnehmen ↗</a></aside>}
+
+      {page.path.includes('mitglied-werden') && <aside class="join-cta"><div><small>Auf geht’s grün</small><h2>Bereit für den BSV?</h2></div><a href="https://mitglied.bsvnordstern.de" target="_blank" rel="noreferrer">Online anmelden ↗</a></aside>}
+    </section>
+  </main>
+  <Footer />
+
+  <script>
+    document.querySelectorAll<HTMLElement>('.legacy-content .contact-icons, .referee-page .contact-icons').forEach((contacts, groupIndex) => {
+      const links = [...contacts.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"], a[href^="tel:"]')];
+
+      links.forEach((originalLink, linkIndex) => {
+        const href = originalLink.getAttribute('href');
+        if (!href) return;
+
+        const isEmail = href.startsWith('mailto:');
+        const value = decodeURIComponent(href.replace(/^(mailto:|tel:)/, ''));
+        const panelId = `contact-${groupIndex}-${linkIndex}`;
+        const toggle = document.createElement('button');
+        const directLink = document.createElement('a');
+
+        toggle.type = 'button';
+        toggle.className = `contact-toggle ${isEmail ? 'is-email' : 'is-phone'}`;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-controls', panelId);
+        toggle.setAttribute('aria-label', isEmail ? 'E-Mail-Adresse anzeigen' : 'Telefonnummer anzeigen');
+
+        directLink.id = panelId;
+        directLink.className = 'contact-value';
+        directLink.href = href;
+        directLink.hidden = true;
+        directLink.textContent = value;
+        directLink.setAttribute('aria-label', isEmail ? `E-Mail an ${value}` : `${value} anrufen`);
+
+        toggle.addEventListener('click', () => {
+          const willOpen = directLink.hidden;
+          contacts.querySelectorAll<HTMLButtonElement>('.contact-toggle').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+          contacts.querySelectorAll<HTMLElement>('.contact-value').forEach((contact) => contact.hidden = true);
+          toggle.setAttribute('aria-expanded', String(willOpen));
+          directLink.hidden = !willOpen;
+        });
+
+        originalLink.replaceWith(toggle, directLink);
+      });
+    });
+  </script>
+</Layout>
+
+<style>
+  :global(:root) { --green:#164f32; --dark:#092f20; --yellow:#f4d638; --cream:#f4f1e8; --ink:#10251a; }
+  .shell { width:min(1120px,calc(100% - 48px)); margin-inline:auto; }.page-hero{overflow:hidden;padding:72px 0;background:var(--green);color:white}.hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(350px,.8fr);align-items:center;gap:clamp(44px,5vw,76px)}.hero-copy{min-width:0}.back{display:inline-block;margin-bottom:54px;color:#b7cfbf;font-size:.78rem;font-weight:800;text-decoration:none}.eyebrow{margin:0 0 14px;color:var(--yellow);font-size:.7rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}h1{margin:0 0 24px;font-size:clamp(3.7rem,6vw,5.8rem);line-height:.9;letter-spacing:-.06em}h1.is-long{font-size:clamp(3.35rem,5vw,4.8rem)}h1.is-extra-long{font-size:clamp(3rem,4.35vw,4.1rem);letter-spacing:-.05em}.lead{max-width:620px;margin:0;color:#d0e0d5;font-size:1.12rem;line-height:1.65}.hero-image{position:relative;width:100%;aspect-ratio:4 / 3;min-width:0;transform:rotate(2deg);box-shadow:18px 18px 0 var(--yellow)}.hero-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}.hero-image img.is-portrait{object-position:center 24%}.hero-image::after{content:'';position:absolute;inset:50% 0 0;background:linear-gradient(transparent,rgb(9 47 32 / 75%))}.hero-image span{position:absolute;z-index:1;right:20px;bottom:17px;font-size:.65rem;font-weight:900;letter-spacing:.14em}.content{padding-top:100px;padding-bottom:120px}.prose{max-width:800px;margin-bottom:80px}.prose p{color:#55665b;font-size:1.08rem;line-height:1.8}.prose p:first-child{color:var(--ink);font-size:1.45rem}.timeline{border-top:1px solid #ccd5cf}.timeline article{display:grid;grid-template-columns:80px 1fr;gap:30px;padding:38px 0;border-bottom:1px solid #ccd5cf}.timeline>article>span{color:var(--green);font-size:.7rem;font-weight:900}.timeline small{color:var(--green);font-weight:800}.timeline h2{margin:8px 0 10px;font-size:2rem}.timeline p{max-width:700px;margin:0;color:#65746a;line-height:1.65}.section-title{margin-bottom:40px}.section-title>p{margin:0 0 8px;color:var(--green);font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.section-title h2{margin:0;font-size:clamp(2.6rem,5vw,4rem);letter-spacing:-.05em}.people{margin-top:80px}.people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.people-grid article{overflow:hidden;background:#eef1ee;border-radius:7px}.people-grid img,.placeholder{width:100%;height:260px;object-fit:cover;object-position:center top}.placeholder{display:grid;place-items:center;background:var(--green);color:var(--yellow);font-size:3rem;font-weight:900}.people-grid article>div:last-child{padding:18px}.people-grid h3{margin:0 0 5px;font-size:1rem}.people-grid p{margin:0;color:#6e7d73;font-size:.75rem;line-height:1.4}.organization{padding:50px;background:var(--cream)}.org-top{padding:28px;text-align:center;background:var(--green);color:white}.org-top strong,.org-top span{display:block}.org-top strong{font-size:1.4rem}.org-top span{margin-top:8px;color:#bdd1c3;font-size:.78rem}.org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px}.org-grid article{padding:24px;background:white}.org-grid span,.org-grid strong{display:block}.org-grid span{margin-bottom:8px;color:var(--green);font-size:.65rem;text-transform:uppercase}.event-list{display:grid;gap:18px}.event-list article{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:35px;padding:28px;background:var(--cream)}.event-list time{display:grid;place-items:center;align-self:stretch;background:var(--yellow);font-size:.65rem;font-weight:900}.event-list time b{font-size:2.6rem;line-height:1}.event-list h2{margin:6px 0}.event-list p{margin:0;color:#6c796f}.document-cta,.join-cta{margin-top:70px;padding:45px 50px;display:flex;align-items:center;justify-content:space-between;gap:35px;background:var(--cream)}.document-cta small,.join-cta small{color:var(--green);font-weight:900;text-transform:uppercase}.document-cta h2,.join-cta h2{margin:8px 0;font-size:2.2rem}.document-cta p{margin:0;color:#66766b}.document-cta a,.join-cta a{padding:16px 20px;background:var(--green);color:white;font-weight:800;text-decoration:none;white-space:nowrap}.join-cta{background:var(--yellow)}.join-cta a{background:var(--dark)}footer{padding:38px 0;background:#061f15;color:#94aa9c;font-size:.78rem}footer .shell{display:flex;justify-content:space-between;gap:25px}footer strong{color:white}footer a{color:inherit}@media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-image{width:min(100%,680px)}.people-grid{grid-template-columns:repeat(3,1fr)}.org-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.shell{width:min(100% - 30px,1120px)}.page-hero{padding:55px 0}.back{margin-bottom:35px}.hero-grid{gap:45px}.hero-image{width:calc(100% - 14px)}.content{padding-top:70px}.people-grid{grid-template-columns:repeat(2,1fr);gap:12px}.people-grid img,.placeholder{height:210px}.organization{padding:20px}.org-grid{grid-template-columns:1fr}.event-list article{grid-template-columns:80px 1fr;gap:18px;padding:15px}.document-cta,.join-cta{padding:30px;align-items:flex-start;flex-direction:column}footer .shell{flex-direction:column}}
+  .history-page { --history-line:#cfd8d2; }
+  .history-opening { display:grid; grid-template-columns:.85fr 1.15fr; gap:90px; padding-bottom:100px; }
+  .history-opening > div:first-child > span,.history-head > span,.history-finale small { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .history-opening h2,.history-head h2,.history-finale h2 { margin:15px 0 0; color:var(--ink); font-size:clamp(3rem,5vw,4.8rem); line-height:.92; letter-spacing:-.06em; }
+  .history-opening h2 em { color:var(--green); font-family:Georgia,serif; font-weight:400; }
+  .history-opening > div:last-child p { color:#596960; font-size:1.04rem; line-height:1.8; }
+  .history-opening > div:last-child p:first-child { margin-top:0; color:var(--ink); font-size:1.35rem; line-height:1.6; }
+  .history-numbers { margin-bottom:125px; display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--history-line); border-bottom:1px solid var(--history-line); }
+  .history-numbers > div { min-width:0; padding:32px 24px; }
+  .history-numbers > div + div { border-left:1px solid var(--history-line); }
+  .history-numbers strong,.history-numbers span { display:block; }
+  .history-numbers strong { color:var(--green); font-size:clamp(2rem,4vw,3.2rem); line-height:1; letter-spacing:-.05em; }
+  .history-numbers span { margin-top:10px; color:#6c7a71; font-size:.68rem; line-height:1.4; text-transform:uppercase; }
+  .history-chronicle { margin-bottom:120px; }
+  .history-head { margin-bottom:85px; display:flex; align-items:end; justify-content:space-between; gap:40px; }
+  .history-head h2 { font-size:clamp(3rem,5vw,4.6rem); }
+  .history-track { position:relative; }
+  .history-track::before { content:''; position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--history-line); transform:translateX(-50%); }
+  .history-chapter { position:relative; margin-bottom:120px; display:grid; grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr); align-items:start; gap:30px; }
+  .history-chapter:last-child { margin-bottom:0; }
+  .history-visual { grid-column:1; }
+  .history-marker { grid-column:2; display:grid; place-items:start center; }
+  .history-marker span { position:relative; z-index:1; display:grid; place-items:center; width:42px; aspect-ratio:1; border:1px solid #b7c4bb; border-radius:50%; background:#f4f7f4; color:var(--green); font-size:.65rem; font-weight:900; box-shadow:0 0 0 9px #f4f7f4; }
+  .history-story { grid-column:3; padding:3px 0 0 8px; }
+  .history-chapter.is-reverse .history-visual { grid-column:3; }
+  .history-chapter.is-reverse .history-story { grid-column:1; grid-row:1; padding-left:0; padding-right:8px; }
+  .history-visual figure { margin:0; overflow:hidden; background:white; border-radius:6px; box-shadow:0 18px 45px rgb(9 47 32 / 10%); transform:rotate(-1deg); }
+  .history-chapter.is-reverse .history-visual figure { transform:rotate(1deg); }
+  .history-visual figure img { display:block; width:100%; aspect-ratio:1.42; object-fit:cover; filter:saturate(.88) contrast(1.04); }
+  .history-visual figcaption { padding:14px 17px; color:#6b7a71; font-size:.7rem; line-height:1.45; }
+  .history-fact { position:relative; overflow:hidden; min-height:320px; padding:42px; display:flex; flex-direction:column; justify-content:flex-end; border-radius:6px; background:var(--green); color:white; box-shadow:12px 12px 0 var(--yellow); }
+  .history-fact::before { content:''; position:absolute; right:-95px; top:-125px; width:270px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 22%); border-radius:50%; box-shadow:0 0 0 45px rgb(255 255 255 / 3%); }
+  .history-fact span,.history-fact strong,.history-fact small { position:relative; z-index:1; display:block; }
+  .history-fact span { color:var(--yellow); font-size:clamp(4rem,8vw,7rem); font-weight:900; line-height:.8; letter-spacing:-.08em; }
+  .history-fact strong { max-width:300px; margin-top:24px; font-size:1.15rem; line-height:1.3; }
+  .history-fact small { margin-top:8px; color:#9db6a7; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; }
+  .history-date { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:24px; padding-bottom:13px; border-bottom:1px solid var(--history-line); }
+  .history-date span { color:var(--green); font-size:.66rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+  .history-date time { color:#75837a; font-size:.72rem; font-weight:750; }
+  .history-story h3 { margin:0; color:var(--ink); font-size:clamp(2.25rem,4vw,3.5rem); line-height:.94; letter-spacing:-.055em; }
+  .history-subtitle { margin:13px 0 25px !important; color:var(--green) !important; font-family:Georgia,serif; font-size:1.18rem !important; font-style:italic; }
+  .history-story > p { color:#5d6d63; font-size:.92rem; line-height:1.75; }
+  .history-roster { margin-top:24px; border-top:1px solid var(--history-line); border-bottom:1px solid var(--history-line); }
+  .history-roster summary { padding:15px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; color:var(--green); font-size:.74rem; font-weight:850; cursor:pointer; list-style:none; }
+  .history-roster summary::-webkit-details-marker { display:none; }
+  .history-roster summary span { display:grid; place-items:center; width:24px; aspect-ratio:1; border-radius:50%; background:var(--yellow); color:var(--dark); transition:transform .2s ease; }
+  .history-roster[open] summary span { transform:rotate(45deg); }
+  .history-roster p { margin:0 0 18px; color:#68776e; font-size:.76rem; line-height:1.65; }
+  .history-finale { position:relative; overflow:hidden; min-height:330px; padding:60px 65px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:55px; border-radius:8px; background:var(--yellow); }
+  .history-finale::after { content:'1956'; position:absolute; right:10px; top:-40px; color:rgb(255 255 255 / 35%); font-size:10rem; font-weight:900; line-height:1; }
+  .history-finale > div,.history-finale > a { position:relative; z-index:1; }
+  .history-finale h2 { font-size:clamp(2.6rem,5vw,4.4rem); }
+  .history-finale > a { min-width:220px; padding:17px 19px; display:flex; justify-content:space-between; gap:30px; background:var(--dark); color:white; font-size:.8rem; font-weight:900; text-decoration:none; }
+  .history-finale > a span { color:var(--yellow); }
+  @media(max-width:850px){.history-opening{grid-template-columns:1fr;gap:45px}.history-numbers{grid-template-columns:repeat(2,1fr)}.history-numbers>div:nth-child(3){border-left:0;border-top:1px solid var(--history-line)}.history-numbers>div:nth-child(4){border-top:1px solid var(--history-line)}.history-head{align-items:flex-start;flex-direction:column}.history-track::before{left:21px}.history-chapter,.history-chapter.is-reverse{grid-template-columns:44px minmax(0,1fr);gap:22px}.history-marker,.history-chapter.is-reverse .history-marker{grid-column:1;grid-row:1 / 3}.history-visual,.history-chapter.is-reverse .history-visual{grid-column:2;grid-row:1}.history-story,.history-chapter.is-reverse .history-story{grid-column:2;grid-row:2;padding:28px 0 0}.history-finale{grid-template-columns:1fr}.history-finale>a{justify-self:start}}
+  @media(max-width:600px){.history-opening{padding-bottom:70px}.history-numbers{margin-bottom:85px}.history-numbers>div{padding:24px 14px}.history-chronicle{margin-bottom:80px}.history-head{margin-bottom:55px}.history-chapter{margin-bottom:80px;grid-template-columns:30px minmax(0,1fr);gap:13px}.history-track::before{left:14px}.history-marker span{width:29px;box-shadow:0 0 0 5px #f4f7f4;font-size:.55rem}.history-fact{min-height:270px;padding:30px}.history-date{align-items:flex-start;flex-direction:column;gap:7px}.history-story h3{font-size:2.35rem}.history-finale{padding:45px 28px}.history-finale>a{width:100%;min-width:0}.history-finale::after{font-size:7rem}}
+
+  .referee-hero .hero-grid { grid-template-columns:minmax(0,1fr) minmax(360px,390px); gap:50px; }
+  .referee-hero h1 { font-size:clamp(3.2rem,4.6vw,4.15rem); }
+  .referee-hero .hero-image { height:auto; aspect-ratio:1600 / 1315; transform:rotate(1deg); }
+  .referee-hero .hero-image img { object-fit:contain; }
+  .referee-hero .hero-image::after { inset:65% 0 0; }
+  @media(max-width:1050px){.referee-hero .hero-grid{grid-template-columns:1fr}.referee-hero h1{white-space:normal}.referee-hero .hero-image{width:min(100%,620px)}}
+  .referee-page { --ref-line:#d8e0da; }
+  .referee-intro { display:grid; grid-template-columns:.9fr 1.1fr; gap:90px; padding-bottom:110px; }.referee-intro > div:first-child > span,.referee-head span,.referee-thanks span { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }.referee-intro h2,.referee-head h2,.referee-thanks h2 { margin:15px 0 0; color:var(--ink); font-size:clamp(3rem,5vw,4.8rem); line-height:.93; letter-spacing:-.06em; }.referee-intro h2 em { color:var(--green); font-family:Georgia,serif; font-weight:400; }.referee-copy p { color:#596a60; font-size:1.05rem; line-height:1.8; }.referee-copy p:first-child { color:var(--ink); font-size:1.35rem; line-height:1.6; }
+  .referee-team { margin-bottom:110px; }.referee-head { display:flex; align-items:end; justify-content:space-between; gap:40px; margin-bottom:48px; }.referee-head > p { max-width:340px; margin:0; color:#6b7a71; line-height:1.6; }.referee-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }.referee-card { position:relative; min-height:390px; padding:32px; display:flex; flex-direction:column; align-items:center; text-align:center; background:#eef2ee; border-radius:8px; overflow:hidden; }.referee-card.coordinator { grid-column:span 2; display:grid; grid-template-columns:220px 1fr; column-gap:35px; text-align:left; background:var(--yellow); }.referee-number { position:absolute; left:22px; top:18px; color:var(--green); font-size:.66rem; font-weight:900; }.referee-portrait { position:relative; width:168px; aspect-ratio:1; margin:28px auto 24px; display:grid; place-items:center; border:5px solid white; border-radius:50%; overflow:hidden; background:var(--green); color:var(--yellow); font-size:2.7rem; font-weight:900; box-shadow:0 8px 28px rgb(9 47 32 / 15%); }.referee-portrait img { width:100%; height:100%; object-fit:cover; object-position:50% 20%; }.referee-portrait.is-balanced::before { content:''; position:absolute; inset:-14%; background-image:var(--portrait-image); background-position:center top; background-size:cover; filter:blur(12px); transform:scale(1.08); }.referee-portrait.is-balanced img { position:relative; z-index:1; object-fit:contain; object-position:center; transform:scale(var(--portrait-scale,.92)); mask-image:radial-gradient(ellipse at center,#000 68%,transparent 100%); }.coordinator .referee-portrait { width:205px; margin:20px 0; }.referee-info h3 { margin:0 0 8px; color:var(--ink); font-size:1.25rem; }.referee-info > p { margin:0; color:#65756b; font-size:.8rem; }.coordinator .referee-info > p { color:#415345; }.referee-card:not(.coordinator) .referee-info { margin-top:auto; }
+  :global(.referee-page .contact-icons) { display:flex; min-height:44px; align-items:center; flex-wrap:wrap; gap:8px; margin-top:20px; }.coordinator :global(.contact-icons) { justify-content:flex-start; }:global(.referee-page .contact-toggle) { width:40px; height:40px; padding:0; display:grid; place-items:center; border:1px solid rgb(9 47 32 / 25%); border-radius:50%; background:white; color:var(--green); cursor:pointer; }:global(.referee-page .contact-toggle:hover),:global(.referee-page .contact-toggle[aria-expanded='true']) { background:var(--dark); color:white; }:global(.referee-page .contact-toggle::before) { font-size:1rem; font-weight:900; }:global(.referee-page .contact-toggle.is-email::before) { content:'✉'; }:global(.referee-page .contact-toggle.is-phone::before) { content:'☎'; }:global(.referee-page .contact-value) { flex-basis:100%; color:var(--dark); font-size:.75rem; font-weight:900; overflow-wrap:anywhere; }:global(.referee-page .contact-value[hidden]) { display:none; }
+  .referee-thanks { margin-bottom:110px; padding:65px 70px; display:grid; grid-template-columns:.85fr 1.15fr; gap:90px; color:white; background:var(--dark); border-radius:8px; }.referee-thanks span { color:var(--yellow); }.referee-thanks h2 { color:white; }.referee-thanks > div:last-child { align-self:center; }.referee-thanks p { color:#bdcec3; font-size:1.02rem; line-height:1.75; }.referee-thanks p:last-child { margin-bottom:0; color:white; font-weight:700; }
+  .referee-cta { position:relative; overflow:hidden; min-height:300px; padding:60px 65px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:60px; background:var(--yellow); border-radius:8px; }.referee-cta > span { position:absolute; right:30px; top:18px; color:white; font-size:3rem; }.referee-cta small { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }.referee-cta h2 { margin:10px 0 15px; color:var(--dark); font-size:clamp(2.6rem,5vw,4.5rem); line-height:.95; letter-spacing:-.06em; }.referee-cta p { max-width:700px; margin:0; color:#405243; line-height:1.65; }.referee-cta > a { position:relative; z-index:1; display:flex; gap:25px; padding:15px 18px; background:var(--dark); color:white; font-size:.8rem; font-weight:900; text-decoration:none; white-space:nowrap; }
+  @media(max-width:800px){.referee-intro,.referee-thanks{grid-template-columns:1fr;gap:45px}.referee-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.referee-card.coordinator{grid-column:span 2}.referee-cta{grid-template-columns:1fr}.referee-cta>a{justify-self:start}}
+  @media(max-width:600px){.referee-intro{padding-bottom:75px}.referee-head{align-items:flex-start;flex-direction:column}.referee-grid{grid-template-columns:1fr}.referee-card.coordinator{grid-column:auto;grid-template-columns:1fr;text-align:center}.coordinator .referee-portrait{width:168px;margin:28px auto 24px}.coordinator :global(.contact-icons){justify-content:center}.referee-thanks{margin-bottom:75px;padding:45px 28px}.referee-cta{padding:45px 28px}.referee-cta>a{white-space:normal}}
+
+  .concept-page { --concept-line:#d8e0da; }
+  .concept-opening { display:grid; grid-template-columns:.8fr 1.2fr; gap:90px; padding-bottom:110px; }
+  .concept-heading > span, .concept-section-head span, .join-message > span, .concept-documents > div > span { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .concept-heading h2, .concept-section-head h2, .join-message h2, .concept-documents h2 { margin:15px 0 0; color:var(--ink); font-size:clamp(2.8rem,5vw,4.8rem); line-height:.94; letter-spacing:-.06em; }
+  .concept-heading h2 em { color:var(--green); font-family:Georgia,serif; font-weight:400; }
+  .concept-copy > p { color:#596a60; font-size:1.05rem; line-height:1.8; }
+  .concept-copy > p:first-child { color:var(--ink); font-size:1.38rem; line-height:1.6; }
+  .concept-copy h3 { margin:38px 0 12px; color:var(--green); font-size:1.35rem; }
+  .concept-promise { position:relative; overflow:hidden; min-height:430px; margin-bottom:120px; padding:65px 70px; display:grid; grid-template-columns:1fr .85fr; align-items:center; gap:90px; background:var(--yellow); border-radius:8px; }
+  .concept-promise::after { content:''; position:absolute; right:-120px; top:-190px; width:430px; aspect-ratio:1; border:1px solid rgb(9 47 32 / 15%); border-radius:50%; box-shadow:0 0 0 60px rgb(9 47 32 / 4%),0 0 0 120px rgb(9 47 32 / 3%); }
+  .promise-title span, .promise-title strong { display:block; }.promise-title span { margin-bottom:18px; color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }.promise-title strong { color:var(--dark); font-size:clamp(3.2rem,6vw,5.8rem); line-height:.84; letter-spacing:-.07em; }
+  .promise-copy { position:relative; z-index:1; }.promise-copy p { color:#374a3d; font-size:1.05rem; line-height:1.7; }.promise-copy p:last-child { margin-bottom:0; font-weight:700; }.promise-star { position:absolute; right:35px; top:25px; color:white; font-size:3.2rem; }
+  .principles-section { margin-bottom:120px; }.concept-section-head { display:flex; align-items:end; justify-content:space-between; gap:40px; margin-bottom:55px; }.concept-section-head p { max-width:330px; margin:0; color:#697970; line-height:1.6; }
+  .principles-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; }.principle-card { min-height:330px; display:flex; flex-direction:column; background:#eff3ef; border-radius:7px; overflow:hidden; }.principle-card.has-image { display:grid; grid-template-columns:1fr 1fr; }.principle-card.is-wide { grid-column:span 2; }.principle-card img { width:100%; height:100%; min-height:330px; object-fit:cover; }.principle-card > div { padding:38px; display:flex; flex-direction:column; }.principle-card > div > span { color:var(--green); font-size:.7rem; font-weight:900; }.principle-card h3 { margin:35px 0 15px; color:var(--ink); font-size:1.65rem; letter-spacing:-.035em; }.principle-card p { margin:0; color:#607067; line-height:1.65; }.principle-card:not(.has-image) p { margin-top:auto; }.principle-card:nth-child(3), .principle-card:nth-child(6), .principle-card:nth-child(8) { background:var(--green); }.principle-card:nth-child(3) span,.principle-card:nth-child(6) span,.principle-card:nth-child(8) span { color:var(--yellow); }.principle-card:nth-child(3) h3,.principle-card:nth-child(6) h3,.principle-card:nth-child(8) h3 { color:white; }.principle-card:nth-child(3) p,.principle-card:nth-child(6) p,.principle-card:nth-child(8) p { color:#bed0c4; }
+  .concept-join { display:grid; grid-template-columns:1.1fr .9fr; min-height:470px; margin-bottom:120px; background:var(--dark); border-radius:8px; overflow:hidden; }.join-photo { position:relative; min-height:400px; }.join-photo::after { content:''; position:absolute; inset:40% 0 0; background:linear-gradient(transparent,rgb(9 47 32 / 80%)); }.join-photo img { width:100%; height:100%; object-fit:cover; }.join-photo span { position:absolute; z-index:1; left:28px; bottom:24px; color:var(--yellow); font-size:1.2rem; font-weight:900; }.join-message { padding:65px 55px; align-self:center; }.join-message > span { color:var(--yellow); }.join-message h2 { color:white; }.join-message p { margin:28px 0; color:#b8cabf; font-size:1.02rem; line-height:1.7; }.join-message a { display:inline-flex; justify-content:space-between; gap:30px; padding:15px 18px; background:var(--yellow); color:var(--dark); font-size:.8rem; font-weight:900; text-decoration:none; }
+  .concept-documents { display:grid; grid-template-columns:.7fr 1.3fr; gap:80px; padding-top:70px; border-top:1px solid var(--concept-line); }.concept-documents h2 { font-size:3.3rem; }.document-links { border-top:1px solid var(--concept-line); }.document-links a { display:grid; grid-template-columns:130px 1fr 30px; align-items:center; gap:20px; padding:25px 5px; border-bottom:1px solid var(--concept-line); color:var(--ink); text-decoration:none; }.document-links a > span { color:#75847a; font-size:.7rem; text-transform:uppercase; }.document-links a strong { font-size:1.05rem; }.document-links a b { display:grid; place-items:center; width:30px; aspect-ratio:1; border-radius:50%; background:var(--green); color:white; }
+  @media(max-width:800px){.concept-opening,.concept-documents{grid-template-columns:1fr;gap:45px}.concept-promise{grid-template-columns:1fr;gap:35px}.concept-join{grid-template-columns:1fr}.principle-card.has-image{grid-template-columns:1fr}.principle-card img{height:280px;min-height:0}}
+  @media(max-width:600px){.concept-opening{padding-bottom:75px}.concept-promise{margin-bottom:80px;padding:45px 28px}.concept-section-head{align-items:flex-start;flex-direction:column}.principles-section{margin-bottom:80px}.principles-grid{grid-template-columns:1fr}.principle-card.is-wide{grid-column:auto}.principle-card{min-height:0}.principle-card>div{padding:28px}.principle-card:not(.has-image) p{margin-top:0}.concept-join{margin-bottom:80px}.join-message{padding:45px 28px}.document-links a{grid-template-columns:1fr 30px}.document-links a>span{grid-column:1 / 3}.concept-documents{padding-top:50px}}
+  @media(max-width:600px){.page-hero h1{font-size:clamp(2.5rem,12vw,3.3rem)}.page-hero h1.is-long{font-size:clamp(2.25rem,10vw,2.9rem)}.page-hero h1.is-extra-long{font-size:clamp(1.95rem,8vw,2.45rem);letter-spacing:-.04em}}
+
+  .youth-contact-panel { position:relative; overflow:hidden; min-height:310px; margin-top:85px; padding:58px 62px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:70px; border-radius:9px; background:var(--yellow); color:var(--dark); }
+  .youth-contact-panel::after { content:''; position:absolute; right:-115px; top:-175px; width:390px; aspect-ratio:1; border:1px solid rgb(9 47 32 / 14%); border-radius:50%; box-shadow:0 0 0 55px rgb(9 47 32 / 4%),0 0 0 110px rgb(9 47 32 / 3%); }
+  .youth-contact-panel > div,.youth-contact-panel > a { position:relative; z-index:1; }
+  .youth-contact-panel small { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .youth-contact-panel h2 { max-width:650px; margin:13px 0 18px; font-size:clamp(2.5rem,5vw,4.25rem); line-height:.94; letter-spacing:-.055em; }
+  .youth-contact-panel p { max-width:650px; margin:0; color:#425346; line-height:1.7; }
+  .youth-contact-panel > a { min-width:250px; padding:17px 19px; display:flex; align-items:center; justify-content:space-between; gap:28px; background:var(--dark); color:white; font-size:.8rem; font-weight:900; text-decoration:none; transition:transform .18s ease,background .18s ease; }
+  .youth-contact-panel > a:hover { background:var(--green); transform:translateY(-2px); }
+  .youth-contact-panel > a strong { color:var(--yellow); font-size:1.1rem; }
+  .youth-contact-star { position:absolute; right:28px; top:20px; z-index:1; color:white; font-size:2.8rem; }
+  @media(max-width:800px){.youth-contact-panel{grid-template-columns:1fr;gap:35px}.youth-contact-panel>a{justify-self:start}}
+  @media(max-width:600px){.youth-contact-panel{margin-top:60px;padding:42px 27px}.youth-contact-panel>a{width:100%;min-width:0}.youth-contact-star{right:18px;top:12px;font-size:2rem}}
+
+  :global(.legacy-content) { color:#53645a; font-size:1rem; line-height:1.75; }
+  :global(.legacy-content > p), :global(.legacy-content > div:not([class])) { max-width:850px; }
+  :global(.legacy-content h2), :global(.legacy-content h3) { color:var(--ink); letter-spacing:-.035em; }
+  :global(.legacy-content h2) { margin:58px 0 18px; font-size:clamp(2rem,4vw,3.2rem); line-height:1; }
+  :global(.legacy-content h3) { margin:38px 0 14px; font-size:1.55rem; }
+  :global(.legacy-content h4) { margin:12px 0 6px; color:var(--ink); font-size:1rem; }
+  :global(.legacy-content a) { color:var(--green); font-weight:700; text-underline-offset:3px; }
+  :global(.legacy-content img) { max-width:100%; height:auto; border-radius:6px; }
+  :global(.legacy-content table) { width:100%; margin:30px 0; border-collapse:collapse; background:white; }
+  :global(.legacy-content th), :global(.legacy-content td) { padding:14px; border:1px solid #dce3de; text-align:left; vertical-align:top; }
+  :global(.legacy-content th) { background:var(--green); color:white; }
+  :global(.legacy-content .uk-slider-items), :global(.legacy-content .uk-grid), :global(.legacy-content .uk-grid-match), :global(.legacy-content .mod_uk_gallery) { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; width:100%; margin:35px 0; padding:0; list-style:none; }
+  :global(.legacy-content .uk-grid-match > li) { min-width:0; margin:0; padding:0; list-style:none; }
+  :global(.legacy-content .uk-slider-container-offset) { width:100%; }
+  :global(.legacy-content .uk-card) { height:100%; overflow:hidden; background:#f0f3f0; border-radius:9px; text-align:center; }
+  :global(.legacy-content .uk-card .uk-card) { height:auto; overflow:visible; background:transparent; }
+  :global(.legacy-content .uk-card > .p-3), :global(.legacy-content .uk-card > .p-4) { padding:18px; }
+  :global(.legacy-content .uk-inline-clip) { display:block; text-align:center; }
+  :global(.legacy-content img.uk-border-circle7) { display:block; width:148px !important; height:148px !important; margin:24px auto 2px; border:5px solid white; border-radius:50%; object-fit:cover; object-position:50% 20%; box-shadow:0 7px 24px rgb(9 47 32 / 16%); }
+  :global(.legacy-content .uk-card-media-top img:not(.uk-border-circle7)) { display:block; width:100%; height:220px; object-fit:cover; object-position:center; border-radius:0; }
+  :global(.legacy-content .qualification-wrapper) { min-height:45px; color:#607066; font-size:.78rem; line-height:1.45; }
+  :global(.legacy-content .contact-icons) { display:flex; min-height:44px; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  :global(.legacy-content .contact-toggle) { width:40px; height:40px; padding:0; display:grid; place-items:center; border:1px solid #bdc9c1; border-radius:50%; background:white; color:var(--green); cursor:pointer; transition:.18s ease; }
+  :global(.legacy-content .contact-toggle:hover), :global(.legacy-content .contact-toggle[aria-expanded='true']) { border-color:var(--yellow); background:var(--yellow); color:var(--dark); transform:translateY(-1px); }
+  :global(.legacy-content .contact-toggle::before) { content:''; width:17px; height:17px; background-color:currentColor; mask-repeat:no-repeat; mask-position:center; mask-size:contain; }
+  :global(.legacy-content .contact-toggle.is-email::before) { mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z'/%3E%3C/svg%3E"); }
+  :global(.legacy-content .contact-toggle.is-phone::before) { mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z'/%3E%3C/svg%3E"); }
+  :global(.legacy-content .contact-value) { flex-basis:100%; margin-top:4px; color:var(--green); font-size:.74rem; font-weight:800; overflow-wrap:anywhere; text-align:center; }
+  :global(.legacy-content .contact-value[hidden]) { display:none; }
+  :global(.legacy-content .uk-accordion) { padding:0; list-style:none; }
+  :global(.legacy-content .uk-accordion-title) { display:block; padding:17px 20px; background:var(--green); color:white; text-decoration:none; }
+  :global(.legacy-content .uk-accordion-content) { padding:24px; background:var(--cream); }
+  :global(.legacy-content .uk-slider-nav), :global(.legacy-content .uk-slidenav), :global(.legacy-content .uk-subnav.uk-hidden) { display:none; }
+  :global(.legacy-content .data-widget) { margin:35px 0; padding:25px; border-left:5px solid var(--yellow); background:var(--cream); color:var(--ink); font-weight:700; }
+  :global(.legacy-content .btn), :global(.legacy-content button), :global(.legacy-content input[type='submit']) { display:inline-flex; padding:12px 18px; border:0; border-radius:3px; background:var(--green); color:white; font:inherit; font-weight:800; text-decoration:none; }
+  :global(.legacy-content input:not([type='submit'])), :global(.legacy-content textarea), :global(.legacy-content select) { width:100%; padding:12px; border:1px solid #cad4cd; border-radius:3px; background:white; font:inherit; }
+  :global(.legacy-content hr) { margin:50px 0; border:0; border-top:1px solid #d4ddd6; }
+  @media(max-width:600px){ :global(.legacy-content .uk-slider-items), :global(.legacy-content .uk-grid), :global(.legacy-content .uk-grid-match), :global(.legacy-content .mod_uk_gallery) { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } :global(.legacy-content img.uk-border-circle7) { width:116px !important; height:116px !important; margin-top:18px; } :global(.legacy-content .uk-card-media-top img:not(.uk-border-circle7)) { height:180px; } :global(.legacy-content table) { display:block; overflow-x:auto; } }
+</style>

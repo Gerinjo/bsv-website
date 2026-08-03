@@ -1,0 +1,59 @@
+---
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+import Layout from '../layouts/Layout.astro';
+
+interface Props { title: string; eyebrow: string; intro: string; updated: string }
+const { title, eyebrow, intro, updated } = Astro.props;
+---
+
+<Layout title={`${title} – BSV Nordstern Radolfzell`} description={intro}>
+  <Header />
+  <main>
+    <section class="legal-hero">
+      <div class="hero-orbit" aria-hidden="true"></div>
+      <div class="shell legal-hero-grid">
+        <div><p>{eyebrow}</p><h1>{title}</h1><span>{intro}</span></div>
+        <aside><small>Stand</small><strong>{updated}</strong><b aria-hidden="true">§</b></aside>
+      </div>
+    </section>
+    <section class="shell legal-layout">
+      <aside class="legal-sidebar">
+        <span>BSV Nordstern</span>
+        <strong>Transparent.<br />Verlässlich.<br />Auf Augenhöhe.</strong>
+        <a href="mailto:info@bsvnordstern.de">Frage stellen <b>↗</b></a>
+      </aside>
+      <article class="legal-content"><slot /></article>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  :global(:root) { --legal-green:#164f32; --legal-dark:#092f20; --legal-yellow:#f4d638; --legal-ink:#10251a; }
+  .shell { width:min(1120px,calc(100% - 48px)); margin-inline:auto; }
+  .legal-hero { position:relative; overflow:hidden; padding:95px 0 90px; color:white; background:var(--legal-green); }
+  .legal-hero::before { content:''; position:absolute; inset:0; opacity:.13; background-image:radial-gradient(#fff 1px,transparent 1px); background-size:22px 22px; mask-image:linear-gradient(90deg,#000,transparent 70%); }
+  .hero-orbit { position:absolute; right:-90px; top:-260px; width:560px; aspect-ratio:1; border:1px solid rgb(255 255 255 / 13%); border-radius:50%; box-shadow:0 0 0 70px rgb(255 255 255 / 3%),0 0 0 140px rgb(255 255 255 / 2%); }
+  .legal-hero-grid { position:relative; display:grid; grid-template-columns:1fr auto; align-items:end; gap:60px; }.legal-hero p { margin:0 0 20px; color:var(--legal-yellow); font-size:.7rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; }.legal-hero h1 { margin:0 0 26px; font-size:clamp(4rem,8vw,7rem); line-height:.85; letter-spacing:-.065em; }.legal-hero div > span { display:block; max-width:650px; color:#c4d8cb; font-size:1.08rem; line-height:1.65; }
+  .legal-hero aside { position:relative; min-width:205px; padding:27px; border:1px solid rgb(255 255 255 / 18%); background:rgb(6 31 21 / 35%); backdrop-filter:blur(8px); }.legal-hero aside small,.legal-hero aside strong { display:block; }.legal-hero aside small { color:#92ab9b; font-size:.6rem; letter-spacing:.13em; text-transform:uppercase; }.legal-hero aside strong { margin-top:7px; font-size:.9rem; }.legal-hero aside b { position:absolute; right:16px; top:6px; color:var(--legal-yellow); font-family:Georgia,serif; font-size:3.4rem; font-weight:400; opacity:.5; }
+  .legal-layout { padding-top:100px; padding-bottom:125px; display:grid; grid-template-columns:260px minmax(0,1fr); align-items:start; gap:90px; }.legal-sidebar { position:sticky; top:30px; padding:34px 30px; color:white; background:var(--legal-dark); }.legal-sidebar > span { color:var(--legal-yellow); font-size:.62rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }.legal-sidebar > strong { display:block; margin:18px 0 35px; font-size:1.55rem; line-height:1.12; letter-spacing:-.035em; }.legal-sidebar a { display:flex; justify-content:space-between; gap:25px; padding:13px 14px; background:var(--legal-yellow); color:var(--legal-dark); font-size:.72rem; font-weight:900; text-decoration:none; }
+  :global(.legal-content) { color:#596a60; line-height:1.78; }
+  :global(.legal-content section) { padding:0 0 55px; border-bottom:1px solid #d6ded8; }
+  :global(.legal-content section + section) { padding-top:55px; }
+  :global(.legal-content h2) { margin:0 0 22px; color:var(--legal-ink); font-size:clamp(2rem,4vw,3.1rem); line-height:1; letter-spacing:-.05em; }
+  :global(.legal-content h3) { margin:30px 0 10px; color:var(--legal-green); font-size:1.15rem; }
+  :global(.legal-content p) { margin:0 0 18px; }
+  :global(.legal-content ul) { margin:18px 0; padding-left:22px; }
+  :global(.legal-content li + li) { margin-top:8px; }
+  :global(.legal-content a) { color:var(--legal-green); font-weight:750; text-underline-offset:3px; }
+  :global(.legal-content .legal-card) { margin:25px 0; padding:28px 30px; border-left:5px solid var(--legal-yellow); background:#edf2ee; color:#45574b; }
+  :global(.legal-content .legal-card strong) { color:var(--legal-ink); }
+  :global(.legal-content .legal-grid) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; margin:25px 0; }
+  :global(.legal-content .legal-grid > div) { padding:23px; background:#edf2ee; }
+  :global(.legal-content .legal-grid small),:global(.legal-content .legal-grid strong) { display:block; }
+  :global(.legal-content .legal-grid small) { margin-bottom:6px; color:#75857b; font-size:.63rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+  :global(.legal-content .legal-grid strong) { color:var(--legal-ink); }
+  @media(max-width:800px){.legal-hero-grid{grid-template-columns:1fr}.legal-hero aside{justify-self:start}.legal-layout{grid-template-columns:1fr;gap:55px}.legal-sidebar{position:static}}
+  @media(max-width:600px){.shell{width:min(100% - 30px,1120px)}.legal-hero{padding:70px 0}.legal-hero h1{font-size:clamp(2.9rem,14vw,3.5rem);overflow-wrap:anywhere}.legal-layout{padding-top:70px;padding-bottom:85px}:global(.legal-content .legal-grid){grid-template-columns:1fr}}
+</style>

@@ -1,0 +1,384 @@
+---
+type MenuLink = { label: string; href: string };
+type MenuGroup = { title: string; links: MenuLink[] };
+type MenuItem = { label: string; href: string; groups: MenuGroup[] };
+
+const menu: MenuItem[] = [
+  {
+    label: 'Verein', href: '/verein', groups: [
+      { title: 'Hauptverein', links: [
+        { label: 'Vorstandschaft', href: '/verein/vorstandschaft' },
+        { label: 'Unsere Geschichte', href: '/verein/geschichte' },
+        { label: 'Organigramm', href: '/verein/organigramm' },
+        { label: 'Satzung', href: '/verein/satzung' },
+        { label: 'Beitragsordnung', href: '/verein/beitragsordnung' },
+        { label: 'Mitglied werden', href: '/verein/mitglied-werden' },
+        { label: 'Kündigung der Mitgliedschaft', href: '/verein/kuendigung' },
+        { label: 'Termine', href: '/verein/termine' },
+      ]},
+      { title: 'Förderverein', links: [
+        { label: 'Vorstandschaft', href: '/foerderverein/vorstandschaft' },
+        { label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
+      ]},
+      { title: 'Abteilungen', links: [
+        { label: 'Gymnastik', href: '/abteilungen/gymnastik' },
+        { label: 'Bogensport', href: '/abteilungen/bogensport' },
+        { label: 'Wandergruppe', href: '/abteilungen/wandergruppe' },
+      ]},
+    ],
+  },
+  {
+    label: 'Fußball', href: '/fussball', groups: [
+      { title: 'Sportstätten', links: [
+        { label: 'Sportplätze', href: '/fussball/sportplaetze' },
+        { label: 'Belegungsplan', href: '/fussball/belegungsplan' },
+      ]},
+      { title: 'Herren', links: [
+        { label: 'Kreisliga B', href: '/fussball/herren/kreisliga-b' },
+        { label: 'Spielberichte', href: '/fussball/herren/spielberichte' },
+        { label: 'Kreisliga C', href: '/fussball/herren/kreisliga-c' },
+        { label: 'Spielberichte Reserve', href: '/fussball/herren/spielberichte-reserve' },
+      ]},
+      { title: 'Frauen', links: [
+        { label: 'Bezirksliga', href: '/fussball/frauen/bezirksliga' },
+        { label: 'Spielberichte', href: '/fussball/frauen/spielberichte' },
+      ]},
+      { title: 'Alte Herren', links: [{ label: 'Ü35 Senioren', href: '/fussball/alte-herren' }] },
+    ],
+  },
+  {
+    label: 'Junge Sterne', href: '/jugend', groups: [
+      { title: 'Jugendabteilung', links: [
+        { label: 'Jugendvorstandschaft', href: '/jugend/vorstandschaft' },
+        { label: 'Neuigkeiten', href: '/jugend/neuigkeiten' },
+        { label: 'Spielgenehmigungsantrag', href: '/jugend/spielgenehmigung' },
+        { label: 'Jugendkonzept', href: '/jugend/jugendkonzept' },
+        { label: 'Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
+      ]},
+      { title: 'Kinderfußball', links: [
+        { label: 'U11 E1-Junioren', href: '/jugend/u11-e1' },
+        { label: 'U11 E2-Junioren', href: '/jugend/u11-e2' },
+        { label: 'U11 E3-Junioren', href: '/jugend/u11-e3' },
+        { label: 'U9 F-Junioren', href: '/jugend/u9-f' },
+        { label: 'U8 F-Junioren', href: '/jugend/u8-f' },
+        { label: 'U7 G-Junioren Bambinis', href: '/jugend/u7-g' },
+        { label: 'U6 G-Junioren Spielgruppe', href: '/jugend/u6-g' },
+      ]},
+      { title: 'Leistungsfußball', links: [
+        { label: 'U19 A-Junioren', href: '/jugend/u19' },
+        { label: 'U17 B-Junioren', href: '/jugend/u17' },
+        { label: 'U15 C1-Junioren', href: '/jugend/u15-c1' },
+        { label: 'U15 C2-Junioren', href: '/jugend/u15-c2' },
+        { label: 'U13 D1-Junioren', href: '/jugend/u13-d1' },
+        { label: 'U13 D2-Junioren', href: '/jugend/u13-d2' },
+        { label: 'U13 D3-Junioren', href: '/jugend/u13-d3' },
+      ]},
+      { title: 'Juniorinnen', links: [
+        { label: 'Spielberichte', href: '/jugend/juniorinnen/spielberichte' },
+        { label: 'U17 B-Juniorinnen', href: '/jugend/juniorinnen/u17' },
+        { label: 'U13 D-Juniorinnen', href: '/jugend/juniorinnen/u13' },
+      ]},
+    ],
+  },
+  {
+    label: 'Events', href: '/events', groups: [
+      { title: 'Veranstaltungen', links: [
+        { label: 'Tag des Mädchenfußballs', href: '/events/tag-des-maedchenfussballs' },
+        { label: 'Allianz Juniors Cup – D-Junioren', href: '/events/allianz-juniors-cup-d' },
+        { label: 'Allianz Juniors Cup – C-Juniorinnen', href: '/events/allianz-juniors-cup-c' },
+        { label: 'Radolfzeller Grundschulturnier', href: '/events/grundschulturnier' },
+      ]},
+      { title: 'Fußballcamps', links: [
+        { label: 'WIESENHOF Fußballschule', href: '/events/wiesenhof-fussballschule' },
+        { label: 'Mädchenfußballcamp', href: '/events/maedchenfussballcamp' },
+        { label: 'Save & Play Torwartcamp', href: '/events/torwartcamp' },
+      ]},
+    ],
+  },
+  {
+    label: 'Gastronomie', href: '/gastronomie', groups: [
+      { title: 'Gastro', links: [
+        { label: 'Über uns', href: '/gastronomie/ueber-uns' },
+        { label: 'Öffnungszeiten', href: '/gastronomie/oeffnungszeiten' },
+        { label: 'Speisekarte', href: '/gastronomie/speisekarte' },
+        { label: 'Events', href: '/gastronomie/events' },
+      ]},
+    ],
+  },
+];
+
+const clubImages: Record<string, string> = {
+  '/verein': '/images/verein/bereiche/verein.jpeg',
+  '/verein/vorstandschaft': '/images/verein/personen/sandra-fuchs.jpg',
+  '/verein/geschichte': '/images/verein/bereiche/geschichte.jpg',
+  '/verein/organigramm': '/images/verein/bereiche/verein.jpeg',
+  '/verein/satzung': '/images/verein/bereiche/geschichte.jpg',
+  '/verein/beitragsordnung': '/images/verein/bereiche/verein.jpeg',
+  '/verein/mitglied-werden': '/images/verein/bereiche/verein.jpeg',
+  '/verein/kuendigung': '/images/verein/bereiche/geschichte.jpg',
+  '/verein/termine': '/images/verein/bereiche/verein.jpeg',
+  '/foerderverein/vorstandschaft': '/images/verein/bereiche/geschichte.jpg',
+  '/foerderverein/mitglied-werden': '/images/verein/bereiche/verein.jpeg',
+  '/abteilungen/gymnastik': '/images/verein/bereiche/gymnastik.jpeg',
+  '/abteilungen/bogensport': '/images/verein/bereiche/bogensport.jpg',
+  '/abteilungen/wandergruppe': '/images/verein/bereiche/wandern.jpg',
+  '/fussball': '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg',
+  '/fussball/sportplaetze': '/images/migration/bd41b6f7d7-hauptplatz-hp.png',
+  '/fussball/herren/kreisliga-b': '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg',
+  '/fussball/herren/spielberichte': '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg',
+  '/fussball/herren/kreisliga-c': '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg',
+  '/fussball/herren/spielberichte-reserve': '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg',
+  '/fussball/frauen/bezirksliga': '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
+  '/fussball/frauen/spielberichte': '/images/migration/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg',
+  '/jugend': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
+  '/jugend/vorstandschaft': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
+  '/jugend/neuigkeiten': '/images/migration/53b694a9ad-urmel-bambini-spieltag-1.png',
+  '/jugend/jugendkonzept': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
+  '/jugend/jugendschiedsrichter': '/images/migration/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg',
+  '/jugend/juniorinnen/u17': '/images/migration/3f3f0306c8-BSV-B-Juniorinnen-2526.jpg',
+  '/jugend/juniorinnen/u13': '/images/migration/26cc1fa04b-BSV-D-Juniorinnen-2526.jpg',
+};
+
+const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
+---
+
+<header class="site-header">
+  <div class="topbar">
+    <div class="shell topbar-inner">
+      <div class="topbar-contact">
+        <a href="mailto:info@bsvnordstern.de">
+          <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
+          <span class="top-copy"><small>Schreib uns</small><strong>info@bsvnordstern.de</strong></span>
+        </a>
+        <a href="tel:+497732910080">
+          <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.1 3.5 4.4 5.1c-.8.5-.9 1.5-.6 2.4 2.2 6.2 6.5 10.5 12.7 12.7.9.3 1.9.2 2.4-.6l1.6-2.7-4.3-2-1.4 2c-3.4-1.4-6.3-4.3-7.7-7.7l2-1.4-2-4.3Z" /></svg></span>
+          <span class="top-copy"><small>Ruf uns an</small><strong>+49 7732 910080</strong></span>
+        </a>
+        <a class="top-location" href="https://www.google.com/maps/search/?api=1&query=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell" target="_blank" rel="noreferrer">
+          <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" /><circle cx="12" cy="10" r="2.2" /></svg></span>
+          <span class="top-copy"><small>Hier sind wir zuhause</small><strong>Schlesierstraße 43 · Radolfzell</strong></span>
+        </a>
+      </div>
+      <div class="quick-links">
+        <a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer"><span aria-hidden="true">✦</span> JAKO Shop</a>
+        <a href="/spielplan"><span aria-hidden="true">◎</span> Spielplan</a>
+        <a href="/kontakt"><span aria-hidden="true">↗</span> Kontakt</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell navigation">
+    <a class="brand" href="/" aria-label="BSV Nordstern Startseite">
+      <span class="brand-mark" aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /></span>
+      <span><strong>BSV Nordstern</strong><small>Radolfzell · seit 1956</small></span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation">
+      <span></span><span></span><span></span><span class="sr-only">Menü öffnen</span>
+    </button>
+
+    <nav id="main-navigation" aria-label="Hauptnavigation">
+      <ul class="menu">
+        {menu.map((item) => (
+          <li class="menu-item">
+            <a class="menu-link" href={item.href}>{item.label}<span aria-hidden="true">⌄</span></a>
+            <div class="mega-menu">
+              <div class:list={["mega-inner", { "club-mega": visualMenus.includes(item.label) }]}>
+                {visualMenus.includes(item.label) ? (
+                  <>
+                    <div class="mega-directory">
+                      <div class="mega-directory-head">
+                        <span>{item.label === 'Verein' ? 'Verein entdecken' : 'Teams & Bereiche'}</span>
+                        <a href={item.href}>Alle Inhalte <b aria-hidden="true">↗</b></a>
+                      </div>
+                      <div class="mega-groups">
+                        {item.groups.map((group) => (
+                          <section class="mega-group">
+                            <h2>{group.title}</h2>
+                            <ul>{group.links.map((link) => (
+                              <li><a href={link.href} data-menu-image={clubImages[link.href] ?? ''} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
+                            ))}</ul>
+                          </section>
+                        ))}
+                      </div>
+                    </div>
+                    <aside class="club-preview" data-default-group={item.label} data-default-label={item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}>
+                      <div class="club-placeholder" aria-hidden="true"><img src="/images/verein/wappen/bsv-nordstern.gif" alt="" width="100" height="100" /><small>Teambild folgt</small></div>
+                      <img src={clubImages[item.href]} data-default-image={clubImages[item.href]} alt="" width="520" height="390" />
+                      <div class="club-preview-copy"><span data-preview-group>{item.label}</span><strong data-preview-label>{item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}</strong></div>
+                    </aside>
+                  </>
+                ) : item.groups.map((group) => (
+                  <section>
+                    <h2>{group.title}</h2>
+                    <ul>{group.links.map((link) => <li><a href={link.href}>{link.label}<span aria-hidden="true">↗</span></a></li>)}</ul>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </li>
+        ))}
+        <li><a class="join" href="/verein/mitglied-werden">Mitglied werden</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const navigation = document.querySelector<HTMLElement>('#main-navigation');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    navigation?.classList.toggle('is-open', !open);
+  });
+
+  document.querySelectorAll<HTMLElement>('.club-mega').forEach((menu) => {
+    const previewCard = menu.querySelector<HTMLElement>('.club-preview');
+    const preview = menu.querySelector<HTMLImageElement>('.club-preview img');
+    const previewGroup = menu.querySelector<HTMLElement>('[data-preview-group]');
+    const previewLabel = menu.querySelector<HTMLElement>('[data-preview-label]');
+
+    const showPreview = (image: string, group: string, label: string) => {
+      if (previewGroup) previewGroup.textContent = group;
+      if (previewLabel) previewLabel.textContent = label;
+
+      if (preview && image) {
+        preview.hidden = false;
+        preview.src = image;
+        previewCard?.classList.remove('is-placeholder');
+      } else {
+        if (preview) preview.hidden = true;
+        previewCard?.classList.add('is-placeholder');
+      }
+    };
+
+    const resetPreview = () => {
+      showPreview(
+        preview?.dataset.defaultImage ?? '',
+        previewCard?.dataset.defaultGroup ?? '',
+        previewCard?.dataset.defaultLabel ?? '',
+      );
+    };
+
+    preview?.addEventListener('error', () => {
+      preview.hidden = true;
+      previewCard?.classList.add('is-placeholder');
+    });
+
+    menu.querySelectorAll<HTMLAnchorElement>('a[data-menu-image]').forEach((link) => {
+      const update = () => showPreview(link.dataset.menuImage ?? '', link.dataset.menuGroup ?? '', link.dataset.menuLabel ?? '');
+      link.addEventListener('mouseenter', update);
+      link.addEventListener('focus', update);
+    });
+
+    menu.addEventListener('mouseleave', resetPreview);
+    menu.addEventListener('focusout', (event) => {
+      if (!menu.contains(event.relatedTarget as Node | null)) resetPreview();
+    });
+  });
+</script>
+
+<style>
+  .site-header { position: relative; z-index: 10; background: #fff; box-shadow: 0 4px 24px rgb(15 35 19 / 8%); }
+  .shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+  .topbar { position:relative; overflow:hidden; background:linear-gradient(100deg,#061f15,#0d3b27 60%,#164f32); color:#c8d9ce; font-size:.72rem; letter-spacing:.02em; }
+  .topbar::after { content:''; position:absolute; right:19%; top:-42px; width:120px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 12%); border-radius:50%; box-shadow:0 0 0 25px rgb(255 255 255 / 2%); }
+  .topbar-inner { position:relative; z-index:1; min-height:52px; display:flex; align-items:center; gap:22px; }
+  .topbar a { color:inherit; text-decoration:none; }
+  .topbar-contact { display:flex; align-items:center; gap:25px; }
+  .topbar-contact > a { display:flex; align-items:center; gap:9px; }
+  .topbar-contact > a:hover .top-icon { border-color:#f4d638; background:#f4d638; color:#092f20; transform:translateY(-1px); }
+  .top-icon { display:grid; place-items:center; width:30px; aspect-ratio:1; flex:0 0 auto; border:1px solid rgb(255 255 255 / 16%); border-radius:50%; color:#f4d638; background:rgb(255 255 255 / 5%); transition:.18s ease; }
+  .top-icon svg { width:14px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
+  .top-copy small,.top-copy strong { display:block; }.top-copy small { margin-bottom:1px; color:#779383; font-size:.53rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }.top-copy strong { color:#d7e5dc; font-size:.66rem; font-weight:700; }
+  .quick-links { display:flex; gap:16px; margin-left:auto; }.quick-links a { display:flex; align-items:center; gap:5px; color:#a9beb1; font-size:.66rem; font-weight:750; }.quick-links a span { color:#f4d638; }.quick-links a:hover { color:#fff; }
+  .navigation { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+  .brand { display: flex; align-items: center; gap: 12px; color: #173d28; text-decoration: none; flex: 0 0 auto; }
+  .brand-mark { display:grid; place-items:center; width:60px; height:60px; flex:0 0 auto; }
+  .brand-mark img { display:block; width:100%; height:100%; object-fit:contain; }
+  .brand strong, .brand small { display: block; }
+  .brand strong { font-size: 1.05rem; letter-spacing: .02em; }
+  .brand small { margin-top: 3px; color: #66756b; font-size: .68rem; text-transform: uppercase; letter-spacing: .13em; }
+  nav { align-self: stretch; }
+  .menu { height: 100%; display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .menu-item { height: 100%; display: flex; align-items: center; }
+  .menu-link { display: flex; gap: 6px; align-items: center; height: 100%; padding: 0 13px; color: #243229; font-size: .84rem; font-weight: 750; text-decoration: none; }
+  .menu-link span { color: #78917e; font-size: .8em; }
+  .menu-link:hover, .menu-item:focus-within > .menu-link { color: #21703c; }
+  .join { margin-left: 10px; padding: 12px 16px; border-radius: 4px; background: #f4d638; color: #173d28; font-size: .8rem; font-weight: 800; text-decoration: none; white-space: nowrap; box-shadow: 0 4px 0 #c0a91e; }
+  .mega-menu { position: absolute; top: 100%; left: 0; width: 100%; padding: 0 20px; box-sizing:border-box; opacity: 0; visibility: hidden; transform: translateY(8px); transition: .18s ease; }
+  .menu-item:hover .mega-menu, .menu-item:focus-within .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+  .mega-inner { width: min(1160px, 100%); max-height: calc(100vh - 150px); margin: 0 auto; padding: 25px 28px 29px; box-sizing:border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; overflow-x:hidden; overflow-y:auto; background: #fff; border-top: 3px solid #f0c82f; border-radius: 0 0 12px 12px; box-shadow: 0 20px 48px rgb(15 35 19 / 18%); }
+  .mega-inner h2 { margin: 0 0 11px; color: #164f32; font-size: .7rem; text-transform: uppercase; letter-spacing: .13em; }
+  .mega-inner ul { margin: 0; padding: 0; list-style: none; }
+  .mega-inner > section li + li { margin-top: 9px; }
+  .mega-inner > section a { color: #34453a; font-size: .9rem; line-height: 1.3; text-decoration: none; }
+  .mega-inner > section a span { float: right; opacity: 0; transform: translateX(-5px); transition: .18s ease; }
+  .mega-inner > section a:hover span, .mega-inner > section a:focus span { opacity: 1; transform: translateX(0); }
+  .mega-inner > section a:hover { color: #21703c; text-decoration: underline; text-underline-offset: 3px; }
+  .club-mega { grid-template-columns: minmax(0, 1fr) minmax(300px, 350px); align-items:start; gap:32px; }
+  .mega-directory { min-width:0; }
+  .mega-directory-head { margin-bottom:18px; padding-bottom:11px; display:flex; align-items:center; justify-content:space-between; gap:22px; border-bottom:1px solid #d9e1db; }
+  .mega-directory-head > span { color:#6c7c71; font-size:.68rem; font-weight:850; letter-spacing:.13em; text-transform:uppercase; }
+  .mega-directory-head > a { display:flex; align-items:center; gap:13px; color:#164f32; font-size:.72rem; font-weight:850; text-decoration:none; }
+  .mega-directory-head > a b { display:grid; place-items:center; width:25px; aspect-ratio:1; border-radius:50%; background:#f4d638; transition:.18s ease; }
+  .mega-directory-head > a:hover b { transform:translate(2px,-2px); }
+  .mega-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:21px 26px; }
+  .mega-group { min-width:0; padding-top:9px; border-top:3px solid #164f32; }
+  .mega-group h2 { display:flex; align-items:center; min-height:18px; margin-bottom:5px; color:#164f32; font-size:.69rem; }
+  .mega-group li { border-bottom:1px solid #e5eae6; }
+  .mega-group a { min-height:31px; padding:5px 6px 5px 0; box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; gap:12px; color:#2d3d33; font-size:.79rem; line-height:1.2; text-decoration:none; transition:padding .16s ease,color .16s ease,background .16s ease; }
+  .mega-group a::before { content:''; width:0; height:14px; flex:0 0 auto; border-left:3px solid transparent; transition:.16s ease; }
+  .mega-group a > span { margin-left:auto; color:#164f32; opacity:0; transform:translateX(-5px); transition:.16s ease; }
+  .mega-group a:hover,.mega-group a:focus { padding-left:8px; outline:none; background:#f3f6f3; color:#164f32; font-weight:750; }
+  .mega-group a:hover::before,.mega-group a:focus::before { border-color:#f4d638; }
+  .mega-group a:hover > span,.mega-group a:focus > span { opacity:1; transform:translateX(0); }
+  .club-preview { position:sticky; top:0; min-height:315px; aspect-ratio:4 / 3; overflow:hidden; border-radius:7px; background:#164f32; box-shadow:10px 10px 0 #f4d638; }
+  .club-preview::after { content:''; position:absolute; z-index:1; inset:38% 0 0; background:linear-gradient(transparent,rgb(6 31 21 / 94%)); }
+  .club-preview img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity .2s ease; }
+  .club-preview img[hidden] { display:none; }
+  .club-placeholder { position:absolute; inset:0; display:grid; place-content:center; justify-items:center; gap:10px; overflow:hidden; background:linear-gradient(140deg,#092f20,#1d6941); opacity:0; transition:opacity .18s ease; }
+  .club-placeholder::before,.club-placeholder::after { content:''; position:absolute; width:310px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 18%); border-radius:50%; }
+  .club-placeholder::before { left:-150px; top:-130px; box-shadow:0 0 0 45px rgb(255 255 255 / 3%); }
+  .club-placeholder::after { right:-185px; bottom:-190px; }
+  .club-placeholder > img { position:relative; z-index:1; display:block; width:96px; height:96px; object-fit:contain; filter:drop-shadow(0 9px 18px rgb(0 0 0 / 22%)); }
+  .club-placeholder small { position:relative; z-index:1; color:#b8cdbf; font-size:.64rem; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
+  .club-preview.is-placeholder .club-placeholder { opacity:1; }
+  .club-preview-copy { position:absolute; z-index:2; left:24px; right:24px; bottom:22px; color:white; }
+  .club-preview-copy span,.club-preview-copy strong { display:block; }
+  .club-preview-copy span { margin-bottom:6px; color:#f4d638; font-size:.64rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+  .club-preview-copy strong { font-size:1.25rem; line-height:1.2; }
+  .menu-toggle { display: none; padding: 10px; border: 0; background: transparent; }
+  .menu-toggle > span:not(.sr-only) { display: block; width: 26px; height: 2px; margin: 5px 0; background: #173d28; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+  @media (max-width: 980px) {
+    .top-location { display:none !important; }
+    .menu-toggle { display: block; cursor: pointer; }
+    nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: calc(100vh - 90px); overflow-y: auto; background: #fff; box-shadow: 0 20px 30px rgb(15 35 19 / 14%); }
+    nav.is-open { display: block; }
+    .menu { height: auto; display: block; padding: 14px 20px 26px; }
+    .menu-item { height: auto; display: block; border-bottom: 1px solid #e4eae5; }
+    .menu-link { height: auto; justify-content: space-between; padding: 16px 4px; }
+    .mega-menu { position: static; width: auto; padding: 0; opacity: 1; visibility: visible; transform: none; }
+    .mega-inner { width: auto; max-height:none; padding: 3px 4px 20px 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; overflow:visible; border: 0; box-shadow: none; }
+    .club-mega { display:block; }
+    .mega-directory-head { margin-bottom:18px; }
+    .mega-directory-head > a { display:none; }
+    .mega-groups { gap:26px 24px; }
+    .club-preview { display: none; }
+    .join { display: inline-block; margin: 22px 0 0; }
+  }
+  @media (max-width: 620px) {
+    .shell { width: min(100% - 28px, 1180px); }
+    .topbar-inner { min-height:44px; justify-content:space-between; gap:10px; }
+    .topbar-contact { gap:12px; }.topbar-contact > a:nth-child(2),.quick-links a:not(:last-child) { display:none; }
+    .top-icon { width:28px; }.top-copy small { display:none; }.top-copy strong { font-size:.62rem; }
+    .quick-links { margin-left: 0; }
+    .navigation { min-height: 74px; }
+    .brand-mark { width:50px; height:50px; }
+    .brand strong { font-size: .92rem; }
+    .mega-inner,.mega-groups { grid-template-columns: 1fr; }
+  }
+</style>
