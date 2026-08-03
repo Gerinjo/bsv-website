@@ -47,12 +47,12 @@ export const menu: MenuItem[] = [
   {
     label: 'Fußball', href: '/fussball', groups: [
       { title: 'Herren', links: [
-        { label: 'BSV Nordstern Radolfzell · Bezirksliga', href: '/fussball/herren/bezirksliga' },
-        { label: 'SG Herren 2', href: '/fussball/herren/kreisliga-2' },
+        { label: 'BSV Nordstern Radolfzell · Kreisliga B Staffel 1', href: '/fussball/herren/bezirksliga' },
+        { label: 'SG Herren 2 · Kreisliga C Staffel 1', href: '/fussball/herren/kreisliga-2' },
       ]},
       { title: 'Frauen', links: [
-        { label: 'SG Frauen 1', href: '/fussball/frauen/bezirksliga' },
-        { label: 'SG Frauen 2', href: '/fussball/frauen/kreisliga' },
+        { label: 'SG Frauen 1 · Bezirksliga Bodensee', href: '/fussball/frauen/bezirksliga' },
+        { label: 'SG Frauen 2 · Kreisliga A', href: '/fussball/frauen/kreisliga' },
       ]},
       { title: 'Alte Herren', links: [
         { label: 'Ü35 Senioren', href: '/fussball/alte-herren' },

@@ -29,6 +29,12 @@ export type TeamPartner = {
   href?: string;
 };
 
+export type TeamSponsor = {
+  name: string;
+  image: string;
+  href: string;
+};
+
 export type TeamProfile = {
   path: string;
   kicker: string;
@@ -45,6 +51,8 @@ export type TeamProfile = {
   partners?: TeamPartner[];
   squad?: string[];
   letter: string;
+  fussballDeUrl?: string;
+  sponsor?: TeamSponsor;
 };
 
 type TeamConfig = Omit<TeamProfile, 'coaches' | 'gallery' | 'squad'> & {
@@ -201,22 +209,30 @@ const dGirlsGallery: TeamPhoto[] = [
 
 const configs: TeamConfig[] = [
   {
-    path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: `${menFirstTeamName} · Bezirksliga`, headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
-    opening: ['Unsere erste Herrenmannschaft spielt in der Bezirksliga und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
+    path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: `${menFirstTeamName} · Kreisliga B Staffel 1`, headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
+    fussballDeUrl: 'https://www.fussball.de/mannschaft/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/011MICLVK0000000VTVG0001VTR8C1K7',
+    sponsor: {
+      name: 'Sparkasse Hegau-Bodensee',
+      image: '/images/sponsors/sparkasse-hegau-bodensee.png',
+      href: 'https://www.sparkasse-hegau-bodensee.de/',
+    },
+    opening: ['Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1 und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trial: 'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image: '/images/migration/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg', showSquad: true,
     gallery: [{ src: '/images/migration/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
   },
   {
-    path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga 2`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
-    opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga 2.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
+    path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga C Staffel 1`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
+    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-markelfingen-bsv-n-radolfz-2-sv-markelfingen-suedbaden/-/saison/2627/team-id/011MIBT808000000VTVG0001VTR8C1K7',
+    opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga C Staffel 1.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trial: 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image: '/images/migration/27f7788e85-BSV-Herren-2-2526.jpg', showSquad: true,
   },
   {
-    path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Bezirksliga`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
+    path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Frauen Bezirksliga Bodensee`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
+    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/01A2FGUHDO000000VV0AG80NVSEJ47CH',
     opening: [`Unsere erste Frauenmannschaft tritt als ${womenAssociationName} an.`, 'Sie spielt in der Bezirksliga und verbindet Spielerinnen aller drei Partnervereine in einer gemeinsamen Mannschaft.'],
     partners: womenPartners,
     trainingLead: 'Die aktuellen Trainingszeiten erhältst du direkt beim Trainerteam.',
@@ -225,7 +241,8 @@ const configs: TeamConfig[] = [
     coaches: [{ name: 'Matthias Becht', role: 'Trainer' }],
   },
   {
-    path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Kreisliga`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
+    path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Frauen Kreisliga A`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
+    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-2-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/03163NI9R0000000VS5489BSVSCPI5U4',
     opening: [`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} 2 an.`, 'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'],
     partners: womenPartners,
     trainingLead: 'Die aktuellen Trainingszeiten erhältst du direkt beim Trainerteam.',

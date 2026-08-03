@@ -624,11 +624,22 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
       {teamProfile && (
         <div class="d-girls-page team-profile-page">
           <section class="d-girls-opening">
-            <div class="d-girls-heading"><span>{teamProfile.kicker}</span><h2 set:html={teamProfile.headline} /></div>
+            <div class="d-girls-heading">
+              <span>{teamProfile.kicker}</span>
+              <h2 set:html={teamProfile.headline} />
+            </div>
             <div class="d-girls-copy">
               {teamProfile.opening.map((paragraph) => <p>{paragraph}</p>)}
+              {teamProfile.fussballDeUrl && <a class="team-fussball-de-link" href={teamProfile.fussballDeUrl} target="_blank" rel="noreferrer"><span class="team-fussball-de-mark" aria-hidden="true">F</span><span>Team auf FUSSBALL.DE ansehen</span><b aria-hidden="true">↗</b></a>}
               {teamProfile.partners && (
                 <div class="team-partners"><small>Spielgemeinschaft mit</small><div>{teamProfile.partners.map((partner) => partner.href ? <a href={partner.href} target="_blank" rel="noreferrer">{partner.label}<span aria-hidden="true">↗</span></a> : <span>{partner.label}</span>)}</div></div>
+              )}
+              {teamProfile.sponsor && (
+                <a class="team-sponsor" href={teamProfile.sponsor.href} target="_blank" rel="noreferrer" aria-label={`${teamProfile.sponsor.name}, Sponsor der ersten Herrenmannschaft`}>
+                  <small>Sponsor der ersten Herrenmannschaft</small>
+                  <img src={withBase(teamProfile.sponsor.image)} alt={teamProfile.sponsor.name} loading="lazy" />
+                  <span>Website besuchen <b aria-hidden="true">↗</b></span>
+                </a>
               )}
               {teamProfile.squad && (
                 <details class="team-squad"><summary>Mannschaftsaufstellung ansehen <span aria-hidden="true">+</span></summary><div>{teamProfile.squad.map((line) => <p>{line}</p>)}</div></details>
@@ -997,6 +1008,11 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-page { --girls-line:#d4ddd6; }
   .d-girls-opening { padding-bottom:105px; display:grid; grid-template-columns:.8fr 1.2fr; gap:90px; }
   .d-girls-heading > span,.training-intro > span,.d-girls-section-head > div > span,.d-girls-cta small { color:var(--green); font-size:.68rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .team-fussball-de-link { width:max-content; max-width:100%; margin-top:24px; padding:13px 16px 13px 13px; display:inline-flex; align-items:center; gap:11px; background:var(--green); color:white; font-size:.72rem; font-weight:900; text-decoration:none; box-shadow:0 8px 20px rgb(9 47 32 / 15%); transition:box-shadow .2s ease,transform .2s ease; }
+  .team-fussball-de-mark { width:27px; aspect-ratio:1; display:grid; place-items:center; flex:0 0 auto; background:var(--yellow); color:var(--green); font-size:.72rem; font-weight:950; }
+  .team-fussball-de-link b { margin-left:2px; color:var(--yellow); font-size:.9rem; transition:transform .2s ease; }
+  .team-fussball-de-link:hover { box-shadow:0 12px 28px rgb(9 47 32 / 24%); transform:translateY(-2px); }
+  .team-fussball-de-link:hover b { transform:translate(2px,-2px); }
   .d-girls-heading h2,.training-intro h2,.d-girls-section-head h2,.d-girls-cta h2 { margin:14px 0 0; color:var(--ink); font-size:clamp(3rem,5vw,4.8rem); line-height:.92; letter-spacing:-.06em; }
   .d-girls-heading h2 em { color:var(--green); font-family:Georgia,serif; font-weight:400; }
   .d-girls-copy p { color:#5b6b61; font-size:1.05rem; line-height:1.8; }
@@ -1008,6 +1024,12 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .team-partners a span { color:var(--green); }
   .team-partners a:hover { color:white; background:var(--green); }
   .team-partners a:hover span { color:var(--yellow); }
+  .team-sponsor { margin-top:28px; padding:20px 22px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px 24px; border:1px solid #e0e5e1; background:white; color:var(--ink); text-decoration:none; transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease; }
+  .team-sponsor small { grid-column:1/-1; color:#6d7b72; font-size:.62rem; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
+  .team-sponsor img { width:min(100%,330px); height:auto; display:block; }
+  .team-sponsor > span { display:flex; align-items:center; gap:7px; color:var(--green); font-size:.68rem; font-weight:900; white-space:nowrap; text-transform:uppercase; }
+  .team-sponsor b { color:var(--ink); font-size:.85rem; }
+  .team-sponsor:hover { border-color:#bdc9c0; box-shadow:0 12px 30px rgb(9 47 32 / 9%); transform:translateY(-2px); }
   .team-squad { margin-top:26px; border-top:1px solid var(--girls-line); border-bottom:1px solid var(--girls-line); }
   .team-squad summary { padding:17px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; color:var(--green); font-size:.72rem; font-weight:900; cursor:pointer; list-style:none; }
   .team-squad summary::-webkit-details-marker { display:none; }
@@ -1096,7 +1118,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-cta > a span { color:var(--yellow); }
   @media(max-width:900px){.d-girls-opening,.d-girls-training{grid-template-columns:1fr;gap:45px}.coach-card{grid-template-columns:145px 1fr;padding:30px}.coach-portrait{width:145px}.d-girls-cta{grid-template-columns:1fr}.d-girls-cta>a{justify-self:start}}
   @media(max-width:700px){.d-girls-section-head{align-items:flex-start;flex-direction:column}.coach-grid{grid-template-columns:1fr}.coach-grid.is-single .coach-card{grid-column:1}.d-girls-gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:230px}.gallery-tile,.gallery-tile:nth-child(1),.gallery-tile:nth-child(2){grid-column:span 1;grid-row:span 1}.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:span 2;grid-row:span 1}.gallery-tile:nth-child(6) img{object-position:center 22%}}
-  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}}
+  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-sponsor{grid-template-columns:1fr}.team-sponsor>span{justify-self:start}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}}
 
   .referee-hero .hero-grid { grid-template-columns:minmax(0,1fr) minmax(360px,390px); gap:50px; }
   .referee-hero h1 { font-size:clamp(3.2rem,4.6vw,4.15rem); }
