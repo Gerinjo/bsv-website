@@ -214,7 +214,7 @@ const configs: TeamConfig[] = [
     path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: `${menFirstTeamName} · Kreisliga B Staffel 1`, headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
     fussballDeUrl: 'https://www.fussball.de/mannschaft/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/011MICLVK0000000VTVG0001VTR8C1K7',
     fussballDeWidgetId: 'af96d999-a7ba-432a-87c5-439ab401516d',
-    fussballDeTableWidgetId: '0a839765-d34b-4385-a2d1-959dd633f887',
+    fussballDeTableWidgetId: '52d29828-708d-438f-be85-3c8b47a58b44',
     sponsor: {
       name: 'Sparkasse Hegau-Bodensee',
       image: '/images/sponsors/sparkasse-hegau-bodensee.png',
