@@ -1,16 +1,5 @@
 <?php
-declare(strict_types=1);
-
 header('Content-Type: application/json; charset=utf-8');
-session_start();
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $a = random_int(2, 9);
-    $b = random_int(1, 9);
-    $_SESSION['contact_captcha'] = $a + $b;
-    echo json_encode(['ok' => true, 'a' => $a, 'b' => $b]);
-    exit;
-}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -56,29 +45,23 @@ foreach ($teamRecipients as $key => $address) {
     $recipients['team--' . $key . '--general'] = $address;
 }
 
-$value = static fn(string $key): string => trim((string)($_POST[$key] ?? ''));
+$value = static function ($key) {
+    return trim((string)(isset($_POST[$key]) ? $_POST[$key] : ''));
+};
 $topic = $value('topic');
 $firstName = $value('firstName');
 $lastName = $value('lastName');
 $phone = $value('phone');
 $email = filter_var($value('email'), FILTER_VALIDATE_EMAIL);
 $message = $value('message');
-$captchaAnswer = filter_var($value('captchaAnswer'), FILTER_VALIDATE_INT);
 
 if ($value('website') !== '') {
     echo json_encode(['ok' => true]);
     exit;
 }
-if (!isset($recipients[$topic]) || mb_strlen($firstName) < 2 || mb_strlen($lastName) < 2 || !$email || mb_strlen($message) < 10 || mb_strlen($message) > 5000) {
+if (!isset($recipients[$topic]) || strlen($firstName) < 2 || strlen($lastName) < 2 || !$email || strlen($message) < 10 || strlen($message) > 5000) {
     http_response_code(422);
     echo json_encode(['ok' => false, 'message' => 'Bitte prüfe deine Eingaben.']);
-    exit;
-}
-$expectedCaptcha = $_SESSION['contact_captcha'] ?? null;
-unset($_SESSION['contact_captcha']);
-if ($captchaAnswer === false || !is_int($expectedCaptcha) || $expectedCaptcha !== $captchaAnswer) {
-    http_response_code(422);
-    echo json_encode(['ok' => false, 'message' => 'Die Antwort beim Spamschutz ist nicht richtig.']);
     exit;
 }
 if ($value('privacy') !== 'accepted') {
@@ -87,8 +70,13 @@ if ($value('privacy') !== 'accepted') {
     exit;
 }
 
-$clean = static fn(string $text): string => str_replace(["\r", "\n"], ' ', $text);
-$inquiry = str_ends_with($topic, '--friendly') ? 'Freundschaftsspiel' : (str_ends_with($topic, '--trial') ? 'Probetraining' : 'Kontaktanfrage');
+$clean = static function ($text) {
+    return str_replace(["\r", "\n"], ' ', $text);
+};
+$endsWith = static function ($text, $suffix) {
+    return $suffix === '' || substr($text, -strlen($suffix)) === $suffix;
+};
+$inquiry = $endsWith($topic, '--friendly') ? 'Freundschaftsspiel' : ($endsWith($topic, '--trial') ? 'Probetraining' : 'Kontaktanfrage');
 $subject = 'BSV Website: ' . $inquiry . ' von ' . $clean($firstName . ' ' . $lastName);
 $body = "Neue Anfrage über bsvnordstern.de\n\n" .
     "Thema: {$topic}\n" .

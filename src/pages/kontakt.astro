@@ -29,7 +29,6 @@ import { withBase } from '../utils/paths';
           <div class="field"><label for="phone">Telefon <small>(optional)</small></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
           <div class="field"><label for="email">E-Mail</label><input id="email" name="email" type="email" autocomplete="email" maxlength="160" required /></div>
           <div class="field full"><label for="message">Deine Nachricht</label><textarea id="message" name="message" rows="8" minlength="10" maxlength="5000" required></textarea></div>
-          <div class="field captcha"><label for="captcha-answer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" required /></div>
           <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
           <label class="privacy"><input type="checkbox" name="privacy" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz')}>Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
           <div class="submit-row"><button type="submit">Nachricht senden <span>↗</span></button><p id="form-status" role="status"></p></div>
@@ -53,18 +52,6 @@ import { withBase } from '../utils/paths';
   const button = form.querySelector('button[type="submit"]');
   const fixedById = new Map(fixedTopics.map((topic) => [topic.id, topic]));
 
-  const createCaptcha = async () => {
-    document.querySelector('#captcha-answer').value = '';
-    try {
-      const response = await fetch(form.action, { headers: { Accept: 'application/json' } });
-      const challenge = await response.json();
-      if (!response.ok || !challenge.ok) throw new Error();
-      document.querySelector('#captcha-question').textContent = `${challenge.a} + ${challenge.b}`;
-    } catch {
-      document.querySelector('#captcha-question').textContent = '? + ?';
-      status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
-    }
-  };
   const populateTeams = (group, selectedKey = '') => {
     teamSelect.innerHTML = '<option value="">Bitte Mannschaft auswählen …</option>';
     teams.filter((team) => team.group === group).forEach((team) => teamSelect.add(new Option(team.name, team.key, false, team.key === selectedKey)));
@@ -111,7 +98,6 @@ import { withBase } from '../utils/paths';
     requestType.value = requestedTopic.split('--').at(-1) ?? '';
   } else if (requestedTopic && fixedById.has(requestedTopic)) area.value = requestedTopic;
   updateTopic();
-  createCaptcha();
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -128,11 +114,9 @@ import { withBase } from '../utils/paths';
       teamField.hidden = true;
       requestField.hidden = true;
       description.textContent = 'Bitte wähle zunächst einen Eintrag aus der Liste.';
-      await createCaptcha();
       status.textContent = 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
     } catch (error) {
       status.textContent = error instanceof Error ? error.message : 'Die Nachricht konnte nicht gesendet werden.';
-      await createCaptcha();
     } finally { button.disabled = false; }
   });
 </script>
