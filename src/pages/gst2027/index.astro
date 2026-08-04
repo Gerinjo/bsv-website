@@ -1,0 +1,236 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Layout from '../../layouts/Layout.astro';
+
+const registrationApiUrl = import.meta.env.PUBLIC_GST2027_API_URL ?? '';
+
+const competitions = [
+  'Mix 1. & 2. Klasse',
+  'Mädchen 1. & 2. Klasse',
+  'Mix 3. & 4. Klasse',
+  'Mädchen 3. & 4. Klasse',
+];
+
+const schools = [
+  'Bitte auswählen',
+  'Ratoldusschule',
+  'Sonnenrainschule',
+  'Storchenschule Böhringen',
+  'Grundschule Güttingen',
+  'Grundschule Liggeringen',
+  'Grundschule Markelfingen',
+  'Grundschule Möggingen',
+  'Grundschule Stahringen',
+  'Andere Grundschule',
+];
+---
+
+<Layout
+  title="Zeller Grundschulturnier 2027 – BSV Nordstern Radolfzell"
+  description="Informationen und Mannschaftsanmeldung zum Zeller Grundschulturnier 2027 beim BSV Nordstern Radolfzell."
+>
+  <Header />
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <p class="kicker"><span></span> Junge Sterne · GST 2027</p>
+          <h1>Zeller<br /><em>Grundschulturnier</em><br />2027</h1>
+          <p class="intro">Mit Unterstützung der Bürgerstiftung Radolfzell bringen wir die Radolfzeller Grundschulen wieder gemeinsam auf den Platz.</p>
+        </div>
+        <aside class="event-card">
+          <span>Termin</span>
+          <strong>Wird noch bekannt gegeben</strong>
+          <span>Austragungsort</span>
+          <strong>Sportgelände BSV Nordstern Radolfzell</strong>
+          <span>Anmeldeschluss</span>
+          <strong>Wird noch bekannt gegeben</strong>
+        </aside>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="shell article-grid">
+        <article>
+          <p class="kicker dark"><span></span> Das Turnier</p>
+          <h2>Bewegung, Teamgeist und Schulgemeinschaft.</h2>
+          <p>Wir freuen uns, das Zeller Grundschulturnier auch 2027 in Kooperation mit den Radolfzeller Grundschulen auszurichten. Das Turnier ist ein regionaler Sport- und Begegnungstag für Kinder der 1. bis 4. Klasse.</p>
+          <p>Im Mittelpunkt stehen Freude an Bewegung, Fairplay, respektvolles Miteinander, Teamgeist sowie die Integration kleiner und großer Schulen. Jede Mannschaft absolviert mindestens drei Spiele.</p>
+
+          <h3>Wettbewerbe und Altersklassen</h3>
+          <ul>{competitions.map((competition) => <li>{competition}</li>)}</ul>
+          <p>Mädchen dürfen sowohl in einer Mix-Mannschaft als auch zusätzlich in einem reinen Mädchenteam spielen. Jeder Wettbewerb erhält einen eigenen Turnierblock und eine eigene Siegerehrung.</p>
+
+          <h3>Spielform</h3>
+          <div class="facts">
+            <div><strong>4+1</strong><span>Vier Feldspieler:innen und ein Torwart bzw. eine Torhüterin</span></div>
+            <div><strong>8</strong><span>Maximal acht Kinder pro Mannschaft</span></div>
+            <div><strong>10 Min.</strong><span>Spielzeit ohne Seitenwechsel</span></div>
+            <div><strong>3+</strong><span>Mindestens drei Spiele pro Team</span></div>
+          </div>
+          <p>Fliegende Wechsel sind jederzeit möglich. Nach einem Tor zieht sich die erfolgreiche Mannschaft vollständig in die eigene Hälfte zurück. Beim Seitenaus wird der Ball nicht eingeworfen, sondern von der Seitenlinie ins Feld eingedribbelt. Vor einem Torabschluss muss der Ball mindestens einmal abgespielt worden sein.</p>
+
+          <h3>Spielgemeinschaften</h3>
+          <p>Spielgemeinschaften sind ausschließlich in den beiden Mädchenwettbewerben und nur zwischen Ortsteil-Grundschulen zulässig. Sie sollen die Teilnahme ermöglichen und keinen sportlichen Vorteil schaffen. In Mix-Wettbewerben sind keine Spielgemeinschaften erlaubt.</p>
+
+          <h3>Auszeichnungen und Grundschulmeister</h3>
+          <p>Alle Kinder erhalten mindestens eine Medaille. Die Sieger jeder Altersklasse erhalten einen Wanderpokal. Zusätzlich wird der Wanderpokal „Grundschulmeister“ für die beste Gesamtleistung einer Schule vergeben.</p>
+          <div class="points">
+            <span>1. Platz · 10 Punkte</span><span>2. Platz · 8 Punkte</span><span>3. Platz · 6 Punkte</span><span>4. Platz · 5 Punkte</span><span>5. Platz · 4 Punkte</span><span>6. Platz · 3 Punkte</span><span>7. Platz · 2 Punkte</span><span>8. Platz · 1 Punkt</span>
+          </div>
+          <p>Pro Schule und Wettbewerb zählt ausschließlich das bestplatzierte Team. Spielgemeinschaften teilen sich die erzielten Punkte.</p>
+
+          <h3>Beteiligung der Schulen</h3>
+          <p>Der BSV Nordstern stellt die Spielstätte, die Turnierleitung, Helferinnen und Helfer sowie die organisatorische Infrastruktur zur Verfügung. Als Beteiligung ist wie 2026 vorgesehen:</p>
+          <ul>
+            <li>Mädchenmannschaften: einmal Waffelteig pro teilnehmender Mannschaft</li>
+            <li>Jungen-/Mix-Mannschaften: ein Kuchen pro teilnehmender Mannschaft</li>
+          </ul>
+        </article>
+
+        <aside class="side-note">
+          <strong>Wichtig</strong>
+          <p>Die konkrete Tagesstruktur richtet sich nach der Zahl der Anmeldungen. Startzeiten, Blockeinteilung und Ablauf können deshalb angepasst werden.</p>
+          <p>Bitte für jede Mannschaft eine eigene Anmeldung absenden.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="registration-section" id="anmeldung">
+      <div class="shell form-shell">
+        <div class="form-intro">
+          <p class="kicker light"><span></span> Anmeldung</p>
+          <h2>Mannschaft für das GST 2027 anmelden.</h2>
+          <p>Die Anmeldung wird nach dem Absenden geprüft. Anschließend erhält die angegebene Kontaktperson eine Rückmeldung.</p>
+        </div>
+
+        <form id="gst2027-form" data-endpoint={registrationApiUrl} novalidate>
+          <fieldset>
+            <legend>Kontaktperson</legend>
+            <div class="two-columns">
+              <label>Vorname *<input name="vorname" required maxlength="80" autocomplete="given-name" /></label>
+              <label>Nachname *<input name="nachname" required maxlength="80" autocomplete="family-name" /></label>
+            </div>
+            <div class="two-columns">
+              <label>E-Mail-Adresse *<input name="email" type="email" required maxlength="200" autocomplete="email" /></label>
+              <label>Telefon / Mobilnummer *<input name="telefon" type="tel" required maxlength="50" autocomplete="tel" /></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Grundschule und Mannschaft</legend>
+            <label>Name der Grundschule *
+              <select name="grundschule" required>
+                {schools.map((school, index) => <option value={index === 0 ? '' : school}>{school}</option>)}
+              </select>
+            </label>
+            <label class="other-school" hidden>Andere Grundschule *<input name="andereGrundschule" maxlength="140" /></label>
+            <label>Altersklasse *
+              <select name="altersklasse" required>
+                <option value="">Bitte auswählen</option>
+                {competitions.map((competition) => <option value={competition}>{competition}</option>)}
+              </select>
+            </label>
+            <label>Kreativer Mannschaftsname *<input name="mannschaftsname" required maxlength="120" /></label>
+            <label>Weitere Informationen<textarea name="weitereInformationen" maxlength="1500" rows="5"></textarea></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Beteiligung und Datenschutz</legend>
+            <label class="checkbox"><input name="turniergebuehr" type="checkbox" required /><span>Ich habe die vorgesehene Beteiligung der Schule zur Kenntnis genommen. *</span></label>
+            <label class="checkbox"><input name="datenschutz" type="checkbox" required /><span>Ich stimme der Verarbeitung der Angaben zur Organisation und Durchführung des GST 2027 zu. *</span></label>
+          </fieldset>
+
+          <div class="honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+
+          <button type="submit">Anmeldung versenden <span>→</span></button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+          {!registrationApiUrl && <p class="setup-note">Das Formular ist vorbereitet. Vor der Freischaltung muss noch die Supabase-API-Adresse als <code>PUBLIC_GST2027_API_URL</code> hinterlegt werden.</p>}
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#gst2027-form');
+  const status = form?.querySelector<HTMLElement>('.form-status');
+  const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const schoolSelect = form?.querySelector<HTMLSelectElement>('select[name="grundschule"]');
+  const otherSchool = form?.querySelector<HTMLElement>('.other-school');
+  const otherSchoolInput = form?.querySelector<HTMLInputElement>('input[name="andereGrundschule"]');
+
+  const updateOtherSchool = () => {
+    const visible = schoolSelect?.value === 'Andere Grundschule';
+    if (otherSchool) otherSchool.hidden = !visible;
+    if (otherSchoolInput) otherSchoolInput.required = visible;
+  };
+
+  schoolSelect?.addEventListener('change', updateOtherSchool);
+  updateOtherSchool();
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity() || !status || !submit) return;
+
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      status.textContent = 'Die Online-Anmeldung ist noch nicht freigeschaltet.';
+      return;
+    }
+
+    submit.disabled = true;
+    status.textContent = 'Die Anmeldung wird übermittelt …';
+
+    const data = new FormData(form);
+    const payload = Object.fromEntries(data.entries());
+    payload.turniergebuehr = data.get('turniergebuehr') === 'on';
+    payload.datenschutz = data.get('datenschutz') === 'on';
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || 'Die Anmeldung konnte nicht gespeichert werden.');
+      status.textContent = result.message || 'Vielen Dank! Die Anmeldung wurde gespeichert.';
+      form.reset();
+      updateOtherSchool();
+    } catch (error) {
+      status.textContent = error instanceof Error ? error.message : 'Die Anmeldung konnte nicht gespeichert werden.';
+    } finally {
+      submit.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  :global(:root) { --green: #164f32; --green-dark: #092f20; --yellow: #f4d638; --cream: #f4f1e8; --ink: #10251a; }
+  .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+  .hero { padding: 90px 0; color: white; background: var(--green); }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 70px; align-items: center; }
+  .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .kicker > span { width: 27px; height: 3px; background: var(--yellow); }.kicker.dark { color: var(--green); }.kicker.light { color: #b5d8c2; }
+  h1, h2, h3, p { margin-top: 0; } h1, h2 { letter-spacing: -.05em; }
+  h1 { margin-bottom: 25px; font-size: clamp(3.5rem, 7vw, 6.5rem); line-height: .88; } h1 em { color: var(--yellow); font-family: Georgia, serif; font-weight: 400; }
+  .intro { max-width: 650px; color: #d4e4da; font-size: 1.15rem; line-height: 1.65; }
+  .event-card { display: grid; gap: 8px; padding: 34px; border-left: 7px solid var(--yellow); background: white; color: var(--ink); box-shadow: 14px 16px 0 rgb(9 47 32 / 45%); }
+  .event-card span { margin-top: 12px; color: #748178; font-size: .68rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }.event-card span:first-child { margin-top: 0; }.event-card strong { font-size: 1.05rem; }
+  .content-section { padding: 100px 0; background: white; }.article-grid { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 70px; align-items: start; }
+  article h2, .form-intro h2 { margin-bottom: 28px; font-size: clamp(2.6rem, 5vw, 4.5rem); line-height: .95; } article h3 { margin: 52px 0 16px; font-size: 1.55rem; } article p, article li { color: #56665c; line-height: 1.72; } article ul { padding-left: 22px; }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }.facts div { padding: 22px; background: var(--cream); }.facts strong, .facts span { display: block; }.facts strong { color: var(--green); font-size: 1.7rem; }.facts span { margin-top: 8px; color: #5e6b63; font-size: .82rem; line-height: 1.4; }
+  .points { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }.points span { padding: 8px 12px; border-radius: 3px; background: #e8efe9; color: var(--green); font-size: .78rem; font-weight: 800; }
+  .side-note { position: sticky; top: 25px; padding: 28px; border-top: 6px solid var(--yellow); background: var(--green-dark); color: white; }.side-note strong { font-size: 1.25rem; }.side-note p { margin: 14px 0 0; color: #c9dbd0; line-height: 1.55; }
+  .registration-section { padding: 100px 0; color: white; background: var(--green-dark); }.form-shell { display: grid; grid-template-columns: .7fr 1.3fr; gap: 70px; align-items: start; }.form-intro { position: sticky; top: 30px; }.form-intro h2 { color: white; }.form-intro > p:last-child { color: #b8cfc1; line-height: 1.65; }
+  form { display: grid; gap: 24px; padding: 34px; border-radius: 6px; background: white; color: var(--ink); } fieldset { display: grid; gap: 17px; margin: 0; padding: 0 0 27px; border: 0; border-bottom: 1px solid #dce4de; } fieldset:last-of-type { padding-bottom: 0; border-bottom: 0; } legend { margin-bottom: 18px; color: var(--green); font-size: 1.15rem; font-weight: 900; }
+  label { display: grid; gap: 7px; font-size: .82rem; font-weight: 800; } .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; } input, select, textarea { width: 100%; padding: 12px 13px; border: 1px solid #bdc9c0; border-radius: 3px; background: white; font: inherit; color: var(--ink); } textarea { resize: vertical; }.checkbox { grid-template-columns: auto 1fr; align-items: start; gap: 10px; font-weight: 600; line-height: 1.5; }.checkbox input { width: auto; margin-top: 3px; }
+  button { display: inline-flex; justify-content: space-between; align-items: center; min-height: 54px; padding: 0 20px; border: 0; border-radius: 4px; background: var(--yellow); color: var(--green-dark); font: inherit; font-weight: 900; cursor: pointer; } button:disabled { cursor: wait; opacity: .6; }.form-status { min-height: 1.4rem; margin: 0; font-weight: 800; }.setup-note { margin: 0; padding: 12px; background: #fff7c7; color: #544b18; font-size: .8rem; line-height: 1.5; }.honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  @media (max-width: 900px) { .hero-grid, .article-grid, .form-shell { grid-template-columns: 1fr; }.side-note, .form-intro { position: static; }.facts { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .shell { width: min(100% - 28px, 1160px); }.hero { padding: 65px 0; }.content-section, .registration-section { padding: 70px 0; }.two-columns, .facts { grid-template-columns: 1fr; } form { padding: 22px; } }
+</style>
