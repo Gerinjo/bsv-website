@@ -76,6 +76,13 @@ $recipients = array(
     'youth' => 'jugend@bsvnordstern.de',
     'sponsoring' => 'sponsoring@bsvnordstern.de',
     'social' => 'socialmedia@bsvnordstern.de',
+    'finance' => 'kasse@bsvnordstern.de',
+    'match-operations' => 'Oliver.Schillinger@bsvnordstern.de',
+    'passwesen' => 'passwesen@bsvnordstern.de',
+    'referees' => 'Stefan.Gastaudo@bsvnordstern.de',
+    'archery' => 'Konrad.Mauz@bsvnordstern.de',
+    'gymnastics' => 'Heike.Seidel@bsvnordstern.de',
+    'hiking' => 'Thomas.Graf@bsvnordstern.de',
 );
 foreach ($teamRecipients as $key => $address) {
     $recipients['team--' . $key . '--trial'] = $address;
@@ -130,7 +137,7 @@ $body = "Neue Anfrage über bsvnordstern.de\n\n" .
     "E-Mail: {$email}\n" .
     "Telefon: " . ($phone !== '' ? $phone : 'nicht angegeben') . "\n\n" .
     "Nachricht:\n{$message}\n";
-    
+
 $headers = array(
     'From: BSV Nordstern <info@bsvnordstern.de>',
     'Reply-To: ' . $clean((string)$email),
