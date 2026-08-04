@@ -58,10 +58,41 @@ const contactPath = withBase('/kontakt');
 				});
 			};
 
-			if (document.readyState === 'loading') {
-				window.addEventListener('DOMContentLoaded', restoreDirectContactLinks, { once: true });
-			} else {
+			const correctCoachNames = () => {
+				const nameCorrections = new Map([
+					['Dana Bulander', 'Dana-Sophie Bulander'],
+					['Marlia Burlander', 'Marlia-Lena Bulander'],
+				]);
+
+				document.querySelectorAll('.coach-details h3, .legacy-content .uk-card-title').forEach((element) => {
+					const currentName = element.textContent?.trim() ?? '';
+					const correctedName = nameCorrections.get(currentName);
+					if (correctedName) element.textContent = correctedName;
+				});
+
+				document.querySelectorAll('[title], [alt], [aria-label]').forEach((element) => {
+					['title', 'alt', 'aria-label'].forEach((attribute) => {
+						const currentValue = element.getAttribute(attribute);
+						if (!currentValue) return;
+
+						let correctedValue = currentValue;
+						nameCorrections.forEach((correctName, oldName) => {
+							correctedValue = correctedValue.replaceAll(oldName, correctName);
+						});
+						if (correctedValue !== currentValue) element.setAttribute(attribute, correctedValue);
+					});
+				});
+			};
+
+			const enhancePage = () => {
 				restoreDirectContactLinks();
+				correctCoachNames();
+			};
+
+			if (document.readyState === 'loading') {
+				window.addEventListener('DOMContentLoaded', enhancePage, { once: true });
+			} else {
+				enhancePage();
 			}
 		</script>
 	</body>
