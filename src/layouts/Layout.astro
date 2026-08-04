@@ -1,10 +1,12 @@
 ---
+import { contactTeams } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string }
 const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell' } = Astro.props;
 const contactPath = withBase('/kontakt');
 const basePath = withBase('/');
+const teamPaths = contactTeams.map((team) => team.key.replaceAll('--', '/'));
 ---
 <!doctype html>
 <html lang="de">
@@ -19,7 +21,7 @@ const basePath = withBase('/');
 	</head>
 	<body>
 		<slot />
-		<script define:vars={{ contactPath, basePath }}>
+		<script define:vars={{ contactPath, basePath, teamPaths }}>
 			const topicByEmail = new Map([
 				['info@bsvnordstern.de', 'general'],
 				['sandra.fuchs@bsvnordstern.de', 'general'],
@@ -39,12 +41,10 @@ const basePath = withBase('/');
 			]);
 
 			const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
-			const currentPath = window.location.pathname.startsWith(normalizedBase)
+			const currentPath = (window.location.pathname.startsWith(normalizedBase)
 				? window.location.pathname.slice(normalizedBase.length)
-				: window.location.pathname.replace(/^\/+/, '');
-			const teamPath = /^(?:fussball\/(?:herren|frauen|alte-herren)|jugend\/)/.test(currentPath)
-				? currentPath.replace(/\/+$/, '')
-				: '';
+				: window.location.pathname.replace(/^\/+/, '')).replace(/\/+$/, '');
+			const teamPath = teamPaths.includes(currentPath) ? currentPath : '';
 
 			document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
 				const rawHref = link.getAttribute('href') ?? '';
