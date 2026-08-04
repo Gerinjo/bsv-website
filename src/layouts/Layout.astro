@@ -40,6 +40,29 @@ const contactPath = withBase('/kontakt');
 				const topic = topicByEmail.get(address);
 				link.setAttribute('href', topic ? `${contactPath}?thema=${encodeURIComponent(topic)}` : contactPath);
 			});
+
+			const restoreDirectContactLinks = () => {
+				document.querySelectorAll('.contact-toggle').forEach((toggle) => {
+					const revealedLink = toggle.nextElementSibling;
+					if (!(revealedLink instanceof HTMLAnchorElement) || !revealedLink.classList.contains('contact-value')) return;
+
+					const isEmail = toggle.classList.contains('is-email');
+					const directLink = document.createElement('a');
+					directLink.href = revealedLink.getAttribute('href') ?? '';
+					directLink.className = `contact-direct ${isEmail ? 'is-email' : 'is-phone'}`;
+					directLink.setAttribute('aria-label', revealedLink.getAttribute('aria-label') ?? (isEmail ? 'E-Mail schreiben' : 'Telefonnummer anrufen'));
+					directLink.textContent = isEmail ? '✉' : '☎';
+
+					toggle.replaceWith(directLink);
+					revealedLink.remove();
+				});
+			};
+
+			if (document.readyState === 'loading') {
+				window.addEventListener('DOMContentLoaded', restoreDirectContactLinks, { once: true });
+			} else {
+				restoreDirectContactLinks();
+			}
 		</script>
 	</body>
 </html>
@@ -57,4 +80,27 @@ const contactPath = withBase('/kontakt');
 	}
 	* { box-sizing: border-box; }
 	::selection { background: #f4d638; color: #092f20; }
+	:global(.contact-icons .contact-direct) {
+		width: 40px;
+		height: 40px;
+		display: grid;
+		place-items: center;
+		flex: 0 0 auto;
+		border: 1px solid rgb(9 47 32 / 22%);
+		border-radius: 50%;
+		background: white;
+		color: #164f32;
+		font-size: 1rem;
+		font-weight: 900;
+		line-height: 1;
+		text-decoration: none;
+		transition: .18s ease;
+	}
+	:global(.contact-icons .contact-direct:hover),
+	:global(.contact-icons .contact-direct:focus-visible) {
+		border-color: #f4d638;
+		background: #f4d638;
+		color: #092f20;
+		transform: translateY(-1px);
+	}
 </style>
