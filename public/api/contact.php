@@ -49,9 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $teamRecipients = array(
     'fussball--herren--bezirksliga' => 'Torsten.Parzich@bsvnordstern.de',
     'fussball--herren--kreisliga-2' => 'Alexander.Kaiser@bsvnordstern.de',
-    'fussball--frauen--bezirksliga' => 'info@bsvnordstern.de',
-    'fussball--frauen--kreisliga' => 'info@bsvnordstern.de',
-    'fussball--alte-herren' => 'info@bsvnordstern.de',
+    'fussball--frauen--bezirksliga' => 'Matthias.Becht@bsvnordstern.de',
+    'fussball--frauen--kreisliga' => 'Myriam.Lipp@bsvnordstern.de',
+    'fussball--alte-herren' => 'alteherren@bsvnordstern.de',
     'jugend--u11-e1' => 'niku.pourheidari@bsvnordstern.de',
     'jugend--u11-e2' => 'marcelino.rueth@bsvnordstern.de',
     'jugend--u11-e3' => 'stefan.sulger@bsvnordstern.de',
@@ -59,13 +59,13 @@ $teamRecipients = array(
     'jugend--u8-f' => 'pascal.dieterle@bsvnordstern.de',
     'jugend--u7-g' => 'michael.meiss@bsvnordstern.de',
     'jugend--u6-g' => 'elias.arfa@bsvnordstern.de',
-    'jugend--u19' => '1.vorstand@sv-markelfingen.de',
+    'jugend--u19' => 'jugend@bsvnordstern.de',
     'jugend--u17' => 'maxgeissmann@gmail.com',
     'jugend--u15-c1' => 'axel.schaeuble@bsvnordstern.de',
     'jugend--u15-c2' => 'sebastian.baeuerle@bsvnordstern.de',
     'jugend--u13-d1' => 'stephan.hellmann@bsvnordstern.de',
-    'jugend--u13-d2' => 'stephan.hellmann@bsvnordstern.de',
-    'jugend--u13-d3' => 'hieu.ho@bsvnordstern.de',
+    'jugend--u13-d2' => 'joerg.boreatti@bsvnordstern.de',
+    'jugend--u13-d3' => 'jugend@bsvnordstern.de',
     'jugend--juniorinnen--u17' => 'sven.goldhagen@bsvnordstern.de',
     'jugend--juniorinnen--u15' => 'alexander.kramer@bsvnordstern.de',
     'jugend--juniorinnen--u13' => 'dana.bulander@bsvnordstern.de',
@@ -123,15 +123,16 @@ $endsWith = function ($text, $suffix) {
     return $suffix === '' || substr($text, -strlen($suffix)) === $suffix;
 };
 $inquiry = $endsWith($topic, '--friendly') ? 'Freundschaftsspiel' : ($endsWith($topic, '--trial') ? 'Probetraining' : 'Kontaktanfrage');
-$subject = 'BSV Website: ' . $inquiry . ' von ' . $clean($firstName . ' ' . $lastName);
+$subject = 'BSV Nordstern Kontaktanfrage: ' . $inquiry . ' von ' . $clean($firstName . ' ' . $lastName);
 $body = "Neue Anfrage über bsvnordstern.de\n\n" .
     "Thema: {$topic}\n" .
     "Name: {$firstName} {$lastName}\n" .
     "E-Mail: {$email}\n" .
     "Telefon: " . ($phone !== '' ? $phone : 'nicht angegeben') . "\n\n" .
     "Nachricht:\n{$message}\n";
+    
 $headers = array(
-    'From: BSV Website <info@bsvnordstern.de>',
+    'From: BSV Nordstern <info@bsvnordstern.de>',
     'Reply-To: ' . $clean((string)$email),
     'Content-Type: text/plain; charset=UTF-8',
     'X-Mailer: PHP/' . phpversion(),

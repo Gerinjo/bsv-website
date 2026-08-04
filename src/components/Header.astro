@@ -100,7 +100,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                       </div>
                     </div>
                     <aside class="club-preview" data-default-group={item.label} data-default-label={item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}>
-                      <div class="club-placeholder" aria-hidden="true"><img src={withBase('/images/verein/wappen/bsv-nordstern.gif')} alt="" width="100" height="100" /><small>Teambild folgt</small></div>
+                      <div class="club-placeholder" aria-hidden="true"><small>Teambild folgt</small></div>
                       <img class="club-preview-image" src={withBase(clubImages[item.href])} data-default-image={withBase(clubImages[item.href])} alt="" width="520" height="390" />
                       <div class="club-preview-copy"><span data-preview-group>{item.label}</span><strong data-preview-label>{item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}</strong></div>
                     </aside>
