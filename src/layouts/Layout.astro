@@ -3,6 +3,8 @@ import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string }
 const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell' } = Astro.props;
+const contactPath = withBase('/kontakt');
+const basePath = withBase('/');
 ---
 <!doctype html>
 <html lang="de">
@@ -17,6 +19,48 @@ const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite d
 	</head>
 	<body>
 		<slot />
+		<script define:vars={{ contactPath, basePath }}>
+			const topicByEmail = new Map([
+				['info@bsvnordstern.de', 'general'],
+				['sandra.fuchs@bsvnordstern.de', 'general'],
+				['felix.schuele@bsvnordstern.de', 'general'],
+				['michaela.auer@bsvnordstern.de', 'general'],
+				['verwaltung@bsvnordstern.de', 'membership'],
+				['jugend@bsvnordstern.de', 'youth'],
+				['sponsoring@bsvnordstern.de', 'sponsoring'],
+				['socialmedia@bsvnordstern.de', 'social'],
+				['kasse@bsvnordstern.de', 'finance'],
+				['oliver.schillinger@bsvnordstern.de', 'match-operations'],
+				['passwesen@bsvnordstern.de', 'passwesen'],
+				['konrad.mauz@bsvnordstern.de', 'archery'],
+				['heike.seidel@bsvnordstern.de', 'gymnastics'],
+				['thomas.graf@bsvnordstern.de', 'hiking'],
+				['stefan.gastaudo@bsvnordstern.de', 'referees'],
+			]);
+
+			const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
+			const currentPath = window.location.pathname.startsWith(normalizedBase)
+				? window.location.pathname.slice(normalizedBase.length)
+				: window.location.pathname.replace(/^\/+/, '');
+			const teamPath = /^(?:fussball\/(?:herren|frauen|alte-herren)|jugend\/)/.test(currentPath)
+				? currentPath.replace(/\/+$/, '')
+				: '';
+
+			document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
+				const rawHref = link.getAttribute('href') ?? '';
+				const address = decodeURIComponent(rawHref.slice(7).split('?')[0]).trim().toLowerCase();
+				let topic = topicByEmail.get(address) ?? '';
+
+				if (teamPath && link.closest('main')) {
+					topic = `team--${teamPath.replaceAll('/', '--')}--general`;
+				}
+
+				const target = topic ? `${contactPath}?thema=${encodeURIComponent(topic)}` : contactPath;
+				link.setAttribute('href', target);
+				link.removeAttribute('target');
+				link.removeAttribute('rel');
+			});
+		</script>
 	</body>
 </html>
 
