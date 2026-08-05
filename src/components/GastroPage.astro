@@ -34,7 +34,7 @@ const {
       <div class="gastro-hero-shade"></div>
       <div class="shell gastro-hero-inner">
         <span>{eyebrow}</span>
-        <h1>{headline}</h1>
+        <h1 set:html={headline}></h1>
         <p>{intro}</p>
         <div class="hero-actions">
           <a class="primary" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
