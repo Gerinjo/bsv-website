@@ -1,0 +1,715 @@
+/*
+ * BSV Nordstern – Football Green
+ * Mutiges Matchday-Testtheme für den Branch feature/theme-football-green.
+ * Keine externen Schriften oder kostenpflichtigen Assets erforderlich.
+ */
+
+body.theme-football-green {
+  --green: #0b5d35;
+  --green-dark: #04130c;
+  --green-light: #13834b;
+  --yellow: #ffffff;
+  --cream: #eef2ee;
+  --ink: #070a08;
+  --football-black: #050706;
+  --football-green: #0b5d35;
+  --football-green-bright: #16a05b;
+  --football-white: #ffffff;
+  --football-silver: #d8e0da;
+  --football-line: rgb(255 255 255 / 16%);
+  overflow-x: hidden;
+  color: #101612;
+  background:
+    linear-gradient(rgb(5 7 6 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(5 7 6 / 3%) 1px, transparent 1px),
+    #eef2ee;
+  background-size: 36px 36px;
+}
+
+body.theme-football-green::before {
+  content: '';
+  position: fixed;
+  z-index: 9999;
+  inset: 0 auto 0 0;
+  width: 5px;
+  pointer-events: none;
+  background: linear-gradient(#ffffff 0 14%, #0b5d35 14% 86%, #ffffff 86%);
+}
+
+.theme-football-green ::selection {
+  color: #ffffff;
+  background: #0b5d35;
+}
+
+.theme-football-green :is(h1, h2, h3, .footer-wordmark, .brand strong) {
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-stretch: condensed;
+}
+
+.theme-football-green :is(h1, h2) {
+  text-transform: uppercase;
+}
+
+.theme-football-green a,
+.theme-football-green button {
+  transition: transform .18s ease, background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+/* Kopfbereich: schwarze Tribüne, grüne Signallinie */
+.theme-football-green .site-header {
+  position: relative;
+  color: #ffffff;
+  background: #050706 !important;
+  border-bottom: 5px solid #0b5d35;
+  box-shadow: 0 14px 40px rgb(0 0 0 / 24%) !important;
+}
+
+.theme-football-green .site-header::after {
+  content: 'BSV NORDSTERN · MATCHDAY · RADOLFZELL';
+  position: absolute;
+  right: 18px;
+  bottom: -18px;
+  z-index: 2;
+  padding: 7px 12px 6px;
+  color: #ffffff;
+  background: #0b5d35;
+  font-size: .58rem;
+  font-weight: 950;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transform: skewX(-10deg);
+}
+
+.theme-football-green .topbar {
+  color: #d7e0da !important;
+  background:
+    repeating-linear-gradient(110deg, transparent 0 38px, rgb(255 255 255 / 3%) 38px 39px),
+    #020302 !important;
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+}
+
+.theme-football-green .topbar::after {
+  border-color: rgb(255 255 255 / 12%) !important;
+  box-shadow: 0 0 0 25px rgb(11 93 53 / 12%) !important;
+}
+
+.theme-football-green .top-icon,
+.theme-football-green .footer-icon {
+  color: #ffffff !important;
+  background: #0b5d35 !important;
+  border: 1px solid #16834d !important;
+  border-radius: 2px !important;
+  transform: skewX(-5deg);
+}
+
+.theme-football-green .top-copy strong,
+.theme-football-green .quick-links a {
+  color: #ffffff !important;
+}
+
+.theme-football-green .top-copy small {
+  color: #8fa399 !important;
+}
+
+.theme-football-green .navigation {
+  position: relative;
+  min-height: 92px !important;
+  background: #050706;
+}
+
+.theme-football-green .navigation::before {
+  content: '';
+  position: absolute;
+  inset: 0 50% 0 -100vw;
+  z-index: -1;
+  background: #050706;
+}
+
+.theme-football-green .navigation::after {
+  content: '';
+  position: absolute;
+  inset: 0 -100vw 0 50%;
+  z-index: -1;
+  background: #050706;
+}
+
+.theme-football-green .brand {
+  color: #ffffff !important;
+}
+
+.theme-football-green .brand-mark {
+  width: 68px !important;
+  height: 68px !important;
+  padding: 5px;
+  background: #ffffff;
+  border: 3px solid #0b5d35;
+  box-shadow: 7px 7px 0 #0b5d35;
+  transform: rotate(-2deg);
+}
+
+.theme-football-green .brand strong {
+  font-size: 1.34rem !important;
+  font-style: italic;
+  letter-spacing: .035em !important;
+  text-transform: uppercase;
+}
+
+.theme-football-green .brand small {
+  color: #aab6ae !important;
+}
+
+.theme-football-green .menu-link {
+  position: relative;
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+}
+
+.theme-football-green .menu-link::after {
+  content: '';
+  position: absolute;
+  right: 13px;
+  bottom: 20px;
+  left: 13px;
+  height: 3px;
+  background: #0b5d35;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .18s ease;
+}
+
+.theme-football-green .menu-link:hover::after,
+.theme-football-green .menu-item:focus-within > .menu-link::after {
+  transform: scaleX(1);
+}
+
+.theme-football-green .menu-link span {
+  color: #16a05b !important;
+}
+
+.theme-football-green .join,
+.theme-football-green .button,
+.theme-football-green button[type='submit'] {
+  border: 2px solid #ffffff !important;
+  border-radius: 0 !important;
+  color: #ffffff !important;
+  background: #0b5d35 !important;
+  box-shadow: 6px 6px 0 #ffffff !important;
+  font-weight: 950 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transform: skewX(-5deg);
+}
+
+.theme-football-green .join:hover,
+.theme-football-green .button:hover,
+.theme-football-green button[type='submit']:hover {
+  color: #050706 !important;
+  background: #ffffff !important;
+  border-color: #0b5d35 !important;
+  box-shadow: 6px 6px 0 #0b5d35 !important;
+  transform: skewX(-5deg) translate(-2px, -2px);
+}
+
+.theme-football-green .mega-menu {
+  background: transparent !important;
+}
+
+.theme-football-green .mega-inner {
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, rgb(11 93 53 / 30%), transparent 42%),
+    #070a08 !important;
+  border: 1px solid rgb(255 255 255 / 17%) !important;
+  border-top: 5px solid #0b5d35 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 25px 60px rgb(0 0 0 / 45%) !important;
+}
+
+.theme-football-green .mega-inner :is(h2, a, strong) {
+  color: #ffffff !important;
+}
+
+.theme-football-green .mega-inner a:hover {
+  color: #ffffff !important;
+  background: #0b5d35 !important;
+}
+
+.theme-football-green .club-preview {
+  border-radius: 0 !important;
+  border: 1px solid rgb(255 255 255 / 18%) !important;
+}
+
+.theme-football-green .club-preview-copy {
+  background: linear-gradient(transparent, rgb(0 0 0 / 92%)) !important;
+}
+
+/* Startseite: Flutlicht und Spielfeld */
+.theme-football-green .hero {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 12% -20%, rgb(255 255 255 / 24%), transparent 24%),
+    radial-gradient(circle at 88% -20%, rgb(255 255 255 / 18%), transparent 24%),
+    linear-gradient(112deg, #020302 0 44%, #073e24 44% 72%, #0b5d35 72% 100%) !important;
+  border-bottom: 8px solid #ffffff;
+}
+
+.theme-football-green .hero::before {
+  opacity: .28 !important;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 7%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 7%) 1px, transparent 1px) !important;
+  background-size: 44px 44px !important;
+  mask-image: linear-gradient(to right, black, rgb(0 0 0 / 25%));
+}
+
+.theme-football-green .hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -8vw;
+  bottom: -33vw;
+  width: min(62vw, 760px);
+  aspect-ratio: 1;
+  border: 2px solid rgb(255 255 255 / 24%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 55px rgb(255 255 255 / 4%), 0 0 0 110px rgb(255 255 255 / 3%);
+}
+
+.theme-football-green .hero-grid {
+  min-height: 700px !important;
+}
+
+.theme-football-green .kicker > span {
+  height: 5px !important;
+  background: #16a05b !important;
+}
+
+.theme-football-green .kicker {
+  letter-spacing: .2em !important;
+}
+
+.theme-football-green .hero h1 {
+  max-width: 760px;
+  color: #ffffff;
+  font-size: clamp(4.2rem, 8.8vw, 8.5rem) !important;
+  font-style: italic;
+  line-height: .8 !important;
+  text-shadow: 8px 8px 0 rgb(0 0 0 / 40%);
+  transform: skewY(-1deg);
+}
+
+.theme-football-green .hero h1 em,
+.theme-football-green h2 em {
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  -webkit-text-stroke: 2px #16a05b;
+  text-shadow: 5px 5px 0 #0b5d35;
+}
+
+.theme-football-green .intro {
+  padding-left: 18px;
+  color: #e7eee9 !important;
+  border-left: 5px solid #16a05b;
+}
+
+.theme-football-green .hero-art {
+  filter: drop-shadow(18px 24px 0 rgb(0 0 0 / 24%));
+}
+
+.theme-football-green .pitch {
+  border: 3px solid rgb(255 255 255 / 65%) !important;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 4%) 0 52px, transparent 52px 104px),
+    #0b5d35 !important;
+  box-shadow: inset 0 0 70px rgb(0 0 0 / 28%);
+}
+
+.theme-football-green .pitch::before,
+.theme-football-green .pitch-circle,
+.theme-football-green .pitch-box {
+  border-color: rgb(255 255 255 / 62%) !important;
+}
+
+.theme-football-green .ball {
+  color: #050706 !important;
+  background: #ffffff !important;
+  border: 4px solid #050706;
+  box-shadow: 10px 12px 0 #0b5d35 !important;
+}
+
+.theme-football-green .hero-badge {
+  color: #ffffff !important;
+  background: #050706 !important;
+  border: 2px solid #ffffff;
+  border-radius: 0 !important;
+  box-shadow: 12px 15px 0 #0b5d35 !important;
+}
+
+.theme-football-green .hero-badge span {
+  color: #a8b7ae !important;
+}
+
+.theme-football-green .year {
+  color: rgb(255 255 255 / 10%) !important;
+}
+
+.theme-football-green .year span {
+  color: rgb(22 160 91 / 28%) !important;
+}
+
+.theme-football-green .ticker {
+  padding-block: 20px !important;
+  color: #ffffff !important;
+  background: #050706 !important;
+  border-block: 1px solid rgb(255 255 255 / 22%);
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 1.08rem;
+  letter-spacing: .07em;
+  box-shadow: 0 10px 0 #0b5d35;
+}
+
+.theme-football-green .ticker span {
+  color: #16a05b !important;
+}
+
+/* Inhaltsflächen und Spieltagskarten */
+.theme-football-green .match-section {
+  background:
+    linear-gradient(90deg, rgb(5 7 6 / 4%) 1px, transparent 1px),
+    #eef2ee !important;
+  background-size: 58px 100%;
+}
+
+.theme-football-green .match-section .section-head h2,
+.theme-football-green .news-section .section-head h2,
+.theme-football-green .join-card h2 {
+  font-style: italic;
+}
+
+.theme-football-green .club-matches-widget {
+  padding: 14px;
+  background: #ffffff;
+  border: 3px solid #050706;
+  border-left: 12px solid #0b5d35;
+  box-shadow: 12px 12px 0 rgb(5 7 6 / 12%);
+}
+
+.theme-football-green .news-section {
+  position: relative;
+  background: #ffffff !important;
+}
+
+.theme-football-green .news-section::before {
+  content: '90:00';
+  position: absolute;
+  right: 4vw;
+  top: 55px;
+  color: rgb(11 93 53 / 7%);
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(6rem, 14vw, 13rem);
+  line-height: 1;
+}
+
+.theme-football-green .news-grid {
+  gap: 30px !important;
+}
+
+.theme-football-green .news-card {
+  position: relative;
+  overflow: visible !important;
+  border: 3px solid #050706;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 10px 10px 0 #0b5d35;
+}
+
+.theme-football-green .news-card::before {
+  content: 'BSV';
+  position: absolute;
+  z-index: 3;
+  left: -3px;
+  top: -17px;
+  padding: 5px 10px;
+  color: #ffffff;
+  background: #050706;
+  font-size: .58rem;
+  font-weight: 950;
+  letter-spacing: .14em;
+}
+
+.theme-football-green .news-card:hover {
+  transform: translate(-4px, -4px) rotate(-.35deg);
+  box-shadow: 14px 14px 0 #0b5d35;
+}
+
+.theme-football-green .news-visual,
+.theme-football-green .news-card.lime .news-visual,
+.theme-football-green .news-card.yellow .news-visual {
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 10%), transparent 55%),
+    #0b5d35 !important;
+}
+
+.theme-football-green .news-card:nth-child(even) .news-visual {
+  background:
+    linear-gradient(135deg, rgb(22 160 91 / 25%), transparent 55%),
+    #050706 !important;
+}
+
+.theme-football-green .news-content h3 {
+  text-transform: uppercase;
+}
+
+.theme-football-green .news-content a,
+.theme-football-green .meta span {
+  color: #0b5d35 !important;
+}
+
+.theme-football-green .departments-section {
+  position: relative;
+  background:
+    linear-gradient(120deg, transparent 0 65%, rgb(11 93 53 / 24%) 65% 100%),
+    repeating-linear-gradient(0deg, transparent 0 54px, rgb(255 255 255 / 3%) 54px 55px),
+    #050706 !important;
+  border-block: 8px solid #0b5d35;
+}
+
+.theme-football-green .department-list a {
+  color: #ffffff !important;
+  border-color: rgb(255 255 255 / 18%) !important;
+}
+
+.theme-football-green .department-list a:hover {
+  padding-left: 18px;
+  color: #ffffff !important;
+  background: #0b5d35 !important;
+  border-color: #ffffff !important;
+}
+
+.theme-football-green .join-section {
+  background:
+    repeating-linear-gradient(135deg, rgb(5 7 6 / 3%) 0 2px, transparent 2px 18px),
+    #eef2ee !important;
+}
+
+.theme-football-green .join-card {
+  overflow: hidden;
+  border: 4px solid #050706;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 14px 14px 0 #0b5d35;
+}
+
+.theme-football-green .join-card::after {
+  content: 'HOME OF THE NORDSTERN';
+  position: absolute;
+  right: -37px;
+  bottom: 34px;
+  padding: 8px 55px;
+  color: #ffffff;
+  background: #050706;
+  font-size: .62rem;
+  font-weight: 950;
+  letter-spacing: .16em;
+  transform: rotate(-45deg);
+}
+
+.theme-football-green .join-star {
+  color: #0b5d35 !important;
+}
+
+/* Wiederkehrende Unterseiten */
+.theme-football-green :is(.page-hero, .team-hero, .department-hero, .content-hero, .legacy-hero, .article-hero) {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff !important;
+  background:
+    linear-gradient(115deg, #020302 0 52%, #0b5d35 52% 100%) !important;
+  border-bottom: 7px solid #ffffff;
+}
+
+.theme-football-green :is(.page-hero, .team-hero, .department-hero, .content-hero, .legacy-hero, .article-hero)::after {
+  content: '';
+  position: absolute;
+  right: -110px;
+  bottom: -170px;
+  width: 410px;
+  aspect-ratio: 1;
+  border: 2px solid rgb(255 255 255 / 18%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 45px rgb(255 255 255 / 4%), 0 0 0 90px rgb(255 255 255 / 3%);
+}
+
+.theme-football-green :is(.page-hero, .team-hero, .department-hero, .content-hero, .legacy-hero, .article-hero) h1 {
+  color: #ffffff !important;
+  font-style: italic;
+  text-shadow: 6px 6px 0 rgb(0 0 0 / 35%);
+}
+
+.theme-football-green :is(.content-card, .info-card, .team-card, .coach-card, .legacy-content .uk-card, article.card) {
+  border-radius: 0 !important;
+  border: 2px solid #101612 !important;
+  box-shadow: 8px 8px 0 rgb(11 93 53 / 14%) !important;
+}
+
+.theme-football-green :is(input, select, textarea) {
+  border-radius: 0 !important;
+  border: 2px solid #26332b !important;
+  background: #ffffff !important;
+}
+
+.theme-football-green :is(input, select, textarea):focus {
+  outline: 3px solid rgb(11 93 53 / 24%);
+  border-color: #0b5d35 !important;
+}
+
+/* Footer: dunkler Kabinengang */
+.theme-football-green .site-footer {
+  color: #b4c1b8 !important;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 72px, rgb(255 255 255 / 3%) 72px 73px),
+    #020302 !important;
+  border-top: 10px solid #0b5d35;
+}
+
+.theme-football-green .site-footer::before {
+  content: 'AUF GEHT’S GRÜN';
+  position: absolute;
+  left: 4vw;
+  bottom: -30px;
+  color: rgb(255 255 255 / 4%);
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(6rem, 15vw, 13rem);
+  white-space: nowrap;
+}
+
+.theme-football-green .footer-orbit {
+  border-color: rgb(255 255 255 / 14%) !important;
+  box-shadow: 0 0 0 70px rgb(11 93 53 / 7%), 0 0 0 140px rgb(255 255 255 / 2%) !important;
+}
+
+.theme-football-green .footer-wordmark {
+  color: #ffffff;
+  font-size: 1.5rem !important;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.theme-football-green .footer-claim,
+.theme-football-green .footer-label {
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+}
+
+.theme-football-green .footer-claim {
+  display: inline-block;
+  padding: 7px 10px;
+  background: #0b5d35;
+  transform: skewX(-6deg);
+}
+
+.theme-football-green .footer-contact > a:hover,
+.theme-football-green .footer-nav a:hover {
+  color: #ffffff !important;
+}
+
+.theme-football-green .footer-bottom {
+  border-top: 3px solid #0b5d35 !important;
+}
+
+/* Kleine Details */
+.theme-football-green .contact-icons .contact-direct {
+  border-radius: 2px !important;
+  color: #ffffff !important;
+  background: #0b5d35 !important;
+  border-color: #0b5d35 !important;
+}
+
+.theme-football-green .contact-icons .contact-direct:hover,
+.theme-football-green .contact-icons .contact-direct:focus-visible {
+  color: #050706 !important;
+  background: #ffffff !important;
+  border-color: #050706 !important;
+}
+
+@media (max-width: 980px) {
+  .theme-football-green .site-header::after {
+    display: none;
+  }
+
+  .theme-football-green .menu-toggle {
+    border: 2px solid #ffffff !important;
+    border-radius: 0 !important;
+    background: #0b5d35 !important;
+  }
+
+  .theme-football-green #main-navigation {
+    color: #ffffff;
+    background: #050706 !important;
+    border-top: 4px solid #0b5d35;
+  }
+
+  .theme-football-green .menu-link::after {
+    bottom: 8px;
+  }
+
+  .theme-football-green .mega-inner {
+    border: 0 !important;
+    border-left: 4px solid #0b5d35 !important;
+    box-shadow: none !important;
+  }
+
+  .theme-football-green .hero-grid {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 680px) {
+  body.theme-football-green::before {
+    width: 3px;
+  }
+
+  .theme-football-green .brand-mark {
+    width: 54px !important;
+    height: 54px !important;
+    box-shadow: 4px 4px 0 #0b5d35;
+  }
+
+  .theme-football-green .brand strong {
+    font-size: 1rem !important;
+  }
+
+  .theme-football-green .hero h1 {
+    font-size: clamp(3.4rem, 17vw, 5.2rem) !important;
+  }
+
+  .theme-football-green .hero-art {
+    min-height: 320px !important;
+  }
+
+  .theme-football-green .news-card,
+  .theme-football-green .join-card {
+    box-shadow: 7px 7px 0 #0b5d35;
+  }
+
+  .theme-football-green .join-card::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-football-green *,
+  .theme-football-green *::before,
+  .theme-football-green *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
