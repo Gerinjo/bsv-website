@@ -1,0 +1,498 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { withBase } from '../../utils/paths';
+
+const endpoint = 'https://bsvnordstern.de/api/membership.php';
+---
+
+<Layout
+  title="Mitglied werden | BSV Nordstern Radolfzell"
+  description="Online-Mitgliedsantrag des BSV Nordstern Radolfzell mit Dokumentenupload und digitaler Unterschrift."
+>
+  <Header />
+  <main>
+    <header class="member-hero">
+      <div class="shell">
+        <span>Online-Mitgliedsantrag</span>
+        <h1>Willkommen<br /><em>beim BSV.</em></h1>
+        <p>Fülle den Antrag in Ruhe aus. Abhängig von deiner Auswahl zeigen wir nur die Angaben und Unterlagen an, die tatsächlich benötigt werden.</p>
+      </div>
+    </header>
+
+    <section class="member-section">
+      <div class="shell member-layout">
+        <aside>
+          <span>So funktioniert es</span>
+          <h2>Ein Antrag.<br />Alles digital.</h2>
+          <ol>
+            <li>Persönliche Angaben eintragen</li>
+            <li>Abteilung und passende Zusatzangaben auswählen</li>
+            <li>Unterlagen hochladen und unterschreiben</li>
+            <li>PDF und Anlagen werden per E-Mail versendet</li>
+          </ol>
+          <p>Sensible Dateien werden von diesem Formular nicht öffentlich gespeichert. Sie werden ausschließlich zur Bearbeitung des Mitgliedsantrags versendet.</p>
+        </aside>
+
+        <form id="membership-form" action={endpoint} method="post" enctype="multipart/form-data" novalidate>
+          <section class="form-section">
+            <div class="section-heading"><span>01</span><div><small>Persönliche Daten</small><h2>Wer möchte Mitglied werden?</h2></div></div>
+            <div class="fields">
+              <div class="field"><label for="lastName">Nachname *</label><input id="lastName" name="lastName" autocomplete="family-name" maxlength="100" required /></div>
+              <div class="field"><label for="firstName">Vorname *</label><input id="firstName" name="firstName" autocomplete="given-name" maxlength="100" required /></div>
+              <div class="field"><label for="gender">Geschlecht *</label><select id="gender" name="gender" required><option value="">Bitte auswählen …</option><option value="weiblich">weiblich</option><option value="männlich">männlich</option><option value="divers">divers</option><option value="keine-angabe">keine Angabe</option></select></div>
+              <div class="field"><label for="birthDate">Geburtsdatum *</label><input id="birthDate" name="birthDate" type="date" autocomplete="bday" required /></div>
+              <div class="field"><label for="birthPlace">Geburtsort *</label><input id="birthPlace" name="birthPlace" maxlength="120" required /></div>
+              <div class="field"><label for="nationality">Nationalität *</label><input id="nationality" name="nationality" maxlength="120" required /></div>
+              <div class="field full"><label for="street">Straße und Hausnummer *</label><input id="street" name="street" autocomplete="street-address" maxlength="180" required /></div>
+              <div class="field"><label for="postalCode">PLZ *</label><input id="postalCode" name="postalCode" autocomplete="postal-code" inputmode="numeric" maxlength="10" required /></div>
+              <div class="field"><label for="city">Ort *</label><input id="city" name="city" autocomplete="address-level2" maxlength="120" required /></div>
+              <div class="field"><label for="phone">Mobilnummer *</label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" required /></div>
+              <div class="field"><label for="email">E-Mail-Adresse *</label><input id="email" name="email" type="email" autocomplete="email" maxlength="180" required /></div>
+              <div class="field full email-consents">
+                <p><strong>Freiwillige Informationen per E-Mail</strong><span>Die beiden Einwilligungen können unabhängig voneinander erteilt und jederzeit widerrufen werden.</span></p>
+                <div class="legal-list">
+                  <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
+                  <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading"><span>02</span><div><small>Abteilung</small><h2>Wo möchtest du aktiv sein?</h2></div></div>
+            <fieldset class="choice-grid" id="department-options">
+              <legend class="sr-only">Abteilung auswählen</legend>
+              <label><input type="radio" name="department" value="youth-football" required /><span><strong>Fußball Jugend</strong><small>Kinder und Jugendliche</small></span></label>
+              <label><input type="radio" name="department" value="adult-football" /><span><strong>Fußball Aktive</strong><small>Herren und Frauen</small></span></label>
+              <label><input type="radio" name="department" value="archery" /><span><strong>Bogensport</strong><small>Breiten- und Leistungssport</small></span></label>
+              <label><input type="radio" name="department" value="gymnastics" /><span><strong>Gymnastik</strong><small>Bewegung und Fitness</small></span></label>
+              <label><input type="radio" name="department" value="hiking" /><span><strong>Wandergruppe</strong><small>Natur und Geselligkeit</small></span></label>
+              <label><input type="radio" name="department" value="passive" /><span><strong>Passiv</strong><small>Vereinstreue und Unterstützung</small></span></label>
+            </fieldset>
+          </section>
+
+          <section id="guardian-section" class="form-section conditional" hidden>
+            <div class="section-heading compact"><span>03</span><div><small>Jugendmitglied</small><h2>Kontaktperson</h2></div></div>
+            <p class="section-copy">Für Mitglieder der Jugendabteilung benötigen wir eine sorgeberechtigte oder betreuende Kontaktperson.</p>
+            <div class="fields">
+              <div class="field"><label for="guardianLastName">Nachname *</label><input id="guardianLastName" name="guardianLastName" maxlength="100" /></div>
+              <div class="field"><label for="guardianFirstName">Vorname *</label><input id="guardianFirstName" name="guardianFirstName" maxlength="100" /></div>
+              <div class="field"><label for="guardianRelation">Verhältnis zum Mitglied</label><input id="guardianRelation" name="guardianRelation" placeholder="z. B. Mutter, Vater, Betreuung" maxlength="80" /></div>
+              <div class="field"><label for="guardianPhone">Telefon</label><input id="guardianPhone" name="guardianPhone" type="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading compact"><span>04</span><div><small>Gemeinsam stark</small><h2>Möchtest du unterstützen?</h2></div></div>
+            <label class="check-card"><input type="checkbox" id="supportWilling" name="supportWilling" value="yes" /><span><strong>Ja, ich kann mir eine Unterstützung vorstellen.</strong><small>Zum Beispiel Training, Betreuung, Veranstaltungen, Platzpflege, Social Media oder Sponsoring.</small></span></label>
+            <div id="support-details" class="field full conditional-block" hidden><label for="supportIdeas">Ideen oder mögliche Aufgaben</label><textarea id="supportIdeas" name="supportIdeas" rows="4" maxlength="2000"></textarea></div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading"><span>05</span><div><small>SEPA-Lastschrift</small><h2>Bankverbindung</h2></div></div>
+            <div class="fields">
+              <div class="field"><label for="bankName">Kreditinstitut *</label><input id="bankName" name="bankName" maxlength="120" required /></div>
+              <div class="field"><label for="bic">BIC *</label><input id="bic" name="bic" autocomplete="off" maxlength="20" required /></div>
+              <div class="field full"><label for="iban">IBAN *</label><input id="iban" name="iban" autocomplete="off" maxlength="34" pattern="[A-Za-z]{2}[0-9A-Za-z ]{13,32}" required /></div>
+              <div class="field full"><label for="accountHolder">Kontoinhaber:in *</label><input id="accountHolder" name="accountHolder" maxlength="180" required /></div>
+            </div>
+            <label class="legal-check"><input type="checkbox" name="sepaAccepted" value="accepted" required /><span>Ich ermächtige den BSV Nordstern e.V. Radolfzell, wiederkehrende Zahlungen mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die vom Verein gezogenen Lastschriften einzulösen.</span></label>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading compact"><span>06</span><div><small>Bestätigungen</small><h2>Vereinsgrundlagen</h2></div></div>
+            <div class="legal-list">
+              <label class="legal-check"><input type="checkbox" name="contributionAccepted" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/beitragsordnung')} target="_blank">Beitragsordnung</a> gelesen und akzeptiert.</span></label>
+              <label class="legal-check"><input type="checkbox" name="statutesAccepted" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/satzung')} target="_blank">Vereinssatzung</a> gelesen und akzeptiert.</span></label>
+              <label class="legal-check"><input type="checkbox" name="privacyAccepted" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz')} target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung des Mitgliedsantrags zu.</span></label>
+            </div>
+          </section>
+
+          <section id="football-section" class="form-section conditional" hidden>
+            <div class="section-heading"><span>07</span><div><small>Nur für Fußball</small><h2>Spielgenehmigung</h2></div></div>
+            <p class="section-copy">Für eine Spielberechtigung beim Südbadischen Fußballverband benötigen wir zusätzliche Angaben und Nachweise.</p>
+
+            <fieldset class="stacked-options">
+              <legend>Unterlagen zur persönlichen Identifikation *</legend>
+              <label><input type="radio" name="identityProofType" value="birth-documents" /><span>Geburtsurkunde und Meldebestätigung hochladen</span></label>
+              <label><input type="radio" name="identityProofType" value="identity-card" /><span>Personalausweis – Vorder- und Rückseite hochladen</span></label>
+              <label><input type="radio" name="identityProofType" value="send-separately" /><span>Unterlagen separat an das Passwesen senden</span></label>
+            </fieldset>
+
+            <div id="birth-documents" class="upload-grid conditional-block" hidden>
+              <div class="field"><label for="birthCertificate">Geburtsurkunde *</label><input id="birthCertificate" name="birthCertificate" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" /></div>
+              <div class="field"><label for="registrationCertificate">Meldebestätigung *</label><input id="registrationCertificate" name="registrationCertificate" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" /></div>
+            </div>
+
+            <div id="identity-card-documents" class="upload-grid conditional-block" hidden>
+              <div class="field"><label for="idFront">Personalausweis Vorderseite *</label><input id="idFront" name="idFront" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" /></div>
+              <div class="field"><label for="idBack">Personalausweis Rückseite *</label><input id="idBack" name="idBack" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" /></div>
+            </div>
+
+            <div id="international-section" class="conditional-block" hidden>
+              <h3>Zusätzliche Unterlagen für internationale Freigabe</h3>
+              <p>Dieser Bereich erscheint bei einer nichtdeutschen Nationalität und einem Alter zwischen 10 und 18 Jahren.</p>
+              <div class="fields">
+                <div class="field full"><label for="lastForeignResidence">Letzter Wohnort im Ausland *</label><input id="lastForeignResidence" name="lastForeignResidence" maxlength="180" /></div>
+                <div class="field full"><label for="parentsNames">Name und Vorname beider Eltern *</label><input id="parentsNames" name="parentsNames" maxlength="250" /></div>
+                <div class="field"><label for="dfbDeclaration">DFB-Zusatzerklärung *</label><input id="dfbDeclaration" name="dfbDeclaration" type="file" accept=".pdf,.jpg,.jpeg,.png" /></div>
+                <div class="field"><label for="parentIds">Ausweise/Reisepässe der Eltern *</label><input id="parentIds" name="parentIds[]" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" multiple /></div>
+              </div>
+            </div>
+
+            <fieldset class="stacked-options">
+              <legend>Art des Spielberechtigungsantrags *</legend>
+              <label><input type="radio" name="registrationType" value="first-registration" /><span>Erstmalige Spielberechtigung</span></label>
+              <label><input type="radio" name="registrationType" value="club-change" /><span>Vereinswechsel</span></label>
+              <label><input type="radio" name="registrationType" value="re-registration" /><span>Wiederanmeldung</span></label>
+            </fieldset>
+
+            <div id="club-change-section" class="conditional-block" hidden>
+              <div class="fields">
+                <div class="field full"><label for="previousClub">Bisheriger Verein *</label><input id="previousClub" name="previousClub" maxlength="180" /></div>
+                <div class="field"><label for="currentlySuspended">Derzeit gesperrt? *</label><select id="currentlySuspended" name="currentlySuspended"><option value="">Bitte auswählen …</option><option value="no">Nein</option><option value="yes">Ja</option></select></div>
+                <div id="suspension-dates" class="field" hidden><label for="suspensionPeriod">Sperre von/bis *</label><input id="suspensionPeriod" name="suspensionPeriod" maxlength="100" placeholder="z. B. 01.08.2026 bis 31.08.2026" /></div>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label for="additionalDocuments">Weitere Unterlagen <small>(optional)</small></label>
+              <input id="additionalDocuments" name="additionalDocuments[]" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" multiple />
+            </div>
+
+            <div class="legal-list">
+              <label class="legal-check"><input type="checkbox" name="playerDataAccepted" value="accepted" /><span>Ich willige in die Verarbeitung der Spielberichtsdaten für DFBnet und FUSSBALL.DE ein. *</span></label>
+              <label class="legal-check"><input type="checkbox" name="marketingAccepted" value="accepted" /><span>Ich stimme der Nutzung der Adressdaten für Marketingzwecke des DFB, seiner Verbände und Partner zu. Diese Einwilligung ist freiwillig und widerrufbar.</span></label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading"><span>08</span><div><small>Abschluss</small><h2>Ort, Datum und Unterschrift</h2></div></div>
+            <div class="fields">
+              <div class="field"><label for="signingPlace">Ort *</label><input id="signingPlace" name="signingPlace" maxlength="120" required /></div>
+              <div class="field"><label for="signingDate">Datum *</label><input id="signingDate" name="signingDate" type="date" required /></div>
+            </div>
+            <div class="signature-field">
+              <div class="signature-head"><label for="signature-pad">Unterschrift *</label><button type="button" id="clear-signature">Unterschrift löschen</button></div>
+              <canvas id="signature-pad" aria-label="Feld für die Unterschrift mit Maus, Finger oder Stift"></canvas>
+              <input id="signature-data" name="signatureData" type="hidden" required />
+              <p>Bitte mit Maus, Finger oder Eingabestift innerhalb des Feldes unterschreiben.</p>
+            </div>
+
+            <div class="field captcha"><label for="captchaAnswer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captchaAnswer" name="captchaAnswer" type="number" inputmode="numeric" required /></div>
+            <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
+
+            <div class="submit-row">
+              <button type="submit">Mitgliedsantrag absenden <span>↗</span></button>
+              <p id="form-status" role="status" aria-live="polite"></p>
+            </div>
+            <p class="mail-note">Nach erfolgreichem Versand erhältst du eine Eingangsbestätigung mit dem erzeugten PDF. Die vollständigen Unterlagen gehen zunächst an die zuständige Bearbeitung beim BSV.</p>
+          </section>
+        </form>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script define:vars={{ endpoint }}>
+  const form = document.querySelector('#membership-form');
+  const status = document.querySelector('#form-status');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const departmentInputs = [...form.querySelectorAll('input[name="department"]')];
+  const guardianSection = document.querySelector('#guardian-section');
+  const footballSection = document.querySelector('#football-section');
+  const supportWilling = document.querySelector('#supportWilling');
+  const supportDetails = document.querySelector('#support-details');
+  const birthDate = document.querySelector('#birthDate');
+  const nationality = document.querySelector('#nationality');
+  const internationalSection = document.querySelector('#international-section');
+  const identityProofInputs = [...form.querySelectorAll('input[name="identityProofType"]')];
+  const birthDocuments = document.querySelector('#birth-documents');
+  const identityCardDocuments = document.querySelector('#identity-card-documents');
+  const registrationTypeInputs = [...form.querySelectorAll('input[name="registrationType"]')];
+  const clubChangeSection = document.querySelector('#club-change-section');
+  const currentlySuspended = document.querySelector('#currentlySuspended');
+  const suspensionDates = document.querySelector('#suspension-dates');
+
+  const setRequired = (root, required, selector = 'input, select, textarea') => {
+    root.querySelectorAll(selector).forEach((control) => {
+      if (control.type === 'checkbox' || control.type === 'radio' || control.name === 'marketingAccepted' || control.name === 'additionalDocuments[]') return;
+      control.required = required;
+    });
+  };
+
+  const selectedDepartment = () => departmentInputs.find((input) => input.checked)?.value ?? '';
+  const isFootball = () => ['youth-football', 'adult-football'].includes(selectedDepartment());
+
+  const updateDepartment = () => {
+    const youth = selectedDepartment() === 'youth-football';
+    guardianSection.hidden = !youth;
+    setRequired(guardianSection, youth);
+    footballSection.hidden = !isFootball();
+
+    identityProofInputs.forEach((input) => input.required = isFootball());
+    registrationTypeInputs.forEach((input) => input.required = isFootball());
+    document.querySelector('input[name="playerDataAccepted"]').required = isFootball();
+
+    if (!isFootball()) {
+      identityProofInputs.forEach((input) => input.checked = false);
+      registrationTypeInputs.forEach((input) => input.checked = false);
+    }
+    updateIdentityProof();
+    updateRegistrationType();
+    updateInternational();
+  };
+
+  const updateIdentityProof = () => {
+    const selected = identityProofInputs.find((input) => input.checked)?.value ?? '';
+    const needsBirth = isFootball() && selected === 'birth-documents';
+    const needsId = isFootball() && selected === 'identity-card';
+    birthDocuments.hidden = !needsBirth;
+    identityCardDocuments.hidden = !needsId;
+    setRequired(birthDocuments, needsBirth, 'input[type="file"]');
+    setRequired(identityCardDocuments, needsId, 'input[type="file"]');
+  };
+
+  const calculateAge = () => {
+    if (!birthDate.value) return null;
+    const born = new Date(`${birthDate.value}T12:00:00`);
+    if (Number.isNaN(born.getTime())) return null;
+    const today = new Date();
+    let age = today.getFullYear() - born.getFullYear();
+    const monthDifference = today.getMonth() - born.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < born.getDate())) age -= 1;
+    return age;
+  };
+
+  const updateInternational = () => {
+    const normalized = nationality.value.trim().toLocaleLowerCase('de-DE');
+    const nonGerman = normalized !== '' && !['deutsch', 'deutsche', 'deutschland', 'german'].includes(normalized);
+    const age = calculateAge();
+    const visible = isFootball() && nonGerman && age !== null && age >= 10 && age < 18;
+    internationalSection.hidden = !visible;
+    setRequired(internationalSection, visible);
+  };
+
+  const updateRegistrationType = () => {
+    const clubChange = isFootball() && registrationTypeInputs.some((input) => input.checked && input.value === 'club-change');
+    clubChangeSection.hidden = !clubChange;
+    document.querySelector('#previousClub').required = clubChange;
+    currentlySuspended.required = clubChange;
+    if (!clubChange) currentlySuspended.value = '';
+    updateSuspension();
+  };
+
+  const updateSuspension = () => {
+    const visible = !clubChangeSection.hidden && currentlySuspended.value === 'yes';
+    suspensionDates.hidden = !visible;
+    document.querySelector('#suspensionPeriod').required = visible;
+  };
+
+  supportWilling.addEventListener('change', () => {
+    supportDetails.hidden = !supportWilling.checked;
+  });
+  departmentInputs.forEach((input) => input.addEventListener('change', updateDepartment));
+  identityProofInputs.forEach((input) => input.addEventListener('change', updateIdentityProof));
+  registrationTypeInputs.forEach((input) => input.addEventListener('change', updateRegistrationType));
+  currentlySuspended.addEventListener('change', updateSuspension);
+  birthDate.addEventListener('change', updateInternational);
+  nationality.addEventListener('input', updateInternational);
+
+  const canvas = document.querySelector('#signature-pad');
+  const signatureData = document.querySelector('#signature-data');
+  const clearSignature = document.querySelector('#clear-signature');
+  const context = canvas.getContext('2d');
+  let drawing = false;
+  let signed = false;
+
+  const resizeCanvas = () => {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.round(rect.width * ratio);
+    canvas.height = Math.round(rect.height * ratio);
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.lineWidth = 2.2;
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.strokeStyle = '#092f20';
+  };
+
+  const point = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+
+  canvas.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    drawing = true;
+    signed = true;
+    canvas.setPointerCapture(event.pointerId);
+    const current = point(event);
+    context.beginPath();
+    context.moveTo(current.x, current.y);
+  });
+  canvas.addEventListener('pointermove', (event) => {
+    if (!drawing) return;
+    event.preventDefault();
+    const current = point(event);
+    context.lineTo(current.x, current.y);
+    context.stroke();
+  });
+  const stopDrawing = (event) => {
+    if (!drawing) return;
+    drawing = false;
+    try { canvas.releasePointerCapture(event.pointerId); } catch {}
+    signatureData.value = canvas.toDataURL('image/png');
+  };
+  canvas.addEventListener('pointerup', stopDrawing);
+  canvas.addEventListener('pointercancel', stopDrawing);
+  canvas.addEventListener('pointerleave', (event) => {
+    if (drawing && event.buttons === 0) stopDrawing(event);
+  });
+  clearSignature.addEventListener('click', () => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    signatureData.value = '';
+    signed = false;
+  });
+  window.addEventListener('resize', () => {
+    if (!signed) resizeCanvas();
+  });
+
+  const createCaptcha = async () => {
+    document.querySelector('#captchaAnswer').value = '';
+    try {
+      const response = await fetch(endpoint, { credentials: 'include', headers: { Accept: 'application/json' } });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error();
+      document.querySelector('#captcha-question').textContent = `${result.a} + ${result.b}`;
+    } catch {
+      document.querySelector('#captcha-question').textContent = '? + ?';
+      status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
+    }
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    updateDepartment();
+    updateIdentityProof();
+    updateInternational();
+    updateRegistrationType();
+
+    if (!signed || !signatureData.value) {
+      status.textContent = 'Bitte unterschreibe im Unterschriftenfeld.';
+      canvas.focus();
+      return;
+    }
+    if (!form.reportValidity()) {
+      status.textContent = 'Bitte prüfe die markierten Pflichtfelder.';
+      return;
+    }
+
+    submitButton.disabled = true;
+    status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error(`Der Server konnte die Anfrage nicht verarbeiten (HTTP ${response.status}).`);
+      }
+      if (!response.ok || !result.ok) throw new Error(result.message || 'Der Antrag konnte nicht versendet werden.');
+
+      form.reset();
+      guardianSection.hidden = true;
+      footballSection.hidden = true;
+      supportDetails.hidden = true;
+      clearSignature.click();
+      document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
+      await createCaptcha();
+      status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet.`;
+      window.scrollTo({ top: form.offsetTop - 90, behavior: 'smooth' });
+    } catch (error) {
+      status.textContent = error instanceof Error ? error.message : 'Der Antrag konnte nicht versendet werden.';
+      await createCaptcha();
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
+  resizeCanvas();
+  updateDepartment();
+  createCaptcha();
+</script>
+
+<style>
+  :global(:root){--green:#164f32;--dark:#092f20;--yellow:#f4d638;--light:#f4f7f4;--line:#d5ddd7;--ink:#10251a}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  .member-hero{padding:100px 0 92px;color:white;background:var(--dark)}
+  .member-hero>div>span,.member-layout>aside>span{color:var(--yellow);font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .member-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.2rem,7vw,6.7rem);line-height:.88;letter-spacing:-.055em}
+  .member-hero h1 em{color:var(--yellow);font-weight:400}
+  .member-hero p{max-width:720px;margin:0;color:#b9cbc0;font-size:1.06rem;line-height:1.7}
+  .member-section{padding:90px 0 120px}
+  .member-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:70px;align-items:start}
+  .member-layout>aside{position:sticky;top:28px}
+  .member-layout>aside h2{margin:15px 0 25px;font-family:Georgia,serif;font-size:2.15rem;line-height:1.06}
+  .member-layout>aside ol{margin:0;padding-left:20px;color:#4e6155;line-height:1.75}
+  .member-layout>aside p{margin-top:28px;padding:18px;border-left:3px solid var(--yellow);background:#edf2ee;color:#5e6e64;font-size:.78rem;line-height:1.6}
+  form{display:grid;gap:25px}
+  .form-section{padding:38px;background:white;box-shadow:0 18px 55px rgb(9 47 32 / 7%)}
+  .form-section.conditional[hidden],.conditional-block[hidden],#suspension-dates[hidden]{display:none}
+  .section-heading{display:grid;grid-template-columns:48px 1fr;align-items:start;gap:20px;margin-bottom:30px}
+  .section-heading>span{width:42px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:var(--yellow);color:var(--dark);font-size:.65rem;font-weight:900}
+  .section-heading small{display:block;color:var(--green);font-size:.65rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .section-heading h2{margin:7px 0 0;color:var(--ink);font-family:Georgia,serif;font-size:2rem;line-height:1.08}
+  .section-heading.compact{margin-bottom:22px}
+  .section-copy{margin:-10px 0 25px;color:#607067;line-height:1.65}
+  .fields,.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .field{display:grid;gap:8px}.field.full{grid-column:1/-1}
+  label,legend{color:var(--ink);font-size:.77rem;font-weight:800}
+  label small{color:#76837b;font-weight:500}
+  input,select,textarea{width:100%;padding:14px 15px;border:1px solid #ccd5cf;border-radius:0;background:#fbfcfb;color:#17251b;font:inherit}
+  input:focus,select:focus,textarea:focus,canvas:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}
+  textarea{resize:vertical}
+  .choice-grid{margin:0;padding:0;border:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .choice-grid label,.stacked-options label,.check-card{display:flex;gap:13px;align-items:flex-start;padding:17px;border:1px solid var(--line);background:#fbfcfb;cursor:pointer}
+  .choice-grid input,.stacked-options input,.check-card input,.legal-check input{width:auto;margin-top:3px;flex:0 0 auto}
+  .choice-grid strong,.choice-grid small,.check-card strong,.check-card small{display:block}
+  .choice-grid small,.check-card small{margin-top:5px;color:#6a796f;font-size:.7rem;line-height:1.45}
+  .choice-grid label:has(input:checked),.stacked-options label:has(input:checked),.check-card:has(input:checked){border-color:#91c82f;background:#f2f7ed}
+  .email-consents{margin-top:4px;padding:20px;border-left:4px solid var(--yellow);background:#f8f9f5}
+  .email-consents>p{margin:0 0 14px;color:#526158;font-size:.78rem;line-height:1.55}
+  .email-consents>p strong,.email-consents>p span{display:block}.email-consents>p strong{color:var(--ink);margin-bottom:4px}
+  .conditional{border-top:5px solid #91c82f}
+  .conditional-block{margin-top:22px;padding:22px;border-left:4px solid #91c82f;background:#f1f5f1}
+  .conditional-block h3{margin:0 0 8px;font-size:1.15rem}.conditional-block>p{margin:0 0 20px;color:#607067;line-height:1.55}
+  .stacked-options{margin:0 0 24px;padding:0;border:0;display:grid;gap:10px}
+  .stacked-options legend{margin-bottom:10px}
+  .legal-list{display:grid;gap:12px}
+  .legal-check{display:flex;align-items:flex-start;gap:11px;padding:16px;background:#f3f6f3;color:#536359;font-size:.78rem;line-height:1.55}
+  .legal-check a{color:var(--green)}
+  .check-card{margin-bottom:0}.check-card+.conditional-block{margin-top:14px}
+  .signature-field{margin-top:25px}
+  .signature-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:9px}
+  .signature-head button{padding:7px 10px;border:1px solid var(--line);background:white;color:var(--green);font:inherit;font-size:.7rem;font-weight:800;cursor:pointer}
+  #signature-pad{width:100%;height:190px;display:block;border:2px dashed #9cac9f;background:#fbfcfb;touch-action:none;cursor:crosshair}
+  .signature-field>p,.mail-note{color:#697970;font-size:.72rem;line-height:1.55}
+  .captcha{max-width:320px;margin-top:25px}
+  .honeypot{position:absolute;left:-10000px}
+  .submit-row{margin-top:28px;display:flex;align-items:center;gap:20px}
+  .submit-row button{padding:17px 22px;border:0;background:#91c82f;color:var(--dark);font-weight:900;cursor:pointer}
+  .submit-row button:hover{background:var(--yellow)}.submit-row button:disabled{opacity:.55;cursor:wait}
+  .submit-row button span{margin-left:16px}.submit-row p{margin:0;font-size:.83rem;font-weight:750}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-width:900px){.member-layout{grid-template-columns:1fr;gap:35px}.member-layout>aside{position:static;max-width:680px}}
+  @media(max-width:650px){.shell{width:min(100% - 30px,1160px)}.member-hero{padding:68px 0}.member-section{padding:55px 0 80px}.form-section{padding:24px 20px}.fields,.upload-grid,.choice-grid{grid-template-columns:1fr}.field.full{grid-column:1}.section-heading{grid-template-columns:40px 1fr;gap:14px}.section-heading>span{width:36px}.section-heading h2{font-size:1.65rem}.signature-head,.submit-row{align-items:flex-start;flex-direction:column}.submit-row button{width:100%}}
+</style>
