@@ -1,0 +1,30 @@
+name: Apply welcome email shop update
+
+on:
+  push:
+    branches:
+      - agent/update-welcome-email-shop
+
+permissions:
+  contents: write
+
+jobs:
+  apply-update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/update-welcome-email-shop
+
+      - name: Apply email changes
+        run: python scripts/apply-welcome-email-shop-update.py
+
+      - name: Commit generated changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/api/membership-v3.php public/images/verein/jugend/bsv-jugend-set.jpg
+          git commit -m "Update welcome email shop and youth set" || exit 0
+          git push
