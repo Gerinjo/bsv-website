@@ -184,8 +184,13 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
             <div class="field captcha"><label for="captchaAnswer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captchaAnswer" name="captchaAnswer" type="number" inputmode="numeric" required /></div>
             <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
 
+            <div id="membership-requirement" class="membership-requirement" role="note" aria-live="polite">
+              <strong>Voraussetzung für die Mitgliedschaft</strong>
+              <p id="membership-requirement-text">Ohne die Bestätigung der Beitragsordnung und der Vereinssatzung ist eine Aufnahme als Mitglied nicht möglich. Der Absenden-Button wird erst nach beiden Bestätigungen freigeschaltet.</p>
+            </div>
+
             <div class="submit-row">
-              <button type="submit">Mitgliedsantrag absenden <span>↗</span></button>
+              <button type="submit" disabled aria-describedby="membership-requirement-text">Mitgliedsantrag absenden <span>↗</span></button>
               <p id="form-status" role="status" aria-live="polite"></p>
             </div>
             <p class="mail-note">Nach erfolgreichem Versand erhältst du eine Eingangsbestätigung mit dem erzeugten PDF. Die vollständigen Unterlagen gehen zunächst an die zuständige Bearbeitung beim BSV.</p>
@@ -201,6 +206,10 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const form = document.querySelector('#membership-form');
   const status = document.querySelector('#form-status');
   const submitButton = form.querySelector('button[type="submit"]');
+  const contributionAccepted = form.querySelector('input[name="contributionAccepted"]');
+  const statutesAccepted = form.querySelector('input[name="statutesAccepted"]');
+  const membershipRequirement = document.querySelector('#membership-requirement');
+  const membershipRequirementText = document.querySelector('#membership-requirement-text');
   const departmentInputs = [...form.querySelectorAll('input[name="department"]')];
   const guardianSection = document.querySelector('#guardian-section');
   const footballSection = document.querySelector('#football-section');
@@ -216,6 +225,16 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const clubChangeSection = document.querySelector('#club-change-section');
   const currentlySuspended = document.querySelector('#currentlySuspended');
   const suspensionDates = document.querySelector('#suspension-dates');
+  let formIsSending = false;
+
+  const updateMembershipEligibility = () => {
+    const eligible = contributionAccepted.checked && statutesAccepted.checked;
+    submitButton.disabled = formIsSending || !eligible;
+    membershipRequirement.classList.toggle('is-complete', eligible);
+    membershipRequirementText.textContent = eligible
+      ? 'Beitragsordnung und Vereinssatzung wurden bestätigt. Der Mitgliedsantrag kann abgesendet werden.'
+      : 'Ohne die Bestätigung der Beitragsordnung und der Vereinssatzung ist eine Aufnahme als Mitglied nicht möglich. Der Absenden-Button wird erst nach beiden Bestätigungen freigeschaltet.';
+  };
 
   const setRequired = (root, required, selector = 'input, select, textarea') => {
     root.querySelectorAll(selector).forEach((control) => {
@@ -300,6 +319,8 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   currentlySuspended.addEventListener('change', updateSuspension);
   birthDate.addEventListener('change', updateInternational);
   nationality.addEventListener('input', updateInternational);
+  contributionAccepted.addEventListener('change', updateMembershipEligibility);
+  statutesAccepted.addEventListener('change', updateMembershipEligibility);
 
   const canvas = document.querySelector('#signature-pad');
   const signatureData = document.querySelector('#signature-data');
@@ -381,6 +402,12 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
     updateInternational();
     updateRegistrationType();
 
+    if (!contributionAccepted.checked || !statutesAccepted.checked) {
+      status.textContent = 'Ohne die Bestätigung der Beitragsordnung und der Vereinssatzung ist keine Mitgliedschaft möglich.';
+      membershipRequirement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     if (!signed || !signatureData.value) {
       status.textContent = 'Bitte unterschreibe im Unterschriftenfeld.';
       canvas.focus();
@@ -391,7 +418,8 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
       return;
     }
 
-    submitButton.disabled = true;
+    formIsSending = true;
+    updateMembershipEligibility();
     status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
 
     try {
@@ -430,6 +458,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
   resizeCanvas();
   updateDepartment();
+  updateMembershipEligibility();
   createCaptcha();
 </script>
 
@@ -488,9 +517,14 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   .signature-field>p,.mail-note{color:#697970;font-size:.72rem;line-height:1.55}
   .captcha{max-width:320px;margin-top:25px}
   .honeypot{position:absolute;left:-10000px}
-  .submit-row{margin-top:28px;display:flex;align-items:center;gap:20px}
+  .membership-requirement{margin-top:28px;padding:17px 18px;border-left:4px solid #d59324;background:#fff4dc;color:#69440e}
+  .membership-requirement strong{display:block;margin-bottom:5px;color:#593708;font-size:.82rem}
+  .membership-requirement p{margin:0;font-size:.76rem;line-height:1.6}
+  .membership-requirement.is-complete{border-left-color:#4f8a32;background:#eff7eb;color:#315722}
+  .membership-requirement.is-complete strong{color:#27481b}
+  .submit-row{margin-top:20px;display:flex;align-items:center;gap:20px}
   .submit-row button{padding:17px 22px;border:0;background:#91c82f;color:var(--dark);font-weight:900;cursor:pointer}
-  .submit-row button:hover{background:var(--yellow)}.submit-row button:disabled{opacity:.55;cursor:wait}
+  .submit-row button:hover:not(:disabled){background:var(--yellow)}.submit-row button:disabled{opacity:.5;cursor:not-allowed}
   .submit-row button span{margin-left:16px}.submit-row p{margin:0;font-size:.83rem;font-weight:750}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   @media(max-width:900px){.member-layout{grid-template-columns:1fr;gap:35px}.member-layout>aside{position:static;max-width:680px}}

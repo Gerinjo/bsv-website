@@ -628,6 +628,20 @@ $emailConsentSummary =
     "Allgemeine Vereinsinformationen per E-Mail: " . $yesNo($emailGeneralInfoAccepted) . "\n" .
     "Newsletter und digitale Vereinszeitschrift per E-Mail: " . $yesNo($emailNewsletterAccepted) . "\n";
 
+$checkboxSummary =
+    "Unterstützung im Verein angeboten: " . $yesNo($value('supportWilling') === 'yes') . "\n" .
+    "SEPA-Lastschriftmandat bestätigt: " . $yesNo($accepted('sepaAccepted')) . "\n" .
+    "Beitragsordnung gelesen und akzeptiert: " . $yesNo($accepted('contributionAccepted')) . "\n" .
+    "Vereinssatzung gelesen und akzeptiert: " . $yesNo($accepted('statutesAccepted')) . "\n" .
+    "Datenschutzerklärung und Datenverarbeitung akzeptiert: " . $yesNo($accepted('privacyAccepted')) . "\n" .
+    "Allgemeine Vereinsinformationen per E-Mail: " . $yesNo($emailGeneralInfoAccepted) . "\n" .
+    "Newsletter und digitale Vereinszeitschrift per E-Mail: " . $yesNo($emailNewsletterAccepted) . "\n" .
+    ($isFootball
+        ? "Spielberichtsdaten für DFBnet und FUSSBALL.DE akzeptiert: " . $yesNo($accepted('playerDataAccepted')) . "\n" .
+          "Marketing durch DFB, Verbände und Partner akzeptiert: " . $yesNo($accepted('marketingAccepted')) . "\n"
+        : "Spielberichtsdaten für DFBnet und FUSSBALL.DE: nicht relevant\n" .
+          "Marketing durch DFB, Verbände und Partner: nicht relevant\n");
+
 $internalRecipient = 'jerome.ernsberger@gmail.com';
 $internalSubject = 'BSV Mitgliedsantrag ' . $applicationNumber . ': ' . $firstName . ' ' . $lastName;
 $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
@@ -638,7 +652,9 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     "Anschrift: {$street}, {$postalCode} {$city}\n" .
     "E-Mail: {$email}\n" .
     "Telefon: {$phone}\n\n" .
-    "Freiwillige E-Mail-Einwilligungen:\n" . $emailConsentSummary . "\n" .
+    "ANTWORTEN AUF SÄMTLICHE CHECKBOXEN\n" .
+    $checkboxSummary . "\n" .
+    ($value('supportIdeas') !== '' ? "Hinweise zur angebotenen Unterstützung: " . $value('supportIdeas') . "\n\n" : '') .
     ($isYouthFootball ? "Kontaktperson: {$guardianFirstName} {$guardianLastName}\nTelefon Kontaktperson: " . ($guardianPhone !== '' ? $guardianPhone : 'nicht angegeben') . "\n\n" : '') .
     "Bank: {$bankName}\nBIC: {$bic}\nIBAN: {$iban}\nKontoinhaber: {$accountHolder}\n\n" .
     ($isFootball ? "Spielgenehmigung: {$registrationLabels[$registrationType]}\nIdentitätsnachweis: {$proofLabels[$identityProofType]}\n\n" : '') .
