@@ -16,14 +16,6 @@ export const gastronomy = {
   menuPdf: 'https://bsvnordstern.de/j4/images/bsv/gastro/speisekarte/Speisekarte_BSV_JAN_2024.pdf',
   lieferandoImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/lieferando.jpg',
   karaokeImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/events/karaoke.jpg',
-  gallery: [
-    'https://bsvnordstern.de/j4/administrator/cache/preview/5f1954031c2199afb7463a3dd6c4b0e5.jpg',
-    'https://bsvnordstern.de/j4/administrator/cache/preview/2e4d9067b3c8120cf6c61bd2a4edbb55.jpg',
-    'https://bsvnordstern.de/j4/administrator/cache/preview/b3ccd4d8e5c02d4a9a1a306674de1a28.jpg',
-    'https://bsvnordstern.de/j4/administrator/cache/preview/81e1ae4a2bb7fc4ae9ec43a0547209f4.jpg',
-    'https://bsvnordstern.de/j4/administrator/cache/preview/3eb37f5f1e5935c65a45d7cbbe65fb6f.jpg',
-    'https://bsvnordstern.de/j4/administrator/cache/preview/83ac95bec4f417a5a221eeb339258fc4.jpg',
-  ],
   openingHours: [
     { days: 'Montag', hours: 'Ruhetag' },
     { days: 'Dienstag bis Donnerstag', hours: '16:00 bis 22:00 Uhr' },
