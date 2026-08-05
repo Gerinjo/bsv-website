@@ -50,6 +50,13 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
               <div class="field"><label for="city">Ort *</label><input id="city" name="city" autocomplete="address-level2" maxlength="120" required /></div>
               <div class="field"><label for="phone">Mobilnummer *</label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" required /></div>
               <div class="field"><label for="email">E-Mail-Adresse *</label><input id="email" name="email" type="email" autocomplete="email" maxlength="180" required /></div>
+              <div class="field full email-consents">
+                <p><strong>Freiwillige Informationen per E-Mail</strong><span>Die beiden Einwilligungen können unabhängig voneinander erteilt und jederzeit widerrufen werden.</span></p>
+                <div class="legal-list">
+                  <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
+                  <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -150,13 +157,13 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
               </div>
             </div>
 
-            <div class="upload-grid">
-              <div class="field"><label for="playerPhoto">Aktuelles Spielerfoto *</label><input id="playerPhoto" name="playerPhoto" type="file" accept=".jpg,.jpeg,.png,.heic,.heif" /></div>
-              <div class="field"><label for="additionalDocuments">Weitere Unterlagen <small>(optional)</small></label><input id="additionalDocuments" name="additionalDocuments[]" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" multiple /></div>
+            <div class="field full">
+              <label for="additionalDocuments">Weitere Unterlagen <small>(optional)</small></label>
+              <input id="additionalDocuments" name="additionalDocuments[]" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif" multiple />
             </div>
 
             <div class="legal-list">
-              <label class="legal-check"><input type="checkbox" name="playerDataAccepted" value="accepted" /><span>Ich willige in die Verarbeitung des Spielerfotos und der Spielberichtsdaten für DFBnet und FUSSBALL.DE ein. *</span></label>
+              <label class="legal-check"><input type="checkbox" name="playerDataAccepted" value="accepted" /><span>Ich willige in die Verarbeitung der Spielberichtsdaten für DFBnet und FUSSBALL.DE ein. *</span></label>
               <label class="legal-check"><input type="checkbox" name="marketingAccepted" value="accepted" /><span>Ich stimme der Nutzung der Adressdaten für Marketingzwecke des DFB, seiner Verbände und Partner zu. Diese Einwilligung ist freiwillig und widerrufbar.</span></label>
             </div>
           </section>
@@ -228,7 +235,6 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
 
     identityProofInputs.forEach((input) => input.required = isFootball());
     registrationTypeInputs.forEach((input) => input.required = isFootball());
-    document.querySelector('#playerPhoto').required = isFootball();
     document.querySelector('input[name="playerDataAccepted"]').required = isFootball();
 
     if (!isFootball()) {
@@ -463,6 +469,9 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   .choice-grid strong,.choice-grid small,.check-card strong,.check-card small{display:block}
   .choice-grid small,.check-card small{margin-top:5px;color:#6a796f;font-size:.7rem;line-height:1.45}
   .choice-grid label:has(input:checked),.stacked-options label:has(input:checked),.check-card:has(input:checked){border-color:#91c82f;background:#f2f7ed}
+  .email-consents{margin-top:4px;padding:20px;border-left:4px solid var(--yellow);background:#f8f9f5}
+  .email-consents>p{margin:0 0 14px;color:#526158;font-size:.78rem;line-height:1.55}
+  .email-consents>p strong,.email-consents>p span{display:block}.email-consents>p strong{color:var(--ink);margin-bottom:4px}
   .conditional{border-top:5px solid #91c82f}
   .conditional-block{margin-top:22px;padding:22px;border-left:4px solid #91c82f;background:#f1f5f1}
   .conditional-block h3{margin:0 0 8px;font-size:1.15rem}.conditional-block>p{margin:0 0 20px;color:#607067;line-height:1.55}
