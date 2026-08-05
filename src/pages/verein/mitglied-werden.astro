@@ -237,28 +237,33 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const gender = document.querySelector('#gender');
 
   const youthTeams = [
-    { value: 'bambini-u6', label: 'Bambini U6', trainers: 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa' },
-    { value: 'bambini-u7', label: 'Bambini U7', trainers: 'M. Meiss, M. Tassone, L. Gastaudo' },
-    { value: 'f-u8', label: 'F-Junioren U8', trainers: 'F. Keller, P. Dieterle' },
-    { value: 'f-u9', label: 'F-Junioren U9', trainers: 'A. Wolfmüller, S. Rauch, M. Rüth' },
-    { value: 'e1-junioren', label: 'E1-Junioren', trainers: 'N. Pourheidari, C. Pabst' },
-    { value: 'e2-junioren', label: 'E2-Junioren', trainers: 'M. Sick, S. Sulger, H. Ho' },
-    { value: 'e3-junioren', label: 'E3-Junioren', trainers: 'M. Rüth, M. Mahmoudi' },
-    { value: 'd1-junioren', label: 'D1-Junioren', trainers: 'S. Hellmann' },
-    { value: 'd2-junioren', label: 'D2-Junioren', trainers: 'J. Boreatti, M. Eisner' },
-    { value: 'd3-junioren', label: 'D3-Junioren', trainers: 'H. Ho' },
-    { value: 'c1-junioren', label: 'C1-Junioren', trainers: 'A. Scholpre, S. Bühler, T. Parthenschlager' },
-    { value: 'c2-junioren', label: 'C2-Junioren', trainers: 'S. Bäuerle' },
-    { value: 'b-junioren', label: 'B-Junioren', trainers: 'M. Geissmann, A. Basile' },
-    { value: 'a-junioren', label: 'A-Junioren', trainers: 'M. Jentsch, O. Schmal, F. Demmer' },
-    { value: 'e-juniorinnen', label: 'E-Juniorinnen', trainers: 'S. Thomen' },
-    { value: 'd-juniorinnen', label: 'D-Juniorinnen', trainers: 'D.-S. Bulander' },
-    { value: 'c-juniorinnen', label: 'C-Juniorinnen', trainers: 'A. Kramer' },
+    { value: 'bambini-u6', label: 'U6 G-Junioren Spielgruppe', trainers: 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa' },
+    { value: 'bambini-u7', label: 'U7 G-Junioren Bambinis', trainers: 'M. Meiss, M. Tassone, L. Gastaudo' },
+    { value: 'f-u8', label: 'U8 F-Junioren', trainers: 'F. Keller, P. Dieterle' },
+    { value: 'f-u9', label: 'U9 F-Junioren', trainers: 'A. Wolfmüller, S. Rauch, M. Rüth' },
+    { value: 'e1-junioren', label: 'U11 E1-Junioren', trainers: 'N. Pourheidari, C. Pabst' },
+    { value: 'e2-junioren', label: 'U11 E2-Junioren', trainers: 'M. Rüth, M. Mahmoudi' },
+    { value: 'e3-junioren', label: 'U11 E3-Junioren', trainers: 'S. Sulger, M. Sick' },
+    { value: 'd1-junioren', label: 'U13 D1-Junioren', trainers: 'S. Hellmann' },
+    { value: 'd2-junioren', label: 'U13 D2-Junioren', trainers: 'J. Boreatti, M. Eisner' },
+    { value: 'd3-junioren', label: 'U13 D3-Junioren', trainers: 'H. Ho' },
+    { value: 'c1-junioren', label: 'U15 C1-Junioren', trainers: 'A. Scholpre, S. Bühler, T. Parthenschlager' },
+    { value: 'c2-junioren', label: 'U15 C2-Junioren', trainers: 'S. Bäuerle' },
+    { value: 'b-junioren', label: 'U17 B-Junioren', trainers: 'M. Geismann, A. Basile' },
+    { value: 'a-junioren', label: 'U19 A-Junioren', trainers: 'M. Jentsch, O. Schmal, F. Demmer' },
+    { value: 'b-juniorinnen', label: 'U17 B-Juniorinnen', trainers: 'S. Goldhagen, S. Thomen' },
+    { value: 'c-juniorinnen', label: 'U15 C-Juniorinnen', trainers: 'A. Kramer' },
+    { value: 'd-juniorinnen', label: 'U13 D-Juniorinnen', trainers: 'D. Bulander' },
   ];
 
   const adultMaleTeams = [
-    { value: 'herren-1', label: '1. Mannschaft', trainers: 'T. Parzich, T. Altenburg' },
-    { value: 'herren-2', label: '2. Mannschaft', trainers: 'A. Kaiser' },
+    { value: 'herren-1', label: 'BSV Nordstern Radolfzell · Kreisliga B Staffel 1', trainers: 'T. Parzich, T. Altenburg' },
+    { value: 'herren-2', label: 'SG Herren 2 · Kreisliga C Staffel 1', trainers: 'A. Kaiser' },
+  ];
+
+  const adultFemaleTeams = [
+    { value: 'frauen-1', label: 'SG Frauen 1 · Bezirksliga Bodensee', trainers: 'M. Becht' },
+    { value: 'frauen-2', label: 'SG Frauen 2 · Kreisliga A', trainers: 'M. Lipp, E. Bayram' },
   ];
   const departmentInputs = [...form.querySelectorAll('input[name="department"]')];
   const guardianSection = document.querySelector('#guardian-section');
@@ -299,10 +304,16 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const teamAudience = () => {
     if (selectedDepartment() === 'youth-football') return 'youth';
     if (selectedDepartment() === 'adult-football' && gender.value === 'männlich') return 'adult-men';
+    if (selectedDepartment() === 'adult-football' && gender.value === 'weiblich') return 'adult-women';
     return '';
   };
 
-  const availableTeams = () => teamAudience() === 'youth' ? youthTeams : (teamAudience() === 'adult-men' ? adultMaleTeams : []);
+  const availableTeams = () => {
+    if (teamAudience() === 'youth') return youthTeams;
+    if (teamAudience() === 'adult-men') return adultMaleTeams;
+    if (teamAudience() === 'adult-women') return adultFemaleTeams;
+    return [];
+  };
 
   const populateTeamOptions = (audience) => {
     const previousValue = teamSelection.value;
