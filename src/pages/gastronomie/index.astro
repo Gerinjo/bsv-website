@@ -1,0 +1,54 @@
+---
+import GastroPage from '../../components/GastroPage.astro';
+import { gastronomy, gastronomyLinks } from '../../data/gastronomie';
+import { withBase } from '../../utils/paths';
+---
+
+<GastroPage
+  title="Gastronomie"
+  description="Die Vereinsgaststätte des BSV Nordstern Radolfzell mit italienischer und deutscher Küche, Öffnungszeiten, Speisekarte und Reservierung."
+  headline="Genießen.<br />Feiern. Zusammenkommen."
+  intro="Willkommen in der Vereinsgaststätte des BSV Nordstern Radolfzell – mit italienischer und deutscher Küche, familiärer Atmosphäre und Platz für gemeinsame Abende."
+  activePath="/gastronomie"
+>
+  <span class="gastro-section-label">Willkommen beim BSV</span>
+  <h2 class="gastro-title">Mehr als eine Vereinsgaststätte.</h2>
+  <p class="gastro-lead">Frische Salate, hausgemachte Pasta, Meeresfrüchte, Burger, passende Getränke und ein unkompliziertes Miteinander: Die Gaststätte ist Treffpunkt für Mitglieder, Nachbarschaft, Mannschaften und Gäste.</p>
+
+  <div class="gastro-grid link-grid">
+    {gastronomyLinks.map((link, index) => (
+      <a class="section-link" href={withBase(link.href)}>
+        <span>0{index + 1}</span>
+        <div><strong>{link.label}</strong><small>{link.description}</small></div>
+        <b aria-hidden="true">↗</b>
+      </a>
+    ))}
+  </div>
+
+  <section class="welcome-grid">
+    <div>
+      <span class="gastro-section-label">Küche & Atmosphäre</span>
+      <h2 class="gastro-title">Italienisch, deutsch und herzlich.</h2>
+    </div>
+    <div class="welcome-copy">
+      <p>Unser Team verwöhnt Sie mit einer vielfältigen Auswahl an Gerichten. Von Meeresfrüchten über frische Salate und Pasta bis zu herzhaften Burgern ist für viele Geschmäcker etwas dabei.</p>
+      <p>Auch für private Feiern, Jubiläen oder Firmenevents bietet die Vereinsgaststätte den passenden Rahmen. Nebenraum und Kegelbahn können direkt beim Gastro-Team angefragt werden.</p>
+      <a class="gastro-button" href={gastronomy.reservationPhoneHref}>Reservierung anfragen ↗</a>
+    </div>
+  </section>
+
+  <div class="gastro-gallery">
+    {gastronomy.gallery.map((image, index) => <img src={image} alt={`Eindruck aus der BSV Vereinsgaststätte ${index + 1}`} width="720" height="520" loading="lazy" />)}
+  </div>
+</GastroPage>
+
+<style>
+  .link-grid{margin:42px 0 95px}
+  .section-link{min-height:120px;padding:24px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;background:white;color:#17251b;text-decoration:none;box-shadow:0 15px 42px rgb(9 47 32 / 7%);transition:.18s ease}
+  .section-link:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgb(9 47 32 / 12%)}
+  .section-link>span{display:grid;place-items:center;width:42px;aspect-ratio:1;border-radius:50%;background:#f4d638;color:#092f20;font-size:.68rem;font-weight:900}
+  .section-link strong,.section-link small{display:block}.section-link strong{font-family:Georgia,serif;font-size:1.45rem}.section-link small{margin-top:6px;color:#69786e}.section-link>b{color:#164f32;font-size:1.15rem}
+  .welcome-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:80px;align-items:start;padding:70px 0 35px;border-top:1px solid #d8dfd9}
+  .welcome-copy p{margin:0 0 18px;color:#58675d;font-size:1rem;line-height:1.8}.welcome-copy .gastro-button{margin-top:8px}
+  @media(max-width:800px){.welcome-grid{grid-template-columns:1fr;gap:28px}.link-grid{margin-bottom:65px}}
+</style>
