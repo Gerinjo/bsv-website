@@ -1,0 +1,36 @@
+name: Apply welcome email migration
+
+on:
+  push:
+    branches: [ agent/combined-welcome-email ]
+    paths:
+      - scripts/apply-welcome-email.py
+      - .github/workflows/apply-welcome-email.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/combined-welcome-email
+          fetch-depth: 0
+
+      - name: Apply welcome email update
+        run: python scripts/apply-welcome-email.py
+
+      - name: Validate PHP syntax
+        run: php -l public/api/membership-v3.php
+
+      - name: Commit generated change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/api/membership-v3.php
+          git commit -m "Combine membership confirmation and welcome email"
+          git push origin HEAD:agent/combined-welcome-email
