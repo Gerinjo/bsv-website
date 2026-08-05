@@ -58,7 +58,12 @@ export const menu: MenuItem[] = [
         { label: 'Ü35 Senioren', href: '/fussball/alte-herren' },
       ]},
       { title: 'Sportstätten', links: [
-        { label: 'Sportplätze', href: '/fussball/sportplaetze' },
+        { label: 'Übersicht & Anfahrt', href: '/fussball/sportplaetze' },
+        { label: 'Hauptplatz', href: '/fussball/sportplaetze#hauptplatz' },
+        { label: 'Nebenplatz', href: '/fussball/sportplaetze#nebenplatz' },
+        { label: 'Gleisdreieck', href: '/fussball/sportplaetze#gleisdreieck' },
+        { label: 'Käfig Untersee-Stadion', href: '/fussball/sportplaetze#kaefig-untersee-stadion' },
+        { label: 'Kunstrasen Mettnau', href: '/fussball/sportplaetze#kunstrasen-mettnau' },
         { label: 'Belegungsplan', href: '/fussball/belegungsplan' },
       ]},
     ],
