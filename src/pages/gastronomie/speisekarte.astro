@@ -1,0 +1,46 @@
+---
+import GastroPage from '../../components/GastroPage.astro';
+import { gastronomy } from '../../data/gastronomie';
+---
+
+<GastroPage
+  title="Speisekarte"
+  description="Speisekarte der Vereinsgaststätte des BSV Nordstern Radolfzell als PDF ansehen oder herunterladen."
+  eyebrow="Speisekarte"
+  headline="Appetit auf<br />etwas Gutes?"
+  intro="Entdecken Sie das gastronomische Angebot der BSV-Vereinsgaststätte und öffnen Sie die auf der bisherigen Homepage hinterlegte Speisekarte direkt als PDF."
+  heroImage={gastronomy.gallery[3]}
+  activePath="/gastronomie/speisekarte"
+>
+  <div class="menu-intro">
+    <div>
+      <span class="gastro-section-label">Unser Angebot</span>
+      <h2 class="gastro-title">Die Speisekarte direkt im Blick.</h2>
+      <p class="gastro-lead">Die PDF-Datei kann direkt angesehen oder in einem neuen Tab geöffnet werden. Für Fragen, Reservierungen und aktuelle Tagesangebote steht das Gastro-Team telefonisch zur Verfügung.</p>
+    </div>
+    <div class="menu-actions">
+      <a class="gastro-button" href={gastronomy.menuPdf} target="_blank" rel="noreferrer">PDF öffnen ↗</a>
+      <a class="call-button" href={gastronomy.reservationPhoneHref}>Reservieren: {gastronomy.reservationPhone}</a>
+    </div>
+  </div>
+
+  <aside class="menu-notice">
+    <strong>Hinweis zum Stand der Speisekarte</strong>
+    <p>Die von der alten Homepage übernommene Datei trägt den Namen „Speisekarte_BSV_JAN_2024“. Vor der endgültigen Freischaltung sollte geprüft werden, ob Preise und Angebot noch aktuell sind und gegebenenfalls eine neue PDF-Datei hinterlegt werden.</p>
+  </aside>
+
+  <div class="pdf-frame">
+    <iframe src={gastronomy.menuPdf} title="Speisekarte der BSV Nordstern Vereinsgaststätte"></iframe>
+    <div class="pdf-fallback">
+      <p>Die PDF-Vorschau wird von diesem Browser nicht angezeigt.</p>
+      <a href={gastronomy.menuPdf} target="_blank" rel="noreferrer">Speisekarte öffnen</a>
+    </div>
+  </div>
+</GastroPage>
+
+<style>
+  .menu-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:55px;align-items:end}.menu-actions{display:grid;gap:12px;min-width:260px}.menu-actions a{justify-content:center}.call-button{padding:14px 18px;border:1px solid #bac6bd;color:#164f32;text-align:center;text-decoration:none;font-weight:850;background:white}
+  .menu-notice{margin:38px 0 24px;padding:20px 22px;border-left:4px solid #f4d638;background:#fff9d9}.menu-notice strong{color:#164f32}.menu-notice p{margin:7px 0 0;color:#5f665c;line-height:1.6;font-size:.84rem}
+  .pdf-frame{position:relative;min-height:820px;background:#dfe5e0;box-shadow:0 18px 55px rgb(9 47 32 / 10%)}.pdf-frame iframe{position:relative;z-index:1;width:100%;height:900px;display:block;border:0;background:white}.pdf-fallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.pdf-fallback a{color:#164f32;font-weight:900}
+  @media(max-width:760px){.menu-intro{grid-template-columns:1fr;gap:25px}.menu-actions{min-width:0}.pdf-frame{min-height:600px}.pdf-frame iframe{height:680px}}
+</style>

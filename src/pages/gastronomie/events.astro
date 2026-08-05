@@ -1,0 +1,49 @@
+---
+import GastroPage from '../../components/GastroPage.astro';
+import { gastronomy } from '../../data/gastronomie';
+---
+
+<GastroPage
+  title="Gastro-Events"
+  description="Veranstaltungen und Rückblicke aus der Vereinsgaststätte des BSV Nordstern Radolfzell."
+  eyebrow="Gastro-Events"
+  headline="Feiern, singen<br />und zusammen sein."
+  intro="Besondere Abende in der Vereinsgaststätte werden hier angekündigt. Der zuletzt auf der alten Homepage veröffentlichte Beitrag wird als Rückblick gezeigt."
+  heroImage={gastronomy.gallery[4]}
+  activePath="/gastronomie/events"
+>
+  <span class="gastro-section-label">Aktuelle Veranstaltungen</span>
+  <h2 class="gastro-title">Neue Termine folgen.</h2>
+  <p class="gastro-lead">Derzeit liegt aus der alten Homepage kein eindeutig aktueller Gastro-Termin für 2026 vor. Sobald ein neuer Termin feststeht, kann er an dieser Stelle hervorgehoben werden.</p>
+
+  <section class="archive-event">
+    <div class="event-image"><img src={gastronomy.karaokeImage} alt="Ankündigung Weihnachts-Karaoke in der BSV Gaststätte" width="900" height="1200" loading="lazy" /></div>
+    <article>
+      <span>Rückblick aus der alten Homepage</span>
+      <h2>Weihnachts-Karaoke mit Party</h2>
+      <p>Ein Abend mit Hits der 80er und 90er, DJ Mario Events, Tombola-Auslosung und weihnachtlicher Partyatmosphäre.</p>
+      <ul>
+        <li>Beginn: ab 18:00 Uhr</li>
+        <li>Ort: BSV Nordstern Gaststätte</li>
+        <li>Adresse: Schlesierstraße 43</li>
+        <li>Info: 07732 / 910080</li>
+      </ul>
+      <p class="archive-note"><strong>Archivhinweis:</strong> Der frühere Beitrag nannte lediglich den 26. Dezember und wird deshalb nicht als kommender Termin dargestellt.</p>
+    </article>
+  </section>
+
+  <section class="event-contact">
+    <span class="gastro-section-label">Eigene Veranstaltung</span>
+    <h2 class="gastro-title">Feiern in der Vereinsgaststätte.</h2>
+    <p class="gastro-lead">Nebenraum und Kegelbahn können für Geburtstage, Jubiläen, Vereinsabende oder Firmenevents angefragt werden.</p>
+    <a class="gastro-button" href={gastronomy.reservationPhoneHref}>Reservierung besprechen ↗</a>
+  </section>
+</GastroPage>
+
+<style>
+  .archive-event{display:grid;grid-template-columns:minmax(280px,.75fr) minmax(0,1.25fr);gap:55px;align-items:center;margin-top:46px;padding:35px;background:white;box-shadow:0 18px 55px rgb(9 47 32 / 8%)}
+  .event-image{min-height:430px;background:#e5e9e5}.event-image img{width:100%;height:100%;max-height:560px;display:block;object-fit:cover}
+  .archive-event article>span{color:#8a7750;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.archive-event h2{margin:10px 0 18px;color:#164f32;font-family:Georgia,serif;font-size:2.5rem;line-height:1.05}.archive-event p,.archive-event li{color:#58675d;line-height:1.7}.archive-event ul{padding-left:20px}.archive-note{margin-top:24px;padding:16px;background:#f3f5f2;font-size:.82rem}
+  .event-contact{margin-top:85px;padding-top:70px;border-top:1px solid #d9e0da}.event-contact .gastro-button{margin-top:12px}
+  @media(max-width:800px){.archive-event{grid-template-columns:1fr;gap:28px;padding:24px}.event-image{min-height:300px}}
+</style>
