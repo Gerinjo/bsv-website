@@ -30,10 +30,6 @@ import { gastronomy } from '../../data/gastronomie';
     <article class="gastro-card"><span>02</span><h3>Vereinsleben</h3><p>Treffpunkt für Mannschaften, Mitglieder, Familien, Nachbarschaft und Gäste rund um den Spielbetrieb.</p></article>
     <article class="gastro-card"><span>03</span><h3>Private Feiern</h3><p>Nebenraum und Kegelbahn bieten Möglichkeiten für Geburtstage, Jubiläen und weitere Veranstaltungen.</p></article>
   </section>
-
-  <div class="gastro-gallery">
-    {gastronomy.gallery.map((image, index) => <img src={image} alt={`Vereinsgaststätte des BSV Nordstern ${index + 1}`} width="720" height="520" loading="lazy" />)}
-  </div>
 </GastroPage>
 
 <style>
