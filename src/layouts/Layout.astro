@@ -5,6 +5,23 @@ import { withBase } from '../utils/paths';
 interface Props { title?: string; description?: string }
 const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell' } = Astro.props;
 const contactPath = withBase('/kontakt');
+const basePath = withBase('/');
+const friendlyMatchTeamPaths = [
+	'fussball/herren/bezirksliga',
+	'fussball/herren/kreisliga-2',
+	'fussball/frauen/bezirksliga',
+	'fussball/frauen/kreisliga',
+	'jugend/u19',
+	'jugend/u17',
+	'jugend/u15-c1',
+	'jugend/u15-c2',
+	'jugend/u13-d1',
+	'jugend/u13-d2',
+	'jugend/u13-d3',
+	'jugend/juniorinnen/u17',
+	'jugend/juniorinnen/u15',
+	'jugend/juniorinnen/u13',
+];
 ---
 <!doctype html>
 <html lang="de">
@@ -20,7 +37,7 @@ const contactPath = withBase('/kontakt');
 	<body>
 		<slot />
 		<GastroMegaEnhancer />
-		<script define:vars={{ contactPath }}>
+		<script define:vars={{ contactPath, basePath, friendlyMatchTeamPaths }}>
 			const topicByEmail = new Map([
 				['info@bsvnordstern.de', 'general'],
 				['jugend@bsvnordstern.de', 'youth'],
@@ -86,9 +103,43 @@ const contactPath = withBase('/kontakt');
 				});
 			};
 
+			const addFriendlyMatchButton = () => {
+				const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
+				const currentPath = (window.location.pathname.startsWith(normalizedBase)
+					? window.location.pathname.slice(normalizedBase.length)
+					: window.location.pathname.replace(/^\/+/, ''))
+					.replace(/\/+$/, '');
+
+				if (!friendlyMatchTeamPaths.includes(currentPath)) return;
+
+				const trialButton = [...document.querySelectorAll('main a')].find((link) => {
+					const label = link.textContent?.trim().toLocaleLowerCase('de-DE') ?? '';
+					const href = link.getAttribute('href') ?? '';
+					return label.includes('probetraining') || href.includes('--trial');
+				});
+
+				if (!(trialButton instanceof HTMLAnchorElement) || trialButton.dataset.friendlyMatchEnhanced === 'true') return;
+
+				const teamKey = currentPath.replaceAll('/', '--');
+				const friendlyButton = trialButton.cloneNode(true);
+				if (!(friendlyButton instanceof HTMLAnchorElement)) return;
+
+				friendlyButton.href = `${contactPath}?thema=${encodeURIComponent(`team--${teamKey}--friendly`)}`;
+				friendlyButton.classList.add('friendly-match-button');
+				friendlyButton.setAttribute('aria-label', 'Freundschaftsspiel mit dieser Mannschaft anfragen');
+				friendlyButton.textContent = 'Freundschaftsspiel anfragen ↗';
+
+				const actions = document.createElement('div');
+				actions.className = 'team-inquiry-actions';
+				trialButton.dataset.friendlyMatchEnhanced = 'true';
+				trialButton.before(actions);
+				actions.append(trialButton, friendlyButton);
+			};
+
 			const enhancePage = () => {
 				restoreDirectContactLinks();
 				correctCoachNames();
+				addFriendlyMatchButton();
 			};
 
 			if (document.readyState === 'loading') {
@@ -135,5 +186,35 @@ const contactPath = withBase('/kontakt');
 		background: #f4d638;
 		color: #092f20;
 		transform: translateY(-1px);
+	}
+	:global(.team-inquiry-actions) {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+	:global(.team-inquiry-actions > a) {
+		margin: 0;
+	}
+	:global(.team-inquiry-actions .friendly-match-button) {
+		border-color: #164f32;
+		background: #164f32;
+		color: white;
+	}
+	:global(.team-inquiry-actions .friendly-match-button:hover),
+	:global(.team-inquiry-actions .friendly-match-button:focus-visible) {
+		border-color: #092f20;
+		background: #092f20;
+		color: white;
+	}
+	@media (max-width: 560px) {
+		:global(.team-inquiry-actions) {
+			align-items: stretch;
+			flex-direction: column;
+		}
+		:global(.team-inquiry-actions > a) {
+			width: 100%;
+			justify-content: center;
+		}
 	}
 </style>
