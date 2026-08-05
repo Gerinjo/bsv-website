@@ -1,5 +1,6 @@
 ---
 import GastroMegaEnhancer from '../components/GastroMegaEnhancer.astro';
+import '../styles/theme-football-green.css';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string }
@@ -11,13 +12,14 @@ const contactPath = withBase('/kontakt');
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="theme-color" content="#050706" />
 		<link rel="icon" type="image/gif" href={withBase('/images/verein/wappen/bsv-nordstern.gif')} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<title>{title}</title>
 		<script is:inline type="text/javascript" src="https://www.fussball.de/widgets.js"></script>
 	</head>
-	<body>
+	<body class="theme-football-green">
 		<slot />
 		<GastroMegaEnhancer />
 		<script define:vars={{ contactPath }}>
