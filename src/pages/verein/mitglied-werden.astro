@@ -73,8 +73,27 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
             </fieldset>
           </section>
 
+          <section id="team-section" class="form-section conditional" hidden>
+            <div class="section-heading compact"><span>03</span><div><small>Mannschaft</small><h2>Ist deine Mannschaft schon bekannt?</h2></div></div>
+            <p class="section-copy">Die Angabe erleichtert uns die interne Zuordnung. Sie wird zunächst ausschließlich an die zuständige Bearbeitung beim BSV übermittelt und noch nicht automatisch an Trainerinnen oder Trainer weitergeleitet.</p>
+            <fieldset id="team-known-options" class="stacked-options">
+              <legend>Weißt du bereits, in welcher Mannschaft du beziehungsweise dein Kind aktiv sein wird? *</legend>
+              <label><input type="radio" name="teamKnown" value="yes" /><span>Ja, die Mannschaft ist bereits bekannt.</span></label>
+              <label><input type="radio" name="teamKnown" value="no" /><span>Nein, die Zuordnung ist noch offen.</span></label>
+            </fieldset>
+            <div id="team-selection-block" class="conditional-block" hidden>
+              <div class="field full">
+                <label for="teamSelection">Mannschaft *</label>
+                <select id="teamSelection" name="teamSelection">
+                  <option value="">Bitte Mannschaft auswählen …</option>
+                </select>
+                <small class="team-meta">Zur Orientierung werden die aktuell hinterlegten Trainer mit abgekürztem Vornamen angezeigt.</small>
+              </div>
+            </div>
+          </section>
+
           <section id="guardian-section" class="form-section conditional" hidden>
-            <div class="section-heading compact"><span>03</span><div><small>Jugendmitglied</small><h2>Kontaktperson</h2></div></div>
+            <div class="section-heading compact"><span>04</span><div><small>Jugendmitglied</small><h2>Kontaktperson</h2></div></div>
             <p class="section-copy">Für Mitglieder der Jugendabteilung benötigen wir eine sorgeberechtigte oder betreuende Kontaktperson.</p>
             <div class="fields">
               <div class="field"><label for="guardianLastName">Nachname *</label><input id="guardianLastName" name="guardianLastName" maxlength="100" /></div>
@@ -85,13 +104,13 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
           </section>
 
           <section class="form-section">
-            <div class="section-heading compact"><span>04</span><div><small>Gemeinsam stark</small><h2>Möchtest du unterstützen?</h2></div></div>
+            <div class="section-heading compact"><span>05</span><div><small>Gemeinsam stark</small><h2>Möchtest du unterstützen?</h2></div></div>
             <label class="check-card"><input type="checkbox" id="supportWilling" name="supportWilling" value="yes" /><span><strong>Ja, ich kann mir eine Unterstützung vorstellen.</strong><small>Zum Beispiel Training, Betreuung, Veranstaltungen, Platzpflege, Social Media oder Sponsoring.</small></span></label>
             <div id="support-details" class="field full conditional-block" hidden><label for="supportIdeas">Ideen oder mögliche Aufgaben</label><textarea id="supportIdeas" name="supportIdeas" rows="4" maxlength="2000"></textarea></div>
           </section>
 
           <section class="form-section">
-            <div class="section-heading"><span>05</span><div><small>SEPA-Lastschrift</small><h2>Bankverbindung</h2></div></div>
+            <div class="section-heading"><span>06</span><div><small>SEPA-Lastschrift</small><h2>Bankverbindung</h2></div></div>
             <div class="fields">
               <div class="field"><label for="bankName">Kreditinstitut *</label><input id="bankName" name="bankName" maxlength="120" required /></div>
               <div class="field"><label for="bic">BIC *</label><input id="bic" name="bic" autocomplete="off" maxlength="20" required /></div>
@@ -102,7 +121,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
           </section>
 
           <section class="form-section">
-            <div class="section-heading compact"><span>06</span><div><small>Bestätigungen</small><h2>Vereinsgrundlagen</h2></div></div>
+            <div class="section-heading compact"><span>07</span><div><small>Bestätigungen</small><h2>Vereinsgrundlagen</h2></div></div>
             <div class="legal-list">
               <label class="legal-check"><input type="checkbox" name="contributionAccepted" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/beitragsordnung')} target="_blank">Beitragsordnung</a> gelesen und akzeptiert.</span></label>
               <label class="legal-check"><input type="checkbox" name="statutesAccepted" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/satzung')} target="_blank">Vereinssatzung</a> gelesen und akzeptiert.</span></label>
@@ -111,7 +130,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
           </section>
 
           <section id="football-section" class="form-section conditional" hidden>
-            <div class="section-heading"><span>07</span><div><small>Nur für Fußball</small><h2>Spielgenehmigung</h2></div></div>
+            <div class="section-heading"><span>08</span><div><small>Nur für Fußball</small><h2>Spielgenehmigung</h2></div></div>
             <p class="section-copy">Für eine Spielberechtigung beim Südbadischen Fußballverband benötigen wir zusätzliche Angaben und Nachweise.</p>
 
             <fieldset class="stacked-options">
@@ -169,7 +188,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
           </section>
 
           <section class="form-section">
-            <div class="section-heading"><span>08</span><div><small>Abschluss</small><h2>Ort, Datum und Unterschrift</h2></div></div>
+            <div class="section-heading"><span>09</span><div><small>Abschluss</small><h2>Ort, Datum und Unterschrift</h2></div></div>
             <div class="fields">
               <div class="field"><label for="signingPlace">Ort *</label><input id="signingPlace" name="signingPlace" maxlength="120" required /></div>
               <div class="field"><label for="signingDate">Datum *</label><input id="signingDate" name="signingDate" type="date" required /></div>
@@ -210,6 +229,37 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const statutesAccepted = form.querySelector('input[name="statutesAccepted"]');
   const membershipRequirement = document.querySelector('#membership-requirement');
   const membershipRequirementText = document.querySelector('#membership-requirement-text');
+
+  const teamSection = document.querySelector('#team-section');
+  const teamKnownInputs = [...form.querySelectorAll('input[name="teamKnown"]')];
+  const teamSelectionBlock = document.querySelector('#team-selection-block');
+  const teamSelection = document.querySelector('#teamSelection');
+  const gender = document.querySelector('#gender');
+
+  const youthTeams = [
+    { value: 'bambini-u6', label: 'Bambini U6', trainers: 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa' },
+    { value: 'bambini-u7', label: 'Bambini U7', trainers: 'M. Meiss, M. Tassone, L. Gastaudo' },
+    { value: 'f-u8', label: 'F-Junioren U8', trainers: 'F. Keller, P. Dieterle' },
+    { value: 'f-u9', label: 'F-Junioren U9', trainers: 'A. Wolfmüller, S. Rauch, M. Rüth' },
+    { value: 'e1-junioren', label: 'E1-Junioren', trainers: 'N. Pourheidari, C. Pabst' },
+    { value: 'e2-junioren', label: 'E2-Junioren', trainers: 'M. Sick, S. Sulger, H. Ho' },
+    { value: 'e3-junioren', label: 'E3-Junioren', trainers: 'M. Rüth, M. Mahmoudi' },
+    { value: 'd1-junioren', label: 'D1-Junioren', trainers: 'S. Hellmann' },
+    { value: 'd2-junioren', label: 'D2-Junioren', trainers: 'J. Boreatti, M. Eisner' },
+    { value: 'd3-junioren', label: 'D3-Junioren', trainers: 'H. Ho' },
+    { value: 'c1-junioren', label: 'C1-Junioren', trainers: 'A. Scholpre, S. Bühler, T. Parthenschlager' },
+    { value: 'c2-junioren', label: 'C2-Junioren', trainers: 'S. Bäuerle' },
+    { value: 'b-junioren', label: 'B-Junioren', trainers: 'M. Geissmann, A. Basile' },
+    { value: 'a-junioren', label: 'A-Junioren', trainers: 'M. Jentsch, O. Schmal, F. Demmer' },
+    { value: 'e-juniorinnen', label: 'E-Juniorinnen', trainers: 'S. Thomen' },
+    { value: 'd-juniorinnen', label: 'D-Juniorinnen', trainers: 'D.-S. Bulander' },
+    { value: 'c-juniorinnen', label: 'C-Juniorinnen', trainers: 'A. Kramer' },
+  ];
+
+  const adultMaleTeams = [
+    { value: 'herren-1', label: '1. Mannschaft', trainers: 'T. Parzich, T. Altenburg' },
+    { value: 'herren-2', label: '2. Mannschaft', trainers: 'A. Kaiser' },
+  ];
   const departmentInputs = [...form.querySelectorAll('input[name="department"]')];
   const guardianSection = document.querySelector('#guardian-section');
   const footballSection = document.querySelector('#football-section');
@@ -246,6 +296,43 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   const selectedDepartment = () => departmentInputs.find((input) => input.checked)?.value ?? '';
   const isFootball = () => ['youth-football', 'adult-football'].includes(selectedDepartment());
 
+  const teamAudience = () => {
+    if (selectedDepartment() === 'youth-football') return 'youth';
+    if (selectedDepartment() === 'adult-football' && gender.value === 'männlich') return 'adult-men';
+    return '';
+  };
+
+  const availableTeams = () => teamAudience() === 'youth' ? youthTeams : (teamAudience() === 'adult-men' ? adultMaleTeams : []);
+
+  const populateTeamOptions = (audience) => {
+    const previousValue = teamSelection.value;
+    teamSelection.replaceChildren(new Option('Bitte Mannschaft auswählen …', ''));
+    for (const team of availableTeams()) {
+      teamSelection.add(new Option(`${team.label} / Trainer ${team.trainers}`, team.value));
+    }
+    if ([...teamSelection.options].some((option) => option.value === previousValue)) teamSelection.value = previousValue;
+    teamSection.dataset.audience = audience;
+  };
+
+  const updateTeamSection = () => {
+    const audience = teamAudience();
+    const visible = audience !== '';
+    teamSection.hidden = !visible;
+
+    if (teamSection.dataset.audience !== audience) {
+      teamKnownInputs.forEach((input) => input.checked = false);
+      teamSelection.value = '';
+      populateTeamOptions(audience);
+    }
+
+    teamKnownInputs.forEach((input) => input.required = visible);
+    const teamIsKnown = visible && teamKnownInputs.some((input) => input.checked && input.value === 'yes');
+    teamSelectionBlock.hidden = !teamIsKnown;
+    teamSelection.required = teamIsKnown;
+
+    if (!visible || !teamIsKnown) teamSelection.value = '';
+  };
+
   const updateDepartment = () => {
     const youth = selectedDepartment() === 'youth-football';
     guardianSection.hidden = !youth;
@@ -260,6 +347,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
       identityProofInputs.forEach((input) => input.checked = false);
       registrationTypeInputs.forEach((input) => input.checked = false);
     }
+    updateTeamSection();
     updateIdentityProof();
     updateRegistrationType();
     updateInternational();
@@ -314,6 +402,8 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
     supportDetails.hidden = !supportWilling.checked;
   });
   departmentInputs.forEach((input) => input.addEventListener('change', updateDepartment));
+  gender.addEventListener('change', updateTeamSection);
+  teamKnownInputs.forEach((input) => input.addEventListener('change', updateTeamSection));
   identityProofInputs.forEach((input) => input.addEventListener('change', updateIdentityProof));
   registrationTypeInputs.forEach((input) => input.addEventListener('change', updateRegistrationType));
   currentlySuspended.addEventListener('change', updateSuspension);
@@ -401,6 +491,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
     updateIdentityProof();
     updateInternational();
     updateRegistrationType();
+    updateTeamSection();
 
     if (!contributionAccepted.checked || !statutesAccepted.checked) {
       status.textContent = 'Ohne die Bestätigung der Beitragsordnung und der Vereinssatzung ist keine Mitgliedschaft möglich.';
@@ -439,8 +530,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
       if (!response.ok || !result.ok) throw new Error(result.message || 'Der Antrag konnte nicht versendet werden.');
 
       form.reset();
-      guardianSection.hidden = true;
-      footballSection.hidden = true;
+      updateDepartment();
       supportDetails.hidden = true;
       clearSignature.click();
       document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
@@ -451,7 +541,8 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
       status.textContent = error instanceof Error ? error.message : 'Der Antrag konnte nicht versendet werden.';
       await createCaptcha();
     } finally {
-      submitButton.disabled = false;
+      formIsSending = false;
+      updateMembershipEligibility();
     }
   });
 
@@ -504,6 +595,7 @@ const endpoint = 'https://bsvnordstern.de/api/membership.php';
   .conditional{border-top:5px solid #91c82f}
   .conditional-block{margin-top:22px;padding:22px;border-left:4px solid #91c82f;background:#f1f5f1}
   .conditional-block h3{margin:0 0 8px;font-size:1.15rem}.conditional-block>p{margin:0 0 20px;color:#607067;line-height:1.55}
+  .team-meta{display:block;margin-top:8px;color:#697970;font-size:.72rem;line-height:1.5}
   .stacked-options{margin:0 0 24px;padding:0;border:0;display:grid;gap:10px}
   .stacked-options legend{margin-bottom:10px}
   .legal-list{display:grid;gap:12px}
