@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { gastronomy, gastronomyLinks } from '../data/gastronomie';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  headline: string;
+  intro: string;
+  heroImage?: string;
+  activePath: string;
+}
+
+const {
+  title,
+  description,
+  eyebrow = 'Vereinsgaststätte',
+  headline,
+  intro,
+  heroImage = gastronomy.gallery[0],
+  activePath,
+} = Astro.props;
+---
+
+<Layout title={`${title} | BSV Nordstern Radolfzell`} description={description}>
+  <Header />
+  <main class="gastro-page">
+    <header class="gastro-hero">
+      <img src={heroImage} alt="Vereinsgaststätte des BSV Nordstern Radolfzell" width="1600" height="960" />
+      <div class="gastro-hero-shade"></div>
+      <div class="shell gastro-hero-inner">
+        <span>{eyebrow}</span>
+        <h1>{headline}</h1>
+        <p>{intro}</p>
+        <div class="hero-actions">
+          <a class="primary" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
+          <a class="secondary" href={gastronomy.reservationPhoneHref}>Reservieren: {gastronomy.reservationPhone}</a>
+        </div>
+      </div>
+    </header>
+
+    <nav class="gastro-subnav" aria-label="Gastronomie">
+      <div class="shell">
+        <a class:list={{ active: activePath === '/gastronomie' }} href={withBase('/gastronomie')}>Gastro-Start</a>
+        {gastronomyLinks.map((link) => (
+          <a class:list={{ active: activePath === link.href }} href={withBase(link.href)}>{link.label}</a>
+        ))}
+      </div>
+    </nav>
+
+    <section class="gastro-content">
+      <div class="shell">
+        <slot />
+      </div>
+    </section>
+
+    <section class="gastro-contact">
+      <div class="shell contact-card">
+        <div>
+          <span>Reservierung & Feiern</span>
+          <h2>Nebenraum oder Kegelbahn reservieren</h2>
+          <p>Für Geburtstage, Jubiläen, Firmenfeiern und gesellige Abende steht das Team der Vereinsgaststätte gerne zur Verfügung.</p>
+        </div>
+        <div class="contact-actions">
+          <a href={gastronomy.reservationPhoneHref}>{gastronomy.reservationPhone}</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell" target="_blank" rel="noreferrer">Anfahrt öffnen ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  :global(:root){--gastro-dark:#071f16;--gastro-green:#164f32;--gastro-yellow:#f4d638;--gastro-cream:#f4f1e8;--gastro-ink:#15231a}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  .gastro-page{background:#f7f8f5;color:var(--gastro-ink)}
+  .gastro-hero{position:relative;min-height:610px;display:flex;align-items:flex-end;overflow:hidden;background:var(--gastro-dark);color:white}
+  .gastro-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .gastro-hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(4 25 17 / 94%) 0%,rgb(4 25 17 / 78%) 42%,rgb(4 25 17 / 20%) 78%),linear-gradient(0deg,rgb(4 25 17 / 88%),transparent 55%)}
+  .gastro-hero-inner{position:relative;z-index:1;padding:100px 0 80px}
+  .gastro-hero-inner>span,.contact-card>div>span{color:var(--gastro-yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .gastro-hero h1{max-width:780px;margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.2rem,7vw,6.7rem);line-height:.9;letter-spacing:-.05em}
+  .gastro-hero p{max-width:680px;margin:0;color:#cfddd4;font-size:1.06rem;line-height:1.75}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .hero-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;text-decoration:none;font-weight:850}
+  .hero-actions .primary{background:var(--gastro-yellow);color:var(--gastro-dark)}
+  .hero-actions .primary b{margin-left:18px}.hero-actions .secondary{border:1px solid rgb(255 255 255 / 38%);color:white;background:rgb(255 255 255 / 7%)}
+  .gastro-subnav{position:sticky;top:0;z-index:7;background:white;border-bottom:1px solid #dce3dd;box-shadow:0 8px 25px rgb(9 47 32 / 5%)}
+  .gastro-subnav .shell{display:flex;gap:8px;overflow-x:auto;padding-block:11px}
+  .gastro-subnav a{flex:0 0 auto;padding:10px 14px;color:#506057;text-decoration:none;font-size:.78rem;font-weight:800}
+  .gastro-subnav a:hover,.gastro-subnav a.active{background:#edf3ed;color:var(--gastro-green)}
+  .gastro-subnav a.active{box-shadow:inset 0 -3px 0 var(--gastro-yellow)}
+  .gastro-content{padding:85px 0 100px}
+  .gastro-contact{padding:0 0 105px}
+  .contact-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:55px;padding:46px 50px;background:var(--gastro-dark);color:white;box-shadow:12px 12px 0 var(--gastro-yellow)}
+  .contact-card h2{margin:12px 0 14px;font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.2rem);line-height:1.03}
+  .contact-card p{max-width:700px;margin:0;color:#b9ccc0;line-height:1.65}
+  .contact-actions{display:grid;gap:11px;min-width:250px}
+  .contact-actions a{padding:14px 18px;background:white;color:var(--gastro-dark);text-align:center;text-decoration:none;font-weight:850}
+  .contact-actions a:first-child{background:var(--gastro-yellow)}
+  :global(.gastro-section-label){display:block;margin-bottom:12px;color:var(--gastro-green);font-size:.68rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+  :global(.gastro-title){margin:0;font-family:Georgia,serif;font-size:clamp(2.4rem,5vw,4.5rem);line-height:.98;letter-spacing:-.04em}
+  :global(.gastro-lead){max-width:780px;color:#536258;font-size:1.02rem;line-height:1.8}
+  :global(.gastro-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  :global(.gastro-card){padding:28px;background:white;box-shadow:0 16px 45px rgb(9 47 32 / 7%)}
+  :global(.gastro-card h2),:global(.gastro-card h3){margin-top:0;color:var(--gastro-green);font-family:Georgia,serif}
+  :global(.gastro-card p){color:#5d6c62;line-height:1.7}
+  :global(.gastro-button){display:inline-flex;align-items:center;gap:16px;padding:14px 18px;background:var(--gastro-yellow);color:var(--gastro-dark);text-decoration:none;font-weight:900}
+  :global(.gastro-gallery){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:36px}
+  :global(.gastro-gallery img){width:100%;height:245px;display:block;object-fit:cover;background:#d9e1da}
+  @media(max-width:800px){.gastro-hero{min-height:540px}.gastro-hero-shade{background:linear-gradient(0deg,rgb(4 25 17 / 94%),rgb(4 25 17 / 45%))}.contact-card{grid-template-columns:1fr}.contact-actions{min-width:0}:global(.gastro-grid){grid-template-columns:1fr}:global(.gastro-gallery){grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:560px){.shell{width:min(100% - 30px,1160px)}.gastro-hero-inner{padding:75px 0 55px}.gastro-content{padding:58px 0 75px}.contact-card{padding:30px 24px;box-shadow:7px 7px 0 var(--gastro-yellow)}:global(.gastro-gallery){grid-template-columns:1fr}:global(.gastro-gallery img){height:230px}}
+</style>
