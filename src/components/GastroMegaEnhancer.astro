@@ -1,0 +1,99 @@
+---
+import { gastronomy, gastronomyLinks } from '../data/gastronomie';
+import { withBase } from '../utils/paths';
+---
+
+<template id="gastro-mega-template">
+  <div class="gastro-mega-layout">
+    <a class="gastro-mega-feature" href={withBase('/gastronomie')}>
+      <img src={gastronomy.gallery[0]} alt="Vereinsgaststätte BSV Nordstern" width="720" height="520" />
+      <span class="gastro-mega-overlay"></span>
+      <span class="gastro-mega-feature-copy">
+        <small>Vereinsgaststätte</small>
+        <strong>Italienisch, deutsch und herzlich.</strong>
+        <em>Gastro entdecken ↗</em>
+      </span>
+    </a>
+
+    <div class="gastro-mega-directory">
+      <div class="gastro-mega-head">
+        <span>Direkt zum Gastro-Bereich</span>
+        <a href={withBase('/gastronomie')}>Alle Gastro-Inhalte ↗</a>
+      </div>
+      <div class="gastro-mega-links">
+        {gastronomyLinks.map((link, index) => (
+          <a href={withBase(link.href)}>
+            <span>0{index + 1}</span>
+            <div><strong>{link.label}</strong><small>{link.description}</small></div>
+            <b aria-hidden="true">↗</b>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <aside class="gastro-mega-info">
+      <span class="gastro-info-label">Heute schon Appetit?</span>
+      <h2>Öffnungszeiten</h2>
+      <dl>
+        <div><dt>Mo</dt><dd>Ruhetag</dd></div>
+        <div><dt>Di–Do</dt><dd>16–22 Uhr</dd></div>
+        <div><dt>Fr</dt><dd>16–24 Uhr</dd></div>
+        <div><dt>Sa</dt><dd>14–24 Uhr</dd></div>
+        <div><dt>So</dt><dd>14–22 Uhr</dd></div>
+      </dl>
+      <a class="gastro-menu-cta" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
+      <a class="gastro-reservation" href={gastronomy.reservationPhoneHref}><small>Reservierung</small><strong>{gastronomy.reservationPhone}</strong></a>
+    </aside>
+  </div>
+</template>
+
+<script is:inline>
+  (() => {
+    const template = document.querySelector('#gastro-mega-template');
+    if (!(template instanceof HTMLTemplateElement)) return;
+
+    const menuItem = [...document.querySelectorAll('.menu-item')].find((item) => {
+      const label = item.querySelector('.menu-link')?.textContent?.trim() ?? '';
+      return label.startsWith('Gastronomie');
+    });
+    const inner = menuItem?.querySelector('.mega-inner');
+    if (!(inner instanceof HTMLElement)) return;
+
+    inner.replaceChildren(template.content.cloneNode(true));
+    inner.classList.add('gastro-mega-enhanced');
+    template.remove();
+  })();
+</script>
+
+<style is:global>
+  .mega-inner.gastro-mega-enhanced{display:block;padding:0;overflow:hidden;border-top-color:#f4d638;background:#fff}
+  .gastro-mega-layout{display:grid;grid-template-columns:minmax(270px,.9fr) minmax(360px,1.25fr) minmax(235px,.72fr);min-height:350px}
+  .gastro-mega-feature{position:relative;min-height:350px;display:block;overflow:hidden;background:#092f20;color:#fff;text-decoration:none}
+  .gastro-mega-feature>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .gastro-mega-feature:hover>img,.gastro-mega-feature:focus>img{transform:scale(1.045)}
+  .gastro-mega-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgb(3 24 16 / 94%),rgb(3 24 16 / 10%))}
+  .gastro-mega-feature-copy{position:absolute;left:26px;right:26px;bottom:25px}
+  .gastro-mega-feature-copy small,.gastro-mega-feature-copy strong,.gastro-mega-feature-copy em{display:block}
+  .gastro-mega-feature-copy small{margin-bottom:8px;color:#f4d638;font-size:.64rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+  .gastro-mega-feature-copy strong{font-family:Georgia,serif;font-size:1.55rem;line-height:1.1}
+  .gastro-mega-feature-copy em{margin-top:13px;color:#dce8e0;font-size:.72rem;font-style:normal;font-weight:800}
+  .gastro-mega-directory{padding:27px 30px}
+  .gastro-mega-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #dde4de}
+  .gastro-mega-head>span{color:#708077;font-size:.66rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .gastro-mega-head>a{color:#164f32;font-size:.7rem;font-weight:850;text-decoration:none}
+  .gastro-mega-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  .gastro-mega-links>a{min-height:105px;padding:17px;display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:12px;border:1px solid #e0e6e1;background:#fafbfa;color:#26362c;text-decoration:none;transition:.17s ease}
+  .gastro-mega-links>a:hover,.gastro-mega-links>a:focus{outline:none;border-color:#f4d638;background:#f5f8f3;transform:translateY(-2px)}
+  .gastro-mega-links>a>span{display:grid;place-items:center;width:28px;aspect-ratio:1;border-radius:50%;background:#f4d638;color:#092f20;font-size:.58rem;font-weight:900}
+  .gastro-mega-links strong,.gastro-mega-links small{display:block}.gastro-mega-links strong{color:#164f32;font-size:.86rem}.gastro-mega-links small{margin-top:5px;color:#718078;font-size:.65rem;line-height:1.35}.gastro-mega-links b{color:#164f32;font-size:.8rem}
+  .gastro-mega-info{padding:28px 25px;background:#092f20;color:white}
+  .gastro-info-label{color:#f4d638;font-size:.62rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .gastro-mega-info h2{margin:8px 0 17px!important;color:white!important;font-family:Georgia,serif;font-size:1.55rem!important;letter-spacing:0!important;text-transform:none!important}
+  .gastro-mega-info dl{margin:0}.gastro-mega-info dl>div{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid rgb(255 255 255 / 12%)}
+  .gastro-mega-info dt{color:#b8cbbf;font-size:.7rem;font-weight:800}.gastro-mega-info dd{margin:0;color:white;font-size:.7rem;font-weight:800}
+  .gastro-menu-cta{margin-top:18px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;background:#f4d638;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none}
+  .gastro-reservation{margin-top:12px;padding:10px 12px;display:block;border:1px solid rgb(255 255 255 / 20%);color:white;text-decoration:none}
+  .gastro-reservation small,.gastro-reservation strong{display:block}.gastro-reservation small{color:#7f9a89;font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.gastro-reservation strong{margin-top:3px;font-size:.76rem}
+  @media(max-width:980px){.mega-inner.gastro-mega-enhanced{padding:0!important}.gastro-mega-layout{grid-template-columns:1fr}.gastro-mega-feature{min-height:230px}.gastro-mega-directory{padding:24px 18px}.gastro-mega-info{padding:24px 20px}.gastro-mega-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:620px){.gastro-mega-links{grid-template-columns:1fr}.gastro-mega-head{align-items:flex-start;flex-direction:column}.gastro-mega-feature{min-height:210px}}
+</style>
