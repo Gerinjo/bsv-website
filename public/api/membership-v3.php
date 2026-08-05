@@ -131,33 +131,41 @@ if (!$birth || ($birthErrors !== false && ($birthErrors['warning_count'] > 0 || 
 $age = $birth->diff(new DateTime('today'))->y;
 
 $youthTeamOptions = array(
-    'bambini-u6' => array('label' => 'Bambini U6', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa'),
-    'bambini-u7' => array('label' => 'Bambini U7', 'trainers' => 'M. Meiss, M. Tassone, L. Gastaudo'),
-    'f-u8' => array('label' => 'F-Junioren U8', 'trainers' => 'F. Keller, P. Dieterle'),
-    'f-u9' => array('label' => 'F-Junioren U9', 'trainers' => 'A. Wolfmüller, S. Rauch, M. Rüth'),
-    'e1-junioren' => array('label' => 'E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst'),
-    'e2-junioren' => array('label' => 'E2-Junioren', 'trainers' => 'M. Sick, S. Sulger, Mar. Rüth'),
-    'e3-junioren' => array('label' => 'E3-Junioren', 'trainers' => 'Mic. Rüth, M. Mahmoudi'),
-    'd1-junioren' => array('label' => 'D1-Junioren', 'trainers' => 'S. Hellmann'),
-    'd2-junioren' => array('label' => 'D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner'),
-    'd3-junioren' => array('label' => 'D3-Junioren', 'trainers' => 'H. Ho'),
-    'c1-junioren' => array('label' => 'C1-Junioren', 'trainers' => 'A. Scholpre, S. Bühler, T. Parthenschlager'),
-    'c2-junioren' => array('label' => 'C2-Junioren', 'trainers' => 'S. Bäuerle'),
-    'b-junioren' => array('label' => 'B-Junioren', 'trainers' => 'M. Geissmann, A. Basile'),
-    'a-junioren' => array('label' => 'A-Junioren', 'trainers' => 'M. Jentsch, O. Schmal, F. Demmer'),
-    'e-juniorinnen' => array('label' => 'E-Juniorinnen', 'trainers' => 'S. Thomen'),
-    'd-juniorinnen' => array('label' => 'D-Juniorinnen', 'trainers' => 'D.-S. Bulander'),
-    'c-juniorinnen' => array('label' => 'C-Juniorinnen', 'trainers' => 'A. Kramer'),
+    'bambini-u6' => array('label' => 'U6 G-Junioren Spielgruppe', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa'),
+    'bambini-u7' => array('label' => 'U7 G-Junioren Bambinis', 'trainers' => 'M. Meiss, M. Tassone, L. Gastaudo'),
+    'f-u8' => array('label' => 'U8 F-Junioren', 'trainers' => 'F. Keller, P. Dieterle'),
+    'f-u9' => array('label' => 'U9 F-Junioren', 'trainers' => 'A. Wolfmüller, S. Rauch, M. Rüth'),
+    'e1-junioren' => array('label' => 'U11 E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst'),
+    'e2-junioren' => array('label' => 'U11 E2-Junioren', 'trainers' => 'M. Rüth, M. Mahmoudi'),
+    'e3-junioren' => array('label' => 'U11 E3-Junioren', 'trainers' => 'S. Sulger, M. Sick'),
+    'd1-junioren' => array('label' => 'U13 D1-Junioren', 'trainers' => 'S. Hellmann'),
+    'd2-junioren' => array('label' => 'U13 D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner'),
+    'd3-junioren' => array('label' => 'U13 D3-Junioren', 'trainers' => 'H. Ho'),
+    'c1-junioren' => array('label' => 'U15 C1-Junioren', 'trainers' => 'A. Scholpre, S. Bühler, T. Parthenschlager'),
+    'c2-junioren' => array('label' => 'U15 C2-Junioren', 'trainers' => 'S. Bäuerle'),
+    'b-junioren' => array('label' => 'U17 B-Junioren', 'trainers' => 'M. Geismann, A. Basile'),
+    'a-junioren' => array('label' => 'U19 A-Junioren', 'trainers' => 'M. Jentsch, O. Schmal, F. Demmer'),
+    'b-juniorinnen' => array('label' => 'U17 B-Juniorinnen', 'trainers' => 'S. Goldhagen, S. Thomen'),
+    'c-juniorinnen' => array('label' => 'U15 C-Juniorinnen', 'trainers' => 'A. Kramer'),
+    'd-juniorinnen' => array('label' => 'U13 D-Juniorinnen', 'trainers' => 'D. Bulander'),
 );
 $adultMaleTeamOptions = array(
-    'herren-1' => array('label' => '1. Mannschaft', 'trainers' => 'T. Parzich, T. Altenburg'),
-    'herren-2' => array('label' => '2. Mannschaft', 'trainers' => 'A. Kaiser'),
+    'herren-1' => array('label' => 'BSV Nordstern Radolfzell · Kreisliga B Staffel 1', 'trainers' => 'T. Parzich, T. Altenburg'),
+    'herren-2' => array('label' => 'SG Herren 2 · Kreisliga C Staffel 1', 'trainers' => 'A. Kaiser'),
+);
+$adultFemaleTeamOptions = array(
+    'frauen-1' => array('label' => 'SG Frauen 1 · Bezirksliga Bodensee', 'trainers' => 'M. Becht'),
+    'frauen-2' => array('label' => 'SG Frauen 2 · Kreisliga A', 'trainers' => 'M. Lipp, E. Bayram'),
 );
 
-$teamQuestionApplies = $isYouthFootball || ($department === 'adult-football' && $gender === 'männlich');
+$teamQuestionApplies = $isYouthFootball || ($department === 'adult-football' && in_array($gender, array('männlich', 'weiblich'), true));
 $teamKnown = $value('teamKnown');
 $teamSelection = $value('teamSelection');
-$availableTeamOptions = $isYouthFootball ? $youthTeamOptions : (($department === 'adult-football' && $gender === 'männlich') ? $adultMaleTeamOptions : array());
+$availableTeamOptions = $isYouthFootball
+    ? $youthTeamOptions
+    : (($department === 'adult-football' && $gender === 'männlich')
+        ? $adultMaleTeamOptions
+        : (($department === 'adult-football' && $gender === 'weiblich') ? $adultFemaleTeamOptions : array()));
 
 if ($teamQuestionApplies) {
     if (!in_array($teamKnown, array('yes', 'no'), true)) {
