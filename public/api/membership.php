@@ -1,2 +1,2 @@
 <?php
-require __DIR__ . '/membership-v2.php';
+require __DIR__ . '/membership-v3.php';
