@@ -1,0 +1,43 @@
+name: Harmonize membership teams
+
+on:
+  push:
+    branches:
+      - agent/membership-checkbox-summary
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  harmonize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/membership-checkbox-summary
+
+      - name: Harmonize team labels and trainers
+        run: python scripts/harmonize-membership-teams.py
+
+      - name: Check PHP syntax
+        run: php -l public/api/membership-v3.php
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro site
+        run: npm run build
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/verein/mitglied-werden.astro public/api/membership-v3.php
+          git commit -m "Harmonize membership team labels and trainers"
+          git push
