@@ -58,7 +58,7 @@ export const menu: MenuItem[] = [
         { label: 'Ü35 Senioren', href: '/fussball/alte-herren' },
       ]},
       { title: 'Sportstätten', links: [
-        { label: 'Sportplätze', href: '/fussball/sportplaetze' },
+        { label: 'Sportstätten & Anfahrt', href: '/fussball/sportplaetze' },
         { label: 'Belegungsplan', href: '/fussball/belegungsplan' },
       ]},
     ],

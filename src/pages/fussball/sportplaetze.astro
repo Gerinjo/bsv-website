@@ -1,0 +1,166 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { withBase } from '../../utils/paths';
+
+const facilities = [
+  {
+    id: 'hauptplatz',
+    name: 'Hauptplatz',
+    area: 'BSV-Sportgelände',
+    address: 'Schlesierstraße 43, 78315 Radolfzell',
+    image: '/images/migration/bd41b6f7d7-hauptplatz-hp.png',
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell',
+  },
+  {
+    id: 'nebenplatz',
+    name: 'Nebenplatz',
+    area: 'BSV-Sportgelände',
+    address: 'Schlesierstraße 43, 78315 Radolfzell',
+    image: '/images/migration/951edb152f-hauptplatz-np.png',
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell',
+  },
+  {
+    id: 'gleisdreieck',
+    name: 'Gleisdreieck',
+    area: 'BSV-Sportgelände',
+    address: 'Schlesierstraße 43, 78315 Radolfzell',
+    image: '/images/migration/be3ff4ba0b-hauptplatz-gd.png',
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell',
+  },
+  {
+    id: 'kaefig-untersee-stadion',
+    name: 'Käfig am Untersee-Stadion',
+    area: 'Untersee-Stadion',
+    address: 'Markelfinger Straße 12, 78315 Radolfzell',
+    image: '/images/migration/e6781727fd-kafig.png',
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Markelfinger+Stra%C3%9Fe+12%2C+78315+Radolfzell',
+  },
+  {
+    id: 'kunstrasen-mettnau',
+    name: 'Kunstrasenplatz Mettnau',
+    area: 'Mettnau',
+    address: 'Strandbadstraße 39, 78315 Radolfzell',
+    image: '/images/migration/c62b8efa11-Kunstrasen.png',
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Strandbadstra%C3%9Fe+39%2C+78315+Radolfzell',
+  },
+];
+---
+
+<Layout
+  title="Sportstätten & Anfahrt | BSV Nordstern Radolfzell"
+  description="Alle Sportstätten des BSV Nordstern Radolfzell mit Bildern, Adressen und direkter Navigation."
+>
+  <Header />
+  <main>
+    <header class="hero">
+      <img src={withBase('/images/migration/bd41b6f7d7-hauptplatz-hp.png')} alt="Hauptplatz des BSV Nordstern Radolfzell" width="1600" height="1011" />
+      <div class="shade"></div>
+      <div class="shell hero-inner">
+        <span>Fußball · Sportstätten</span>
+        <h1>Hier rollt<br /><em>der Ball.</em></h1>
+        <p>Alle Plätze und Trainingsorte des BSV Nordstern auf einen Blick – mit Adresse, Bild und direkter Routenplanung.</p>
+        <a href="#sportstaetten">Sportstätten ansehen <b aria-hidden="true">↓</b></a>
+      </div>
+    </header>
+
+    <nav class="facility-nav" aria-label="Direkt zu einer Sportstätte">
+      <div class="shell">
+        {facilities.map((facility) => (
+          <a href={`#${facility.id}`}>{facility.name}</a>
+        ))}
+      </div>
+    </nav>
+
+    <section id="sportstaetten" class="facilities-section">
+      <div class="shell intro">
+        <span>Plätze & Trainingsorte</span>
+        <h2>Fünf Orte.<br />Ein Verein.</h2>
+        <p>Der Hauptplatz, der Nebenplatz und das Gleisdreieck liegen direkt am BSV-Vereinsheim in der Schlesierstraße. Zusätzlich nutzt der Verein den Käfig am Untersee-Stadion und den Kunstrasenplatz auf der Mettnau.</p>
+      </div>
+
+      <div class="shell facility-list">
+        {facilities.map((facility, index) => (
+          <article id={facility.id} class:list={["facility-card", { reverse: index % 2 === 1 }]}>
+            <div class="facility-image">
+              <img src={withBase(facility.image)} alt={facility.name} width="1200" height="760" loading={index === 0 ? 'eager' : 'lazy'} />
+              <span>{String(index + 1).padStart(2, '0')}</span>
+            </div>
+            <div class="facility-copy">
+              <span>{facility.area}</span>
+              <h3>{facility.name}</h3>
+              <div class="address">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" /><circle cx="12" cy="10" r="2.2" /></svg>
+                <p>{facility.address}</p>
+              </div>
+              <a class="navigation-link" href={facility.navigation} target="_blank" rel="noreferrer">
+                Navigation starten <b aria-hidden="true">↗</b>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="arrival">
+      <div class="shell arrival-card">
+        <div>
+          <span>Ankunft am BSV</span>
+          <h2>Vereinsheim & Hauptanlage</h2>
+          <p>Schlesierstraße 43 · 78315 Radolfzell</p>
+        </div>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell" target="_blank" rel="noreferrer">Route zum BSV öffnen <b aria-hidden="true">↗</b></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
+  html{scroll-behavior:smooth}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  .hero{position:relative;min-height:620px;display:flex;align-items:flex-end;overflow:hidden;background:var(--dark);color:white}
+  .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(5 34 22 / 96%) 0%,rgb(5 34 22 / 80%) 44%,rgb(5 34 22 / 18%) 82%),linear-gradient(0deg,rgb(5 34 22 / 82%),transparent 58%)}
+  .hero-inner{position:relative;z-index:1;padding:95px 0 78px}
+  .hero-inner>span,.intro>span,.arrival-card span,.facility-copy>span{color:var(--yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.5rem,7vw,6.8rem);line-height:.88;letter-spacing:-.055em}
+  .hero h1 em{color:var(--yellow);font-weight:400}
+  .hero p{max-width:680px;margin:0;color:#cfddd4;font-size:1.06rem;line-height:1.75}
+  .hero a{display:inline-flex;align-items:center;gap:22px;margin-top:30px;padding:15px 19px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none}
+  .facility-nav{position:sticky;top:0;z-index:8;background:white;border-bottom:1px solid #dce3dd;box-shadow:0 8px 24px rgb(9 47 32 / 6%)}
+  .facility-nav .shell{display:flex;gap:6px;overflow-x:auto;padding-block:10px}
+  .facility-nav a{flex:0 0 auto;padding:10px 13px;color:#536158;font-size:.76rem;font-weight:800;text-decoration:none}
+  .facility-nav a:hover,.facility-nav a:focus{background:#edf3ee;color:var(--green)}
+  .facilities-section{padding:90px 0 115px;background:var(--light)}
+  .intro{display:grid;grid-template-columns:240px minmax(0,1fr);gap:35px 60px;align-items:start;margin-bottom:55px}
+  .intro>span{color:var(--green);padding-top:12px}
+  .intro h2{margin:0;font-family:Georgia,serif;font-size:clamp(2.8rem,5vw,4.8rem);line-height:.95;letter-spacing:-.045em}
+  .intro p{grid-column:2;max-width:780px;margin:0;color:#5c6a61;line-height:1.75}
+  .facility-list{display:grid;gap:34px}
+  .facility-card{scroll-margin-top:92px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);min-height:390px;background:white;box-shadow:0 18px 50px rgb(9 47 32 / 7%)}
+  .facility-card.reverse{grid-template-columns:minmax(320px,.65fr) minmax(0,1.35fr)}
+  .facility-card.reverse .facility-image{grid-column:2}.facility-card.reverse .facility-copy{grid-column:1;grid-row:1}
+  .facility-image{position:relative;min-height:390px;overflow:hidden;background:#d8e0da}
+  .facility-image img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .4s ease}
+  .facility-card:hover .facility-image img{transform:scale(1.025)}
+  .facility-image>span{position:absolute;left:20px;top:20px;display:grid;place-items:center;width:45px;aspect-ratio:1;background:var(--yellow);color:var(--dark);font-size:.7rem;font-weight:950}
+  .facility-copy{display:flex;flex-direction:column;justify-content:center;padding:42px}
+  .facility-copy>span{color:var(--green)}
+  .facility-copy h3{margin:13px 0 24px;font-family:Georgia,serif;font-size:clamp(2rem,3.5vw,3.25rem);line-height:1.02;letter-spacing:-.035em}
+  .address{display:flex;align-items:flex-start;gap:12px;padding:16px 0 20px;border-top:1px solid #e0e6e1;border-bottom:1px solid #e0e6e1}
+  .address svg{width:21px;flex:0 0 auto;fill:none;stroke:var(--green);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .address p{margin:0;color:#526158;line-height:1.55}
+  .navigation-link{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:25px;padding:15px 17px;background:var(--green);color:white;text-decoration:none;font-weight:900}
+  .navigation-link:hover,.navigation-link:focus{background:var(--dark)}
+  .navigation-link b{color:var(--yellow)}
+  .arrival{padding:0 0 110px;background:var(--light)}
+  .arrival-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:35px;padding:42px 46px;background:var(--dark);color:white;box-shadow:10px 10px 0 var(--yellow)}
+  .arrival-card h2{margin:11px 0 8px;font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.2rem)}
+  .arrival-card p{margin:0;color:#b9cbc0}
+  .arrival-card>a{display:inline-flex;align-items:center;gap:20px;padding:15px 18px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none;white-space:nowrap}
+  @media(max-width:850px){.hero{min-height:560px}.shade{background:linear-gradient(0deg,rgb(5 34 22 / 95%),rgb(5 34 22 / 35%))}.intro{grid-template-columns:1fr}.intro p{grid-column:1}.facility-card,.facility-card.reverse{grid-template-columns:1fr}.facility-card.reverse .facility-image,.facility-card.reverse .facility-copy{grid-column:1;grid-row:auto}.facility-image{min-height:330px}.arrival-card{grid-template-columns:1fr}.arrival-card>a{justify-content:space-between}}
+  @media(max-width:560px){.shell{width:min(100% - 30px,1160px)}.hero-inner{padding:75px 0 55px}.facilities-section{padding:60px 0 80px}.facility-list{gap:24px}.facility-copy{padding:28px 22px}.facility-image{min-height:235px}.arrival{padding-bottom:80px}.arrival-card{padding:30px 24px;box-shadow:7px 7px 0 var(--yellow)}}
+</style>
