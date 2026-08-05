@@ -674,7 +674,7 @@ $departmentUrl = $siteBase . $departmentPaths[$department];
 
 $teamShopUrl = 'https://team.jako.com/de-de/team/bsv_nordstern_radolfzell';
 $youthSetsUrl = 'https://team.jako.com/de-de/team/bsv_nordstern_radolfzell/jugend_sets/';
-$youthSetImageUrl = $siteBase . '/images/verein/jugend/bsv-jugend-set.jpg';
+$youthSetImageUrl = $siteBase . '/images/verein/jugend/bsv-jugend-set.png';
 
 $linkButton = function ($label, $url) use ($htmlEscape) {
     return '<a href="' . $htmlEscape($url) . '" style="display:inline-block;margin:0 8px 10px 0;padding:12px 16px;background:#f4d638;color:#092f20;text-decoration:none;font-weight:700;border-radius:4px;">' . $htmlEscape($label) . '</a>';
