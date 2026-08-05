@@ -672,6 +672,10 @@ $departmentPaths = array(
 );
 $departmentUrl = $siteBase . $departmentPaths[$department];
 
+$teamShopUrl = 'https://team.jako.com/de-de/team/bsv_nordstern_radolfzell';
+$youthSetsUrl = 'https://team.jako.com/de-de/team/bsv_nordstern_radolfzell/jugend_sets/';
+$youthSetImageUrl = $siteBase . '/images/verein/jugend/bsv-jugend-set.jpg';
+
 $linkButton = function ($label, $url) use ($htmlEscape) {
     return '<a href="' . $htmlEscape($url) . '" style="display:inline-block;margin:0 8px 10px 0;padding:12px 16px;background:#f4d638;color:#092f20;text-decoration:none;font-weight:700;border-radius:4px;">' . $htmlEscape($label) . '</a>';
 };
@@ -711,8 +715,11 @@ if ($isFootball) {
     $applicantText .= "MANNSCHAFTSORGANISATION\n" .
         "Das Trainerteam informiert dich darüber, welche Anwendung oder Gruppe für deine Mannschaft genutzt wird. Bitte sage dort möglichst frühzeitig zu oder ab. Das erleichtert den ehrenamtlichen Trainerinnen und Trainern die Planung erheblich.\n\n" .
         "VEREINSKLEIDUNG\n" .
-        "Bei Training, Spielen und Veranstaltungen möchten wir als BSV möglichst einheitlich auftreten. Im Vereinsshop findest du unsere Vereinskollektion.\n" .
-        $textLink('BSV-Shop und Vereinskollektion', 'https://shop.bsvnordstern.de') . "\n" .
+        ($isMinor
+            ? "Gerade im Kinder- und Jugendbereich möchten wir uns im Training und beim Spiel einheitlich präsentieren. Deshalb empfehlen wir, ein passendes BSV-Jugend-Set zu kaufen.\n"
+            : "Bei Training, Spielen und Veranstaltungen möchten wir als BSV möglichst einheitlich auftreten. Im BSV-Teamshop findest du unsere Vereinskollektion.\n") .
+        $textLink('BSV-Teamshop', $teamShopUrl) .
+        ($isMinor ? $textLink('Jugend-Sets', $youthSetsUrl) : '') . "\n" .
         "WHATSAPP-COMMUNITY\n" .
         "Das Trainerteam fügt dich beziehungsweise deine Familie normalerweise der WhatsApp-Gruppe der Mannschaft hinzu. Sie ist Teil der BSV-WhatsApp-Community. Über die Ankündigungsgruppe informieren wir über Veranstaltungen, Versammlungen, Shop-Aktionen, Termine und organisatorische Änderungen. Bitte bleibe in dieser Gruppe, damit keine wichtigen Informationen verloren gehen.\n\n";
 }
@@ -747,8 +754,21 @@ if ($isFootball) {
             '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">Mannschaftsorganisation</h2>' .
             '<p style="margin:0 0 22px;line-height:1.65;color:#3f5146;">Das Trainerteam informiert dich darüber, welche Anwendung oder Gruppe für deine Mannschaft genutzt wird. Bitte sage dort möglichst frühzeitig zu oder ab. Das erleichtert die Planung erheblich.</p>' .
             '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">Vereinskleidung</h2>' .
-            '<p style="margin:0 0 14px;line-height:1.65;color:#3f5146;">Bei Training, Spielen und Veranstaltungen möchten wir als BSV möglichst einheitlich auftreten. Im Vereinsshop findest du unsere Vereinskollektion.</p>' .
-            $linkButton('BSV-Shop öffnen', 'https://shop.bsvnordstern.de') .
+            '<p style="margin:0 0 14px;line-height:1.65;color:#3f5146;">' .
+                ($isMinor
+                    ? 'Gerade im Kinder- und Jugendbereich möchten wir uns im Training und beim Spiel einheitlich präsentieren. Deshalb empfehlen wir, ein passendes BSV-Jugend-Set zu kaufen.'
+                    : 'Bei Training, Spielen und Veranstaltungen möchten wir als BSV möglichst einheitlich auftreten. Im BSV-Teamshop findest du unsere Vereinskollektion.') .
+            '</p>' .
+            $linkButton('BSV-Teamshop öffnen', $teamShopUrl) .
+            ($isMinor ? $linkButton('Jugend-Sets ansehen', $youthSetsUrl) : '') .
+            ($isMinor
+                ? '<div style="margin-top:14px;padding:16px;background:#f8faf8;border:1px solid #dfe7df;border-radius:6px;">' .
+                    '<p style="margin:0 0 12px;line-height:1.6;color:#3f5146;"><strong>Empfohlenes BSV-Jugend-Set</strong><br>Trikot, Polyesterjacke, Polyesterhose, Allwetterjacke, Rucksack und Stutzen.</p>' .
+                    '<a href="' . $htmlEscape($youthSetsUrl) . '" style="text-decoration:none;">' .
+                        '<img src="' . $htmlEscape($youthSetImageUrl) . '" alt="BSV-Jugend-Set" width="560" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:5px;">' .
+                    '</a>' .
+                '</div>'
+                : '') .
         '</td></tr>' .
         '<tr><td style="padding:28px 36px;background:#f3f6f3;">' .
             '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">WhatsApp-Community</h2>' .
