@@ -15,6 +15,8 @@ const files = walk(distRoot);
 const issues = [];
 let checkedReferences = 0;
 const imageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg']);
+const attributeReferencePattern = /\b(?:href|src|poster|action|data-(?:menu|default|gallery)-image)=(['"])(.*?)\1/gi;
+const cssUrlPattern = /url\(\s*(['"]?)(.*?)\1\s*\)/gi;
 
 const findCaseMismatch = (target) => {
   const parts = relative(distRoot, target).split(sep).filter(Boolean);
@@ -71,12 +73,26 @@ for (const file of files) {
   if (!['.html', '.css', '.js'].includes(extension)) continue;
   const content = readFileSync(file, 'utf8');
 
-  for (const match of content.matchAll(/\b(?:href|src|poster|action|data-(?:menu|default|gallery)-image)=(['"])(.*?)\1/gi)) {
-    validateReference(file, match[2]);
+  if (extension === '.html') {
+    // Inline JavaScript can contain assignments such as src="image/png" after
+    // minification. Those are not HTML file references and must not be checked.
+    const markupWithoutScripts = content.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+
+    for (const match of markupWithoutScripts.matchAll(attributeReferencePattern)) {
+      validateReference(file, match[2]);
+    }
+
+    for (const match of markupWithoutScripts.matchAll(cssUrlPattern)) {
+      validateReference(file, match[2]);
+    }
+
+    continue;
   }
 
-  for (const match of content.matchAll(/url\(\s*(['"]?)(.*?)\1\s*\)/gi)) {
-    validateReference(file, match[2]);
+  if (extension === '.css') {
+    for (const match of content.matchAll(cssUrlPattern)) {
+      validateReference(file, match[2]);
+    }
   }
 }
 
