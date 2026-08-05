@@ -125,9 +125,8 @@ const friendlyMatchTeamPaths = [
 				if (!(friendlyButton instanceof HTMLAnchorElement)) return;
 
 				friendlyButton.href = `${contactPath}?thema=${encodeURIComponent(`team--${teamKey}--friendly`)}`;
-				friendlyButton.classList.add('friendly-match-button');
 				friendlyButton.setAttribute('aria-label', 'Freundschaftsspiel mit dieser Mannschaft anfragen');
-				friendlyButton.textContent = 'Freundschaftsspiel anfragen ↗';
+				friendlyButton.innerHTML = 'Freundschaftsspiel anfragen <span>↗</span>';
 
 				const actions = document.createElement('div');
 				actions.className = 'team-inquiry-actions';
@@ -187,34 +186,46 @@ const friendlyMatchTeamPaths = [
 		color: #092f20;
 		transform: translateY(-1px);
 	}
-	:global(.team-inquiry-actions) {
+	:global(.d-girls-cta > .team-inquiry-actions) {
+		position: relative;
+		z-index: 1;
 		display: flex;
 		align-items: stretch;
+		justify-content: flex-end;
 		flex-wrap: wrap;
 		gap: 12px;
 	}
-	:global(.team-inquiry-actions > a) {
+	:global(.d-girls-cta > .team-inquiry-actions > a) {
+		min-width: 230px;
 		margin: 0;
-	}
-	:global(.team-inquiry-actions .friendly-match-button) {
-		border-color: #164f32;
-		background: #164f32;
-		color: white;
-	}
-	:global(.team-inquiry-actions .friendly-match-button:hover),
-	:global(.team-inquiry-actions .friendly-match-button:focus-visible) {
-		border-color: #092f20;
+		padding: 16px 18px;
+		display: flex;
+		justify-content: space-between;
+		gap: 28px;
 		background: #092f20;
 		color: white;
+		font-size: .8rem;
+		font-weight: 900;
+		text-decoration: none;
+	}
+	:global(.d-girls-cta > .team-inquiry-actions > a span) {
+		color: #f4d638;
+	}
+	@media (max-width: 900px) {
+		:global(.d-girls-cta > .team-inquiry-actions) {
+			justify-self: start;
+			justify-content: flex-start;
+		}
 	}
 	@media (max-width: 560px) {
-		:global(.team-inquiry-actions) {
+		:global(.d-girls-cta > .team-inquiry-actions) {
+			width: 100%;
 			align-items: stretch;
 			flex-direction: column;
 		}
-		:global(.team-inquiry-actions > a) {
+		:global(.d-girls-cta > .team-inquiry-actions > a) {
 			width: 100%;
-			justify-content: center;
+			min-width: 0;
 		}
 	}
 </style>
