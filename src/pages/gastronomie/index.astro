@@ -36,10 +36,6 @@ import { withBase } from '../../utils/paths';
       <a class="gastro-button" href={gastronomy.reservationPhoneHref}>Reservierung anfragen ↗</a>
     </div>
   </section>
-
-  <div class="gastro-gallery">
-    {gastronomy.gallery.map((image, index) => <img src={image} alt={`Eindruck aus der BSV Vereinsgaststätte ${index + 1}`} width="720" height="520" loading="lazy" />)}
-  </div>
 </GastroPage>
 
 <style>
