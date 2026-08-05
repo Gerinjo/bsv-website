@@ -130,6 +130,51 @@ if (!$birth || ($birthErrors !== false && ($birthErrors['warning_count'] > 0 || 
 }
 $age = $birth->diff(new DateTime('today'))->y;
 
+$youthTeamOptions = array(
+    'bambini-u6' => array('label' => 'Bambini U6', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa'),
+    'bambini-u7' => array('label' => 'Bambini U7', 'trainers' => 'M. Meiss, M. Tassone, L. Gastaudo'),
+    'f-u8' => array('label' => 'F-Junioren U8', 'trainers' => 'F. Keller, P. Dieterle'),
+    'f-u9' => array('label' => 'F-Junioren U9', 'trainers' => 'A. Wolfmüller, S. Rauch, M. Rüth'),
+    'e1-junioren' => array('label' => 'E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst'),
+    'e2-junioren' => array('label' => 'E2-Junioren', 'trainers' => 'M. Sick, S. Sulger, H. Ho'),
+    'e3-junioren' => array('label' => 'E3-Junioren', 'trainers' => 'M. Rüth, M. Mahmoudi'),
+    'd1-junioren' => array('label' => 'D1-Junioren', 'trainers' => 'S. Hellmann'),
+    'd2-junioren' => array('label' => 'D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner'),
+    'd3-junioren' => array('label' => 'D3-Junioren', 'trainers' => 'H. Ho'),
+    'c1-junioren' => array('label' => 'C1-Junioren', 'trainers' => 'A. Scholpre, S. Bühler, T. Parthenschlager'),
+    'c2-junioren' => array('label' => 'C2-Junioren', 'trainers' => 'S. Bäuerle'),
+    'b-junioren' => array('label' => 'B-Junioren', 'trainers' => 'M. Geissmann, A. Basile'),
+    'a-junioren' => array('label' => 'A-Junioren', 'trainers' => 'M. Jentsch, O. Schmal, F. Demmer'),
+    'e-juniorinnen' => array('label' => 'E-Juniorinnen', 'trainers' => 'S. Thomen'),
+    'd-juniorinnen' => array('label' => 'D-Juniorinnen', 'trainers' => 'D.-S. Bulander'),
+    'c-juniorinnen' => array('label' => 'C-Juniorinnen', 'trainers' => 'A. Kramer'),
+);
+$adultMaleTeamOptions = array(
+    'herren-1' => array('label' => '1. Mannschaft', 'trainers' => 'T. Parzich, T. Altenburg'),
+    'herren-2' => array('label' => '2. Mannschaft', 'trainers' => 'A. Kaiser'),
+);
+
+$teamQuestionApplies = $isYouthFootball || ($department === 'adult-football' && $gender === 'männlich');
+$teamKnown = $value('teamKnown');
+$teamSelection = $value('teamSelection');
+$availableTeamOptions = $isYouthFootball ? $youthTeamOptions : (($department === 'adult-football' && $gender === 'männlich') ? $adultMaleTeamOptions : array());
+
+if ($teamQuestionApplies) {
+    if (!in_array($teamKnown, array('yes', 'no'), true)) {
+        $fail('Bitte gib an, ob die Mannschaft bereits bekannt ist.');
+    }
+    if ($teamKnown === 'yes' && !isset($availableTeamOptions[$teamSelection])) {
+        $fail('Bitte wähle die bekannte Mannschaft aus der Liste aus.');
+    }
+    if ($teamKnown === 'no') $teamSelection = '';
+} else {
+    $teamKnown = 'not-applicable';
+    $teamSelection = '';
+}
+
+$selectedTeamLabel = $teamSelection !== '' ? $availableTeamOptions[$teamSelection]['label'] : '';
+$selectedTeamTrainers = $teamSelection !== '' ? $availableTeamOptions[$teamSelection]['trainers'] : '';
+
 $guardianLastName = $value('guardianLastName');
 $guardianFirstName = $value('guardianFirstName');
 $guardianRelation = $value('guardianRelation');
@@ -649,6 +694,12 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     "Mitglied: {$firstName} {$lastName}\n" .
     "Geburtsdatum: " . $displayDate($birthDate) . "\n" .
     "Abteilung: {$departments[$department]}\n" .
+    ($teamQuestionApplies
+        ? "Mannschaft bereits bekannt: " . $yesNo($teamKnown === 'yes') . "\n" .
+          ($teamKnown === 'yes'
+              ? "Ausgewählte Mannschaft: {$selectedTeamLabel}\nAktuelles Trainerteam: {$selectedTeamTrainers}\n"
+              : "Ausgewählte Mannschaft: noch nicht bekannt\n")
+        : "Mannschaftsauswahl: nicht relevant\n") .
     "Anschrift: {$street}, {$postalCode} {$city}\n" .
     "E-Mail: {$email}\n" .
     "Telefon: {$phone}\n\n" .
