@@ -17,6 +17,12 @@ permissions:
   pages: write
   id-token: write
 
+# Only the newest Pages deployment should continue. This prevents multiple
+# rapid commits from trying to deploy at the same time.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
