@@ -1,5 +1,6 @@
 ---
 import GastroMegaEnhancer from '../components/GastroMegaEnhancer.astro';
+import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string }
@@ -37,6 +38,7 @@ const friendlyMatchTeamPaths = [
 	<body>
 		<slot />
 		<GastroMegaEnhancer />
+		<SponsoringMegaEnhancer />
 		<script define:vars={{ contactPath, basePath, friendlyMatchTeamPaths }}>
 			const topicByEmail = new Map([
 				['info@bsvnordstern.de', 'general'],
