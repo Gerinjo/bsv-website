@@ -1,0 +1,149 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { erlebnisCooperations } from '../../data/erlebnis';
+import { withBase } from '../../utils/paths';
+---
+
+<Layout
+  title="Erlebnis | Kooperationen des BSV Nordstern Radolfzell"
+  description="Aktuelle Kooperationen des BSV Nordstern Radolfzell mit Fußballschulen, MC Shape Radolfzell und der Bürgerstiftung Radolfzell."
+>
+  <Header />
+
+  <main class="experience-page">
+    <header class="experience-hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <span>Kooperationen, die bewegen</span>
+          <h1>Mehr erleben.<br /><em>Gemeinsam wachsen.</em></h1>
+          <p>Mit starken Partnern schaffen wir zusätzliche Angebote für Kinder, Jugendliche, Mannschaften, Schulen und unsere Vereinsgemeinschaft.</p>
+          <a href="#kooperationen">Kooperationen entdecken <b aria-hidden="true">↓</b></a>
+        </div>
+
+        <div class="hero-stage" aria-hidden="true">
+          <span class="stage-star">✦</span>
+          <div class="stage-ring ring-one"></div>
+          <div class="stage-ring ring-two"></div>
+          <small>BSV Nordstern</small>
+          <strong>Sport.<br />Begegnung.<br />Erlebnis.</strong>
+          <b>Radolfzell · seit 1956</b>
+        </div>
+      </div>
+    </header>
+
+    <section class="experience-intro shell">
+      <div>
+        <span class="section-label">Unser Netzwerk</span>
+        <h2>Gemeinsam entsteht<br />mehr als Sport.</h2>
+      </div>
+      <div class="intro-copy">
+        <p>Kooperationen erweitern das Vereinsangebot um besondere Camps, professionelle Trainingsimpulse, Fitnessmöglichkeiten und Veranstaltungen für die ganze Stadt.</p>
+        <p>Auf dieser Seite bündeln wir die aktuell sichtbaren Partnerschaften des BSV Nordstern. Termine, Inhalte und Anmeldungen werden direkt beim jeweiligen Angebot beziehungsweise Partner veröffentlicht.</p>
+        <div class="intro-tags">
+          <span>Fußballcamps</span>
+          <span>Mädchenfußball</span>
+          <span>Fitness & Athletik</span>
+          <span>Schule & Gemeinschaft</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="kooperationen" class="cooperation-section">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="section-label">Aktuelle Kooperationen</span>
+            <h2>Starke Partner.<br />Besondere Möglichkeiten.</h2>
+          </div>
+          <p>Jede Kooperation setzt einen eigenen Schwerpunkt und ergänzt das Vereinsleben dort, wo zusätzliche Erfahrung, Infrastruktur oder Förderung besondere Erlebnisse möglich macht.</p>
+        </div>
+
+        <div class="cooperation-list">
+          {erlebnisCooperations.map((cooperation, index) => {
+            const actionHref = cooperation.external ? cooperation.actionHref : withBase(cooperation.actionHref);
+            return (
+              <article id={cooperation.id} class="cooperation-card" style={`--experience-accent:${cooperation.accent}`}>
+                <div class="cooperation-mark" aria-hidden="true">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{cooperation.symbol}</strong>
+                </div>
+
+                <div class="cooperation-copy">
+                  <span>{cooperation.category}</span>
+                  <h3>{cooperation.partner}</h3>
+                  <h4>{cooperation.title}</h4>
+                  {cooperation.date && <p class="cooperation-date">Nächster Termin: <strong>{cooperation.date}</strong></p>}
+                  <p>{cooperation.summary}</p>
+                  <ul>
+                    {cooperation.facts.map((fact) => <li><span aria-hidden="true">✓</span>{fact}</li>)}
+                  </ul>
+                </div>
+
+                <div class="cooperation-action">
+                  <a
+                    href={actionHref}
+                    target={cooperation.external ? '_blank' : undefined}
+                    rel={cooperation.external ? 'noreferrer' : undefined}
+                  >
+                    <span>{cooperation.actionLabel}</span><b aria-hidden="true">↗</b>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <section class="principles shell">
+      <div class="section-head compact">
+        <div><span class="section-label">Was uns verbindet</span><h2>Qualität. Nähe. Wirkung.</h2></div>
+      </div>
+      <div class="principle-grid">
+        <article><span>01</span><h3>Kindgerecht</h3><p>Angebote sollen Freude, Entwicklung und sichere Rahmenbedingungen miteinander verbinden.</p></article>
+        <article><span>02</span><h3>Regional verankert</h3><p>Unsere Kooperationen schaffen konkrete Möglichkeiten für Menschen aus Radolfzell und der Region.</p></article>
+        <article><span>03</span><h3>Partnerschaftlich</h3><p>Der BSV und seine Partner bringen ihre jeweiligen Stärken ein und entwickeln Angebote gemeinsam weiter.</p></article>
+      </div>
+    </section>
+
+    <section class="experience-cta">
+      <div class="shell cta-inner">
+        <div><span>Neue Kooperation</span><h2>Gemeinsam etwas bewegen?</h2><p>Organisationen und Unternehmen mit einer passenden Idee können sich direkt an den BSV Nordstern wenden.</p></div>
+        <a href={withBase('/kontakt?thema=general')}>Kooperation vorschlagen <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  :global(:root){--experience-dark:#071f16;--experience-green:#164f32;--experience-yellow:#f4d638;--experience-line:#d8e0da;--experience-ink:#14251a}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  .experience-page{background:#f5f7f4;color:var(--experience-ink)}
+  .experience-hero{position:relative;overflow:hidden;padding:95px 0 90px;background:linear-gradient(120deg,#061f15,#0c3b27 66%,#165437);color:white}
+  .experience-hero::before{content:'';position:absolute;right:-170px;top:-240px;width:620px;aspect-ratio:1;border:1px solid rgb(244 214 56 / 14%);border-radius:50%;box-shadow:0 0 0 75px rgb(255 255 255 / 2%),0 0 0 150px rgb(255 255 255 / 1.5%)}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:80px;align-items:center}
+  .hero-copy>span,.section-label,.experience-cta>div span{color:var(--experience-yellow);font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .hero-copy h1{margin:18px 0 24px;font-family:Georgia,serif;font-size:clamp(3.7rem,7vw,6.6rem);line-height:.88;letter-spacing:-.055em}.hero-copy h1 em{color:var(--experience-yellow);font-weight:400}
+  .hero-copy p{max-width:650px;margin:0;color:#c8d8ce;font-size:1.06rem;line-height:1.75}
+  .hero-copy>a{width:max-content;max-width:100%;min-height:51px;margin-top:31px;padding:0 19px;display:flex;align-items:center;gap:35px;background:var(--experience-yellow);color:var(--experience-dark);font-size:.78rem;font-weight:900;text-decoration:none}.hero-copy>a b{font-size:1rem}
+  .hero-stage{position:relative;min-height:390px;padding:48px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;border:1px solid rgb(255 255 255 / 13%);background:rgb(255 255 255 / 5%);box-shadow:14px 14px 0 var(--experience-yellow)}
+  .hero-stage::after{content:'ERLEBNIS';position:absolute;right:-55px;top:130px;color:rgb(255 255 255 / 5%);font-size:5rem;font-weight:950;letter-spacing:-.07em;transform:rotate(90deg)}
+  .stage-star{position:absolute;right:34px;top:25px;color:var(--experience-yellow);font-size:3rem}.stage-ring{position:absolute;border:1px solid rgb(244 214 56 / 16%);border-radius:50%}.ring-one{width:210px;aspect-ratio:1;right:-60px;top:-60px}.ring-two{width:105px;aspect-ratio:1;right:55px;top:50px}
+  .hero-stage small,.hero-stage strong,.hero-stage b{position:relative;z-index:1;display:block}.hero-stage small{color:#9db5a6;font-size:.65rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hero-stage strong{margin:13px 0 18px;font-size:clamp(2.4rem,4vw,3.8rem);line-height:.9;letter-spacing:-.055em}.hero-stage b{color:var(--experience-yellow);font-size:.68rem;letter-spacing:.13em;text-transform:uppercase}
+  .experience-intro{padding:105px 0;display:grid;grid-template-columns:.85fr 1.15fr;gap:90px}.experience-intro h2,.section-head h2{margin:15px 0 0;font-size:clamp(2.8rem,5vw,4.8rem);line-height:.94;letter-spacing:-.055em}.experience-intro .section-label,.section-head .section-label{color:var(--experience-green)}
+  .intro-copy p{margin:0 0 18px;color:#58685d;font-size:1.03rem;line-height:1.8}.intro-copy p:first-child{color:var(--experience-ink);font-size:1.32rem;line-height:1.6}.intro-tags{margin-top:28px;display:flex;flex-wrap:wrap;gap:9px}.intro-tags span{padding:9px 12px;border:1px solid #d4ddd6;background:white;color:var(--experience-green);font-size:.68rem;font-weight:850}
+  .cooperation-section{padding:95px 0 110px;background:white}.section-head{display:flex;align-items:end;justify-content:space-between;gap:60px;margin-bottom:55px}.section-head>p{max-width:410px;margin:0;color:#65746a;line-height:1.7}.section-head.compact{display:block;margin-bottom:42px}
+  .cooperation-list{display:grid;gap:24px}.cooperation-card{position:relative;display:grid;grid-template-columns:140px minmax(0,1fr) 260px;align-items:stretch;overflow:hidden;border-top:5px solid var(--experience-accent);background:#f7f9f6;box-shadow:0 16px 44px rgb(9 47 32 / 7%);scroll-margin-top:110px}
+  .cooperation-mark{position:relative;min-height:300px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:var(--experience-accent);color:white}.cooperation-mark::after{content:'';position:absolute;left:-80px;bottom:-95px;width:210px;aspect-ratio:1;border:1px solid rgb(255 255 255 / 23%);border-radius:50%;box-shadow:0 0 0 34px rgb(255 255 255 / 6%)}.cooperation-mark span,.cooperation-mark strong{position:relative;z-index:1}.cooperation-mark span{font-size:.65rem;font-weight:950;letter-spacing:.12em}.cooperation-mark strong{font-size:3.2rem;line-height:1}
+  .cooperation-copy{padding:35px 38px}.cooperation-copy>span{color:var(--experience-accent);font-size:.63rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.cooperation-copy h3{margin:9px 0 5px;font-size:1.7rem;line-height:1.15}.cooperation-copy h4{margin:0 0 17px;color:var(--experience-green);font-family:Georgia,serif;font-size:1.28rem;font-weight:500}.cooperation-copy>p{max-width:700px;margin:0;color:#5b6b60;line-height:1.72}.cooperation-date{margin:0 0 15px!important;padding:10px 13px;border-left:3px solid var(--experience-accent);background:white;color:#435248!important;font-size:.76rem}.cooperation-copy ul{margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px 18px;list-style:none}.cooperation-copy li{display:flex;align-items:center;gap:7px;color:#39493e;font-size:.72rem;font-weight:800}.cooperation-copy li span{width:21px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:white;color:var(--experience-accent);font-size:.65rem}
+  .cooperation-action{padding:32px;display:flex;align-items:flex-end;justify-content:flex-end;background:#edf2ee}.cooperation-action a{width:100%;min-height:52px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--experience-dark);color:white;font-size:.74rem;font-weight:900;text-decoration:none}.cooperation-action a b{color:var(--experience-yellow);font-size:.95rem}.cooperation-action a:hover b{transform:translate(2px,-2px)}
+  .principles{padding:105px 0}.principle-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.principle-grid article{position:relative;min-height:250px;padding:34px;background:white;box-shadow:0 14px 40px rgb(9 47 32 / 7%)}.principle-grid article>span{position:absolute;right:25px;top:22px;color:#d2dad4;font-size:1.8rem;font-weight:950}.principle-grid h3{margin:55px 0 13px;color:var(--experience-green);font-size:1.55rem}.principle-grid p{margin:0;color:#617066;line-height:1.7}
+  .experience-cta{padding:0 0 105px}.cta-inner{position:relative;overflow:hidden;padding:55px 60px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:60px;background:var(--experience-yellow)}.cta-inner::after{content:'✦';position:absolute;right:25%;top:-35px;color:rgb(255 255 255 / 50%);font-size:8rem}.cta-inner>div,.cta-inner>a{position:relative;z-index:1}.cta-inner>div>span{color:var(--experience-green);font-size:.66rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.cta-inner h2{margin:10px 0 13px;font-size:clamp(2.4rem,5vw,4.1rem);line-height:.95;letter-spacing:-.055em}.cta-inner p{max-width:700px;margin:0;color:#415044;line-height:1.65}.cta-inner>a{min-width:245px;padding:16px 18px;display:flex;justify-content:space-between;gap:30px;background:var(--experience-dark);color:white;font-size:.78rem;font-weight:900;text-decoration:none}.cta-inner>a span{color:var(--experience-yellow)}
+  @media(max-width:950px){.hero-grid,.experience-intro{grid-template-columns:1fr}.hero-stage{width:min(100%,620px)}.cooperation-card{grid-template-columns:105px minmax(0,1fr)}.cooperation-action{grid-column:2;padding:0 38px 32px;justify-content:flex-start}.cooperation-action a{width:max-content;min-width:260px}.cta-inner{grid-template-columns:1fr}.cta-inner>a{justify-self:start}}
+  @media(max-width:720px){.section-head{align-items:flex-start;flex-direction:column;gap:25px}.principle-grid{grid-template-columns:1fr}.cooperation-card{grid-template-columns:1fr}.cooperation-mark{min-height:105px;flex-direction:row;align-items:center}.cooperation-copy{padding:29px 24px}.cooperation-action{grid-column:1;padding:0 24px 26px}.cooperation-action a{width:100%;min-width:0}}
+  @media(max-width:560px){.shell{width:min(100% - 30px,1160px)}.experience-hero{padding:70px 0}.hero-grid{gap:48px}.hero-copy h1{font-size:3.45rem}.hero-stage{min-height:320px;padding:32px;box-shadow:8px 8px 0 var(--experience-yellow)}.experience-intro,.principles{padding:72px 0}.cooperation-section{padding:70px 0 80px}.cooperation-copy ul{display:grid}.cta-inner{padding:42px 27px}.cta-inner>a{width:100%;min-width:0}}
+</style>
