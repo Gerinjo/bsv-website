@@ -111,6 +111,21 @@ export const menu: MenuItem[] = [
     ],
   },
   {
+    label: 'Sponsoring', href: '/sponsoring', groups: [
+      { title: 'Sponsoring-Level', links: [
+        { label: 'Kids-Sponsor', href: '/sponsoring#kids' },
+        { label: 'Bronze-Sponsor', href: '/sponsoring#bronze' },
+        { label: 'Silber-Sponsor', href: '/sponsoring#silver' },
+        { label: 'Gold-Sponsor', href: '/sponsoring#gold' },
+      ]},
+      { title: 'Partnerschaft', links: [
+        { label: 'Pakete vergleichen', href: '/sponsoring#vergleich' },
+        { label: 'Einzelbausteine', href: '/sponsoring#bausteine' },
+        { label: 'Sponsoring anfragen', href: '/kontakt?thema=sponsoring' },
+      ]},
+    ],
+  },
+  {
     label: 'Gastronomie', href: '/gastronomie', groups: [
       { title: 'Gastro', links: [
         { label: 'Über uns', href: '/gastronomie/ueber-uns' },
