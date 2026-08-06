@@ -111,6 +111,18 @@ export const menu: MenuItem[] = [
     ],
   },
   {
+    label: 'Erlebnis', href: '/erlebnis', groups: [
+      { title: 'Fußballschulen', links: [
+        { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis#skechers-fussballschule' },
+        { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis#porsche-maedchencamp' },
+      ]},
+      { title: 'Weitere Kooperationen', links: [
+        { label: 'MC Shape Radolfzell', href: '/erlebnis#mcshape-radolfzell' },
+        { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis#buergerstiftung-grundschulturnier' },
+      ]},
+    ],
+  },
+  {
     label: 'Sponsoring', href: '/sponsoring', groups: [
       { title: 'Sponsoring-Level', links: [
         { label: 'Kids-Sponsor', href: '/sponsoring#kids' },
