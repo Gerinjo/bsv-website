@@ -21,27 +21,54 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v7
+        with:
+          # Recent commit SHAs are needed to clear Pages deployments that were
+          # left queued by earlier cancelled workflow runs.
+          fetch-depth: 30
 
       - name: Install, build, and upload your site
         uses: withastro/action@v6
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
 
-      # A cancelled workflow can leave a Pages deployment queued in GitHub's
-      # Pages service even though no Actions job is still running. Cancel the
-      # deployment belonging to the previous commit after the new build has
-      # completed successfully.
-      - name: Clear previous Pages deployment if still queued
-        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+      - name: Clear stale Pages deployments
         env:
           GH_TOKEN: ${{ github.token }}
-          PREVIOUS_SHA: ${{ github.event.before }}
+        shell: bash
         run: |
-          gh api --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "repos/${GITHUB_REPOSITORY}/pages/deployments/${PREVIOUS_SHA}/cancel" \
-            || true
+          set -u
+
+          echo "Checking recent commits for stale GitHub Pages deployments..."
+          mapfile -t stale_shas < <(git rev-list --max-count=25 HEAD^)
+
+          for sha in "${stale_shas[@]}"; do
+            response_file="$(mktemp)"
+            http_status="$(
+              curl --silent --show-error \
+                --output "${response_file}" \
+                --write-out "%{http_code}" \
+                --request POST \
+                --header "Accept: application/vnd.github+json" \
+                --header "Authorization: Bearer ${GH_TOKEN}" \
+                --header "X-GitHub-Api-Version: 2022-11-28" \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/${sha}/cancel"
+            )"
+
+            case "${http_status}" in
+              204)
+                echo "Cancelled stale Pages deployment: ${sha}"
+                ;;
+              404)
+                echo "No active Pages deployment for: ${sha}"
+                ;;
+              *)
+                echo "::warning::Cancel request for ${sha} returned HTTP ${http_status}."
+                cat "${response_file}"
+                ;;
+            esac
+
+            rm -f "${response_file}"
+          done
 
   deploy:
     needs: build
