@@ -17,11 +17,11 @@ permissions:
   pages: write
   id-token: write
 
-# Only the newest Pages deployment should continue. This prevents multiple
-# rapid commits from trying to deploy at the same time.
+# Run only one Pages workflow at a time. New runs wait instead of cancelling
+# a deployment that has already started.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
