@@ -1,0 +1,60 @@
+---
+import { withBase } from '../utils/paths';
+
+const shopPage = withBase('/shop');
+const showroomImage = withBase('/images/shop/showroom-2024.svg');
+---
+
+<script define:vars={{ shopPage, showroomImage }}>
+  const enhanceHomeShopCard = () => {
+    const card = document.querySelector('.promo-card.promo-shop');
+    if (!(card instanceof HTMLAnchorElement) || card.dataset.shopEnhanced === 'true') return;
+
+    card.dataset.shopEnhanced = 'true';
+    card.href = shopPage;
+    card.removeAttribute('target');
+    card.removeAttribute('rel');
+
+    const currentVisual = card.querySelector('.promo-symbol');
+    if (currentVisual) {
+      const frame = document.createElement('div');
+      frame.className = 'promo-shop-image';
+
+      const image = document.createElement('img');
+      image.src = showroomImage;
+      image.alt = 'Showroom von Teamsport Bodensee mit JAKO Teamwear';
+      image.decoding = 'async';
+
+      frame.append(image);
+      currentVisual.replaceWith(frame);
+    }
+
+    const eyebrow = card.querySelector('.promo-copy small');
+    const paragraph = card.querySelector('.promo-copy p');
+    const action = card.querySelector('.promo-copy > strong');
+
+    if (eyebrow) eyebrow.textContent = 'BSV Shop · Teamsport Bodensee';
+    if (paragraph) paragraph.textContent = 'Vereinskleidung, Trainingswear und mehr – zusammengestellt für den BSV.';
+    if (action) action.innerHTML = 'BSV Shop entdecken <b>↗</b>';
+  };
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', enhanceHomeShopCard, { once: true });
+  } else {
+    enhanceHomeShopCard();
+  }
+</script>
+
+<style>
+  :global(.promo-shop-image){
+    height:145px;
+    overflow:hidden;
+    background:#e4e9e5;
+  }
+  :global(.promo-shop-image img){
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+</style>
