@@ -15,11 +15,16 @@ import { withBase } from '../utils/paths';
     {erlebnisCooperations.map((cooperation, index) => (
       <a
         class="experience-card"
-        href={withBase(`/erlebnis#${cooperation.id}`)}
-        style={`--experience-accent:${cooperation.accent}`}
+        href={withBase(cooperation.actionHref)}
+        style={`--experience-accent:${cooperation.accent};--logo-bg:${cooperation.logoBackground}`}
       >
         <span class="experience-number">0{index + 1}</span>
-        <span class="experience-symbol" aria-hidden="true">{cooperation.symbol}</span>
+        <span class="experience-logo-wrap">
+          <img class="experience-logo" src={cooperation.logoSrc} alt="" loading="lazy" decoding="async" />
+          {cooperation.logoLabel && (
+            <span class="experience-logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
+          )}
+        </span>
         <small>{cooperation.category}</small>
         <strong>{cooperation.menuTitle}</strong>
         {cooperation.date && <p>{cooperation.date}</p>}
@@ -72,14 +77,15 @@ import { withBase } from '../utils/paths';
   .experience-intro>a{position:relative;z-index:1;min-height:43px;margin-top:27px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:#f4d638;color:#071f16;font-size:.7rem;font-weight:900;text-decoration:none}
   .experience-intro>a b{font-size:.95rem;transition:transform .18s ease}.experience-intro>a:hover b{transform:translate(2px,-2px)}
   .experience-partners{padding:25px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;background:#f4f7f4}
-  .experience-card{position:relative;min-height:145px;padding:20px 20px 18px;display:flex;flex-direction:column;overflow:hidden;border-top:4px solid var(--experience-accent);background:white;color:#17251b;text-decoration:none;box-shadow:0 9px 24px rgb(9 47 32 / 7%);transition:transform .18s ease,box-shadow .18s ease}
-  .experience-card::after{content:'';position:absolute;right:-42px;bottom:-55px;width:125px;aspect-ratio:1;border:1px solid color-mix(in srgb,var(--experience-accent) 28%,transparent);border-radius:50%}
+  .experience-card{position:relative;min-height:190px;padding:16px 18px 18px;display:flex;flex-direction:column;overflow:hidden;border-top:4px solid var(--experience-accent);background:white;color:#17251b;text-decoration:none;box-shadow:0 9px 24px rgb(9 47 32 / 7%);transition:transform .18s ease,box-shadow .18s ease}
   .experience-card:hover,.experience-card:focus{outline:none;transform:translateY(-3px);box-shadow:0 15px 34px rgb(9 47 32 / 13%)}
-  .experience-number{position:absolute;right:17px;top:14px;color:#a6b1aa;font-size:.59rem;font-weight:900}
-  .experience-symbol{width:29px;aspect-ratio:1;margin-bottom:13px;display:grid;place-items:center;border-radius:50%;background:var(--experience-accent);color:white;font-size:.75rem;font-weight:900}
-  .experience-card small{padding-right:22px;color:var(--experience-accent);font-size:.55rem;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
-  .experience-card strong{max-width:245px;margin-top:7px;font-size:1rem;line-height:1.25}
-  .experience-card p{margin:8px 0 0;color:#68766d;font-size:.63rem;font-weight:800}
+  .experience-number{position:absolute;z-index:3;right:17px;top:14px;padding:4px 6px;background:rgb(255 255 255 / 88%);color:#68756d;font-size:.56rem;font-weight:900}
+  .experience-logo-wrap{height:82px;margin:-2px -4px 13px;padding:10px 13px;display:flex;align-items:center;justify-content:center;gap:11px;overflow:hidden;background:var(--logo-bg);border:1px solid rgb(9 47 32 / 7%)}
+  .experience-logo{display:block;max-width:100%;max-height:58px;object-fit:contain}
+  .experience-logo-label{display:flex;flex-direction:column;color:#173d6f;font-size:.7rem;font-weight:900;line-height:1.08;text-align:left}
+  .experience-card small{padding-right:22px;color:var(--experience-accent);font-size:.54rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+  .experience-card>strong{max-width:245px;margin-top:6px;padding-right:30px;font-size:.94rem;line-height:1.22}
+  .experience-card>p{margin:7px 0 0;color:#68766d;font-size:.61rem;font-weight:800}
   .experience-card>b{position:absolute;z-index:1;right:16px;bottom:15px;width:25px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:#092f20;color:#f4d638;font-size:.67rem}
   .experience-footer{grid-column:1/-1;min-height:48px;padding:0 26px;display:flex;align-items:center;justify-content:flex-end;gap:22px;border-top:1px solid #dce3dd;background:white;color:#58685e;font-size:.63rem;font-weight:850}
   .experience-footer span{display:flex;align-items:center;gap:6px}.experience-footer b{color:#164f32}
