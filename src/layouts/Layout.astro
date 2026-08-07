@@ -1,6 +1,7 @@
 ---
 import ErlebnisMegaEnhancer from '../components/ErlebnisMegaEnhancer.astro';
 import GastroMegaEnhancer from '../components/GastroMegaEnhancer.astro';
+import HomeShopEnhancer from '../components/HomeShopEnhancer.astro';
 import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
 import { withBase } from '../utils/paths';
 
@@ -41,6 +42,7 @@ const friendlyMatchTeamPaths = [
 		<GastroMegaEnhancer />
 		<SponsoringMegaEnhancer />
 		<ErlebnisMegaEnhancer />
+		<HomeShopEnhancer />
 		<script define:vars={{ contactPath, basePath, friendlyMatchTeamPaths }}>
 			const topicByEmail = new Map([
 				['info@bsvnordstern.de', 'general'],
@@ -78,7 +80,7 @@ const friendlyMatchTeamPaths = [
 
 					toggle.replaceWith(directLink);
 					revealedLink.remove();
-			});
+				});
 			};
 
 			const correctCoachNames = () => {
