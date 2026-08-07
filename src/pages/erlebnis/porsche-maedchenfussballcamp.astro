@@ -1,0 +1,17 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+---
+<Layout title="Porsche Mädchenfußballcamp | BSV Nordstern Radolfzell" description="Porsche Fußballschule der Stuttgarter Kickers: Mädchenfußballcamp beim BSV Nordstern Radolfzell.">
+  <Header />
+  <main class="partner-page">
+    <section class="hero"><div class="shell"><a href={withBase('/erlebnis')}>← Zurück zu allen Kooperationen</a><span>Mädchenfußball & Feriencamp</span><h1>Porsche Fußballschule<br /><em>Stuttgarter Kickers</em></h1><p>Das Mädchenfußballcamp verbindet qualifiziertes, altersgerechtes Training mit gemeinsamen Erlebnissen und viel Freude am Fußball.</p></div></section>
+    <section class="content shell"><div><h2>Das Mädchenfußballcamp</h2><p>Die Porsche Fußballschule der Stuttgarter Kickers ist Kooperationspartner für besondere Fußballangebote beim BSV. Auf dieser Seite bündeln wir künftig alle Informationen rund um das Camp in Radolfzell.</p><p><strong>Nächster vorgesehener Termin:</strong> 26.–28. Oktober 2026.</p></div><aside><h3>Geplant für diese Seite</h3><ul><li>Termin, Altersgruppen und Anmeldung</li><li>Tagesablauf und Leistungen</li><li>Bildergalerien der Camps</li><li>Hinweise für Eltern und Teilnehmerinnen</li></ul></aside></section>
+    <section class="gallery shell"><span>Galerie</span><h2>Mädchenfußball beim BSV.</h2><div class="placeholder"><strong>Bildgalerie vorbereitet</strong><p>Fotos vergangener und zukünftiger Camps können hier später ergänzt werden.</p></div></section>
+  </main><Footer />
+</Layout>
+<style>
+.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.partner-page{background:#f5f7f4;color:#14251a}.hero{padding:90px 0;background:#0b2f69;color:#fff}.hero a{color:#f4d638;text-decoration:none;font-weight:800;font-size:.78rem}.hero span{display:block;margin-top:50px;color:#b7c9e4;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:14px 0 24px;font-size:clamp(3.2rem,6vw,5.8rem);line-height:.9;letter-spacing:-.05em}.hero em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.hero p{max-width:720px;color:#dce6f4;font-size:1.08rem;line-height:1.7}.content{padding:90px 0;display:grid;grid-template-columns:1.25fr .75fr;gap:70px}.content h2,.gallery h2{font-size:clamp(2.4rem,4vw,4rem);letter-spacing:-.04em}.content p{color:#5d6c62;line-height:1.8}.content aside{padding:32px;background:#fff}.content h3{margin-top:0;color:#0b2f69}.content li{margin:12px 0;color:#536158}.gallery{padding:0 0 100px}.gallery>span{color:#0b2f69;font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em}.placeholder{min-height:260px;padding:38px;display:grid;place-content:center;border:1px dashed #b9c5bd;background:#fff;text-align:center}.placeholder strong{font-size:1.35rem}.placeholder p{color:#68766d}@media(max-width:760px){.content{grid-template-columns:1fr;gap:30px}.hero{padding:65px 0}}
+</style>
