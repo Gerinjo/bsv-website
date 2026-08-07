@@ -129,7 +129,8 @@ Deno.serve(async (request) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (!supabaseUrl || !serviceRoleKey) {
-      throw new Error('Supabase-Konfiguration fehlt.');
+      console.error('Supabase-Konfiguration fehlt.');
+      return json({ ok: false, message: 'Die Anfrage ist momentan nicht verfügbar.' }, 500, headers);
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
@@ -160,16 +161,35 @@ Deno.serve(async (request) => {
     }
 
     const registrationId = registration.id as string;
+    const setNotificationStatus = async (
+      status: 'fehler' | 'teilweise' | 'versendet',
+      requesterConfirmationSent = false,
+    ) => {
+      const { error } = await supabase
+        .from('mcshape_anmeldungen')
+        .update({
+          benachrichtigung_status: status,
+          bestaetigung_anfragende_person_versendet: requesterConfirmationSent,
+        })
+        .eq('id', registrationId);
+      if (error) console.error('Benachrichtigungsstatus konnte nicht aktualisiert werden:', error);
+    };
+
     const mcShapeRecipient = Deno.env.get('MCSHAPE_RECIPIENT_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
     const bsvConfirmationRecipient = Deno.env.get('BSV_CONFIRMATION_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
     const mailFrom = Deno.env.get('MAIL_FROM');
 
     if (!mcShapeRecipient || !bsvConfirmationRecipient || !mailFrom) {
-      await supabase
-        .from('mcshape_anmeldungen')
-        .update({ benachrichtigung_status: 'fehler' })
-        .eq('id', registrationId);
-      throw new Error('Empfänger oder MAIL_FROM sind nicht vollständig konfiguriert.');
+      console.error('E-Mail-Konfiguration fehlt; Anfrage wurde trotzdem gespeichert.');
+      await setNotificationStatus('fehler');
+      return json({
+        ok: true,
+        saved: true,
+        notificationStatus: 'fehler',
+        requesterConfirmationSent: false,
+        registrationId,
+        message: 'Die Anfrage wurde gespeichert. Die automatische Benachrichtigung konnte momentan nicht versendet werden.',
+      }, 201, headers);
     }
 
     const safeName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;
@@ -205,11 +225,16 @@ Deno.serve(async (request) => {
     try {
       await sendResendMail(mainMail);
     } catch (error) {
-      await supabase
-        .from('mcshape_anmeldungen')
-        .update({ benachrichtigung_status: 'fehler' })
-        .eq('id', registrationId);
-      throw error;
+      console.error('Hauptbenachrichtigung konnte nicht versendet werden:', error);
+      await setNotificationStatus('fehler');
+      return json({
+        ok: true,
+        saved: true,
+        notificationStatus: 'fehler',
+        requesterConfirmationSent: false,
+        registrationId,
+        message: 'Die Anfrage wurde gespeichert. Die automatische Benachrichtigung konnte momentan nicht versendet werden.',
+      }, 201, headers);
     }
 
     let requesterConfirmationSent = true;
@@ -232,17 +257,19 @@ Deno.serve(async (request) => {
       console.error('Bestätigung an anfragende Person konnte nicht gesendet werden:', error);
     }
 
-    await supabase
-      .from('mcshape_anmeldungen')
-      .update({
-        benachrichtigung_status: requesterConfirmationSent ? 'versendet' : 'teilweise',
-        bestaetigung_anfragende_person_versendet: requesterConfirmationSent,
-      })
-      .eq('id', registrationId);
+    const notificationStatus = requesterConfirmationSent ? 'versendet' : 'teilweise';
+    await setNotificationStatus(notificationStatus, requesterConfirmationSent);
 
-    return json({ ok: true, requesterConfirmationSent, registrationId }, 200, headers);
+    return json({
+      ok: true,
+      saved: true,
+      notificationStatus,
+      requesterConfirmationSent,
+      registrationId,
+      message: 'Die Anfrage wurde erfolgreich gespeichert.',
+    }, 201, headers);
   } catch (error) {
     console.error(error);
-    return json({ ok: false, message: 'Die Anfrage konnte momentan nicht gesendet werden. Bitte versuche es später erneut.' }, 500, headers);
+    return json({ ok: false, message: 'Die Anfrage konnte momentan nicht verarbeitet werden. Bitte versuche es später erneut.' }, 500, headers);
   }
 });
