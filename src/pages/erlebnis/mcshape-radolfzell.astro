@@ -99,7 +99,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
       <div class="lead-intro">
         <span>Persönlicher Termin</span>
         <h2 id="mcshape-form-title">Interesse?<br /><em>Wir stellen den Kontakt her.</em></h2>
-        <p>Fülle das Formular vollständig aus, wenn du die BSV-Konditionen nutzen möchtest. Für die Online-Anfrage ist aktuell ein Mindestalter von <strong>{minimumAge} Jahren</strong> hinterlegt. Deine Angaben werden zur Terminvereinbarung an MC Shape Radolfzell übermittelt; der BSV erhält automatisch eine Bestätigungskopie.</p>
+        <p>Fülle das Formular vollständig aus, wenn du die BSV-Konditionen nutzen möchtest. Für die Online-Anfrage ist aktuell ein Mindestalter von <strong>{minimumAge} Jahren</strong> hinterlegt. Deine Angaben werden sicher im BSV-System gespeichert; zusätzlich ist eine automatische Benachrichtigung für die weitere Terminvereinbarung vorgesehen.</p>
       </div>
 
       <form id="mcshape-interest-form" data-endpoint={mcShapeFormEndpoint} data-min-age={minimumAge} novalidate>
@@ -129,7 +129,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
 
       <div class="form-success" id="mcshape-form-success" hidden>
         <span aria-hidden="true">✓</span>
-        <div><strong>Vielen Dank – deine Anfrage ist unterwegs.</strong><p>MC Shape Radolfzell kann dich jetzt zur Terminvereinbarung kontaktieren. Der BSV hat gleichzeitig eine Bestätigungskopie erhalten.</p></div>
+        <div><strong>Vielen Dank – deine Anfrage wurde gespeichert.</strong><p>Deine Angaben wurden sicher übernommen. Wir kümmern uns um die weitere Bearbeitung und Terminvereinbarung.</p></div>
       </div>
     </section>
 
