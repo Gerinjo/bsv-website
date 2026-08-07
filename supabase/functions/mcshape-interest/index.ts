@@ -1,3 +1,4 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { MCSHAPE_MINIMUM_AGE, MCSHAPE_TEST_RECIPIENT_EMAIL } from '../_shared/mcshape-config.ts';
 
 const corsHeaders = {
@@ -125,11 +126,49 @@ Deno.serve(async (request) => {
       return json({ ok: false, message: 'Bitte die erforderlichen Einwilligungen bestätigen.' }, 400, headers);
     }
 
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !serviceRoleKey) {
+      throw new Error('Supabase-Konfiguration fehlt.');
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: registration, error: insertError } = await supabase
+      .from('mcshape_anmeldungen')
+      .insert({
+        vorname: firstName,
+        nachname: lastName,
+        geburtsdatum: birthDate,
+        alter_bei_anfrage: age,
+        email,
+        telefon: phone,
+        interesse: interest,
+        bevorzugte_kontaktzeit: preferredContactTime,
+        bsv_mitglied_bestaetigt: true,
+        rueckruf_einwilligung: true,
+        datenschutz_bestaetigt: true,
+      })
+      .select('id')
+      .single();
+
+    if (insertError || !registration?.id) {
+      console.error('MC-Shape-Anfrage konnte nicht gespeichert werden:', insertError);
+      return json({ ok: false, message: 'Die Anfrage konnte momentan nicht gespeichert werden. Bitte versuche es später erneut.' }, 500, headers);
+    }
+
+    const registrationId = registration.id as string;
     const mcShapeRecipient = Deno.env.get('MCSHAPE_RECIPIENT_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
     const bsvConfirmationRecipient = Deno.env.get('BSV_CONFIRMATION_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
     const mailFrom = Deno.env.get('MAIL_FROM');
 
     if (!mcShapeRecipient || !bsvConfirmationRecipient || !mailFrom) {
+      await supabase
+        .from('mcshape_anmeldungen')
+        .update({ benachrichtigung_status: 'fehler' })
+        .eq('id', registrationId);
       throw new Error('Empfänger oder MAIL_FROM sind nicht vollständig konfiguriert.');
     }
 
@@ -162,7 +201,16 @@ Deno.serve(async (request) => {
     if (bsvConfirmationRecipient.toLowerCase() !== mcShapeRecipient.toLowerCase()) {
       mainMail.bcc = [bsvConfirmationRecipient];
     }
-    await sendResendMail(mainMail);
+
+    try {
+      await sendResendMail(mainMail);
+    } catch (error) {
+      await supabase
+        .from('mcshape_anmeldungen')
+        .update({ benachrichtigung_status: 'fehler' })
+        .eq('id', registrationId);
+      throw error;
+    }
 
     let requesterConfirmationSent = true;
     try {
@@ -184,7 +232,15 @@ Deno.serve(async (request) => {
       console.error('Bestätigung an anfragende Person konnte nicht gesendet werden:', error);
     }
 
-    return json({ ok: true, requesterConfirmationSent }, 200, headers);
+    await supabase
+      .from('mcshape_anmeldungen')
+      .update({
+        benachrichtigung_status: requesterConfirmationSent ? 'versendet' : 'teilweise',
+        bestaetigung_anfragende_person_versendet: requesterConfirmationSent,
+      })
+      .eq('id', registrationId);
+
+    return json({ ok: true, requesterConfirmationSent, registrationId }, 200, headers);
   } catch (error) {
     console.error(error);
     return json({ ok: false, message: 'Die Anfrage konnte momentan nicht gesendet werden. Bitte versuche es später erneut.' }, 500, headers);
