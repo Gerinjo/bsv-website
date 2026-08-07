@@ -38,7 +38,7 @@ import { withBase } from '../../utils/paths';
         {erlebnisCooperations.map((cooperation) => (
           <a class="partner-card" href={withBase(cooperation.actionHref)} style={`--accent:${cooperation.accent};--logo-bg:${cooperation.logoBackground}`}>
             <div class="logo-stage">
-              <img src={cooperation.logoSrc} alt={cooperation.logoAlt} loading="lazy" decoding="async" />
+              <img src={cooperation.logoSrc.startsWith('/') ? withBase(cooperation.logoSrc) : cooperation.logoSrc} alt={cooperation.logoAlt} loading="lazy" decoding="async" />
               {cooperation.logoLabel && (
                 <span class="logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
               )}
