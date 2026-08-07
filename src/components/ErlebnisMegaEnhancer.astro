@@ -3,13 +3,25 @@ import { erlebnisCooperations } from '../data/erlebnis';
 import { withBase } from '../utils/paths';
 
 const byId = (id: string) => erlebnisCooperations.find((item) => item.id === id)!;
+const skechers = byId('skechers-fussballschule');
+const porsche = byId('porsche-maedchencamp');
+const grundschulturnier = byId('buergerstiftung-grundschulturnier');
+const mcshape = byId('mcshape-radolfzell');
+
 const menuGroups = [
   {
     title: 'Fußballcamps',
-    eyebrow: 'Ferien, Training & Erlebnis',
     items: [
-      byId('skechers-fussballschule'),
-      byId('porsche-maedchencamp'),
+      {
+        ...skechers,
+        previewSrc: withBase('/images/events/skechers-fussballschule/2026/sieger-2026-01.webp'),
+        previewKind: 'photo',
+      },
+      {
+        ...porsche,
+        previewSrc: porsche.logoSrc,
+        previewKind: 'logo',
+      },
       {
         id: 'save-play-torwartcamp',
         menuTitle: 'Save & Play Torwartcamp',
@@ -17,71 +29,92 @@ const menuGroups = [
         actionHref: '/erlebnis/torwartcamp',
         accent: '#164f32',
         logoBackground: '#eef3ef',
-        logoSrc: '',
-        logoLabel: 'SAVE & PLAY\nTORWARTCAMP',
-        date: undefined,
+        previewSrc: '',
+        previewKind: 'label',
+        previewLabel: 'SAVE & PLAY\nTORWARTCAMP',
+        date: 'Oster Torwart Camp 2026',
       },
     ],
   },
   {
     title: 'Turniere & Aktionstage',
-    eyebrow: 'Gemeinsam auf dem Platz',
-    items: [byId('buergerstiftung-grundschulturnier')],
+    items: [
+      {
+        ...grundschulturnier,
+        previewSrc: withBase('/images/events/grundschulturnier/2026/gst-2026-001.webp'),
+        previewKind: 'photo',
+      },
+    ],
   },
   {
     title: 'Benefits',
-    eyebrow: 'Vorteile für BSV-Mitglieder',
-    items: [byId('mcshape-radolfzell')],
+    items: [
+      {
+        ...mcshape,
+        previewSrc: mcshape.logoSrc.startsWith('/') ? withBase(mcshape.logoSrc) : mcshape.logoSrc,
+        previewKind: 'logo',
+      },
+    ],
   },
 ];
+const previewItems = menuGroups.flatMap((group) => group.items);
+const firstItem = previewItems[0];
 ---
 
 <template id="erlebnis-mega-template">
   <div class="experience-intro">
     <span>Erlebnis beim BSV</span>
     <h2>Mehr erleben.<br /><em>Gemeinsam wachsen.</em></h2>
-    <p>Fußballcamps, besondere Turniere und attraktive Benefits ergänzen den Vereinsalltag und schaffen zusätzliche Erlebnisse für unsere Mitglieder und Gäste.</p>
+    <p>Fußballcamps, besondere Turniere und attraktive Benefits ergänzen den Vereinsalltag.</p>
     <a href={withBase('/erlebnis')}>Alle Erlebnisse entdecken <b aria-hidden="true">↗</b></a>
   </div>
 
-  <div class="experience-groups">
-    {menuGroups.map((group) => (
-      <section class="experience-group" aria-label={group.title}>
-        <div class="experience-group-heading">
-          <div><span>{group.eyebrow}</span><h3>{group.title}</h3></div>
-          <b>{String(group.items.length).padStart(2, '0')}</b>
-        </div>
-        <div class="experience-group-grid">
-          {group.items.map((cooperation, index) => (
-            <a
-              class="experience-card"
-              href={withBase(cooperation.actionHref)}
-              style={`--experience-accent:${cooperation.accent};--logo-bg:${cooperation.logoBackground}`}
-            >
-              <span class="experience-number">0{index + 1}</span>
-              <span class="experience-logo-wrap">
-                {cooperation.logoSrc ? (
-                  <img
-                    class="experience-logo"
-                    src={cooperation.logoSrc.startsWith('/') ? withBase(cooperation.logoSrc) : cooperation.logoSrc}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : null}
-                {cooperation.logoLabel && (
-                  <span class="experience-logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
-                )}
-              </span>
-              <small>{cooperation.category}</small>
-              <strong>{cooperation.menuTitle}</strong>
-              {cooperation.date && <p>{cooperation.date}</p>}
-              <b aria-hidden="true">↗</b>
-            </a>
-          ))}
-        </div>
-      </section>
-    ))}
+  <div class="experience-browser">
+    <nav class="experience-list" aria-label="Erlebnisse beim BSV">
+      {menuGroups.map((group) => (
+        <section class="experience-list-group">
+          <h3>{group.title}</h3>
+          <div class="experience-links">
+            {group.items.map((item) => (
+              <a
+                href={withBase(item.actionHref)}
+                class="experience-link"
+                data-experience-id={item.id}
+                data-preview-src={item.previewSrc}
+                data-preview-kind={item.previewKind}
+                data-preview-label={'previewLabel' in item ? item.previewLabel : ''}
+                data-preview-title={item.menuTitle}
+                data-preview-category={item.category}
+                data-preview-date={item.date ?? ''}
+                data-preview-accent={item.accent}
+              >
+                <span>{item.menuTitle}</span><b aria-hidden="true">↗</b>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </nav>
+
+    <a
+      class="experience-preview"
+      href={withBase(firstItem.actionHref)}
+      data-experience-preview
+      style={`--preview-accent:${firstItem.accent}`}
+    >
+      <div class="experience-preview-media" data-preview-media data-kind={firstItem.previewKind}>
+        {firstItem.previewSrc ? <img src={firstItem.previewSrc} alt="" decoding="async" /> : null}
+        {'previewLabel' in firstItem && firstItem.previewLabel ? (
+          <span class="experience-preview-label">{firstItem.previewLabel.split('\n').map((line) => <span>{line}</span>)}</span>
+        ) : null}
+      </div>
+      <div class="experience-preview-copy">
+        <small data-preview-category>{firstItem.category}</small>
+        <strong data-preview-title>{firstItem.menuTitle}</strong>
+        <p data-preview-date>{firstItem.date ?? ''}</p>
+        <b aria-hidden="true">Mehr erfahren ↗</b>
+      </div>
+    </a>
   </div>
 </template>
 
@@ -101,6 +134,54 @@ const menuGroups = [
     megaInner.dataset.erlebnisEnhanced = 'true';
     megaInner.classList.add('erlebnis-mega');
     megaInner.replaceChildren(template.content.cloneNode(true));
+
+    const links = [...megaInner.querySelectorAll<HTMLAnchorElement>('[data-experience-id]')];
+    const preview = megaInner.querySelector<HTMLAnchorElement>('[data-experience-preview]');
+    const media = megaInner.querySelector<HTMLElement>('[data-preview-media]');
+    const title = megaInner.querySelector<HTMLElement>('[data-preview-title]');
+    const category = megaInner.querySelector<HTMLElement>('[data-preview-category]');
+    const date = megaInner.querySelector<HTMLElement>('[data-preview-date]');
+    if (!preview || !media || !title || !category || !date) return;
+
+    const activate = (link: HTMLAnchorElement) => {
+      links.forEach((item) => item.classList.toggle('is-active', item === link));
+      preview.href = link.href;
+      preview.style.setProperty('--preview-accent', link.dataset.previewAccent ?? '#164f32');
+      title.textContent = link.dataset.previewTitle ?? '';
+      category.textContent = link.dataset.previewCategory ?? '';
+      date.textContent = link.dataset.previewDate ?? '';
+      date.hidden = !link.dataset.previewDate;
+
+      const src = link.dataset.previewSrc ?? '';
+      const kind = link.dataset.previewKind ?? 'logo';
+      const label = link.dataset.previewLabel ?? '';
+      media.dataset.kind = kind;
+      media.replaceChildren();
+
+      if (src) {
+        const image = document.createElement('img');
+        image.src = src;
+        image.alt = '';
+        image.decoding = 'async';
+        media.append(image);
+      }
+      if (label) {
+        const labelWrap = document.createElement('span');
+        labelWrap.className = 'experience-preview-label';
+        label.split('\n').forEach((line) => {
+          const row = document.createElement('span');
+          row.textContent = line;
+          labelWrap.append(row);
+        });
+        media.append(labelWrap);
+      }
+    };
+
+    links.forEach((link) => {
+      link.addEventListener('mouseenter', () => activate(link));
+      link.addEventListener('focus', () => activate(link));
+    });
+    if (links[0]) activate(links[0]);
   };
 
   if (document.readyState === 'loading') {
@@ -111,36 +192,28 @@ const menuGroups = [
 </script>
 
 <style>
-  :global(.mega-inner.erlebnis-mega){position:relative;grid-template-columns:300px minmax(0,1fr);gap:0;padding:0;overflow:auto;max-height:min(760px,calc(100vh - 105px));border-top-color:#f4d638;background:#f4f7f4}
-  .experience-intro{position:sticky;top:0;align-self:start;min-height:100%;overflow:hidden;padding:36px 30px;background:linear-gradient(145deg,#071f16,#164f32);color:white}
-  .experience-intro::before{content:'ERLEBNIS';position:absolute;left:-12px;bottom:-20px;color:rgb(255 255 255 / 4%);font-size:5.6rem;font-weight:950;letter-spacing:-.08em;transform:rotate(-90deg);transform-origin:left bottom}
-  .experience-intro::after{content:'✦';position:absolute;right:-18px;top:-32px;color:rgb(244 214 56 / 13%);font-size:9rem}
-  .experience-intro>span{position:relative;z-index:1;color:#f4d638;font-size:.62rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
-  .experience-intro h2{position:relative;z-index:1;margin:14px 0 18px;color:white;font-family:Georgia,serif;font-size:2.25rem;line-height:.94;letter-spacing:-.045em;text-transform:none}
+  :global(.mega-inner.erlebnis-mega){grid-template-columns:270px minmax(0,1fr);gap:0;padding:0;overflow:hidden!important;max-height:none!important;border-top-color:#f4d638;background:#f4f7f4}
+  .experience-intro{position:relative;overflow:hidden;padding:32px 27px;background:linear-gradient(145deg,#071f16,#164f32);color:white}
+  .experience-intro::before{content:'ERLEBNIS';position:absolute;left:-12px;bottom:-20px;color:rgb(255 255 255 / 4%);font-size:5.2rem;font-weight:950;letter-spacing:-.08em;transform:rotate(-90deg);transform-origin:left bottom}
+  .experience-intro::after{content:'✦';position:absolute;right:-18px;top:-32px;color:rgb(244 214 56 / 13%);font-size:8rem}
+  .experience-intro>span{position:relative;z-index:1;color:#f4d638;font-size:.6rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+  .experience-intro h2{position:relative;z-index:1;margin:12px 0 16px;color:white;font-family:Georgia,serif;font-size:2rem;line-height:.95;letter-spacing:-.045em;text-transform:none}
   .experience-intro h2 em{color:#f4d638;font-weight:400}
-  .experience-intro p{position:relative;z-index:1;margin:0;color:#bfd0c5;font-size:.79rem;line-height:1.7}
-  .experience-intro>a{position:relative;z-index:1;min-height:43px;margin-top:27px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:#f4d638;color:#071f16;font-size:.7rem;font-weight:900;text-decoration:none}
-  .experience-intro>a b{font-size:.95rem;transition:transform .18s ease}.experience-intro>a:hover b{transform:translate(2px,-2px)}
-  .experience-groups{padding:24px 25px 28px;display:grid;gap:26px;background:#f4f7f4}
-  .experience-group{min-width:0}
-  .experience-group+.experience-group{padding-top:24px;border-top:1px solid #d8e1da}
-  .experience-group-heading{margin-bottom:12px;display:flex;align-items:end;justify-content:space-between;gap:22px}
-  .experience-group-heading span{display:block;margin-bottom:3px;color:#718078;font-size:.53rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
-  .experience-group-heading h3{margin:0;color:#164f32;font-size:1rem;letter-spacing:-.015em}
-  .experience-group-heading>b{color:#a3aea7;font-size:.64rem;letter-spacing:.08em}
-  .experience-group-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
-  .experience-group:nth-child(n+2) .experience-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .experience-card{position:relative;min-height:176px;padding:14px 16px 17px;display:flex;flex-direction:column;overflow:hidden;border-top:4px solid var(--experience-accent);background:white;color:#17251b;text-decoration:none;box-shadow:0 7px 20px rgb(9 47 32 / 6%);transition:transform .18s ease,box-shadow .18s ease}
-  .experience-card:hover,.experience-card:focus{outline:none;transform:translateY(-3px);box-shadow:0 14px 30px rgb(9 47 32 / 12%)}
-  .experience-number{position:absolute;z-index:3;right:15px;top:12px;padding:4px 6px;background:rgb(255 255 255 / 88%);color:#68756d;font-size:.53rem;font-weight:900}
-  .experience-logo-wrap{height:68px;margin:-1px -2px 12px;padding:8px 11px;display:flex;align-items:center;justify-content:center;gap:11px;overflow:hidden;background:var(--logo-bg);border:1px solid rgb(9 47 32 / 7%)}
-  .experience-logo{display:block;max-width:100%;max-height:50px;object-fit:contain}
-  .experience-logo-label{display:flex;flex-direction:column;color:#164f32;font-size:.67rem;font-weight:950;line-height:1.05;text-align:center;letter-spacing:.03em}
-  .experience-card small{padding-right:22px;color:var(--experience-accent);font-size:.5rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
-  .experience-card>strong{max-width:245px;margin-top:6px;padding-right:28px;font-size:.87rem;line-height:1.2}
-  .experience-card>p{margin:6px 0 0;color:#68766d;font-size:.58rem;font-weight:800}
-  .experience-card>b{position:absolute;z-index:1;right:14px;bottom:13px;width:24px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:#092f20;color:#f4d638;font-size:.64rem}
-  @media(max-width:1080px){.experience-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:980px){:global(.mega-inner.erlebnis-mega){display:grid;grid-template-columns:1fr;padding:0!important;max-height:none}.experience-intro{position:relative;min-height:0;padding:28px 24px}.experience-intro h2{font-size:1.85rem}.experience-groups{padding:20px}.experience-group-grid,.experience-group:nth-child(n+2) .experience-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:620px){.experience-group-grid,.experience-group:nth-child(n+2) .experience-group-grid{grid-template-columns:1fr}.experience-card{min-height:170px}}
+  .experience-intro p{position:relative;z-index:1;margin:0;color:#bfd0c5;font-size:.75rem;line-height:1.65}
+  .experience-intro>a{position:relative;z-index:1;min-height:42px;margin-top:23px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#f4d638;color:#071f16;font-size:.68rem;font-weight:900;text-decoration:none}
+  .experience-browser{padding:22px;display:grid;grid-template-columns:minmax(250px,.86fr) minmax(330px,1.14fr);gap:20px;min-width:0;background:#f4f7f4}
+  .experience-list{display:grid;align-content:start;gap:16px;min-width:0}
+  .experience-list-group{min-width:0}.experience-list-group+.experience-list-group{padding-top:14px;border-top:1px solid #d7e0d9}
+  .experience-list-group h3{margin:0 0 6px;color:#164f32;font-size:.74rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+  .experience-links{display:grid;gap:2px}
+  .experience-link{min-height:34px;padding:7px 8px 7px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-left:3px solid transparent;color:#293a30;text-decoration:none;font-size:.77rem;font-weight:800;line-height:1.2;transition:background .16s ease,border-color .16s ease,color .16s ease}
+  .experience-link b{flex:0 0 auto;color:#8a9990;font-size:.68rem;opacity:.55}.experience-link:hover,.experience-link:focus,.experience-link.is-active{outline:none;border-left-color:#f4d638;background:#fff;color:#0b3523}.experience-link:hover b,.experience-link:focus b,.experience-link.is-active b{color:#164f32;opacity:1}
+  .experience-preview{position:relative;min-height:315px;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;background:#fff;color:#17251b;text-decoration:none;border-top:5px solid var(--preview-accent);box-shadow:0 12px 30px rgb(9 47 32 / 10%)}
+  .experience-preview-media{min-height:205px;display:grid;place-items:center;overflow:hidden;background:#eef3ef}
+  .experience-preview-media[data-kind='photo'] img{width:100%;height:100%;min-height:205px;display:block;object-fit:cover;transition:transform .3s ease}.experience-preview:hover .experience-preview-media[data-kind='photo'] img{transform:scale(1.025)}
+  .experience-preview-media[data-kind='logo']{padding:28px;background:#fff}.experience-preview-media[data-kind='logo'] img{display:block;max-width:76%;max-height:125px;object-fit:contain}
+  .experience-preview-media[data-kind='label']{background:linear-gradient(145deg,#e8efea,#fff)}
+  .experience-preview-label{display:flex;flex-direction:column;color:#164f32;font-size:1.4rem;font-weight:950;line-height:1.02;text-align:center;letter-spacing:.03em}
+  .experience-preview-copy{position:relative;padding:17px 20px 19px}.experience-preview-copy small{display:block;color:var(--preview-accent);font-size:.54rem;font-weight:950;letter-spacing:.09em;text-transform:uppercase}.experience-preview-copy strong{display:block;margin-top:5px;padding-right:90px;font-size:1.08rem;line-height:1.18}.experience-preview-copy p{margin:6px 0 0;color:#68766d;font-size:.65rem;font-weight:800}.experience-preview-copy>b{position:absolute;right:19px;bottom:19px;color:#164f32;font-size:.64rem}
+  @media(max-width:980px){:global(.mega-inner.erlebnis-mega){display:grid;grid-template-columns:1fr;padding:0!important}.experience-intro{padding:24px}.experience-intro h2{font-size:1.75rem}.experience-browser{grid-template-columns:1fr}.experience-preview{display:none}.experience-list{gap:13px}}
 </style>
