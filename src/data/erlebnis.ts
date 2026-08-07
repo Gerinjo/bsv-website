@@ -80,9 +80,9 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     external: false,
     accent: '#e30613',
     symbol: '▲',
-    logoSrc: 'https://www.mcshape.com/wp-content/uploads/2023/11/MCShape-Logo-2023-v3.png',
+    logoSrc: '/images/partners/mcshape-black.png',
     logoAlt: 'MC Shape',
-    logoBackground: '#ffffff',
+    logoBackground: '#000000',
   },
   {
     id: 'buergerstiftung-grundschulturnier',
