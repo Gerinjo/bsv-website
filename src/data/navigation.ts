@@ -108,7 +108,7 @@ export const menu: MenuItem[] = [
         { label: 'Allianz Juniors Cup – D-Junioren', href: '/events/allianz-juniors-cup-d' },
         { label: 'Allianz Juniors Cup – C-Juniorinnen', href: '/events/allianz-juniors-cup-c' },
       ]},
-      { title: 'Kooperationen & Vorteile', links: [
+      { title: 'Benefits', links: [
         { label: 'MC Shape Radolfzell', href: '/erlebnis/mcshape-radolfzell' },
       ]},
     ],
