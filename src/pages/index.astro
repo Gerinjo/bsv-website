@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Layout from '../layouts/Layout.astro';
+import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
 
 const news = [
@@ -16,6 +17,20 @@ const departments = [
   { number: '03', name: 'Gymnastik', detail: 'Bewegung · Fitness · Gesundheit', href: '/abteilungen/gymnastik' },
   { number: '04', name: 'Wandern', detail: 'Natur · Bewegung · Geselligkeit', href: '/abteilungen/wandergruppe' },
 ];
+
+const { events: calendarEvents, available: calendarAvailable } = await loadClubCalendar();
+const upcomingEvents = calendarEvents.slice(0, 4);
+const compactDateFormat = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', timeZone: 'Europe/Berlin' });
+
+const getEventType = (title: string) => {
+  const value = title.toLowerCase();
+  if (/(turnier|cup|spieltag)/.test(value)) return 'Turnier';
+  if (/(camp|fußballschule|fussballschule)/.test(value)) return 'Camp';
+  if (/(sitzung|versammlung|jhv|hauptversammlung)/.test(value)) return 'Sitzung';
+  if (/(flohmarkt|markt|fest|feier|hock|party)/.test(value)) return 'Vereinsevent';
+  if (/(training|trainings)/.test(value)) return 'Training';
+  return 'Termin';
+};
 ---
 
 <Layout title="BSV Nordstern Radolfzell – Auf geht’s grün">
@@ -50,17 +65,83 @@ const departments = [
       </div>
     </section>
 
+    <section class="promo-section" aria-label="BSV entdecken">
+      <div class="shell promo-grid">
+        <a class="promo-card promo-shop" href="https://shop.bsvnordstern.de/" target="_blank" rel="noopener noreferrer">
+          <span class="promo-index">01</span>
+          <div class="promo-symbol" aria-hidden="true">BSV<br />SHOP</div>
+          <div class="promo-copy">
+            <small>Fanartikel & Vereinskleidung</small>
+            <h2>Zeig deine Farben.</h2>
+            <p>Trikots, Trainingskleidung und mehr direkt im BSV Shop.</p>
+            <strong>Zum Shop <b>↗</b></strong>
+          </div>
+        </a>
+
+        <a class="promo-card promo-partners" href={withBase('/erlebnis')}>
+          <span class="promo-index">02</span>
+          <div class="promo-symbol" aria-hidden="true">✦</div>
+          <div class="promo-copy">
+            <small>Kooperationen & Benefits</small>
+            <h2>Gemeinsam mehr erleben.</h2>
+            <p>Fußballschulen, Partner und Vorteile rund um den BSV.</p>
+            <strong>Kooperationen entdecken <b>↗</b></strong>
+          </div>
+        </a>
+
+        <a class="promo-card promo-events" href={withBase('/erlebnis')}>
+          <span class="promo-index">03</span>
+          <div class="promo-symbol" aria-hidden="true">⚑</div>
+          <div class="promo-copy">
+            <small>Turniere & Aktionstage</small>
+            <h2>Sportevents beim BSV.</h2>
+            <p>Turniere, Camps und besondere Tage auf und neben dem Platz.</p>
+            <strong>Events entdecken <b>↗</b></strong>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <section class="match-section" id="spielplan">
       <div class="shell">
         <div class="section-head compact"><div><p class="kicker dark"><span></span> BSV Spielplan</p><h2>Immer im Einsatz.</h2></div></div>
         <div class="club-matches-widget" aria-label="Spiele des BSV Nordstern Radolfzell">
-        <div
-          class="fussballde_widget"
-          data-id="6fdc77b9-0fea-44c5-ac49-24f468e4f5d3"
-          data-type="club-matches"
-          style="width: 100%"
-        ></div>
+          <div
+            class="fussballde_widget"
+            data-id="6fdc77b9-0fea-44c5-ac49-24f468e4f5d3"
+            data-type="club-matches"
+            style="width: 100%"
+          ></div>
         </div>
+      </div>
+    </section>
+
+    <section class="dates-section" aria-labelledby="dates-title">
+      <div class="shell">
+        <div class="dates-head">
+          <div>
+            <p class="kicker dark"><span></span> Vereinskalender</p>
+            <h2 id="dates-title">Die nächsten Termine.</h2>
+          </div>
+          <a href={withBase('/verein/termine')}>Alle Termine <span>→</span></a>
+        </div>
+
+        {calendarAvailable && upcomingEvents.length ? (
+          <div class="dates-grid">
+            {upcomingEvents.map((event) => (
+              <a class="date-card" href={event.googleUrl} target="_blank" rel="noopener noreferrer">
+                <div class="date-meta">
+                  <span>{getEventType(event.title)}</span>
+                  <time datetime={event.start.toISOString()}>{compactDateFormat.format(event.start)}</time>
+                </div>
+                <strong>{event.title}</strong>
+                <b aria-hidden="true">↗</b>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="dates-empty">Aktuell sind keine kommenden Vereinstermine verfügbar.</div>
+        )}
       </div>
     </section>
 
@@ -129,12 +210,45 @@ const departments = [
   .pitch::before { content: ''; position: absolute; left: 50%; height: 100%; border-left: 2px solid rgb(255 255 255 / 28%); }.pitch-circle { position: absolute; left: 50%; top: 50%; width: 120px; aspect-ratio: 1; border: 2px solid rgb(255 255 255 / 28%); border-radius: 50%; transform: translate(-50%, -50%); }.pitch-box { position: absolute; left: -2px; top: 28%; width: 95px; height: 44%; border: 2px solid rgb(255 255 255 / 28%); }.ball { position: absolute; display: grid; place-items: center; right: 18%; top: 23%; width: 64px; aspect-ratio: 1; border-radius: 50%; background: var(--yellow); color: var(--green); font-size: 1.6rem; box-shadow: 0 12px 35px rgb(0 0 0 / 24%); }
   .hero-badge { position: absolute; z-index: 2; left: -28px; bottom: 5px; padding: 20px 25px; transform: rotate(3deg); background: white; color: var(--ink); box-shadow: 12px 15px 0 rgb(9 47 32 / 55%); }.hero-badge strong, .hero-badge span { display: block; }.hero-badge strong { font-size: 1.2rem; }.hero-badge span { margin-top: 4px; color: #6a796f; font-size: .75rem; }
   .ticker { position: relative; z-index: 2; overflow: hidden; padding: 17px 0; background: var(--yellow); color: var(--green-dark); font-weight: 900; text-transform: uppercase; white-space: nowrap; transform: rotate(-1deg) scale(1.02); }.ticker div { min-width: max-content; word-spacing: 16px; }.ticker span { color: white; }
-  .match-section, .news-section, .join-section { padding: 110px 0; }.match-section { background: var(--cream); }
+
+  .promo-section { padding: 88px 0 24px; background: var(--cream); }
+  .promo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .promo-card { position: relative; min-height: 330px; overflow: hidden; display: flex; flex-direction: column; color: inherit; text-decoration: none; box-shadow: 0 14px 35px rgb(9 47 32 / 9%); transition: transform .2s ease, box-shadow .2s ease; }
+  .promo-card:hover { transform: translateY(-4px); box-shadow: 0 20px 42px rgb(9 47 32 / 14%); }
+  .promo-index { position: absolute; z-index: 2; right: 18px; top: 16px; font-size: .62rem; font-weight: 900; opacity: .55; }
+  .promo-symbol { height: 145px; display: grid; place-items: center; font-size: 3rem; font-weight: 950; line-height: .82; letter-spacing: -.05em; text-align: center; }
+  .promo-copy { flex: 1; padding: 24px 26px 26px; display: flex; flex-direction: column; background: white; }
+  .promo-copy small { color: var(--green); font-size: .6rem; font-weight: 950; letter-spacing: .1em; text-transform: uppercase; }
+  .promo-copy h2 { margin: 8px 0 10px; font-size: 1.55rem; line-height: 1.05; letter-spacing: -.035em; }
+  .promo-copy p { margin: 0 0 22px; color: #64736a; font-size: .82rem; line-height: 1.55; }
+  .promo-copy strong { margin-top: auto; display: flex; align-items: center; justify-content: space-between; color: var(--green); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
+  .promo-shop .promo-symbol { background: var(--green-dark); color: var(--yellow); }
+  .promo-partners .promo-symbol { background: var(--yellow); color: var(--green-dark); }
+  .promo-events .promo-symbol { background: var(--green); color: white; }
+
+  .match-section { padding: 86px 0 92px; background: var(--cream); }
   .club-matches-widget { min-height:220px; overflow:hidden; }
   .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 48px; }.section-head.compact { margin-bottom: 30px; }.section-head h2, .departments-intro h2, .join-card h2 { margin: 0; color: var(--ink); font-size: clamp(2.7rem, 5vw, 4.6rem); line-height: .94; }.section-head .kicker { margin-bottom: 10px; }
+
+  .dates-section { padding: 0 0 95px; background: var(--cream); }
+  .dates-head { margin-bottom: 24px; display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+  .dates-head .kicker { margin-bottom: 8px; }
+  .dates-head h2 { margin: 0; font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: .98; }
+  .dates-head > a { padding-bottom: 5px; color: var(--green); font-size: .75rem; font-weight: 900; text-decoration: none; }
+  .dates-head > a span { margin-left: 8px; }
+  .dates-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .date-card { position: relative; min-height: 118px; padding: 18px 40px 18px 18px; display: flex; flex-direction: column; border-top: 3px solid var(--green); background: white; color: var(--ink); text-decoration: none; box-shadow: 0 8px 24px rgb(9 47 32 / 6%); transition: transform .18s ease, box-shadow .18s ease; }
+  .date-card:hover { transform: translateY(-2px); box-shadow: 0 13px 29px rgb(9 47 32 / 10%); }
+  .date-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #748279; font-size: .58rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+  .date-meta span { color: var(--green); }
+  .date-card > strong { margin-top: 13px; font-size: .92rem; line-height: 1.25; }
+  .date-card > b { position: absolute; right: 17px; bottom: 16px; color: #7ba31f; font-size: .75rem; }
+  .dates-empty { padding: 24px; border-left: 4px solid var(--yellow); background: white; color: #64736a; }
+
+  .news-section, .join-section { padding: 110px 0; }
   .news-section { background: #fff; }.button-outline { border: 1px solid #bcc8c0; background: white; }.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }.news-card { overflow: hidden; border-radius: 7px; background: #f3f5f2; }.news-visual { position: relative; height: 220px; display: grid; place-items: center; overflow: hidden; background: var(--green); color: white; }.news-card.lime .news-visual { background: #b7d64b; color: var(--green-dark); }.news-card.yellow .news-visual { background: var(--yellow); color: var(--green); }.news-visual::after { content: ''; position: absolute; width: 240px; aspect-ratio: 1; border: 1px solid currentColor; border-radius: 50%; opacity: .28; box-shadow: 0 0 0 35px rgb(255 255 255 / 8%), 0 0 0 70px rgb(255 255 255 / 6%); }.news-index { position: absolute; left: 18px; top: 16px; font-size: .7rem; font-weight: 900; }.news-icon { z-index: 1; font-size: 4rem; }.news-content { padding: 26px; }.meta { color: #829087; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }.meta span { margin-right: 10px; color: var(--green); }.news-content h3 { min-height: 58px; margin-bottom: 13px; font-size: 1.35rem; line-height: 1.12; }.news-content > p:not(.meta) { min-height: 72px; color: #65736a; font-size: .88rem; line-height: 1.55; }.news-content a { color: var(--green); font-size: .8rem; font-weight: 900; text-decoration: none; }.news-content a span { float: right; }
   .departments-section { padding: 120px 0; color: white; background: var(--green-dark); }.departments-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 100px; }.departments-intro h2 { color: white; }.departments-intro > p:last-child { max-width: 420px; margin-top: 30px; color: #9eb5a7; line-height: 1.7; }.department-list { border-top: 1px solid rgb(255 255 255 / 18%); }.department-list a { display: grid; grid-template-columns: 45px 1fr 40px; align-items: center; gap: 12px; padding: 24px 5px; border-bottom: 1px solid rgb(255 255 255 / 18%); color: white; text-decoration: none; transition: .2s; }.department-list a:hover { padding-left: 15px; background: rgb(255 255 255 / 4%); }.department-list > a > span { color: var(--yellow); font-size: .65rem; }.department-list strong,.department-list small { display: block; }.department-list strong { font-size: 1.45rem; }.department-list small { margin-top: 5px; color: #8da598; font-size: .72rem; }.department-list b { display: grid; place-items: center; width: 36px; aspect-ratio: 1; border: 1px solid rgb(255 255 255 / 30%); border-radius: 50%; }
   .join-section { background: #fff; }.join-card { position: relative; overflow: hidden; min-height: 330px; padding: 65px 70px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 70px; background: var(--yellow); border-radius: 8px; }.join-card::after { content: ''; position: absolute; right: -80px; top: -160px; width: 380px; aspect-ratio: 1; border: 1px solid rgb(9 47 32 / 18%); border-radius: 50%; box-shadow: 0 0 0 50px rgb(9 47 32 / 5%), 0 0 0 100px rgb(9 47 32 / 4%); }.join-star { position: absolute; right: 35px; top: 25px; color: white; font-size: 3rem; }.join-card h2 em { color: var(--green); }.join-copy { position: relative; z-index: 1; }.join-copy p { margin-bottom: 28px; color: #3b4c3f; line-height: 1.6; }.button-dark { background: var(--green-dark); color: white; }
-  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 330px; }.news-grid { grid-template-columns: 1fr 1fr; }.news-card:last-child { display: none; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
-  @media (max-width: 650px) { .shell { width: min(100% - 30px, 1160px); }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 250px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.match-section,.news-section,.join-section,.departments-section { padding: 75px 0; }.section-head { align-items: start; flex-direction: column; }.news-grid { grid-template-columns: 1fr; }.news-card:last-child { display: block; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 330px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.news-grid { grid-template-columns: 1fr 1fr; }.news-card:last-child { display: none; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
+  @media (max-width: 650px) { .shell { width: min(100% - 30px, 1160px); }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 250px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.news-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.news-grid { grid-template-columns: 1fr; }.news-card:last-child { display: block; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
 </style>
