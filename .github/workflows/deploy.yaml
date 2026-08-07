@@ -43,7 +43,6 @@ jobs:
       - name: Build with Astro
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
-          PUBLIC_MCSHAPE_FORM_ENDPOINT: ${{ vars.PUBLIC_MCSHAPE_FORM_ENDPOINT }}
         run: |
           npx --no-install astro build \
             --site "${{ steps.pages.outputs.origin }}" \
