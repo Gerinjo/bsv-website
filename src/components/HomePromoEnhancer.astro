@@ -86,12 +86,90 @@ const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
 
 <style>
   :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-  :global(.home-promo-card){min-height:286px!important}
-  :global(.home-promo-card .promo-index){color:white;text-shadow:0 1px 4px rgb(0 0 0 / 35%)}
-  :global(.home-promo-card .promo-copy){padding:20px 21px 21px}
-  :global(.home-promo-card .promo-copy h2){min-height:0;margin:7px 0 8px;font-size:1.24rem;line-height:1.06}
-  :global(.home-promo-card .promo-copy p){min-height:58px;margin-bottom:15px;font-size:.76rem;line-height:1.48}
-  :global(.home-promo-card .promo-copy strong){font-size:.65rem}
+
+  :global(.home-promo-card),
+  :global(.home-promo-card:visited){
+    position:relative;
+    min-height:286px!important;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    color:#10251a;
+    text-decoration:none!important;
+    box-shadow:0 14px 35px rgb(9 47 32 / 9%);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  :global(.home-promo-card:hover){
+    color:#10251a;
+    text-decoration:none!important;
+    transform:translateY(-4px);
+    box-shadow:0 20px 42px rgb(9 47 32 / 14%);
+  }
+  :global(.home-promo-card:focus-visible){
+    outline:3px solid #f4d638;
+    outline-offset:3px;
+  }
+  :global(.home-promo-card *){text-decoration:none!important}
+  :global(.home-promo-card .promo-index){position:absolute;z-index:2;right:14px;top:11px;color:white;text-shadow:0 1px 4px rgb(0 0 0 / 45%);font-size:.62rem;font-weight:900;opacity:.8}
+
+  :global(.home-promo-card .promo-copy){
+    flex:1;
+    padding:20px 21px 21px;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    color:#10251a;
+  }
+  :global(.home-promo-card .promo-copy small){
+    display:block;
+    color:#164f32!important;
+    font-size:.6rem;
+    font-weight:950;
+    letter-spacing:.09em;
+    line-height:1.35;
+    text-transform:uppercase;
+  }
+  :global(.home-promo-card .promo-copy h2){
+    min-height:0;
+    margin:7px 0 8px;
+    color:#10251a!important;
+    font-size:1.24rem;
+    font-weight:800;
+    line-height:1.06;
+    letter-spacing:-.035em;
+  }
+  :global(.home-promo-card .promo-copy p){
+    min-height:58px;
+    margin:0 0 15px;
+    color:#64736a!important;
+    font-size:.76rem;
+    line-height:1.48;
+  }
+  :global(.home-promo-card .promo-copy strong){
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    color:#164f32!important;
+    font-size:.65rem;
+    font-weight:950;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  :global(.home-promo-card .promo-copy strong b){
+    width:25px;
+    height:25px;
+    display:grid;
+    place-items:center;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:#092f20;
+    color:#f4d638;
+    font-size:.66rem;
+  }
+
   :global(.home-promo-visual){position:relative;height:128px;flex:0 0 128px;overflow:hidden;display:grid;place-items:center}
   :global(.home-promo-visual.is-photo img){width:100%;height:100%;display:block;object-fit:cover}
   :global(.home-promo-visual.is-logo img){display:block;max-width:78%;max-height:76px;object-fit:contain}
