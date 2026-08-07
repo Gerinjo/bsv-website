@@ -20,7 +20,13 @@ import { withBase } from '../utils/paths';
       >
         <span class="experience-number">0{index + 1}</span>
         <span class="experience-logo-wrap">
-          <img class="experience-logo" src={cooperation.logoSrc} alt="" loading="lazy" decoding="async" />
+          <img
+            class="experience-logo"
+            src={cooperation.logoSrc.startsWith('/') ? withBase(cooperation.logoSrc) : cooperation.logoSrc}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
           {cooperation.logoLabel && (
             <span class="experience-logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
           )}
