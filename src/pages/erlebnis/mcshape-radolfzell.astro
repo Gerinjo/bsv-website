@@ -6,6 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import { erlebnisCooperations } from '../../data/erlebnis';
 import { withBase } from '../../utils/paths';
 const cooperation = erlebnisCooperations.find((item) => item.id === 'mcshape-radolfzell')!;
+const regularPriceUrl = 'https://www.mcshape.com/fitnessstudio/radolfzell/';
 ---
 <Layout title="MC Shape Radolfzell | BSV Nordstern Radolfzell" description="Mitgliedervorteile aus der Kooperation des BSV Nordstern Radolfzell mit MC Shape Radolfzell.">
   <Header />
@@ -25,27 +26,50 @@ const cooperation = erlebnisCooperations.find((item) => item.id === 'mcshape-rad
       <div class="benefits-heading">
         <span>Dein BSV-Vorteil</span>
         <h2 id="benefits-title">Trainieren zu<br /><em>Vereinskonditionen.</em></h2>
-        <p>Die Kooperation gilt für Mitglieder des BSV Nordstern Radolfzell und verbindet das Vereinsleben mit den Trainingsmöglichkeiten von MC Shape.</p>
+        <p>Die Kooperation gilt für Mitglieder des BSV Nordstern Radolfzell. Der direkte Vergleich orientiert sich am regulären 12-Monats-Tarif von MC Shape, weil auch die BSV-Kooperationsmitgliedschaft 12 Monate läuft.</p>
       </div>
 
       <div class="price-grid">
         <article class="price-card">
-          <small>Fitness & Kurse</small>
+          <small>Fitness & Kurse · BSV</small>
           <strong><span>29,90 €</span><b>/ Monat</b></strong>
+          <div class="price-compare">
+            <span>Regulär · Classic · 12 Monate</span>
+            <del>49,90 € / Monat</del>
+            <strong>20 € weniger / Monat</strong>
+            <small>240 € Vorteil über 12 Monate</small>
+          </div>
           <p>Nutzung der Studioeinrichtungen und des Kursangebots bei MC Shape Radolfzell.</p>
+          <div class="long-term">Regulär bei 24 Monaten: <b>39,90 € / Monat</b></div>
         </article>
 
         <article class="price-card is-featured">
-          <small>Fitness, Kurse & Wellness</small>
+          <small>Fitness, Kurse & Wellness · BSV</small>
           <strong><span>39,90 €</span><b>/ Monat</b></strong>
+          <div class="price-compare">
+            <span>Regulär · All-In · 12 Monate</span>
+            <del>59,90 € / Monat</del>
+            <strong>20 € weniger / Monat</strong>
+            <small>240 € Vorteil über 12 Monate</small>
+          </div>
           <p>Die Leistungen der Kooperation inklusive des optionalen Wellnessbereichs.</p>
+          <div class="long-term">Regulär bei 24 Monaten: <b>49,90 € / Monat</b></div>
         </article>
 
         <article class="price-card is-start">
           <small>Einmalig</small>
           <strong><span>39,90 €</span><b>Startgebühr</b></strong>
+          <div class="price-compare is-neutral">
+            <span>Reguläres Startpaket</span>
+            <strong>ebenfalls 39,90 €</strong>
+          </div>
           <p>Einmalige Gebühr für das Basisstartpaket bei Abschluss der Mitgliedschaft.</p>
         </article>
+      </div>
+
+      <div class="price-source">
+        <div><strong>Preisvergleich · Stand 07.08.2026</strong><span>Reguläre Tarife laut offizieller MC-Shape-Seite für Radolfzell. Zeitlich begrenzte Aktionen können abweichen.</span></div>
+        <a href={regularPriceUrl} target="_blank" rel="noopener noreferrer">Reguläre Tarife bei MC Shape prüfen <b>↗</b></a>
       </div>
     </section>
 
@@ -78,15 +102,12 @@ const cooperation = erlebnisCooperations.find((item) => item.id === 'mcshape-rad
 
 <style>
   .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.partner-page{background:#f5f7f4;color:#14251a}.hero{padding:90px 0 120px;background:#050505;color:#fff}.hero a{color:#ef0011;text-decoration:none;font-weight:800;font-size:.78rem}.hero span{display:block;margin-top:50px;color:#aaa;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:14px 0 24px;font-size:clamp(3.2rem,6vw,5.8rem);line-height:.9;letter-spacing:-.05em}.hero em,.benefits-heading em{color:#ef0011;font-family:Georgia,serif;font-weight:400}.hero p{max-width:720px;color:#ddd;font-size:1.08rem;line-height:1.7}.logo-shell{margin-top:-70px;position:relative;z-index:2}
-
-  .benefits{padding:78px 0 38px}.benefits-heading{max-width:760px;margin-bottom:34px}.benefits-heading>span,.details-copy>span{color:#cf0010;font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.benefits-heading h2,.details h2{margin:10px 0 18px;font-size:clamp(2.8rem,5vw,4.8rem);line-height:.93;letter-spacing:-.05em}.benefits-heading p{max-width:690px;margin:0;color:#5d6c62;font-size:1rem;line-height:1.75}
-
-  .price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.price-card{min-height:245px;padding:28px;display:flex;flex-direction:column;border-top:5px solid #111;background:#fff;box-shadow:0 14px 36px rgb(0 0 0 / 7%)}.price-card.is-featured{border-top-color:#ef0011;background:#050505;color:#fff}.price-card.is-start{border-top-color:#7d8580}.price-card small{color:#cf0010;font-size:.63rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.price-card.is-featured small{color:#ff4551}.price-card>strong{margin:24px 0 18px;display:flex;flex-direction:column}.price-card>strong span{font-size:clamp(2.35rem,4vw,3.6rem);line-height:.95;letter-spacing:-.055em}.price-card>strong b{margin-top:7px;color:#6c7971;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.price-card.is-featured>strong b{color:#bbb}.price-card p{margin:auto 0 0;color:#64736a;font-size:.82rem;line-height:1.58}.price-card.is-featured p{color:#d4d4d4}
-
+  .benefits{padding:78px 0 38px}.benefits-heading{max-width:790px;margin-bottom:34px}.benefits-heading>span,.details-copy>span{color:#cf0010;font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.benefits-heading h2,.details h2{margin:10px 0 18px;font-size:clamp(2.8rem,5vw,4.8rem);line-height:.93;letter-spacing:-.05em}.benefits-heading p{max-width:760px;margin:0;color:#5d6c62;font-size:1rem;line-height:1.75}
+  .price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.price-card{min-height:390px;padding:28px;display:flex;flex-direction:column;border-top:5px solid #111;background:#fff;box-shadow:0 14px 36px rgb(0 0 0 / 7%)}.price-card.is-featured{border-top-color:#ef0011;background:#050505;color:#fff}.price-card.is-start{border-top-color:#7d8580}.price-card>small{color:#cf0010;font-size:.63rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.price-card.is-featured>small{color:#ff4551}.price-card>strong{margin:22px 0 17px;display:flex;flex-direction:column}.price-card>strong span{font-size:clamp(2.35rem,4vw,3.6rem);line-height:.95;letter-spacing:-.055em}.price-card>strong b{margin-top:7px;color:#6c7971;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.price-card.is-featured>strong b{color:#bbb}.price-card>p{margin:18px 0 0;color:#64736a;font-size:.8rem;line-height:1.55}.price-card.is-featured>p{color:#d4d4d4}
+  .price-compare{padding:14px 15px;background:#f3f5f3;border-left:4px solid #ef0011}.is-featured .price-compare{background:#171717}.price-compare span,.price-compare del,.price-compare strong,.price-compare small{display:block}.price-compare span{color:#6b776f;font-size:.57rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.is-featured .price-compare span{color:#aaa}.price-compare del{margin-top:5px;color:#7c8780;font-size:.82rem;font-weight:800}.is-featured .price-compare del{color:#aaa}.price-compare strong{margin-top:7px;color:#cf0010;font-size:1.02rem}.is-featured .price-compare strong{color:#ff4551}.price-compare small{margin-top:3px;color:#45534a;font-size:.67rem;font-weight:800}.is-featured .price-compare small{color:#ddd}.price-compare.is-neutral{border-left-color:#7d8580}.price-compare.is-neutral strong{color:#334239}.long-term{margin-top:auto;padding-top:16px;color:#6d7972;font-size:.67rem;border-top:1px solid #e1e6e2}.is-featured .long-term{color:#bbb;border-top-color:#333}.long-term b{color:inherit}
+  .price-source{margin-top:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:#fff;border-left:4px solid #ef0011}.price-source strong,.price-source span{display:block}.price-source strong{font-size:.72rem}.price-source span{margin-top:4px;color:#728078;font-size:.65rem}.price-source a{flex:0 0 auto;color:#050505;font-size:.68rem;font-weight:950;text-decoration:none}.price-source a b{margin-left:7px;color:#ef0011}
   .details{padding:58px 0 86px;display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}.details-copy p{max-width:610px;color:#5d6c62;line-height:1.8}.benefit-button{min-height:52px;margin-top:18px;padding:0 20px;display:inline-flex;align-items:center;gap:28px;background:#050505;color:#fff;text-decoration:none;font-size:.78rem;font-weight:950}.benefit-button b{color:#ef0011}.facts-card{padding:30px;background:#fff;border-top:5px solid #ef0011;box-shadow:0 14px 36px rgb(0 0 0 / 7%)}.facts-card h3{margin:0 0 10px;color:#cf0010;font-size:1.2rem}.facts-card ul{margin:0;padding:0;list-style:none}.facts-card li{padding:16px 0;border-bottom:1px solid #e5e9e6}.facts-card li:last-child{border-bottom:0}.facts-card strong,.facts-card span{display:block}.facts-card strong{font-size:.88rem}.facts-card span{margin-top:4px;color:#6a786f;font-size:.75rem;line-height:1.5}
-
   .note{margin-bottom:95px;padding:19px 22px;display:flex;align-items:flex-start;gap:14px;border-left:4px solid #ef0011;background:#fff}.note>span{width:25px;height:25px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#050505;color:#fff;font-size:.72rem;font-weight:950}.note p{margin:2px 0 0;color:#67756c;font-size:.76rem;line-height:1.55}
-
-  @media(max-width:850px){.price-grid{grid-template-columns:1fr 1fr}.price-card.is-start{grid-column:1/-1}.details{grid-template-columns:1fr;gap:34px}}
-  @media(max-width:620px){.price-grid{grid-template-columns:1fr}.price-card.is-start{grid-column:auto}.benefits{padding-top:65px}.hero{padding:65px 0 100px}.logo-shell{margin-top:-55px}.details{padding-top:42px}.benefit-button{width:100%;justify-content:space-between}}
+  @media(max-width:850px){.price-grid{grid-template-columns:1fr 1fr}.price-card.is-start{grid-column:1/-1}.details{grid-template-columns:1fr;gap:34px}.price-source{align-items:flex-start;flex-direction:column}}
+  @media(max-width:620px){.price-grid{grid-template-columns:1fr}.price-card.is-start{grid-column:auto}.price-card{min-height:0}.benefits{padding-top:65px}.hero{padding:65px 0 100px}.logo-shell{margin-top:-55px}.details{padding-top:42px}.benefit-button{width:100%;justify-content:space-between}}
 </style>
