@@ -96,29 +96,20 @@ export const menu: MenuItem[] = [
     ],
   },
   {
-    label: 'Events', href: '/events', groups: [
-      { title: 'Veranstaltungen', links: [
+    label: 'Erlebnis', href: '/erlebnis', groups: [
+      { title: 'Fußballcamps', links: [
+        { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis/skechers-fussballschule' },
+        { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis/porsche-maedchenfussballcamp' },
+        { label: 'Save & Play Torwartcamp', href: '/events/torwartcamp' },
+      ]},
+      { title: 'Turniere & Aktionstage', links: [
+        { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
         { label: 'Tag des Mädchenfußballs', href: '/events/tag-des-maedchenfussballs' },
         { label: 'Allianz Juniors Cup – D-Junioren', href: '/events/allianz-juniors-cup-d' },
         { label: 'Allianz Juniors Cup – C-Juniorinnen', href: '/events/allianz-juniors-cup-c' },
-        { label: 'Radolfzeller Grundschulturnier', href: '/events/grundschulturnier' },
       ]},
-      { title: 'Fußballcamps', links: [
-        { label: 'WIESENHOF Fußballschule', href: '/events/wiesenhof-fussballschule' },
-        { label: 'Mädchenfußballcamp', href: '/events/maedchenfussballcamp' },
-        { label: 'Save & Play Torwartcamp', href: '/events/torwartcamp' },
-      ]},
-    ],
-  },
-  {
-    label: 'Erlebnis', href: '/erlebnis', groups: [
-      { title: 'Fußballschulen', links: [
-        { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis/skechers-fussballschule' },
-        { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis/porsche-maedchenfussballcamp' },
-      ]},
-      { title: 'Weitere Kooperationen', links: [
+      { title: 'Kooperationen & Vorteile', links: [
         { label: 'MC Shape Radolfzell', href: '/erlebnis/mcshape-radolfzell' },
-        { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
       ]},
     ],
   },
