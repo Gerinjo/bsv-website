@@ -11,6 +11,10 @@ export type ErlebnisCooperation = {
   external: boolean;
   accent: string;
   symbol: string;
+  logoSrc: string;
+  logoAlt: string;
+  logoBackground: string;
+  logoLabel?: string;
   date?: string;
 };
 
@@ -32,6 +36,9 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     external: false,
     accent: '#ef2132',
     symbol: '⚽',
+    logoSrc: 'https://skechers-fussballschule.de/site/assets/files/1257/skechers-fussballschule-logo-footer.svg',
+    logoAlt: 'SKECHERS Fußballschule mit Bernd Voss',
+    logoBackground: '#164f32',
   },
   {
     id: 'porsche-maedchencamp',
@@ -48,8 +55,12 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     actionLabel: 'Mehr zur Kooperation',
     actionHref: '/erlebnis/porsche-maedchenfussballcamp',
     external: false,
-    accent: '#d5001c',
+    accent: '#00a8e0',
     symbol: '★',
+    logoSrc: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Stuttgarter_Kickers_Logo.svg',
+    logoAlt: 'Stuttgarter Kickers',
+    logoBackground: '#ffffff',
+    logoLabel: 'Porsche Fußballschule\nStuttgarter Kickers',
     date: '26.–28. Oktober 2026',
   },
   {
@@ -69,6 +80,9 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     external: false,
     accent: '#e30613',
     symbol: '▲',
+    logoSrc: 'https://www.mcshape.com/wp-content/uploads/2023/11/MCShape-Logo-2023-v3.png',
+    logoAlt: 'MC Shape',
+    logoBackground: '#ffffff',
   },
   {
     id: 'buergerstiftung-grundschulturnier',
@@ -87,5 +101,8 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     external: false,
     accent: '#e2b400',
     symbol: '✦',
+    logoSrc: 'https://buergerstiftung-radolfzell.de/wp-content/uploads/2024/11/cropped-cropped-BGS-Logo-Transparent.png',
+    logoAlt: 'Bürgerstiftung Radolfzell',
+    logoBackground: '#ffffff',
   },
 ];
