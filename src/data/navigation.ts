@@ -113,12 +113,12 @@ export const menu: MenuItem[] = [
   {
     label: 'Erlebnis', href: '/erlebnis', groups: [
       { title: 'Fußballschulen', links: [
-        { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis#skechers-fussballschule' },
-        { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis#porsche-maedchencamp' },
+        { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis/skechers-fussballschule' },
+        { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis/porsche-maedchenfussballcamp' },
       ]},
       { title: 'Weitere Kooperationen', links: [
-        { label: 'MC Shape Radolfzell', href: '/erlebnis#mcshape-radolfzell' },
-        { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis#buergerstiftung-grundschulturnier' },
+        { label: 'MC Shape Radolfzell', href: '/erlebnis/mcshape-radolfzell' },
+        { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
       ]},
     ],
   },
