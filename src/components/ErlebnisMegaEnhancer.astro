@@ -148,11 +148,11 @@ const firstItem = previewItems[0];
 
     const links = [...megaInner.querySelectorAll<HTMLAnchorElement>('[data-experience-id]')];
     const preview = megaInner.querySelector<HTMLAnchorElement>('[data-experience-preview]');
-    const media = megaInner.querySelector<HTMLElement>('[data-preview-media]');
-    const title = megaInner.querySelector<HTMLElement>('[data-preview-title]');
-    const category = megaInner.querySelector<HTMLElement>('[data-preview-category]');
-    const date = megaInner.querySelector<HTMLElement>('[data-preview-date]');
-    const next = megaInner.querySelector<HTMLElement>('[data-preview-next]');
+    const media = preview?.querySelector<HTMLElement>('[data-preview-media]');
+    const title = preview?.querySelector<HTMLElement>('[data-preview-title]');
+    const category = preview?.querySelector<HTMLElement>('[data-preview-category]');
+    const date = preview?.querySelector<HTMLElement>('[data-preview-date]');
+    const next = preview?.querySelector<HTMLElement>('[data-preview-next]');
     if (!preview || !media || !title || !category || !date || !next) return;
 
     const activate = (link: HTMLAnchorElement) => {
