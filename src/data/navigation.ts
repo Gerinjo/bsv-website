@@ -100,7 +100,7 @@ export const menu: MenuItem[] = [
       { title: 'Fußballcamps', links: [
         { label: 'SKECHERS Fußballschule mit Bernd Voss', href: '/erlebnis/skechers-fussballschule' },
         { label: 'Porsche Mädchenfußballcamp', href: '/erlebnis/porsche-maedchenfussballcamp' },
-        { label: 'Save & Play Torwartcamp', href: '/events/torwartcamp' },
+        { label: 'Save & Play Torwartcamp', href: '/erlebnis/torwartcamp' },
       ]},
       { title: 'Turniere & Aktionstage', links: [
         { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
