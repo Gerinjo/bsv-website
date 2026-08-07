@@ -1,12 +1,14 @@
 ---
 import type { ErlebnisCooperation } from '../data/erlebnis';
+import { withBase } from '../utils/paths';
 
 interface Props { cooperation: ErlebnisCooperation }
 const { cooperation } = Astro.props;
+const logoSrc = cooperation.logoSrc.startsWith('/') ? withBase(cooperation.logoSrc) : cooperation.logoSrc;
 ---
 
 <div class="partner-logo-panel" style={`--partner-logo-bg:${cooperation.logoBackground}`}>
-  <img src={cooperation.logoSrc} alt={cooperation.logoAlt} loading="eager" decoding="async" />
+  <img src={logoSrc} alt={cooperation.logoAlt} loading="eager" decoding="async" />
   {cooperation.logoLabel && (
     <span class="partner-logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
   )}
