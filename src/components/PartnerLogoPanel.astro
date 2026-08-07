@@ -1,0 +1,20 @@
+---
+import type { ErlebnisCooperation } from '../data/erlebnis';
+
+interface Props { cooperation: ErlebnisCooperation }
+const { cooperation } = Astro.props;
+---
+
+<div class="partner-logo-panel" style={`--partner-logo-bg:${cooperation.logoBackground}`}>
+  <img src={cooperation.logoSrc} alt={cooperation.logoAlt} loading="eager" decoding="async" />
+  {cooperation.logoLabel && (
+    <span class="partner-logo-label">{cooperation.logoLabel.split('\n').map((line) => <span>{line}</span>)}</span>
+  )}
+</div>
+
+<style>
+  .partner-logo-panel{min-height:190px;padding:28px 36px;display:flex;align-items:center;justify-content:center;gap:28px;background:var(--partner-logo-bg);border:1px solid rgb(9 47 32 / 10%);box-shadow:0 16px 36px rgb(9 47 32 / 8%)}
+  .partner-logo-panel img{display:block;max-width:min(520px,80%);max-height:145px;object-fit:contain}
+  .partner-logo-label{display:flex;flex-direction:column;color:#173d6f;font-size:clamp(1.1rem,2vw,1.55rem);font-weight:900;line-height:1.08}
+  @media(max-width:620px){.partner-logo-panel{min-height:150px;padding:22px;gap:16px}.partner-logo-panel img{max-height:105px}.partner-logo-label{font-size:.9rem}}
+</style>
