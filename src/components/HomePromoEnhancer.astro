@@ -1,0 +1,117 @@
+---
+import { withBase } from '../utils/paths';
+
+const shopHref = withBase('/shop');
+const skechersHref = withBase('/erlebnis/skechers-fussballschule');
+const mcshapeHref = withBase('/erlebnis/mcshape-radolfzell');
+const eventHref = withBase('/events/tag-des-maedchenfussballs');
+const showroomImage = withBase('/images/shop/showroom-2024.svg');
+const skechersLogo = withBase('/images/partners/skechers-fussballschule-logo-white.svg');
+const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
+---
+
+<template id="home-promo-template">
+  <a class="promo-card home-promo-card home-promo-shop" href={shopHref}>
+    <span class="promo-index">01</span>
+    <div class="home-promo-visual is-photo">
+      <img src={showroomImage} alt="JAKO Showroom von Teamsport Bodensee" decoding="async" />
+    </div>
+    <div class="promo-copy">
+      <small>BSV Shop · Teamsport Bodensee</small>
+      <h2>Zeig deine Farben.</h2>
+      <p>Vereinskleidung, Trainingswear und mehr für den BSV Nordstern.</p>
+      <strong>BSV Shop entdecken <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-skechers" href={skechersHref}>
+    <span class="promo-index">02</span>
+    <div class="home-promo-visual is-logo skechers-visual">
+      <img src={skechersLogo} alt="SKECHERS Fußballschule mit Bernd Voss" decoding="async" />
+      <span class="home-promo-badge">Sommerferien 2027</span>
+    </div>
+    <div class="promo-copy">
+      <small>Fußballcamp & Nachwuchsförderung</small>
+      <h2>SKECHERS Fußballschule.</h2>
+      <p>Das große Fußballcamp beim BSV – Training, Wettbewerbe und Fußballspaß.</p>
+      <strong>Camp entdecken <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-mcshape" href={mcshapeHref}>
+    <span class="promo-index">03</span>
+    <div class="home-promo-visual is-logo mcshape-visual">
+      <img src={mcshapeLogo} alt="MC Shape Radolfzell" decoding="async" />
+    </div>
+    <div class="promo-copy">
+      <small>Kooperation & Benefit</small>
+      <h2>MC Shape Radolfzell.</h2>
+      <p>Fitness und Athletik als starke Ergänzung zur BSV Vereinswelt.</p>
+      <strong>Kooperation entdecken <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-event" href={eventHref}>
+    <span class="promo-index">04</span>
+    <div class="home-promo-visual is-event">
+      <span class="event-focus">Aktuell im Fokus</span>
+      <span class="event-mark" aria-hidden="true">♀︎⚽</span>
+    </div>
+    <div class="promo-copy">
+      <small>Aktionstage & Turniere</small>
+      <h2>Tag des Mädchenfußballs.</h2>
+      <p>Besondere Fußballtage, Turniere und Aktionen beim BSV auf einen Blick.</p>
+      <strong>Event entdecken <b>↗</b></strong>
+    </div>
+  </a>
+</template>
+
+<script>
+  const enhanceHomePromos = () => {
+    const template = document.querySelector<HTMLTemplateElement>('#home-promo-template');
+    const grid = document.querySelector<HTMLElement>('.promo-section .promo-grid');
+    if (!template || !grid || grid.dataset.homePromoEnhanced === 'true') return;
+
+    grid.dataset.homePromoEnhanced = 'true';
+    grid.classList.add('home-promo-grid');
+    grid.replaceChildren(template.content.cloneNode(true));
+  };
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', enhanceHomePromos, { once: true });
+  } else {
+    enhanceHomePromos();
+  }
+</script>
+
+<style>
+  :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+  :global(.home-promo-card){min-height:286px!important}
+  :global(.home-promo-card .promo-index){color:white;text-shadow:0 1px 4px rgb(0 0 0 / 35%)}
+  :global(.home-promo-card .promo-copy){padding:20px 21px 21px}
+  :global(.home-promo-card .promo-copy h2){min-height:0;margin:7px 0 8px;font-size:1.24rem;line-height:1.06}
+  :global(.home-promo-card .promo-copy p){min-height:58px;margin-bottom:15px;font-size:.76rem;line-height:1.48}
+  :global(.home-promo-card .promo-copy strong){font-size:.65rem}
+  :global(.home-promo-visual){position:relative;height:128px;flex:0 0 128px;overflow:hidden;display:grid;place-items:center}
+  :global(.home-promo-visual.is-photo img){width:100%;height:100%;display:block;object-fit:cover}
+  :global(.home-promo-visual.is-logo img){display:block;max-width:78%;max-height:76px;object-fit:contain}
+  :global(.skechers-visual){padding:20px;background:#164f32}
+  :global(.skechers-visual img){max-width:88%;max-height:72px}
+  :global(.mcshape-visual){padding:16px;background:#000}
+  :global(.mcshape-visual img){max-width:70%;max-height:84px}
+  :global(.home-promo-badge){position:absolute;left:12px;bottom:10px;padding:5px 7px;background:#f4d638;color:#092f20;font-size:.52rem;font-weight:950;letter-spacing:.055em;text-transform:uppercase}
+  :global(.home-promo-visual.is-event){padding:18px;place-items:start;background:linear-gradient(145deg,#f4d638 0 58%,#164f32 58% 100%);color:#092f20}
+  :global(.event-focus){padding:5px 7px;background:#092f20;color:white;font-size:.52rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
+  :global(.event-mark){position:absolute;right:17px;bottom:10px;color:white;font-size:2.8rem;font-weight:950;line-height:1}
+
+  @media(max-width:1050px){
+    :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(2,minmax(0,1fr))}
+    :global(.home-promo-grid .promo-card:last-child){grid-column:auto!important}
+  }
+  @media(max-width:650px){
+    :global(.promo-grid.home-promo-grid){grid-template-columns:1fr}
+    :global(.home-promo-grid .promo-card:last-child){grid-column:auto!important}
+    :global(.home-promo-card){min-height:0!important}
+    :global(.home-promo-visual){height:145px;flex-basis:145px}
+  }
+</style>
