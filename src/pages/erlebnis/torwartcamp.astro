@@ -1,0 +1,84 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+---
+
+<Layout title="Oster Torwartcamp 2026 | BSV Nordstern Radolfzell" description="Rückblick auf das Oster Torwartcamp 2026 beim BSV Nordstern Radolfzell.">
+  <Header />
+  <main class="camp-page">
+    <section class="hero">
+      <div class="shell">
+        <a href={withBase('/erlebnis')}>← Zurück zu Erlebnis</a>
+        <span>Torwarttraining & Feriencamp</span>
+        <h1>Oster Torwartcamp<br /><em>2026</em></h1>
+        <p>Zwei Tage voller Einsatz, Spaß und Emotionen – mit jungen Torhütern aus verschiedenen Vereinen und allem, was echtes Torwarttraining ausmacht.</p>
+      </div>
+    </section>
+
+    <section class="intro shell">
+      <div>
+        <h2>Nass. Dreckig. Glücklich.</h2>
+        <p>Regen, Wind und sogar Hagel konnten die Teilnehmer nicht bremsen. Beim Oster Torwartcamp 2026 wurde gefangen, gehechtet, gehalten und natürlich auch viel gelacht.</p>
+        <p>Mit viel Motivation, Teamgeist und sichtbaren Lernfortschritten trainierten die jungen Torhüter zwei Tage lang auf dem Platz des BSV Nordstern.</p>
+      </div>
+      <aside>
+        <h3>Camp 2026</h3>
+        <ul>
+          <li>2 intensive Camptage</li>
+          <li>Teilnehmer aus verschiedenen Vereinen</li>
+          <li>Technik, Reaktion und Torwartspiel</li>
+          <li>Torwart-Battle zum Abschluss</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="facts shell" aria-labelledby="facts-title">
+      <div class="facts-heading">
+        <span>Das Camp</span>
+        <h2 id="facts-title">Echte Torwart-Momente.</h2>
+        <p>Beim Torwartcamp geht es um mehr als nur Paraden: Konzentration, Mut, Technik, Teamgeist und ganz viel Freude am Spiel.</p>
+      </div>
+      <div class="facts-grid">
+        <article><strong>Gefangen</strong><span>Saubere Basics</span><p>Fangtechnik, Stellungsspiel und sichere Abläufe bilden die Grundlage im Tor.</p></article>
+        <article><strong>Gehechtet</strong><span>Mut & Dynamik</span><p>Mit Tempo zum Ball, richtig landen und auch bei schlechtem Wetter konzentriert bleiben.</p></article>
+        <article><strong>Gehalten</strong><span>Reaktion & Duelle</span><p>Viele Spielsituationen, Abschlüsse und direkte Duelle forderten die Keeper immer wieder neu.</p></article>
+        <article class="battle"><strong>Battle</strong><span>Highlight zum Schluss</span><p>Das traditionelle Torwart-Battle sorgte zum Abschluss wieder für spannende Duelle und große Emotionen.</p></article>
+      </div>
+    </section>
+
+    <section class="emotion shell">
+      <div class="emotion-copy">
+        <span>Emotionen gehören dazu</span>
+        <h2>Freude, Stolz – und auch mal ein paar Tränen.</h2>
+        <p>Gerade im abschließenden Battle lagen Jubel und Enttäuschung manchmal dicht beieinander. Pokale, Medaillen, Capri-Sun und Schoko-Lollis halfen aber schnell dabei, die Tränen wieder zu trocknen.</p>
+      </div>
+      <div class="finale">
+        <strong>Am Ende waren alle:</strong>
+        <p>Nass ✔️</p>
+        <p>Dreckig ✔️</p>
+        <p>Glücklich ✔️</p>
+        <b>Genau so muss ein Torwartcamp sein.</b>
+      </div>
+    </section>
+
+    <section class="thanks shell">
+      <div>
+        <span>Danke</span>
+        <h2>Ohne Unterstützung geht es nicht.</h2>
+      </div>
+      <div class="thanks-grid">
+        <article><strong>Luca</strong><p>als Co-Trainer</p></article>
+        <article><strong>Sina</strong><p>als Wildcard und Trainerunterstützung</p></article>
+        <article><strong>Alle Teilnehmer</strong><p>für Motivation, Einsatz und Teamgeist</p></article>
+        <article><strong>Dario & Team</strong><p>für das leckere Mittagessen</p></article>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.camp-page{background:#f5f7f4;color:#14251a}.hero{padding:90px 0 120px;background:#164f32;color:#fff}.hero a{color:#f4d638;text-decoration:none;font-weight:800;font-size:.78rem}.hero span{display:block;margin-top:50px;color:#a9cbb8;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:14px 0 24px;font-size:clamp(3.2rem,6vw,5.8rem);line-height:.9;letter-spacing:-.05em}.hero em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.hero p{max-width:760px;color:#d3e2d8;font-size:1.08rem;line-height:1.7}.intro{padding:78px 0 86px;display:grid;grid-template-columns:1.25fr .75fr;gap:70px}.intro h2,.facts-heading h2,.emotion h2,.thanks h2{font-size:clamp(2.4rem,4vw,4rem);letter-spacing:-.04em}.intro p,.facts-heading p,.emotion p,.thanks p{color:#5d6c62;line-height:1.8}.intro aside{padding:32px;background:#fff}.intro h3{margin-top:0;color:#164f32}.intro li{margin:12px 0;color:#536158}.facts{padding:0 0 95px}.facts-heading{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:end;margin-bottom:30px}.facts-heading>span,.emotion-copy>span,.thanks>div:first-child>span{grid-column:1/-1;color:#164f32;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.facts-heading h2,.emotion h2,.thanks h2{margin:0}.facts-heading p{margin:0}.facts-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.facts-grid article{min-height:235px;padding:28px;background:#fff;border-top:4px solid #164f32;box-shadow:0 12px 32px rgb(9 47 32 / 7%)}.facts-grid article>strong{display:block;color:#164f32;font-size:1.85rem}.facts-grid article>span{display:block;margin-top:10px;color:#273a2e;font-size:.69rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.facts-grid article>p{margin:18px 0 0;color:#65736a;line-height:1.65}.facts-grid .battle{background:#164f32;border-top-color:#f4d638}.facts-grid .battle>strong{color:#f4d638}.facts-grid .battle>span{color:#fff}.facts-grid .battle>p{color:#d2e0d7}.emotion{margin-bottom:95px;display:grid;grid-template-columns:1.2fr .8fr;background:#fff;box-shadow:0 14px 38px rgb(9 47 32 / 7%)}.emotion-copy{padding:40px 42px}.emotion-copy h2{margin:10px 0 18px}.finale{padding:38px;background:#164f32;color:white}.finale>strong{display:block;margin-bottom:18px;color:#f4d638;font-size:1rem;text-transform:uppercase;letter-spacing:.06em}.finale p{margin:9px 0;color:#fff;font-size:1.15rem;font-weight:850}.finale b{display:block;margin-top:22px;color:#d2e0d7;line-height:1.5}.thanks{padding:0 0 105px}.thanks>div:first-child{margin-bottom:28px}.thanks h2{margin-top:10px}.thanks-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.thanks-grid article{padding:24px;background:#fff;border-left:4px solid #f4d638}.thanks-grid strong{display:block;color:#164f32;font-size:1.05rem}.thanks-grid p{margin:8px 0 0;font-size:.86rem}@media(max-width:920px){.facts-grid,.thanks-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.emotion{grid-template-columns:1fr}}@media(max-width:760px){.intro,.facts-heading{grid-template-columns:1fr;gap:28px}.hero{padding:65px 0 100px}}@media(max-width:520px){.shell{width:min(100% - 30px,1120px)}.facts-grid,.thanks-grid{grid-template-columns:1fr}.emotion-copy,.finale{padding:28px 24px}}
+</style>
