@@ -43,6 +43,9 @@ jobs:
       - name: Build with Astro
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
+          # MC Shape uses the same existing Supabase project as the GST registration.
+          # This is a public Edge Function URL; no secret is exposed to the frontend.
+          PUBLIC_MCSHAPE_FORM_ENDPOINT: https://bzcfuigrxqgmyytxppvh.supabase.co/functions/v1/mcshape-interest
         run: |
           npx --no-install astro build \
             --site "${{ steps.pages.outputs.origin }}" \
