@@ -57,10 +57,9 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     external: false,
     accent: '#00a8e0',
     symbol: '★',
-    logoSrc: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Stuttgarter_Kickers_Logo.svg',
-    logoAlt: 'Stuttgarter Kickers',
+    logoSrc: 'https://fussballschule.stuttgarter-kickers.de/uploads/host/logo/1/square_regular_logo_original.png',
+    logoAlt: 'Porsche Fußballschule Stuttgarter Kickers',
     logoBackground: '#ffffff',
-    logoLabel: 'Porsche Fußballschule\nStuttgarter Kickers',
     date: '26.–28. Oktober 2026',
   },
   {
