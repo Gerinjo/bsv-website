@@ -1,0 +1,41 @@
+name: Sync TDM 2025 images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync-tdm-2025-images.mjs'
+      - '.github/workflows/sync-tdm-2025-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Download TDM 2025 images
+        run: node scripts/sync-tdm-2025-images.mjs
+
+      - name: Commit local image assets
+        run: |
+          if git diff --quiet -- public/images/events/tdm/2025; then
+            echo "Keine Bildänderungen."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/images/events/tdm/2025
+          git commit -m "Add TDM 2025 gallery images"
+          git push origin HEAD:main
