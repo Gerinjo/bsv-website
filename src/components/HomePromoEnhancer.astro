@@ -4,10 +4,11 @@ import { withBase } from '../utils/paths';
 const shopHref = withBase('/shop');
 const skechersHref = withBase('/erlebnis/skechers-fussballschule');
 const mcshapeHref = withBase('/erlebnis/mcshape-radolfzell');
-const eventHref = withBase('/erlebnis');
+const eventHref = withBase('/erlebnis/porsche-maedchenfussballcamp');
 const showroomImage = withBase('/images/shop/Showroom_2024_820x370px.jpg');
 const skechersLogo = withBase('/images/partners/skechers-fussballschule-logo-white.svg');
 const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
+const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/24/xlarge_Foto_28.10.23__11_30_10.jpg';
 ---
 
 <template id="home-promo-template">
@@ -53,15 +54,16 @@ const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
 
   <a class="promo-card home-promo-card home-promo-event" href={eventHref}>
     <span class="promo-index">04</span>
-    <div class="home-promo-visual is-event">
+    <div class="home-promo-visual is-photo event-photo">
+      <img src={porscheCampImage} alt="Teilnehmerinnen beim Porsche Mädchenfußballcamp" decoding="async" />
       <span class="event-focus">Aktuell im Fokus</span>
-      <span class="event-mark" aria-hidden="true">♀︎⚽</span>
+      <span class="event-date">26.–28. Oktober 2026</span>
     </div>
     <div class="promo-copy">
-      <small>Aktionstage & Turniere</small>
-      <h2>Tag des Mädchenfußballs.</h2>
-      <p>Besondere Fußballtage, Turniere und Aktionen beim BSV auf einen Blick.</p>
-      <strong>Event entdecken <b>↗</b></strong>
+      <small>Herbstferien · Mädchenfußball</small>
+      <h2>Porsche Mädchenfußballcamp.</h2>
+      <p>Drei Camptage mit Training, Ausstattung, Mittagessen und jeder Menge Fußball.</p>
+      <strong>Camp entdecken <b>↗</b></strong>
     </div>
   </a>
 </template>
@@ -111,7 +113,7 @@ const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
     outline-offset:3px;
   }
   :global(.home-promo-card *){text-decoration:none!important}
-  :global(.home-promo-card .promo-index){position:absolute;z-index:2;right:14px;top:11px;color:white;text-shadow:0 1px 4px rgb(0 0 0 / 45%);font-size:.62rem;font-weight:900;opacity:.8}
+  :global(.home-promo-card .promo-index){position:absolute;z-index:3;right:14px;top:11px;color:white;text-shadow:0 1px 4px rgb(0 0 0 / 45%);font-size:.62rem;font-weight:900;opacity:.8}
 
   :global(.home-promo-card .promo-copy){
     flex:1;
@@ -178,9 +180,10 @@ const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
   :global(.mcshape-visual){padding:16px;background:#000}
   :global(.mcshape-visual img){max-width:70%;max-height:84px}
   :global(.home-promo-badge){position:absolute;left:12px;bottom:10px;padding:5px 7px;background:#f4d638;color:#092f20;font-size:.52rem;font-weight:950;letter-spacing:.055em;text-transform:uppercase}
-  :global(.home-promo-visual.is-event){padding:18px;place-items:start;background:linear-gradient(145deg,#f4d638 0 58%,#164f32 58% 100%);color:#092f20}
-  :global(.event-focus){padding:5px 7px;background:#092f20;color:white;font-size:.52rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
-  :global(.event-mark){position:absolute;right:17px;bottom:10px;color:white;font-size:2.8rem;font-weight:950;line-height:1}
+  :global(.event-photo img){object-position:center 48%}
+  :global(.event-photo::after){content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgb(0 0 0 / 8%) 25%,rgb(0 0 0 / 58%) 100%);pointer-events:none}
+  :global(.event-focus){position:absolute;z-index:2;left:12px;top:11px;padding:5px 7px;background:#009fe3;color:#fff;font-size:.52rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
+  :global(.event-date){position:absolute;z-index:2;left:12px;bottom:10px;padding:5px 7px;background:#fff;color:#006f9f;font-size:.52rem;font-weight:950;letter-spacing:.055em;text-transform:uppercase}
 
   @media(max-width:1050px){
     :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(2,minmax(0,1fr))}
