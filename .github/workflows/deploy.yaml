@@ -40,7 +40,7 @@ jobs:
 
       - name: Persist TDM image assets
         run: |
-          if git diff --quiet -- public/images/events/tdm/2025; then
+          if [ -z "$(git status --porcelain -- public/images/events/tdm/2025)" ]; then
             echo "TDM-Bilder sind bereits aktuell."
           else
             git config user.name "github-actions[bot]"
