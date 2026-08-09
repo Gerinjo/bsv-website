@@ -1,0 +1,108 @@
+---
+import { withBase } from '../utils/paths';
+
+const tdmHref = withBase('/erlebnis/tag-des-maedchenfussballs');
+const tdmImage = withBase('/images/events/tdm/2025/01-gruppenfoto.jpg');
+const tdmFallbackImage = 'https://bodensee.sbfv.de/fileadmin/_processed_/8/3/csm_Tag_des_Maedchenfussballs__1__-_Bild_Verein_a21765ab93.jpg';
+---
+
+<script define:vars={{ tdmHref, tdmImage, tdmFallbackImage }}>
+  const installTdmMenuItem = () => {
+    const mega = document.querySelector('.mega-inner.erlebnis-mega');
+    if (!(mega instanceof HTMLElement)) return false;
+
+    if (mega.querySelector('[data-experience-id="tag-des-maedchenfussballs"]')) return true;
+
+    const groups = [...mega.querySelectorAll('.experience-list-group')];
+    const targetGroup = groups.find((group) => group.querySelector('h3')?.textContent?.trim() === 'Turniere & Aktionstage');
+    const linksWrap = targetGroup?.querySelector('.experience-links');
+    if (!(linksWrap instanceof HTMLElement)) return false;
+
+    const link = document.createElement('a');
+    link.href = tdmHref;
+    link.className = 'experience-link';
+    link.dataset.experienceId = 'tag-des-maedchenfussballs';
+    link.dataset.previewSrc = tdmImage;
+    link.dataset.previewFallback = tdmFallbackImage;
+    link.dataset.previewKind = 'photo';
+    link.dataset.previewBackground = '#164f32';
+    link.dataset.previewLabel = '';
+    link.dataset.previewTitle = 'Tag des Mädchenfußballs';
+    link.dataset.previewCategory = 'Mädchenfußball · Aktionstag';
+    link.dataset.previewDate = 'Rückblick · 11. Mai 2025';
+    link.dataset.previewAccent = '#f4d638';
+    link.dataset.previewNext = '';
+    link.dataset.previewNextTone = 'normal';
+    link.dataset.previewAlt = 'Gruppenfoto vom Tag des Mädchenfußballs 2025 beim BSV Nordstern';
+    link.innerHTML = `
+      <span class="experience-link-copy">
+        <strong>Tag des Mädchenfußballs</strong>
+        <small>Mädchenfußball · Aktionstag</small>
+      </span>
+      <b aria-hidden="true">↗</b>`;
+    linksWrap.append(link);
+
+    const activate = () => {
+      const preview = mega.querySelector('[data-experience-preview]');
+      if (!(preview instanceof HTMLAnchorElement)) return;
+
+      mega.querySelectorAll('.experience-link').forEach((item) => item.classList.toggle('is-active', item === link));
+      preview.href = tdmHref;
+      preview.style.setProperty('--preview-accent', '#f4d638');
+      preview.style.setProperty('--preview-bg', '#164f32');
+
+      const media = preview.querySelector('[data-preview-media]');
+      const title = preview.querySelector('[data-preview-title]');
+      const category = preview.querySelector('[data-preview-category]');
+      const date = preview.querySelector('[data-preview-date]');
+      const next = preview.querySelector('[data-preview-next]');
+
+      if (title) title.textContent = 'Tag des Mädchenfußballs';
+      if (category) category.textContent = 'Mädchenfußball · Aktionstag';
+      if (date) {
+        date.textContent = 'Rückblick · 11. Mai 2025';
+        date.removeAttribute('hidden');
+      }
+      if (next) next.setAttribute('hidden', '');
+
+      if (media instanceof HTMLElement) {
+        media.dataset.kind = 'photo';
+        media.replaceChildren();
+        const image = document.createElement('img');
+        image.src = tdmImage;
+        image.alt = 'Gruppenfoto vom Tag des Mädchenfußballs 2025 beim BSV Nordstern';
+        image.decoding = 'async';
+        image.addEventListener('error', () => {
+          if (image.dataset.fallbackUsed === 'true') return;
+          image.dataset.fallbackUsed = 'true';
+          image.src = tdmFallbackImage;
+        });
+        media.append(image);
+      }
+    };
+
+    link.addEventListener('mouseenter', activate);
+    link.addEventListener('focus', activate);
+    return true;
+  };
+
+  const startTdmMenuEnhancer = () => {
+    if (installTdmMenuItem()) return;
+    const observer = new MutationObserver(() => {
+      if (installTdmMenuItem()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.setTimeout(() => observer.disconnect(), 8000);
+  };
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', startTdmMenuEnhancer, { once: true });
+  } else {
+    startTdmMenuEnhancer();
+  }
+</script>
+
+<style>
+  :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='photo']){padding:0!important;background:#164f32!important}
+  :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='photo'] img){width:100%;height:100%;max-width:none!important;max-height:none!important;display:block;object-fit:cover;object-position:center 48%}
+</style>
