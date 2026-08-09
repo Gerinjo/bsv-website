@@ -4,92 +4,156 @@ import { withBase } from '../utils/paths';
 const tdmHref = withBase('/erlebnis/tag-des-maedchenfussballs');
 const tdmImage = withBase('/images/events/tdm/2025/01-gruppenfoto.jpg');
 const tdmFallbackImage = 'https://bodensee.sbfv.de/fileadmin/_processed_/8/3/csm_Tag_des_Maedchenfussballs__1__-_Bild_Verein_a21765ab93.jpg';
+const urmelHref = withBase('/erlebnis/urmel-bambini-spieltag');
 const instagramUrl = 'https://www.instagram.com/sg.nordsternhoeri.damen/';
 ---
 
-<script define:vars={{ tdmHref, tdmImage, tdmFallbackImage, instagramUrl }}>
-  const installTdmMenuItem = () => {
+<script define:vars={{ tdmHref, tdmImage, tdmFallbackImage, urmelHref, instagramUrl }}>
+  const setPreview = (mega, link, config) => {
+    const preview = mega.querySelector('[data-experience-preview]');
+    if (!(preview instanceof HTMLAnchorElement)) return;
+
+    mega.querySelectorAll('.experience-link').forEach((item) => item.classList.toggle('is-active', item === link));
+    preview.href = config.href;
+    preview.style.setProperty('--preview-accent', config.accent);
+    preview.style.setProperty('--preview-bg', config.background);
+
+    const media = preview.querySelector('[data-preview-media]');
+    const title = preview.querySelector('[data-preview-title]');
+    const category = preview.querySelector('[data-preview-category]');
+    const date = preview.querySelector('[data-preview-date]');
+    const next = preview.querySelector('[data-preview-next]');
+
+    if (title) title.textContent = config.title;
+    if (category) category.textContent = config.category;
+    if (date) {
+      date.textContent = config.date;
+      date.toggleAttribute('hidden', !config.date);
+    }
+    if (next) {
+      const nextValue = next.querySelector('strong');
+      if (nextValue) nextValue.textContent = config.next;
+      next.dataset.tone = 'normal';
+      next.toggleAttribute('hidden', !config.next);
+    }
+
+    if (!(media instanceof HTMLElement)) return;
+    media.dataset.kind = config.kind;
+    media.replaceChildren();
+
+    if (config.kind === 'photo') {
+      const image = document.createElement('img');
+      image.src = config.src;
+      image.alt = config.alt;
+      image.className = 'tdm-preview-image';
+      image.decoding = 'async';
+      image.addEventListener('error', () => {
+        if (!config.fallback || image.dataset.fallbackUsed === 'true') return;
+        image.dataset.fallbackUsed = 'true';
+        image.src = config.fallback;
+      });
+      media.append(image);
+      return;
+    }
+
+    if (config.kind === 'urmel') {
+      const label = document.createElement('span');
+      label.className = 'urmel-preview-label';
+      label.innerHTML = '<b>URMEL BAMBINI</b><span>Kids spielen für Kids</span><small>Benefizspieltag beim BSV</small>';
+      media.append(label);
+    }
+  };
+
+  const installTournamentMenuItems = () => {
     const mega = document.querySelector('.mega-inner.erlebnis-mega');
     if (!(mega instanceof HTMLElement)) return false;
-
-    if (mega.querySelector('[data-experience-id="tag-des-maedchenfussballs"]')) return true;
 
     const groups = [...mega.querySelectorAll('.experience-list-group')];
     const targetGroup = groups.find((group) => group.querySelector('h3')?.textContent?.trim() === 'Turniere & Aktionstage');
     const linksWrap = targetGroup?.querySelector('.experience-links');
     if (!(linksWrap instanceof HTMLElement)) return false;
 
-    const link = document.createElement('a');
-    link.href = tdmHref;
-    link.className = 'experience-link';
-    link.dataset.experienceId = 'tag-des-maedchenfussballs';
-    link.dataset.previewSrc = tdmImage;
-    link.dataset.previewFallback = tdmFallbackImage;
-    link.dataset.previewKind = 'photo';
-    link.dataset.previewBackground = '#164f32';
-    link.dataset.previewLabel = '';
-    link.dataset.previewTitle = 'Tag des Mädchenfußballs';
-    link.dataset.previewCategory = 'Mädchenfußball · Aktionstag';
-    link.dataset.previewDate = 'Rückblick · 11. Mai 2025';
-    link.dataset.previewAccent = '#f4d638';
-    link.dataset.previewNext = 'Frühjahr 2027';
-    link.dataset.previewNextTone = 'normal';
-    link.dataset.previewAlt = 'Gruppenfoto vom Tag des Mädchenfußballs 2025 beim BSV Nordstern';
-    link.innerHTML = `
-      <span class="experience-link-copy">
-        <strong>Tag des Mädchenfußballs</strong>
-        <small>Mädchenfußball · Aktionstag</small>
-      </span>
-      <b aria-hidden="true">↗</b>`;
-    linksWrap.append(link);
+    let tdmLink = linksWrap.querySelector('[data-experience-id="tag-des-maedchenfussballs"]');
+    if (!(tdmLink instanceof HTMLAnchorElement)) {
+      tdmLink = document.createElement('a');
+      tdmLink.href = tdmHref;
+      tdmLink.className = 'experience-link';
+      tdmLink.dataset.experienceId = 'tag-des-maedchenfussballs';
+      tdmLink.innerHTML = `
+        <span class="experience-link-copy">
+          <strong>Tag des Mädchenfußballs</strong>
+          <small>Mädchenfußball · Frühjahr 2027</small>
+        </span>
+        <b aria-hidden="true">↗</b>`;
+      linksWrap.append(tdmLink);
+    } else {
+      const subtitle = tdmLink.querySelector('small');
+      if (subtitle) subtitle.textContent = 'Mädchenfußball · Frühjahr 2027';
+    }
 
-    const activate = () => {
-      const preview = mega.querySelector('[data-experience-preview]');
-      if (!(preview instanceof HTMLAnchorElement)) return;
+    let urmelLink = linksWrap.querySelector('[data-experience-id="urmel-bambini-spieltag"]');
+    if (!(urmelLink instanceof HTMLAnchorElement)) {
+      urmelLink = document.createElement('a');
+      urmelLink.href = urmelHref;
+      urmelLink.className = 'experience-link';
+      urmelLink.dataset.experienceId = 'urmel-bambini-spieltag';
+      urmelLink.innerHTML = `
+        <span class="experience-link-copy">
+          <strong>URMEL Bambini Spieltag</strong>
+          <small>Bambini · Mai 2027</small>
+        </span>
+        <b aria-hidden="true">↗</b>`;
+      linksWrap.append(urmelLink);
+    }
 
-      mega.querySelectorAll('.experience-link').forEach((item) => item.classList.toggle('is-active', item === link));
-      preview.href = tdmHref;
-      preview.style.setProperty('--preview-accent', '#f4d638');
-      preview.style.setProperty('--preview-bg', '#164f32');
+    const grundschulLink = linksWrap.querySelector('[data-experience-id="buergerstiftung-grundschulturnier"]');
+    if (grundschulLink instanceof HTMLAnchorElement) {
+      const subtitle = grundschulLink.querySelector('small');
+      if (subtitle) subtitle.textContent = 'Schule & Gemeinschaft · Juli 2027';
+    }
 
-      const media = preview.querySelector('[data-preview-media]');
-      const title = preview.querySelector('[data-preview-title]');
-      const category = preview.querySelector('[data-preview-category]');
-      const date = preview.querySelector('[data-preview-date]');
-      const next = preview.querySelector('[data-preview-next]');
+    [tdmLink, urmelLink, grundschulLink].forEach((item) => {
+      if (item instanceof HTMLElement) linksWrap.append(item);
+    });
 
-      if (title) title.textContent = 'Tag des Mädchenfußballs';
-      if (category) category.textContent = 'Mädchenfußball · Aktionstag';
-      if (date) {
-        date.textContent = 'Rückblick · 11. Mai 2025';
-        date.removeAttribute('hidden');
-      }
-      if (next) {
-        const nextValue = next.querySelector('strong');
-        if (nextValue) nextValue.textContent = 'Frühjahr 2027';
-        next.dataset.tone = 'normal';
-        next.removeAttribute('hidden');
-      }
+    if (tdmLink.dataset.previewBound !== 'true') {
+      tdmLink.dataset.previewBound = 'true';
+      const activateTdm = () => setPreview(mega, tdmLink, {
+        href: tdmHref,
+        accent: '#f4d638',
+        background: '#164f32',
+        title: 'Tag des Mädchenfußballs',
+        category: 'Mädchenfußball · Aktionstag',
+        date: 'Rückblick · 11. Mai 2025',
+        next: 'Frühjahr 2027',
+        kind: 'photo',
+        src: tdmImage,
+        fallback: tdmFallbackImage,
+        alt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025 beim BSV Nordstern',
+      });
+      tdmLink.addEventListener('mouseenter', activateTdm);
+      tdmLink.addEventListener('focus', activateTdm);
+    }
 
-      if (media instanceof HTMLElement) {
-        media.dataset.kind = 'photo';
-        media.replaceChildren();
-        const image = document.createElement('img');
-        image.src = tdmImage;
-        image.alt = 'Gruppenfoto vom Tag des Mädchenfußballs 2025 beim BSV Nordstern';
-        image.className = 'tdm-preview-image';
-        image.decoding = 'async';
-        image.addEventListener('error', () => {
-          if (image.dataset.fallbackUsed === 'true') return;
-          image.dataset.fallbackUsed = 'true';
-          image.src = tdmFallbackImage;
-        });
-        media.append(image);
-      }
-    };
+    if (urmelLink.dataset.previewBound !== 'true') {
+      urmelLink.dataset.previewBound = 'true';
+      const activateUrmel = () => setPreview(mega, urmelLink, {
+        href: urmelHref,
+        accent: '#f4d638',
+        background: '#092f20',
+        title: 'URMEL Bambini Spieltag',
+        category: 'Bambini · Benefizspieltag',
+        date: 'Rückblick · 1. Mai 2026',
+        next: 'Mai 2027',
+        kind: 'urmel',
+        src: '',
+        fallback: '',
+        alt: '',
+      });
+      urmelLink.addEventListener('mouseenter', activateUrmel);
+      urmelLink.addEventListener('focus', activateUrmel);
+    }
 
-    link.addEventListener('mouseenter', activate);
-    link.addEventListener('focus', activate);
     return true;
   };
 
@@ -145,22 +209,22 @@ const instagramUrl = 'https://www.instagram.com/sg.nordsternhoeri.damen/';
     else main.prepend(note);
   };
 
-  const startTdmMenuEnhancer = () => {
+  const startEnhancer = () => {
     enhanceTdmPage();
     enhanceSgFrauenInstagram();
 
-    if (installTdmMenuItem()) return;
+    if (installTournamentMenuItems()) return;
     const observer = new MutationObserver(() => {
-      if (installTdmMenuItem()) observer.disconnect();
+      if (installTournamentMenuItems()) observer.disconnect();
     });
     observer.observe(document.body, { childList: true, subtree: true });
     window.setTimeout(() => observer.disconnect(), 8000);
   };
 
   if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', startTdmMenuEnhancer, { once: true });
+    window.addEventListener('DOMContentLoaded', startEnhancer, { once: true });
   } else {
-    startTdmMenuEnhancer();
+    startEnhancer();
   }
 </script>
 
@@ -168,6 +232,11 @@ const instagramUrl = 'https://www.instagram.com/sg.nordsternhoeri.damen/';
   :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='photo']){padding:0!important;background:#164f32!important;overflow:hidden!important}
   :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='photo'] img){width:100%;height:100%;max-width:none!important;max-height:none!important;display:block;object-fit:cover}
   :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='photo'] img.tdm-preview-image){object-position:center bottom!important;transform:scale(1.32);transform-origin:center 160%}
+  :global(.mega-inner.erlebnis-mega .experience-preview-media[data-kind='urmel']){padding:24px!important;background:linear-gradient(145deg,#092f20,#164f32)!important;color:#fff}
+  :global(.mega-inner.erlebnis-mega .urmel-preview-label){width:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px}
+  :global(.mega-inner.erlebnis-mega .urmel-preview-label b){color:#f4d638;font-size:2rem;line-height:.9;letter-spacing:-.04em}
+  :global(.mega-inner.erlebnis-mega .urmel-preview-label span){color:#fff;font-family:Georgia,serif;font-size:1.45rem;font-style:italic;line-height:1}
+  :global(.mega-inner.erlebnis-mega .urmel-preview-label small){margin-top:9px;color:#bcd0c4;font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 
   :global(.tdm-page .hero-grid){grid-template-columns:minmax(0,1.16fr) minmax(330px,.84fr)!important;gap:46px!important}
   :global(.tdm-page .hero h1){font-size:clamp(3.25rem,5.35vw,5.45rem)!important;line-height:.9!important;overflow:visible}
