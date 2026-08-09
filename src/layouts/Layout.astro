@@ -3,6 +3,7 @@ import ErlebnisMegaEnhancer from '../components/ErlebnisMegaEnhancer.astro';
 import GastroMegaEnhancer from '../components/GastroMegaEnhancer.astro';
 import HomeShopEnhancer from '../components/HomeShopEnhancer.astro';
 import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
+import TagDesMaedchenfussballMenuEnhancer from '../components/TagDesMaedchenfussballMenuEnhancer.astro';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string }
@@ -42,6 +43,7 @@ const friendlyMatchTeamPaths = [
 		<GastroMegaEnhancer />
 		<SponsoringMegaEnhancer />
 		<ErlebnisMegaEnhancer />
+		<TagDesMaedchenfussballMenuEnhancer />
 		<HomeShopEnhancer />
 		<script define:vars={{ contactPath, basePath, friendlyMatchTeamPaths }}>
 			const topicByEmail = new Map([
