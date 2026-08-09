@@ -4,17 +4,59 @@ import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 import { erlebnisCooperations } from '../../data/erlebnis';
 import { withBase } from '../../utils/paths';
+
 const cooperation = erlebnisCooperations.find((item) => item.id === 'porsche-maedchencamp')!;
+const eventUrl = 'https://fussballschule.stuttgarter-kickers.de/de/portal/events/767-herbstcamp-m-dchen-bsv-nordstern-radolfzell-halle';
+const registrationUrl = `${eventUrl}/bookings?bpi=regular`;
+const gallery = [
+  {
+    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/24/xlarge_Foto_28.10.23__11_30_10.jpg',
+    alt: 'Mädchen beim Dribblingtraining vor dem Tor beim Porsche Fußballcamp',
+  },
+  {
+    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/26/xlarge_Foto_28.10.23__11_30_15.jpg',
+    alt: 'Drei Teilnehmerinnen beim Fußballtraining auf dem Platz',
+  },
+  {
+    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/25/xlarge_Foto_28.10.23__11_33_06.jpg',
+    alt: 'Teilnehmerinnen des Mädchenfußballcamps als Gruppe mit Bällen',
+  },
+  {
+    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/23/xlarge_Foto_28.10.23__11_24_35.jpg',
+    alt: 'Mädchen beim Dribbling während des Porsche Fußballcamps',
+  },
+];
 ---
-<Layout title="Porsche Mädchenfußballcamp | BSV Nordstern Radolfzell" description="Porsche Fußballschule der Stuttgarter Kickers: Mädchenfußballcamp beim BSV Nordstern Radolfzell.">
+
+<Layout
+  title="Porsche Mädchenfußballcamp | BSV Nordstern Radolfzell"
+  description="Herbstcamp für Mädchen von 6 bis 14 Jahren mit der Porsche Fußballschule der Stuttgarter Kickers beim BSV Nordstern Radolfzell. Drei Camptage, Ausstattung und Verpflegung inklusive."
+>
   <Header />
   <main class="partner-page">
     <section class="hero">
-      <div class="shell">
-        <a href={withBase('/erlebnis')}>← Zurück zu allen Erlebnissen</a>
-        <span>Mädchenfußball & Feriencamp</span>
-        <h1>Porsche Fußballschule<br /><em>Stuttgarter Kickers</em></h1>
-        <p>Das Mädchenfußballcamp verbindet qualifiziertes, altersgerechtes Training mit gemeinsamen Erlebnissen und viel Freude am Fußball.</p>
+      <div class="shell hero-grid">
+        <div>
+          <a class="back-link" href={withBase('/erlebnis')}>← Zurück zu allen Erlebnissen</a>
+          <span class="eyebrow">Porsche Fußball-Mädchencamp · Herbstferien 2026</span>
+          <h1>Fußball.<br /><em>Nur für euch.</em></h1>
+          <p>Drei intensive Camptage mit der Porsche Fußballschule der Stuttgarter Kickers: altersgerechtes Training, Wettbewerbe, gemeinsames Mittagessen und eine komplette Fußballausstattung – direkt beim BSV in Radolfzell.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href={registrationUrl} target="_blank" rel="noopener noreferrer">Jetzt bei den Kickers anmelden <b>↗</b></a>
+            <a class="secondary-button" href="#leistungen">Was ist inklusive? <b>↓</b></a>
+          </div>
+        </div>
+
+        <aside class="event-card" aria-label="Campdaten">
+          <span>26.–28. Oktober 2026</span>
+          <strong>3 Tage Mädchenfußball</strong>
+          <dl>
+            <div><dt>Alter</dt><dd>6–14 Jahre</dd></div>
+            <div><dt>Ort</dt><dd>Schlesierstr. 43, Radolfzell</dd></div>
+            <div><dt>Status</dt><dd>Freie Plätze</dd></div>
+            <div><dt>Anmeldeschluss</dt><dd>21.10. · 09:30 Uhr</dd></div>
+          </dl>
+        </aside>
       </div>
     </section>
 
@@ -25,40 +67,113 @@ const cooperation = erlebnisCooperations.find((item) => item.id === 'porsche-mae
           <span>Porsche Fußballschule</span>
           <strong>Stuttgarter Kickers</strong>
         </div>
+        <small>zu Gast beim BSV Nordstern Radolfzell</small>
       </div>
     </div>
 
-    <section class="content shell">
-      <div>
-        <h2>Das Mädchenfußballcamp</h2>
-        <p>Die Porsche Fußballschule der Stuttgarter Kickers ist Kooperationspartner für besondere Fußballangebote beim BSV. Auf dieser Seite bündeln wir künftig alle Informationen rund um das Camp in Radolfzell.</p>
-        <p><strong>Nächster vorgesehener Termin:</strong> 26.–28. Oktober 2026.</p>
+    <section class="intro shell" id="leistungen">
+      <div class="intro-copy">
+        <span class="section-label">Was bekommt ihr fürs Geld?</span>
+        <h2>Drei Tage Fußball –<br /><em>und ziemlich viel drumherum.</em></h2>
+        <p>Das Mädchencamp steht unter dem Leitgedanken, Spaß und Entwicklung miteinander zu verbinden. Trainiert wird in altersgerechten Gruppen mit erfahrenen Trainerinnen und Trainern der Fußballschule. Pro Tag sind zwei Trainingseinheiten vorgesehen, ergänzt durch Wettbewerbe und spielnahe Abschlussformen.</p>
+        <p>Eine Vereinsmitgliedschaft ist für die Teilnahme nicht erforderlich. Das Angebot richtet sich an fußballbegeisterte Mädchen von 6 bis 14 Jahren – unabhängig davon, ob sie bereits im Verein spielen.</p>
       </div>
-      <aside>
-        <h3>Geplant für diese Seite</h3>
-        <ul>
-          <li>Termin, Altersgruppen und Anmeldung</li>
-          <li>Tagesablauf und Leistungen</li>
-          <li>Bildergalerien der Camps</li>
-          <li>Hinweise für Eltern und Teilnehmerinnen</li>
-        </ul>
+
+      <aside class="price-card">
+        <span>Teilnahme · 3 Camptage</span>
+        <div class="price"><del>189,00 €</del><strong>179,55 €</strong></div>
+        <p>Das Kickers-Buchungsportal weist aktuell den reduzierten Betrag von 179,55 € neben dem regulären Preis von 189,00 € aus.</p>
+        <b>Ausstattung, Mittagessen & Getränke inklusive</b>
+        <a href={registrationUrl} target="_blank" rel="noopener noreferrer">Platz sichern <span>↗</span></a>
       </aside>
     </section>
 
-    <section class="gallery shell">
-      <span>Galerie</span>
-      <h2>Mädchenfußball beim BSV.</h2>
-      <div class="placeholder"><strong>Bildgalerie vorbereitet</strong><p>Fotos vergangener und zukünftiger Camps können hier später ergänzt werden.</p></div>
+    <section class="included shell" aria-labelledby="included-title">
+      <div class="included-heading">
+        <span class="section-label">Im Camp enthalten</span>
+        <h2 id="included-title">Mehr als nur<br /><em>zwei Einheiten am Tag.</em></h2>
+      </div>
+      <div class="benefit-grid">
+        <article><span>01</span><h3>2 Trainings pro Tag</h3><p>Abwechslungsreiche Einheiten mit Zeit für Technik, Spielformen und individuelle Entwicklung.</p></article>
+        <article><span>02</span><h3>Qualifizierte Trainer</h3><p>Altersgerechtes, ganzheitliches Training durch erfahrene Trainerinnen und Trainer der Kickers-Fußballschule.</p></article>
+        <article><span>03</span><h3>Komplette Ausstattung</h3><p>Jede Teilnehmerin erhält Trikot, Shorts, Stutzen, einen Beutel und einen eigenen Fußball.</p></article>
+        <article><span>04</span><h3>Mittagessen & Getränke</h3><p>An allen drei Camptagen sind Mittagessen und ausreichend Getränke bereits im Preis enthalten.</p></article>
+        <article><span>05</span><h3>Wettbewerbe & Spielformen</h3><p>Wettbewerbe und Abschlussformen bringen das Gelernte direkt ins Spiel – mit viel Bewegung und Spaß.</p></article>
+        <article><span>06</span><h3>20%-Gutschein</h3><p>Zusätzlich gibt es laut Veranstalter einen 20%-Gutschein des Nutrition-Partners Sanct Bernhard Sport / Kräuterhaus Sanct Bernhard.</p></article>
+      </div>
+    </section>
+
+    <section class="schedule shell" aria-labelledby="schedule-title">
+      <div class="schedule-copy">
+        <span class="section-label">So läuft das Camp</span>
+        <h2 id="schedule-title">Drei Tage.<br /><em>Volles Programm.</em></h2>
+        <p>Am Montag startet das Camp etwas früher, weil zunächst die Ausstattung ausgegeben wird. Dienstag und Mittwoch beginnen die Einheiten um 10 Uhr. Am letzten Tag findet eine halbe Stunde vor Campende die Siegerehrung statt.</p>
+      </div>
+      <div class="days">
+        <article><span>Mo · 26.10.</span><strong>09:30–16:00</strong><p>Start & Ausgabe der Camp-Ausstattung</p></article>
+        <article><span>Di · 27.10.</span><strong>10:00–16:00</strong><p>Zwei Trainingseinheiten & Wettbewerbe</p></article>
+        <article><span>Mi · 28.10.</span><strong>10:00–16:00</strong><p>Training, Abschlussformen & Siegerehrung ab ca. 15:30</p></article>
+      </div>
+    </section>
+
+    <section class="gallery shell" aria-labelledby="gallery-title">
+      <div class="gallery-heading">
+        <div>
+          <span class="section-label">Impressionen</span>
+          <h2 id="gallery-title">So sieht Mädchenfußball<br /><em>beim Camp aus.</em></h2>
+        </div>
+        <p>Training, Teamgefühl und ganz viel Ball am Fuß – Impressionen aus den Mädchencamps der Porsche Fußballschule.</p>
+      </div>
+      <div class="gallery-grid">
+        {gallery.map((image, index) => (
+          <figure class:list={{ wide: index === 0 }}>
+            <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section class="parents shell" aria-labelledby="parents-title">
+      <div>
+        <span class="section-label">Gut zu wissen</span>
+        <h2 id="parents-title">Für Eltern.<br /><em>Kurz & praktisch.</em></h2>
+      </div>
+      <div class="parent-grid">
+        <article><strong>Hallenschuhe</strong><p>Da das Herbstcamp als Hallencamp ausgeschrieben ist, sind Hallenschuhe mit heller bzw. als „Non-Marking“ gekennzeichneter Sohle erforderlich.</p></article>
+        <article><strong>Schienbeinschützer</strong><p>Die Fußballschule empfiehlt für Camps und Trainings das Tragen von Schienbeinschützern.</p></article>
+        <article><strong>Allergien & Ernährung</strong><p>Hinweise zu Allergien, Unverträglichkeiten oder vegetarischer bzw. veganer Ernährung können direkt bei der Anmeldung angegeben werden.</p></article>
+        <article><strong>Persönliche Live-Page</strong><p>Nach der Anmeldung stellt die Fußballschule eine persönliche Live-Page mit aktuellen Informationen, Gruppeneinteilung und organisatorischen Hinweisen bereit.</p></article>
+      </div>
+    </section>
+
+    <section class="cta shell">
+      <div>
+        <span>Herbstferien 2026</span>
+        <h2>Bereit für drei Tage<br /><em>Fußball mit den Kickers?</em></h2>
+        <p>Die Anmeldung läuft direkt über das Buchungsportal der Porsche Fußballschule der Stuttgarter Kickers.</p>
+      </div>
+      <div class="cta-side">
+        <strong>26.–28. Oktober 2026</strong>
+        <small>6–14 Jahre · Halle · Radolfzell</small>
+        <a href={registrationUrl} target="_blank" rel="noopener noreferrer">Jetzt anmelden <b>↗</b></a>
+        <a class="source-link" href={eventUrl} target="_blank" rel="noopener noreferrer">Alle offiziellen Campdetails ansehen</a>
+      </div>
     </section>
   </main>
   <Footer />
 </Layout>
 
 <style>
-  :global(:root){--kickers-blue:#009fe3;--kickers-deep:#006f9f}
-  .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.partner-page{background:#f5f7f4;color:#14251a}
-  .hero{padding:90px 0 120px;background:var(--kickers-blue);color:#fff}.hero a{color:#fff;text-decoration:none;font-weight:850;font-size:.78rem}.hero span{display:block;margin-top:50px;color:#e8f8ff;font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:14px 0 24px;font-size:clamp(3.2rem,6vw,5.8rem);line-height:.9;letter-spacing:-.05em}.hero em{color:#fff;font-family:Georgia,serif;font-weight:400}.hero p{max-width:720px;color:#f2fbff;font-size:1.08rem;line-height:1.7}
-  .logo-shell{margin-top:-70px;position:relative;z-index:2}.kickers-lockup{min-height:145px;padding:26px 36px;display:flex;align-items:center;gap:30px;border-top:5px solid var(--kickers-blue);background:#fff;box-shadow:0 16px 40px rgb(0 111 159 / 16%)}.kickers-lockup img{width:92px;height:92px;object-fit:contain;flex:0 0 auto}.kickers-lockup span,.kickers-lockup strong{display:block}.kickers-lockup span{color:var(--kickers-blue);font-size:.78rem;font-weight:950;letter-spacing:.04em;text-transform:uppercase}.kickers-lockup strong{margin-top:5px;color:var(--kickers-deep);font-size:clamp(1.5rem,3vw,2.35rem);line-height:1;letter-spacing:-.035em}
-  .content{padding:75px 0 90px;display:grid;grid-template-columns:1.25fr .75fr;gap:70px}.content h2,.gallery h2{font-size:clamp(2.4rem,4vw,4rem);letter-spacing:-.04em}.content p{color:#5d6c62;line-height:1.8}.content aside{padding:32px;background:#fff;border-top:4px solid var(--kickers-blue)}.content h3{margin-top:0;color:var(--kickers-deep)}.content li{margin:12px 0;color:#536158}.gallery{padding:0 0 100px}.gallery>span{color:var(--kickers-deep);font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em}.placeholder{min-height:260px;padding:38px;display:grid;place-content:center;border:1px dashed #b9c5bd;background:#fff;text-align:center}.placeholder strong{font-size:1.35rem}.placeholder p{color:#68766d}
-  @media(max-width:760px){.content{grid-template-columns:1fr;gap:30px}.hero{padding:65px 0 100px}.logo-shell{margin-top:-55px}.kickers-lockup{padding:22px;gap:20px}.kickers-lockup img{width:72px;height:72px}}
+  :global(:root){--kickers-blue:#009fe3;--kickers-deep:#006f9f;--kickers-ink:#102430}
+  .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.partner-page{background:#f5f7f4;color:#14251a}.section-label{display:block;color:var(--kickers-deep);font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
+  .hero{padding:90px 0 125px;background:var(--kickers-blue);color:#fff}.hero-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.65fr);gap:70px;align-items:end}.back-link{color:#fff;text-decoration:none;font-size:.78rem;font-weight:850}.eyebrow{display:block;margin-top:48px;color:#e8f8ff;font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:13px 0 23px;font-size:clamp(3.5rem,7vw,6.4rem);line-height:.87;letter-spacing:-.055em}.hero h1 em,.intro h2 em,.included h2 em,.schedule h2 em,.gallery h2 em,.parents h2 em,.cta h2 em{font-family:Georgia,serif;font-weight:400}.hero p{max-width:700px;margin:0;color:#f2fbff;font-size:1.06rem;line-height:1.75}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.primary-button,.secondary-button{min-height:54px;padding:0 19px;display:inline-flex;align-items:center;justify-content:space-between;gap:32px;text-decoration:none;font-size:.75rem;font-weight:950}.primary-button{background:#fff;color:var(--kickers-deep)}.secondary-button{border:1px solid rgb(255 255 255 / 60%);color:#fff}.event-card{padding:28px;background:#fff;color:var(--kickers-ink);box-shadow:0 18px 45px rgb(0 74 107 / 22%)}.event-card>span{color:var(--kickers-deep);font-size:.64rem;font-weight:950;letter-spacing:.11em;text-transform:uppercase}.event-card>strong{display:block;margin:8px 0 20px;font-size:1.45rem;line-height:1.05}.event-card dl{margin:0}.event-card dl div{padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:16px;border-top:1px solid #e5eef2}.event-card dt{color:#75858d;font-size:.68rem}.event-card dd{margin:0;font-size:.72rem;font-weight:850;text-align:right}
+  .logo-shell{margin-top:-65px;position:relative;z-index:2}.kickers-lockup{min-height:138px;padding:24px 32px;display:flex;align-items:center;gap:28px;border-top:5px solid var(--kickers-blue);background:#fff;box-shadow:0 16px 40px rgb(0 111 159 / 15%)}.kickers-lockup img{width:86px;height:86px;object-fit:contain;flex:0 0 auto}.kickers-lockup span,.kickers-lockup strong{display:block}.kickers-lockup span{color:var(--kickers-blue);font-size:.74rem;font-weight:950;letter-spacing:.04em;text-transform:uppercase}.kickers-lockup strong{margin-top:4px;color:var(--kickers-deep);font-size:clamp(1.4rem,3vw,2.25rem);line-height:1;letter-spacing:-.035em}.kickers-lockup small{margin-left:auto;color:#71818a;font-size:.66rem;font-weight:800;text-align:right}
+  .intro{padding:80px 0 55px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:70px;align-items:start}.intro h2,.included h2,.schedule h2,.gallery h2,.parents h2,.cta h2{margin:10px 0 20px;font-size:clamp(2.7rem,5vw,4.8rem);line-height:.92;letter-spacing:-.05em}.intro p,.schedule-copy p,.gallery-heading p{color:#5c6c63;line-height:1.8}.price-card{padding:28px;background:var(--kickers-ink);color:#fff;border-top:5px solid var(--kickers-blue);box-shadow:0 18px 42px rgb(0 0 0 / 10%)}.price-card>span{font-size:.63rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#a9dff4}.price{margin:18px 0 16px;display:flex;align-items:baseline;gap:13px}.price del{color:#9db0ba;font-size:1.05rem;font-weight:800}.price strong{font-size:2.65rem;letter-spacing:-.05em}.price-card p{color:#c9d5db;font-size:.72rem;line-height:1.55}.price-card>b{display:block;margin-top:16px;color:#fff;font-size:.75rem}.price-card>a{margin-top:22px;min-height:50px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--kickers-blue);color:#fff;text-decoration:none;font-size:.74rem;font-weight:950}
+  .included{padding:55px 0 85px}.included-heading{max-width:800px}.benefit-grid{margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.benefit-grid article{min-height:230px;padding:25px;background:#fff;border-top:4px solid var(--kickers-blue)}.benefit-grid article>span{color:var(--kickers-blue);font-size:.65rem;font-weight:950}.benefit-grid h3{margin:28px 0 10px;font-size:1.08rem}.benefit-grid p{margin:0;color:#65756c;font-size:.78rem;line-height:1.6}
+  .schedule{padding:74px 0;display:grid;grid-template-columns:.85fr 1.15fr;gap:65px;background:transparent}.days{display:grid;gap:10px}.days article{padding:22px 24px;display:grid;grid-template-columns:130px 150px 1fr;gap:20px;align-items:center;background:#fff;border-left:5px solid var(--kickers-blue)}.days span{color:var(--kickers-deep);font-size:.7rem;font-weight:950;text-transform:uppercase}.days strong{font-size:1.1rem}.days p{margin:0;color:#69786f;font-size:.75rem;line-height:1.5}
+  .gallery{padding:45px 0 95px}.gallery-heading{display:flex;justify-content:space-between;gap:55px;align-items:end}.gallery-heading>p{max-width:340px;margin-bottom:20px;font-size:.84rem}.gallery-grid{display:grid;grid-template-columns:1.25fr .75fr .75fr;grid-template-rows:260px 260px;gap:10px}.gallery-grid figure{margin:0;overflow:hidden;background:#dfe9ed}.gallery-grid figure.wide{grid-row:1/-1}.gallery-grid figure:last-child{grid-column:2/-1}.gallery-grid img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease}.gallery-grid figure:hover img{transform:scale(1.025)}
+  .parents{padding:70px 0 90px;border-top:1px solid #dfe6e1}.parents>div:first-child{max-width:760px}.parent-grid{margin-top:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.parent-grid article{padding:24px 26px;background:#fff}.parent-grid strong{color:var(--kickers-deep);font-size:.9rem}.parent-grid p{margin:8px 0 0;color:#64736a;font-size:.77rem;line-height:1.6}
+  .cta{margin-bottom:90px;padding:42px 44px;display:grid;grid-template-columns:1fr 340px;gap:55px;align-items:center;background:var(--kickers-blue);color:#fff}.cta>div>span{font-size:.66rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.cta h2{margin-bottom:0}.cta p{max-width:600px;color:#edfaff;line-height:1.65}.cta-side{padding:25px;background:#fff;color:var(--kickers-ink)}.cta-side strong,.cta-side small{display:block}.cta-side strong{font-size:1.2rem}.cta-side small{margin-top:5px;color:#718089;font-size:.7rem}.cta-side>a:not(.source-link){min-height:52px;margin-top:20px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--kickers-ink);color:#fff;text-decoration:none;font-size:.74rem;font-weight:950}.source-link{display:inline-block;margin-top:13px;color:var(--kickers-deep);font-size:.65rem;font-weight:850}
+  @media(max-width:900px){.hero-grid,.intro,.schedule,.cta{grid-template-columns:1fr}.event-card{max-width:520px}.benefit-grid{grid-template-columns:1fr 1fr}.gallery-heading{display:block}.gallery-heading>p{max-width:650px}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:300px 220px 220px}.gallery-grid figure.wide{grid-column:1/-1;grid-row:auto}.gallery-grid figure:last-child{grid-column:1/-1}.kickers-lockup small{display:none}}
+  @media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero{padding:65px 0 105px}.hero-grid{gap:35px}.hero h1{font-size:clamp(3.2rem,16vw,4.8rem)}.hero-actions{display:grid}.primary-button,.secondary-button{width:100%}.logo-shell{margin-top:-48px}.kickers-lockup{padding:20px;gap:17px}.kickers-lockup img{width:66px;height:66px}.intro{padding-top:62px;gap:32px}.price-card{padding:24px}.benefit-grid,.parent-grid{grid-template-columns:1fr}.benefit-grid article{min-height:0}.days article{grid-template-columns:1fr;gap:5px}.gallery-grid{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(4,240px)}.gallery-grid figure.wide,.gallery-grid figure:last-child{grid-column:auto}.cta{padding:28px 24px;gap:30px}}
 </style>
