@@ -1,0 +1,233 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+
+const sourceUrl = 'https://bodensee.sbfv.de/service/nachrichten/nachrichtendetail/tag-des-maedchenfussballs-beim-bsv-nordstern-radolfzell';
+const remoteBase = 'https://bodensee.sbfv.de/fileadmin/_processed_';
+
+const gallery = [
+  {
+    src: withBase('/images/events/tdm/2025/01-gruppenfoto.jpg'),
+    fallback: `${remoteBase}/8/3/csm_Tag_des_Maedchenfussballs__1__-_Bild_Verein_a21765ab93.jpg`,
+    alt: 'Gruppenfoto beim Tag des Mädchenfußballs 2025 beim BSV Nordstern Radolfzell',
+    caption: 'Gemeinsamer Abschluss des Tag des Mädchenfußballs 2025.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/02-trainingsgruppe.jpg'),
+    fallback: `${remoteBase}/4/6/csm_Tag_des_Maedchenfussballs__3__-_Bild_Verein_ff28794151.jpg`,
+    alt: 'Teilnehmerinnen und Trainerinnen in einer Trainingsrunde',
+    caption: 'Gemeinsam lernen, ausprobieren und Spaß am Fußball haben.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/03-stationen.jpg'),
+    fallback: `${remoteBase}/3/b/csm_Tag_des_Maedchenfussballs__5__-_Bild_Verein_13a61b1270.jpg`,
+    alt: 'Mädchen an verschiedenen Fußballstationen auf dem BSV-Sportgelände',
+    caption: 'Technikstationen mit viel Bewegung und Ballkontakten.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/04-teamrunde.jpg'),
+    fallback: `${remoteBase}/e/d/csm_Tag_des_Maedchenfussballs__6__-_Bild_Verein_ed1d6335eb.jpg`,
+    alt: 'Besprechung einer Mädchengruppe mit Trainerinnen auf dem Fußballplatz',
+    caption: 'Teamgeist und gemeinsames Lernen standen im Mittelpunkt.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/05-technikstation.jpg'),
+    fallback: `${remoteBase}/7/b/csm_Tag_des_Maedchenfussballs__8__-_Bild_Verein_b1d7de4427.jpg`,
+    alt: 'Teilnehmerinnen warten an einer Technikstation mit Fußbällen',
+    caption: 'Dribbeln, Passen, Schießen und Tricks ausprobieren.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/06-training.jpg'),
+    fallback: `${remoteBase}/0/0/csm_Tag_des_Maedchenfussballs__10__-_Bild_Verein_fc3bf3f74b.jpg`,
+    alt: 'Training beim Tag des Mädchenfußballs auf dem Sportgelände des BSV',
+    caption: 'Viele kleine Gruppen sorgten für intensive und abwechslungsreiche Übungen.',
+  },
+  {
+    src: withBase('/images/events/tdm/2025/07-parcours.jpg'),
+    fallback: `${remoteBase}/2/3/csm_Tag_des_Maedchenfussballs__11__-_Bild_Verein_129eda59fc.jpg`,
+    alt: 'Mädchen dribbeln durch einen Stangenparcours',
+    caption: 'Technik, Koordination und Freude am Ball.',
+  },
+];
+
+const heroImage = gallery[0];
+---
+
+<Layout
+  title="Tag des Mädchenfußballs | BSV Nordstern Radolfzell"
+  description="Rückblick auf den Tag des Mädchenfußballs 2025 beim BSV Nordstern Radolfzell – Technikstationen, Spiele, DFB-Abzeichen und jede Menge Freude am Fußball."
+>
+  <Header />
+  <main class="tdm-page">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <a href={withBase('/erlebnis')}>← Zurück zu allen Erlebnissen</a>
+          <span>Turniere & Aktionstage · Rückblick 2025</span>
+          <h1>Tag des<br /><em>Mädchenfußballs.</em></h1>
+          <p>Ein Fußballtag ohne Leistungsdruck, dafür mit viel Bewegung, Teamgeist und jeder Menge Ball am Fuß. Am 11. Mai 2025 gehörte das BSV-Sportgelände ganz den jungen Fußballerinnen.</p>
+          <div class="hero-meta">
+            <strong>11. Mai 2025</strong>
+            <small>BSV Nordstern Radolfzell</small>
+          </div>
+        </div>
+        <figure class="hero-image">
+          <img src={heroImage.src} data-fallback-src={heroImage.fallback} alt={heroImage.alt} />
+          <figcaption>Tag des Mädchenfußballs 2025</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="intro shell">
+      <div>
+        <span class="section-label">Mädchenfußball beim BSV</span>
+        <h2>Ausprobieren.<br /><em>Mitmachen. Begeistert sein.</em></h2>
+      </div>
+      <div class="intro-text">
+        <p>Der Aktionstag war bewusst niedrigschwellig angelegt: Die Teilnehmerinnen konnten Fußball kennenlernen, Neues ausprobieren und gemeinsam spielen. Im Mittelpunkt standen nicht Ergebnisse, sondern Freude an Bewegung, Fairplay, Zusammenarbeit und gegenseitige Unterstützung.</p>
+        <p>Trainerinnen, Trainer und aktive Jugendspielerinnen des BSV begleiteten die Gruppen durch den Tag. Unterstützt wurde die Veranstaltung vom Südbadischen Fußballverband.</p>
+      </div>
+    </section>
+
+    <section class="day shell" aria-labelledby="day-title">
+      <div class="day-heading">
+        <span class="section-label">Der Tag 2025</span>
+        <h2 id="day-title">Von Warm-up bis<br /><em>DFB-Abzeichen.</em></h2>
+      </div>
+      <div class="timeline">
+        <article><time>11:00</time><div><strong>Begrüßung & Warm-up</strong><p>Gemeinsamer Start und aktives Aufwärmen für alle Teilnehmerinnen.</p></div></article>
+        <article><time>11:30–13:00</time><div><strong>Technikstationen</strong><p>Dribbeln, Passen, Schießen und Tricks – mit viel Zeit zum Ausprobieren.</p></div></article>
+        <article><time>13:00–13:30</time><div><strong>Mittagspause</strong><p>Ein kleiner Snack und erfrischende Getränke sorgten für neue Energie.</p></div></article>
+        <article><time>13:30–15:00</time><div><strong>Spiele in gemischten Teams</strong><p>Fairplay, Zusammenarbeit und gegenseitige Unterstützung standen im Vordergrund.</p></div></article>
+        <article><time>15:00–15:45</time><div><strong>DFB-Abzeichen</strong><p>An verschiedenen Stationen konnten Aufgaben absolviert und Punkte gesammelt werden.</p></div></article>
+        <article><time>Abschluss</time><div><strong>Siegerehrung & Gruppenfoto</strong><p>Alle Teilnehmerinnen erhielten eine Urkunde, einen Turnbeutel, ein Haarband und ein Shirt.</p></div></article>
+      </div>
+    </section>
+
+    <section class="values shell">
+      <article><span>01</span><strong>Ohne Leistungsdruck</strong><p>Einfach mitmachen, ausprobieren und Freude am Fußball entwickeln.</p></article>
+      <article><span>02</span><strong>Viele Ballkontakte</strong><p>Technikstationen und Spielformen sorgten für einen abwechslungsreichen Tag.</p></article>
+      <article><span>03</span><strong>Gemeinsam stark</strong><p>Fairplay, Teamgeist und gegenseitige Unterstützung waren wichtiger als Ergebnisse.</p></article>
+      <article><span>04</span><strong>BSV & SBFV gemeinsam</strong><p>Engagierte Helfer, Trainer und Jugendspielerinnen machten den Aktionstag möglich.</p></article>
+    </section>
+
+    <section class="gallery-section shell" aria-labelledby="gallery-title">
+      <div class="gallery-heading">
+        <div>
+          <span class="section-label">Bildergalerie</span>
+          <h2 id="gallery-title">Impressionen<br /><em>vom Aktionstag.</em></h2>
+        </div>
+        <p>Klick auf ein Bild für die große Ansicht. In der Bildansicht kannst du mit den Pfeilen oder den Pfeiltasten durch die Galerie navigieren.</p>
+      </div>
+
+      <div class="year-tabs" role="tablist" aria-label="Galerie nach Jahr">
+        <button type="button" class="year-tab is-active" role="tab" aria-selected="true" aria-controls="gallery-2025">2025</button>
+      </div>
+
+      <div class="gallery-grid" id="gallery-2025" role="tabpanel" aria-label="Bilder aus dem Jahr 2025">
+        {gallery.map((image, index) => (
+          <button type="button" class:list={["gallery-item", index === 0 && "is-wide"]} data-lightbox-index={index} aria-label={`Bild ${index + 1} groß anzeigen`}>
+            <img src={image.src} data-fallback-src={image.fallback} alt={image.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+            <span>Vergrößern ↗</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <section class="thanks shell">
+      <div>
+        <span class="section-label">Danke</span>
+        <h2>Viele Hände.<br /><em>Ein starker Tag.</em></h2>
+      </div>
+      <div>
+        <p>Ein besonderer Dank gilt dem Südbadischen Fußballverband, insbesondere Melanie Hahn, sowie den vielen Helferinnen und Helfern des BSV. Neben den Trainerinnen und Trainern waren auch aktive Jugendspielerinnen an der Gestaltung des Aktionstags beteiligt.</p>
+        <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Bericht beim Südbadischen Fußballverband lesen <b>↗</b></a>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="lightbox" id="tdm-lightbox" aria-label="Große Bildansicht">
+    <button type="button" class="lightbox-close" data-lightbox-close aria-label="Bildansicht schließen">×</button>
+    <button type="button" class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Vorheriges Bild">←</button>
+    <figure>
+      <img data-lightbox-image alt="" />
+      <figcaption data-lightbox-caption></figcaption>
+    </figure>
+    <button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Nächstes Bild">→</button>
+  </dialog>
+
+  <Footer />
+</Layout>
+
+<script>
+  const fallbackImages = document.querySelectorAll<HTMLImageElement>('img[data-fallback-src]');
+  fallbackImages.forEach((image) => {
+    image.addEventListener('error', () => {
+      const fallback = image.dataset.fallbackSrc;
+      if (!fallback || image.dataset.fallbackUsed === 'true') return;
+      image.dataset.fallbackUsed = 'true';
+      image.src = fallback;
+    });
+  });
+
+  const galleryButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-lightbox-index]')];
+  const dialog = document.querySelector<HTMLDialogElement>('#tdm-lightbox');
+  const dialogImage = dialog?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+  const dialogCaption = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+  const closeButton = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+  const prevButton = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
+  const nextButton = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+  let activeIndex = 0;
+
+  const showImage = (index: number) => {
+    if (!dialogImage || !dialogCaption || !galleryButtons.length) return;
+    activeIndex = (index + galleryButtons.length) % galleryButtons.length;
+    const sourceImage = galleryButtons[activeIndex].querySelector<HTMLImageElement>('img');
+    if (!sourceImage) return;
+    dialogImage.src = sourceImage.currentSrc || sourceImage.src;
+    dialogImage.alt = sourceImage.alt;
+    dialogCaption.textContent = sourceImage.alt;
+  };
+
+  const openLightbox = (index: number) => {
+    if (!dialog) return;
+    showImage(index);
+    dialog.showModal();
+  };
+
+  galleryButtons.forEach((button, index) => button.addEventListener('click', () => openLightbox(index)));
+  closeButton?.addEventListener('click', () => dialog?.close());
+  prevButton?.addEventListener('click', () => showImage(activeIndex - 1));
+  nextButton?.addEventListener('click', () => showImage(activeIndex + 1));
+
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!dialog?.open) return;
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showImage(activeIndex - 1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showImage(activeIndex + 1);
+    }
+  });
+</script>
+
+<style>
+  .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.tdm-page{background:#f4f7f4;color:#14251a}.section-label{display:block;color:#164f32;font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
+  .hero{padding:74px 0 82px;background:linear-gradient(145deg,#092f20,#164f32);color:#fff}.hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);gap:58px;align-items:center}.hero-copy>a{color:#f4d638;text-decoration:none;font-size:.75rem;font-weight:850}.hero-copy>span{display:block;margin-top:45px;color:#f4d638;font-size:.66rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:13px 0 23px;font-size:clamp(3.4rem,6.3vw,6.2rem);line-height:.87;letter-spacing:-.055em}.hero h1 em,.intro h2 em,.day h2 em,.gallery-heading h2 em,.thanks h2 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.hero p{max-width:600px;margin:0;color:#d7e4dc;font-size:1.03rem;line-height:1.72}.hero-meta{margin-top:27px;display:flex;align-items:baseline;gap:16px}.hero-meta strong{font-size:1.05rem}.hero-meta small{color:#a9c0b2}.hero-image{position:relative;margin:0;overflow:hidden;box-shadow:0 25px 70px rgb(0 0 0 / 28%)}.hero-image img{width:100%;aspect-ratio:4/3;display:block;object-fit:cover}.hero-image figcaption{position:absolute;left:16px;bottom:16px;padding:7px 10px;background:#f4d638;color:#092f20;font-size:.62rem;font-weight:950;text-transform:uppercase}
+  .intro{padding:82px 0 65px;display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:start}.intro h2,.day h2,.gallery-heading h2,.thanks h2{margin:10px 0 0;font-size:clamp(2.7rem,5vw,4.8rem);line-height:.92;letter-spacing:-.05em}.intro h2 em,.day h2 em,.gallery-heading h2 em,.thanks h2 em{color:#164f32}.intro-text p{margin:0 0 17px;color:#5f6f65;line-height:1.8}
+  .day{padding:52px 0 82px}.day-heading{max-width:780px}.timeline{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.timeline article{min-height:150px;padding:24px 25px;display:grid;grid-template-columns:100px 1fr;gap:18px;background:#fff;border-top:4px solid #f4d638}.timeline time{color:#164f32;font-size:.72rem;font-weight:950}.timeline strong{font-size:.95rem}.timeline p{margin:8px 0 0;color:#64736a;font-size:.78rem;line-height:1.6}
+  .values{padding:0 0 82px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.values article{padding:24px;background:#092f20;color:#fff}.values span{color:#f4d638;font-size:.62rem;font-weight:950}.values strong{display:block;margin:28px 0 9px;font-size:.95rem}.values p{margin:0;color:#bcd0c4;font-size:.75rem;line-height:1.55}
+  .gallery-section{padding:72px 0 95px;border-top:1px solid #d9e2dc}.gallery-heading{display:flex;justify-content:space-between;gap:55px;align-items:end}.gallery-heading>p{max-width:360px;margin:0 0 18px;color:#64736a;font-size:.8rem;line-height:1.65}.year-tabs{margin:28px 0 16px;padding-bottom:10px;border-bottom:1px solid #d7dfda}.year-tab{min-width:82px;padding:10px 18px;border:0;background:#092f20;color:#fff;font-weight:950;cursor:default}.year-tab.is-active{box-shadow:inset 0 -4px #f4d638}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:230px;gap:10px}.gallery-item{position:relative;padding:0;overflow:hidden;border:0;background:#dce6df;cursor:zoom-in}.gallery-item.is-wide{grid-column:span 2;grid-row:span 2}.gallery-item img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .3s ease}.gallery-item:hover img,.gallery-item:focus-visible img{transform:scale(1.025)}.gallery-item>span{position:absolute;left:12px;bottom:12px;padding:6px 8px;background:#092f20;color:#f4d638;font-size:.58rem;font-weight:950;opacity:0;transition:opacity .2s}.gallery-item:hover>span,.gallery-item:focus-visible>span{opacity:1}
+  .thanks{margin-bottom:95px;padding:42px;display:grid;grid-template-columns:.8fr 1.2fr;gap:58px;background:#fff;border-top:5px solid #f4d638}.thanks p{margin:0;color:#5e6e64;line-height:1.75}.thanks a{margin-top:20px;min-height:50px;padding:0 17px;display:inline-flex;align-items:center;gap:30px;background:#092f20;color:#fff;text-decoration:none;font-size:.72rem;font-weight:950}.thanks a b{color:#f4d638}
+  .lightbox{width:min(1180px,94vw);height:min(860px,92vh);padding:0;border:0;background:transparent;color:#fff;overflow:visible}.lightbox::backdrop{background:rgb(0 0 0 / 88%);backdrop-filter:blur(5px)}.lightbox figure{width:100%;height:100%;margin:0;display:grid;grid-template-rows:minmax(0,1fr) auto;place-items:center}.lightbox figure img{max-width:100%;max-height:calc(92vh - 58px);object-fit:contain;box-shadow:0 20px 70px rgb(0 0 0 / 45%)}.lightbox figcaption{width:100%;padding:12px;text-align:center;font-size:.75rem;color:#d5ddd8}.lightbox-close,.lightbox-nav{position:fixed;z-index:2;border:0;background:#fff;color:#092f20;display:grid;place-items:center;cursor:pointer;box-shadow:0 7px 25px rgb(0 0 0 / 28%)}.lightbox-close{right:24px;top:22px;width:44px;height:44px;border-radius:50%;font-size:1.6rem}.lightbox-nav{top:50%;width:48px;height:62px;transform:translateY(-50%);font-size:1.5rem}.lightbox-prev{left:20px}.lightbox-next{right:20px}
+  @media(max-width:900px){.hero-grid,.intro,.thanks{grid-template-columns:1fr}.hero-grid{gap:35px}.hero-image{max-width:720px}.values{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr}.gallery-heading{display:block}.gallery-heading>p{max-width:650px;margin-top:15px}.gallery-grid{grid-template-columns:1fr 1fr;grid-auto-rows:220px}.gallery-item.is-wide{grid-column:1/-1;grid-row:span 2}}
+  @media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero{padding:58px 0 70px}.hero-copy>span{margin-top:35px}.hero h1{font-size:clamp(3.1rem,16vw,4.7rem)}.hero-meta{align-items:flex-start;flex-direction:column;gap:4px}.intro{padding-top:62px;gap:28px}.timeline article{grid-template-columns:1fr;gap:7px}.values{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr;grid-auto-rows:235px}.gallery-item.is-wide{grid-column:auto;grid-row:span 2}.thanks{padding:28px;gap:30px}.lightbox-nav{width:42px;height:52px}.lightbox-prev{left:8px}.lightbox-next{right:8px}.lightbox-close{right:12px;top:12px}}
+</style>

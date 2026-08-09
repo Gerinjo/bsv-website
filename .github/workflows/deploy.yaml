@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -26,12 +26,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
+
+      - name: Sync Tag des Mädchenfußballs 2025 images
+        run: node scripts/sync-tdm-2025-images.mjs
+
+      - name: Persist TDM image assets
+        run: |
+          if git diff --quiet -- public/images/events/tdm/2025; then
+            echo "TDM-Bilder sind bereits aktuell."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/images/events/tdm/2025
+            git commit -m "Add TDM 2025 gallery images"
+            git push origin HEAD:main
+          fi
 
       - name: Setup Pages
         id: pages
@@ -43,7 +60,6 @@ jobs:
       - name: Build with Astro
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
-          PUBLIC_MCSHAPE_FORM_ENDPOINT: ${{ vars.PUBLIC_MCSHAPE_FORM_ENDPOINT }}
         run: |
           npx --no-install astro build \
             --site "${{ steps.pages.outputs.origin }}" \
