@@ -800,7 +800,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             <a href={withBase(`/kontakt?thema=team--${page.path.replaceAll('/', '--')}--trial`)}>Probetraining anfragen <span>↗</span></a>
           </section>
 
-          {hasTeamGallery && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><figure><img src="" alt="" /><figcaption></figcaption></figure></dialog>}
+          {hasTeamGallery && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><button class="gallery-nav gallery-prev" type="button" aria-label="Vorheriges Bild">‹</button><figure><img src="" alt="" /><figcaption></figcaption></figure><button class="gallery-nav gallery-next" type="button" aria-label="Nächstes Bild">›</button></dialog>}
         </div>
       )}
       {migratedBody && <article class="legacy-content" set:html={migratedBody} />}
@@ -872,20 +872,47 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
     const galleryDialog = document.querySelector<HTMLDialogElement>('.gallery-dialog');
     const galleryDialogImage = galleryDialog?.querySelector<HTMLImageElement>('img');
     const galleryDialogCaption = galleryDialog?.querySelector<HTMLElement>('figcaption');
+    const galleryPreviousButton = galleryDialog?.querySelector<HTMLButtonElement>('.gallery-prev');
+    const galleryNextButton = galleryDialog?.querySelector<HTMLButtonElement>('.gallery-next');
+    let activeGalleryTiles: HTMLButtonElement[] = [];
+    let activeGalleryIndex = 0;
+
+    const showGalleryImage = (index: number) => {
+      if (!galleryDialogImage || !galleryDialogCaption || !activeGalleryTiles.length) return;
+      activeGalleryIndex = (index + activeGalleryTiles.length) % activeGalleryTiles.length;
+      const tile = activeGalleryTiles[activeGalleryIndex];
+      galleryDialogImage.src = tile.dataset.galleryImage ?? '';
+      galleryDialogImage.alt = tile.dataset.galleryAlt ?? '';
+      galleryDialogCaption.textContent = `${tile.dataset.galleryCaption ?? ''} · ${activeGalleryIndex + 1} / ${activeGalleryTiles.length}`;
+      const hideNavigation = activeGalleryTiles.length < 2;
+      if (galleryPreviousButton) galleryPreviousButton.hidden = hideNavigation;
+      if (galleryNextButton) galleryNextButton.hidden = hideNavigation;
+    };
+
+    const moveGallery = (offset: number) => showGalleryImage(activeGalleryIndex + offset);
 
     document.querySelectorAll<HTMLButtonElement>('[data-gallery-image]').forEach((tile) => {
       tile.addEventListener('click', () => {
         if (!galleryDialog || !galleryDialogImage || !galleryDialogCaption) return;
-        galleryDialogImage.src = tile.dataset.galleryImage ?? '';
-        galleryDialogImage.alt = tile.dataset.galleryAlt ?? '';
-        galleryDialogCaption.textContent = tile.dataset.galleryCaption ?? '';
+        const galleryScope = tile.closest<HTMLElement>('.team-gallery-panel, .d-girls-gallery, .department-gallery');
+        activeGalleryTiles = galleryScope
+          ? [...galleryScope.querySelectorAll<HTMLButtonElement>('[data-gallery-image]')]
+          : [tile];
+        showGalleryImage(activeGalleryTiles.indexOf(tile));
         galleryDialog.showModal();
       });
     });
 
+    galleryPreviousButton?.addEventListener('click', () => moveGallery(-1));
+    galleryNextButton?.addEventListener('click', () => moveGallery(1));
     galleryDialog?.querySelector<HTMLButtonElement>('.gallery-close')?.addEventListener('click', () => galleryDialog.close());
     galleryDialog?.addEventListener('click', (event) => {
       if (event.target === galleryDialog) galleryDialog.close();
+    });
+    galleryDialog?.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      moveGallery(event.key === 'ArrowRight' ? 1 : -1);
     });
 
     document.querySelectorAll<HTMLElement>('.team-gallery-tabs-wrap').forEach((galleryTabs) => {
@@ -1283,6 +1310,11 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .gallery-dialog img { width:100%; max-height:calc(100vh - 110px); display:block; object-fit:contain; background:#03130c; }
   .gallery-dialog figcaption { padding:18px 24px; color:#d4e0d8; font-size:.82rem; font-weight:800; }
   .gallery-close { position:absolute; z-index:2; right:14px; top:14px; width:42px; aspect-ratio:1; border:0; border-radius:50%; background:var(--yellow); color:var(--dark); font-size:1.6rem; line-height:1; cursor:pointer; }
+  .gallery-nav { position:absolute; z-index:2; top:50%; width:52px; height:76px; border:0; border-radius:5px; background:rgb(3 19 12 / 72%); color:white; font-size:3rem; line-height:1; cursor:pointer; transform:translateY(-50%); }
+  .gallery-prev { left:14px; }
+  .gallery-next { right:14px; }
+  .gallery-nav:hover,.gallery-nav:focus-visible { background:var(--yellow); color:var(--dark); }
+  .gallery-nav[hidden] { display:none; }
   .d-girls-cta { position:relative; overflow:hidden; min-height:320px; padding:58px 64px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:65px; border-radius:8px; background:var(--yellow); }
   .d-girls-cta::after { content:attr(data-letter); position:absolute; right:15px; top:-75px; color:rgb(255 255 255 / 42%); font-size:20rem; font-weight:900; line-height:1; }
   .d-girls-cta > div,.d-girls-cta > a { position:relative; z-index:1; }
@@ -1292,7 +1324,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-cta > a span { color:var(--yellow); }
   @media(max-width:900px){.d-girls-opening,.d-girls-training{grid-template-columns:1fr;gap:45px}.coach-card{grid-template-columns:145px 1fr;padding:30px}.coach-portrait{width:145px}.d-girls-cta{grid-template-columns:1fr}.d-girls-cta>a{justify-self:start}}
   @media(max-width:700px){.d-girls-section-head{align-items:flex-start;flex-direction:column}.coach-grid{grid-template-columns:1fr}.coach-grid.is-single .coach-card{grid-column:1}.d-girls-gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:230px}.gallery-tile,.gallery-tile:nth-child(1),.gallery-tile:nth-child(2){grid-column:span 1;grid-row:span 1}.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:span 2;grid-row:span 1}.gallery-tile:nth-child(6) img{object-position:center 22%}}
-  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-sponsor{grid-template-columns:1fr}.team-sponsor>span{justify-self:start}.team-matches-widget{margin:-30px 0 80px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}}
+  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-sponsor{grid-template-columns:1fr}.team-sponsor>span{justify-self:start}.team-matches-widget{margin:-30px 0 80px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}.gallery-nav{width:44px;height:62px;background:rgb(3 19 12 / 78%)}.gallery-prev{left:7px}.gallery-next{right:7px}}
 
   .referee-hero .hero-grid { grid-template-columns:minmax(0,1fr) minmax(360px,390px); gap:50px; }
   .referee-hero h1 { font-size:clamp(3.2rem,4.6vw,4.15rem); }
