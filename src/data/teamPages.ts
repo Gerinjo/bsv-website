@@ -24,6 +24,12 @@ export type TeamPhoto = {
   size?: string;
 };
 
+export type TeamGalleryTab = {
+  id: string;
+  label: string;
+  photos: TeamPhoto[];
+};
+
 export type TeamPartner = {
   label: string;
   href?: string;
@@ -48,6 +54,7 @@ export type TeamProfile = {
   image?: string;
   coaches: TeamCoach[];
   gallery: TeamPhoto[];
+  galleryTabs?: TeamGalleryTab[];
   partners?: TeamPartner[];
   squad?: string[];
   letter: string;
@@ -382,7 +389,12 @@ const configs: TeamConfig[] = [
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/jugend/teams/2526/u17-b-juniorinnen.jpg', gallery: bGirlsGallery,
+    trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/jugend/teams/2526/u17-b-juniorinnen.jpg',
+    galleryTabs: [{
+      id: '2025-sg-kirchen-hausen-sporttage',
+      label: '2025 – SG Kirchen/Hausen Sporttage',
+      photos: bGirlsGallery,
+    }],
     coaches: [{ name: 'Sven Goldhagen', role: 'Cheftrainer', qualification: 'DFB-Basis-Coach', image: '/images/verein/personen/sven-goldhagen.jpg', email: 'sven.goldhagen@bsvnordstern.de', phone: '+491727404080' }, { name: 'Sonja Thomen', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach', email: 'sonja.thomen@bsvnordstern.de' }],
   },
   {

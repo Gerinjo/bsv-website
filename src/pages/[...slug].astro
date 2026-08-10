@@ -96,6 +96,10 @@ const isHistoryPage = page.path === 'verein/geschichte';
 const isOrganizationPage = page.path === 'verein/organigramm';
 const teamProfile = teamProfiles[page.path];
 const isTeamPage = Boolean(teamProfile);
+const hasTeamGallery = Boolean(teamProfile && (
+  teamProfile.gallery.length > 0 ||
+  teamProfile.galleryTabs?.some((gallery) => gallery.photos.length > 0)
+));
 const documentProfile = documentPages[page.path];
 const isDocumentPage = Boolean(documentProfile);
 const isCancellationPage = page.path === 'verein/kuendigung';
@@ -739,17 +743,55 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </section>
           )}
 
-          {teamProfile.gallery.length > 0 && (
+          {hasTeamGallery && (
             <section class="d-girls-gallery-section">
               <div class="d-girls-section-head gallery-head"><div><span>Team-Momente</span><h2>Mehr als 90 Minuten.</h2></div><p>Vorhandene Bilder zeigen Training, Spieltage und gemeinsame Erlebnisse der Mannschaft.</p></div>
-              <div class:list={["d-girls-gallery", { "is-single": teamProfile.gallery.length === 1 }]}>
-                {teamProfile.gallery.map((photo, index) => (
-                  <button class:list={["gallery-tile", photo.size && `is-${photo.size}`]} type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
-                    <img src={withBase(photo.src)} alt={photo.alt} width="1600" height="1200" loading="lazy" />
-                    <span><small>{String(index + 1).padStart(2, '0')}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
-                  </button>
-                ))}
-              </div>
+              {teamProfile.galleryTabs?.length ? (
+                <div class="team-gallery-tabs-wrap">
+                  <div class="team-gallery-tabs" role="tablist" aria-label="Galerie auswählen">
+                    {teamProfile.galleryTabs.map((gallery, index) => (
+                      <button
+                        type="button"
+                        role="tab"
+                        id={`team-gallery-tab-${gallery.id}`}
+                        aria-controls={`team-gallery-panel-${gallery.id}`}
+                        aria-selected={index === 0 ? 'true' : 'false'}
+                        tabindex={index === 0 ? 0 : -1}
+                      >
+                        <strong>{gallery.label}</strong>
+                        <span>{gallery.photos.length} {gallery.photos.length === 1 ? 'Bild' : 'Bilder'}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {teamProfile.galleryTabs.map((gallery, tabIndex) => (
+                    <div
+                      class="team-gallery-panel"
+                      id={`team-gallery-panel-${gallery.id}`}
+                      role="tabpanel"
+                      aria-labelledby={`team-gallery-tab-${gallery.id}`}
+                      hidden={tabIndex !== 0}
+                    >
+                      <div class:list={["d-girls-gallery", { "is-single": gallery.photos.length === 1 }]}>
+                        {gallery.photos.map((photo, index) => (
+                          <button class:list={["gallery-tile", photo.size && `is-${photo.size}`]} type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
+                            <img src={withBase(photo.src)} alt={photo.alt} width="1600" height="1200" loading="lazy" />
+                            <span><small>{String(index + 1).padStart(2, '0')}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div class:list={["d-girls-gallery", { "is-single": teamProfile.gallery.length === 1 }]}>
+                  {teamProfile.gallery.map((photo, index) => (
+                    <button class:list={["gallery-tile", photo.size && `is-${photo.size}`]} type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
+                      <img src={withBase(photo.src)} alt={photo.alt} width="1600" height="1200" loading="lazy" />
+                      <span><small>{String(index + 1).padStart(2, '0')}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </section>
           )}
 
@@ -758,7 +800,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             <a href={withBase(`/kontakt?thema=team--${page.path.replaceAll('/', '--')}--trial`)}>Probetraining anfragen <span>↗</span></a>
           </section>
 
-          {teamProfile.gallery.length > 0 && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><figure><img src="" alt="" /><figcaption></figcaption></figure></dialog>}
+          {hasTeamGallery && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><figure><img src="" alt="" /><figcaption></figcaption></figure></dialog>}
         </div>
       )}
       {migratedBody && <article class="legacy-content" set:html={migratedBody} />}
@@ -844,6 +886,32 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
     galleryDialog?.querySelector<HTMLButtonElement>('.gallery-close')?.addEventListener('click', () => galleryDialog.close());
     galleryDialog?.addEventListener('click', (event) => {
       if (event.target === galleryDialog) galleryDialog.close();
+    });
+
+    document.querySelectorAll<HTMLElement>('.team-gallery-tabs-wrap').forEach((galleryTabs) => {
+      const buttons = [...galleryTabs.querySelectorAll<HTMLButtonElement>('.team-gallery-tabs [role="tab"]')];
+      const panels = [...galleryTabs.querySelectorAll<HTMLElement>('.team-gallery-panel[role="tabpanel"]')];
+
+      const activateGallery = (activeButton: HTMLButtonElement) => {
+        buttons.forEach((button) => {
+          const isActive = button === activeButton;
+          button.setAttribute('aria-selected', String(isActive));
+          button.tabIndex = isActive ? 0 : -1;
+        });
+        panels.forEach((panel) => panel.hidden = panel.id !== activeButton.getAttribute('aria-controls'));
+      };
+
+      buttons.forEach((button, index) => {
+        button.addEventListener('click', () => activateGallery(button));
+        button.addEventListener('keydown', (event) => {
+          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+          event.preventDefault();
+          const offset = event.key === 'ArrowRight' ? 1 : -1;
+          const nextButton = buttons[(index + offset + buttons.length) % buttons.length];
+          activateGallery(nextButton);
+          nextButton.focus();
+        });
+      });
     });
 
     document.querySelectorAll<HTMLDetailsElement>('.org-unit').forEach((unit) => {
@@ -1186,6 +1254,14 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   :global(.d-girls-page .contact-value[hidden]) { display:none; }
   .d-girls-gallery-section { margin-bottom:115px; }
   .gallery-head { padding-top:70px; border-top:1px solid var(--girls-line); }
+  .team-gallery-tabs { margin-bottom:24px; display:flex; gap:8px; overflow-x:auto; border-bottom:1px solid var(--girls-line); }
+  .team-gallery-tabs button { min-width:285px; padding:15px 18px 14px; flex:0 0 auto; border:0; border-bottom:4px solid transparent; background:transparent; color:#65756b; font:inherit; text-align:left; cursor:pointer; }
+  .team-gallery-tabs strong,.team-gallery-tabs span { display:block; }
+  .team-gallery-tabs strong { font-size:.82rem; }
+  .team-gallery-tabs span { margin-top:4px; font-size:.63rem; font-weight:800; }
+  .team-gallery-tabs button[aria-selected="true"] { border-bottom-color:var(--yellow); background:var(--green); color:white; }
+  .team-gallery-tabs button:focus-visible { outline:3px solid rgb(22 79 50 / 25%); outline-offset:2px; }
+  .team-gallery-panel[hidden] { display:none; }
   .d-girls-gallery { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); grid-auto-rows:220px; gap:15px; }
   .d-girls-gallery.is-single .gallery-tile { grid-column:span 12; grid-row:span 2; }
   .gallery-tile { position:relative; overflow:hidden; min-width:0; padding:0; grid-column:span 4; border:0; border-radius:7px; background:var(--dark); color:white; cursor:pointer; text-align:left; }
