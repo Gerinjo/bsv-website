@@ -147,7 +147,7 @@ export const documentPages: Record<string, DocumentProfile> = {
       },
     ],
     pdf: {
-      href: '/images/migration/7bdd8e83ca-BSV_Beitragsordnung_260101.pdf',
+      href: '/images/archive/legacy/7bdd8e83ca-BSV_Beitragsordnung_260101.pdf',
       label: 'Beitragsordnung öffnen',
       meta: 'Vollständige Fassung · PDF',
     },

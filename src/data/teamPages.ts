@@ -71,7 +71,7 @@ type TeamConfig = Omit<TeamProfile, 'coaches' | 'gallery' | 'squad'> & {
   sourcePath?: string;
 };
 
-const placeholderImage = '/images/migration/5ea5d4dc01-placeholder-32.jpg';
+const placeholderImage = '/images/archive/legacy/5ea5d4dc01-placeholder-32.jpg';
 
 const youthYears = {
   a: '2008 und 2009',
@@ -107,7 +107,8 @@ const associationTeamPaths = new Set([
 ]);
 
 const coachHomeClubs: Record<string, string> = {
-  'Matthias Becht': 'BSV Nordstern Radolfzell',
+  'Mathias Becht': 'BSV Nordstern Radolfzell',
+  'Max Menzel': 'BSV Nordstern Radolfzell',
   'Miriam Lipp': 'FC Öhningen-Gaienhofen',
   'Emel Bayram': 'BSV Nordstern Radolfzell',
   'Ole Schmal': 'BSV Nordstern Radolfzell',
@@ -192,19 +193,19 @@ const bBoysGallery: TeamPhoto[] = [
   ['ebd4e05546-BSV2023-197.jpg', 'Jeder Moment zählt'],
   ['5da2dfbd32-BSV2023-43.jpg', 'Junge Sterne'],
 ].map(([file, caption], index) => ({
-  src: `/images/migration/${file}`,
+  src: `/images/archive/legacy/${file}`,
   alt: `${caption} bei den U17 B-Junioren`,
   caption,
   size: index === 0 ? 'wide' : index === 1 ? 'tall' : '',
 }));
 
 const bGirlsGallery: TeamPhoto[] = [
-  { src: '/images/migration/111514b3f2-WhatsApp-Image-2025-06-29-at-17.50.32.jpeg', alt: 'Gemeinsamer Mannschaftsmoment der B-Juniorinnen', caption: 'Gemeinsam unterwegs', size: 'wide' },
-  { src: '/images/migration/fd4387b0f8-WhatsApp-Image-2025-06-29-at-17.50.33.jpeg', alt: 'Die B-Juniorinnen bei einer gemeinsamen Aktivität', caption: 'Als Team zusammen', size: 'tall' },
-  { src: '/images/migration/f6b7d3c5cb-WhatsApp-Image-2025-06-29-at-17.50.38.jpeg', alt: 'Teamtag der B-Juniorinnen', caption: 'Erlebnisse verbinden' },
-  { src: '/images/migration/c24d2dded5-WhatsApp-Image-2025-06-29-at-17.50.36.jpeg', alt: 'Spielerinnen der B-Juniorinnen beim Teamtag', caption: 'Zeit füreinander' },
-  { src: '/images/migration/06ded97c94-WhatsApp-Image-2025-06-29-at-17.50.31.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
-  { src: '/images/migration/6cbc4be7a5-WhatsApp-Image-2025-06-29-at-17.50.34.jpeg', alt: 'Gemeinsamer Abschluss der B-Juniorinnen', caption: 'Ein Tag zum Erinnern', size: 'tall' },
+  { src: '/images/archive/legacy/111514b3f2-WhatsApp-Image-2025-06-29-at-17.50.32.jpeg', alt: 'Gemeinsamer Mannschaftsmoment der B-Juniorinnen', caption: 'Gemeinsam unterwegs', size: 'wide' },
+  { src: '/images/archive/legacy/fd4387b0f8-WhatsApp-Image-2025-06-29-at-17.50.33.jpeg', alt: 'Die B-Juniorinnen bei einer gemeinsamen Aktivität', caption: 'Als Team zusammen', size: 'tall' },
+  { src: '/images/archive/legacy/f6b7d3c5cb-WhatsApp-Image-2025-06-29-at-17.50.38.jpeg', alt: 'Teamtag der B-Juniorinnen', caption: 'Erlebnisse verbinden' },
+  { src: '/images/archive/legacy/c24d2dded5-WhatsApp-Image-2025-06-29-at-17.50.36.jpeg', alt: 'Spielerinnen der B-Juniorinnen beim Teamtag', caption: 'Zeit füreinander' },
+  { src: '/images/archive/legacy/06ded97c94-WhatsApp-Image-2025-06-29-at-17.50.31.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
+  { src: '/images/archive/legacy/6cbc4be7a5-WhatsApp-Image-2025-06-29-at-17.50.34.jpeg', alt: 'Gemeinsamer Abschluss der B-Juniorinnen', caption: 'Ein Tag zum Erinnern', size: 'tall' },
 ];
 
 const bGirlsCupFinal2026Gallery: TeamPhoto[] = [
@@ -271,12 +272,12 @@ const bGirlsSolarCupTrip2026Gallery: TeamPhoto[] = [
 }));
 
 const dGirlsGallery: TeamPhoto[] = [
-  { src: '/images/migration/003f2fe06e-WhatsApp-Image-2025-06-28-at-17.56.57.jpeg', alt: 'Die D-Juniorinnen bei einer gemeinsamen Veranstaltung', caption: 'Gemeinsam unterwegs', size: 'wide' },
-  { src: '/images/migration/8d1d3ff0dd-WhatsApp-Image-2025-06-28-at-20.05.07-1.jpeg', alt: 'Die Mannschaft gemeinsam im See', caption: 'Abkühlung als Team', size: 'tall' },
-  { src: '/images/migration/299b20ab41-WhatsApp-Image-2025-06-28-at-20.05.00.jpeg', alt: 'Die D-Juniorinnen beim Beachsoccer', caption: 'Fußball funktioniert überall' },
-  { src: '/images/migration/c6c3081a6a-WhatsApp-Image-2025-06-28-at-20.57.40-1.jpeg', alt: 'Gemeinsame Pause der D-Juniorinnen', caption: 'Zeit füreinander' },
-  { src: '/images/migration/bad3cc98b7-WhatsApp-Image-2025-06-28-at-20.57.40.jpeg', alt: 'Das Team bei einer gemeinsamen Mahlzeit', caption: 'Stärkung für die Mannschaft', size: 'wide' },
-  { src: '/images/migration/3b0b7f4b79-WhatsApp-Image-2025-06-28-at-17.56.56.jpeg', alt: 'Spielerinnen mit einer Auszeichnung', caption: 'Ein Tag zum Erinnern', size: 'tall' },
+  { src: '/images/archive/legacy/003f2fe06e-WhatsApp-Image-2025-06-28-at-17.56.57.jpeg', alt: 'Die D-Juniorinnen bei einer gemeinsamen Veranstaltung', caption: 'Gemeinsam unterwegs', size: 'wide' },
+  { src: '/images/archive/legacy/8d1d3ff0dd-WhatsApp-Image-2025-06-28-at-20.05.07-1.jpeg', alt: 'Die Mannschaft gemeinsam im See', caption: 'Abkühlung als Team', size: 'tall' },
+  { src: '/images/archive/legacy/299b20ab41-WhatsApp-Image-2025-06-28-at-20.05.00.jpeg', alt: 'Die D-Juniorinnen beim Beachsoccer', caption: 'Fußball funktioniert überall' },
+  { src: '/images/archive/legacy/c6c3081a6a-WhatsApp-Image-2025-06-28-at-20.57.40-1.jpeg', alt: 'Gemeinsame Pause der D-Juniorinnen', caption: 'Zeit füreinander' },
+  { src: '/images/archive/legacy/bad3cc98b7-WhatsApp-Image-2025-06-28-at-20.57.40.jpeg', alt: 'Das Team bei einer gemeinsamen Mahlzeit', caption: 'Stärkung für die Mannschaft', size: 'wide' },
+  { src: '/images/archive/legacy/3b0b7f4b79-WhatsApp-Image-2025-06-28-at-17.56.56.jpeg', alt: 'Spielerinnen mit einer Auszeichnung', caption: 'Ein Tag zum Erinnern', size: 'tall' },
 ];
 
 const configs: TeamConfig[] = [
@@ -294,7 +295,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
     trial: 'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image: '/images/aktive/teams/2526/herren-1.jpeg', showSquad: true,
-    gallery: [{ src: '/images/migration/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
+    gallery: [{ src: '/images/archive/legacy/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
   },
   {
     path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga C Staffel 1`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
@@ -317,7 +318,10 @@ const configs: TeamConfig[] = [
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
     image: '/images/aktive/teams/2526/frauen.jpg',
-    coaches: [{ name: 'Matthias Becht', role: 'Trainer' }],
+    coaches: [
+      { name: 'Mathias Becht', role: 'Trainer' },
+      { name: 'Max Menzel', role: 'Co-Trainer', phone: '+49 170 4971707' },
+    ],
   },
   {
     path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Frauen Kreisliga A`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
