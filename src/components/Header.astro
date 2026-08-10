@@ -266,14 +266,10 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     nav.is-open { display: block; }
     .menu { height: auto; display: block; padding: 14px 20px 26px; }
     .menu-item { height: auto; display: block; border-bottom: 1px solid #e4eae5; }
-    .menu-link { height: auto; justify-content: space-between; padding: 16px 4px; }
-    .mega-menu { position: static; width: auto; padding: 0; opacity: 1; visibility: visible; transform: none; }
-    .mega-inner { width: auto; max-height:none; padding: 3px 4px 20px 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; overflow:visible; border: 0; box-shadow: none; }
-    .club-mega { display:block; }
-    .mega-directory-head { margin-bottom:18px; }
-    .mega-directory-head > a { display:none; }
-    .mega-groups { gap:26px 24px; }
-    .club-preview { display: none; }
+    .menu-link { height: auto; justify-content: space-between; padding: 17px 4px; font-size: .92rem; }
+    .menu-link span { display: none; }
+    .menu-link::after { content: '→'; color: #78917e; font-size: .9rem; }
+    .mega-menu { display: none; }
     .join { display: inline-block; margin: 22px 0 0; }
   }
   @media (max-width: 620px) {
@@ -288,6 +284,5 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     .navigation { min-height: 74px; }
     .brand-mark { width:50px; height:50px; }
     .brand strong { font-size: .92rem; }
-    .mega-inner,.mega-groups { grid-template-columns: 1fr; }
   }
 </style>
