@@ -249,6 +249,27 @@ const bGirlsCupFinal2026Gallery: TeamPhoto[] = [
   size: index === 0 ? 'wide' : index === 1 ? 'tall' : '',
 }));
 
+const bGirlsSolarCupTrip2026Gallery: TeamPhoto[] = [
+  ['IMG_20260711_161336418', 'Gemeinsame Pause beim Solarcup'],
+  ['IMG_20260711_184034345_HDR', 'Teamaufgabe beim Solarcup'],
+  ['IMG_20260711_184053820_HDR', 'Bereit im Tor'],
+  ['IMG_20260711_184113695_HDR', 'Gemeinsam bei der Teamaufgabe'],
+  ['IMG_20260711_185908976_HDR', 'Als Mannschaft am Spielfeldrand'],
+  ['IMG_20260711_195443453_HDR', 'Teamzeit im Schatten'],
+  ['IMG_20260711_195518996_HDR', 'Stärkung nach dem Turnier'],
+  ['IMG_20260711_195751196_HDR', 'Gute Laune beim gemeinsamen Essen'],
+  ['IMG-20260712-WA0004', 'Kanus bereit für den Teamausflug'],
+  ['IMG-20260712-WA0005', 'Gemeinsam unterwegs im Kanu'],
+  ['IMG-20260712-WA0019', 'Startklar für die Kanutour'],
+  ['IMG-20260712-WA0021', 'Unterwegs auf dem Fluss'],
+  ['IMG-20260712-WA0023', 'Pause auf dem Wasser'],
+].map(([file, caption], index) => ({
+  src: `/images/jugend/juniorinnen/u17/2026-solarcup-teamausflug/${file}.webp`,
+  alt: `${caption} beim Solarcup-Teamausflug der B-Juniorinnen 2026`,
+  caption,
+  size: index === 0 ? 'wide' : index === 2 ? 'tall' : '',
+}));
+
 const dGirlsGallery: TeamPhoto[] = [
   { src: '/images/migration/003f2fe06e-WhatsApp-Image-2025-06-28-at-17.56.57.jpeg', alt: 'Die D-Juniorinnen bei einer gemeinsamen Veranstaltung', caption: 'Gemeinsam unterwegs', size: 'wide' },
   { src: '/images/migration/8d1d3ff0dd-WhatsApp-Image-2025-06-28-at-20.05.07-1.jpeg', alt: 'Die Mannschaft gemeinsam im See', caption: 'Abkühlung als Team', size: 'tall' },
@@ -433,6 +454,11 @@ const configs: TeamConfig[] = [
     trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
     trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/jugend/teams/2526/u17-b-juniorinnen.jpg',
     galleryTabs: [
+      {
+        id: '2026-solarcup-teamausflug',
+        label: '2026 – Solarcup Teamausflug',
+        photos: bGirlsSolarCupTrip2026Gallery,
+      },
       {
         id: '2026-pokalfinale',
         label: '2026 – Pokalfinale',
