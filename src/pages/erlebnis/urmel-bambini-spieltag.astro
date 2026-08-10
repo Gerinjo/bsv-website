@@ -8,16 +8,15 @@ const sourceUrl = 'https://bsvnordstern.de/j4/index.php?view=article&id=186:urme
 const urmelUrl = 'https://www.urmel-kinder-krebshilfe.org/';
 const donationUrl = 'https://www.urmel-kinder-krebshilfe.org/spenden-hilfe.html';
 const urmelLogo = withBase('/images/events/urmel/urmel-kinder-krebshilfe.webp');
-const gallerySprite = withBase('/images/events/urmel/2026-gallery.webp');
 const gallery = [
-  'Spielszene beim URMEL Bambini Spieltag 2026',
-  'Torschuss beim URMEL Bambini Spieltag 2026',
-  'Bambini-Spiel auf dem Kleinfeld',
-  'Mannschaften beim URMEL Bambini Spieltag',
-  'Medaillen für die Kinder',
-  'Siegerehrung beim URMEL Bambini Spieltag',
-  'Trainerinnen und Trainer des Spieltags',
-  'Gruppenfoto zum Abschluss des URMEL Bambini Spieltags 2026',
+  { src: withBase('/images/events/urmel/2026/01-spielszene.webp'), alt: 'Spielszene beim URMEL Bambini Spieltag 2026' },
+  { src: withBase('/images/events/urmel/2026/02-torschuss.webp'), alt: 'Torschuss beim URMEL Bambini Spieltag 2026' },
+  { src: withBase('/images/events/urmel/2026/03-kleinfeld.webp'), alt: 'Bambini-Spiel auf dem Kleinfeld' },
+  { src: withBase('/images/events/urmel/2026/04-turniertag.webp'), alt: 'Mannschaften beim URMEL Bambini Spieltag' },
+  { src: withBase('/images/events/urmel/2026/05-medaillen.webp'), alt: 'Medaillen für die Kinder' },
+  { src: withBase('/images/events/urmel/2026/06-siegerehrung.webp'), alt: 'Siegerehrung beim URMEL Bambini Spieltag' },
+  { src: withBase('/images/events/urmel/2026/07-trainerteam.webp'), alt: 'Trainerinnen und Trainer des Spieltags' },
+  { src: withBase('/images/events/urmel/2026/08-gruppenfoto.webp'), alt: 'Gruppenfoto zum Abschluss des URMEL Bambini Spieltags 2026' },
 ];
 ---
 
@@ -45,24 +44,12 @@ const gallery = [
       <div class="gallery-head"><div><span>Galerie</span><h2>Impressionen <em>2026.</em></h2></div><p>Acht Eindrücke vom URMEL Bambini Spieltag am 1. Mai 2026.</p></div>
       <div class="year-tabs"><span>2026</span></div>
       <div class="gallery-grid">
-        {gallery.map((alt, index) => {
-          const x = -(index % 4) * 100;
-          const y = -Math.floor(index / 4) * 100;
-          return (
-            <figure class:list={["gallery-item", index === 7 && "is-wide"]}>
-              <div class="sprite-window">
-                <img
-                  src={gallerySprite}
-                  alt={alt}
-                  loading={index < 3 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  style={`--sprite-left:${x}%;--sprite-top:${y}%;`}
-                />
-              </div>
-              <figcaption>{alt}</figcaption>
-            </figure>
-          );
-        })}
+        {gallery.map((image, index) => (
+          <a href={image.src} target="_blank" rel="noreferrer" class:list={["gallery-item", index === 7 && "is-wide"]}>
+            <img src={image.src} alt={image.alt} loading={index < 3 ? 'eager' : 'lazy'} decoding="async" />
+            <span>Vergrößern ↗</span>
+          </a>
+        ))}
       </div>
     </section>
 
@@ -76,5 +63,5 @@ const gallery = [
 </Layout>
 
 <style>
-:global(:root){--ug:#092f20;--um:#164f32;--uy:#f4d638;--up:#f4f7f4}.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.urmel-page{background:var(--up);color:#15261b}.hero{padding:76px 0 86px;background:linear-gradient(145deg,#071f16,#164f32);color:#fff}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:70px;align-items:center}.hero-copy>a{color:var(--uy);font-size:.74rem;font-weight:900;text-decoration:none}.hero-copy>span,.section-title>span,.purpose span,.urmel-brand>span,.next>div>span,.gallery-head span{display:block;color:var(--uy);font-size:.64rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.hero-copy>span{margin-top:44px}.hero h1,.report h2,.purpose h2,.urmel-info h2,.next h2,.gallery h2{margin:12px 0 22px;font-size:clamp(3rem,5.8vw,6rem);line-height:.9;letter-spacing:-.05em}.hero h1 em,.report h2 em,.purpose h2 em,.urmel-info h2 em,.next h2 em,.gallery h2 em{font-family:Georgia,serif;font-weight:400;color:var(--uy)}.hero-copy>p{max-width:650px;color:#d2e0d7;line-height:1.72}.hero-meta{margin-top:28px;display:flex;gap:10px}.hero-meta>span{padding:11px 13px;display:grid;gap:2px}.next-date{background:var(--uy);color:var(--ug)}.review-date{border:1px solid #ffffff33}.hero-meta small{font-size:.54rem;font-weight:950;text-transform:uppercase}.hero-meta em{color:#abc0b3;font-size:.6rem;font-style:normal}.hero-card{min-height:390px;padding:34px;display:flex;flex-direction:column;justify-content:center;gap:18px;background:#fff;box-shadow:18px 18px 0 #00000029;transform:rotate(1deg)}.hero-card img{width:100%;max-height:230px;object-fit:contain}.hero-card small{color:var(--um);font-weight:950;text-transform:uppercase}.hero-card strong{color:var(--ug);font-size:2rem}.hero-card strong em{color:#93bd00}.report{padding:90px 0 72px;display:grid;grid-template-columns:.85fr 1.15fr;gap:78px}.section-title>span,.gallery-head span,.urmel-brand>span,.next>div>span{color:var(--um)}.report h2,.gallery h2,.purpose h2,.urmel-info h2,.next h2{font-size:clamp(2.6rem,4.5vw,4.6rem)}.report h2 em,.gallery h2 em,.urmel-info h2 em,.next h2 em{color:var(--um)}.report-copy p,.purpose-copy p,.urmel-info-card p,.next p,.gallery-head p{color:#607067;line-height:1.8}.facts{padding:0 0 80px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.facts article{padding:24px;background:#fff;border-top:4px solid var(--uy)}.facts small{color:var(--um);font-weight:950}.facts strong{display:block;margin:25px 0 8px}.facts p{color:#68776e;font-size:.75rem}.gallery{padding:70px 0 95px;border-top:1px solid #d9e2dc}.gallery-head{display:flex;align-items:end;justify-content:space-between;gap:50px}.gallery-head p{max-width:390px}.year-tabs{margin:20px 0 16px;border-bottom:1px solid #d7dfda}.year-tabs span{display:inline-block;padding:10px 20px;background:var(--ug);color:#fff;font-weight:950;box-shadow:inset 0 -4px var(--uy)}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.gallery-item{position:relative;margin:0;overflow:hidden;aspect-ratio:3/2;background:#dce6df}.gallery-item.is-wide{grid-column:span 2}.sprite-window{position:absolute;inset:0;overflow:hidden}.sprite-window img{position:absolute;left:var(--sprite-left);top:var(--sprite-top);width:400%;height:200%;max-width:none;object-fit:fill;display:block;transition:transform .25s}.gallery-item:hover .sprite-window img{transform:scale(1.015)}.gallery-item figcaption{position:absolute;z-index:2;left:10px;right:10px;bottom:10px;padding:6px 8px;background:rgb(9 47 32 / 90%);color:#fff;font-size:.58rem;font-weight:850}.purpose{padding:82px 0;background:var(--ug);color:#fff}.purpose-grid,.urmel-info-card,.next{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px}.purpose h2{color:#fff}.purpose-copy p{color:#c2d2c8}.urmel-info{padding:92px 0}.urmel-info-card{padding:50px;background:#fff}.urmel-brand img{width:min(100%,330px);margin-bottom:25px}.actions{display:flex;gap:10px;flex-wrap:wrap}.actions a,.next a{padding:15px 17px;background:var(--ug);color:#fff;text-decoration:none;font-weight:950}.actions a.is-yellow{background:var(--uy);color:var(--ug)}.next{margin-bottom:95px;padding:44px 48px;background:#edf2ee;border-left:6px solid var(--uy)}@media(max-width:900px){.hero-grid,.report,.purpose-grid,.urmel-info-card,.next{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero-meta{flex-direction:column}.facts,.gallery-grid{grid-template-columns:1fr}.gallery-item.is-wide{grid-column:auto}.gallery-head{display:block}.hero-card{min-height:280px}.urmel-info-card,.next{padding:30px 26px}}
+:global(:root){--ug:#092f20;--um:#164f32;--uy:#f4d638;--up:#f4f7f4}.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.urmel-page{background:var(--up);color:#15261b}.hero{padding:76px 0 86px;background:linear-gradient(145deg,#071f16,#164f32);color:#fff}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:70px;align-items:center}.hero-copy>a{color:var(--uy);font-size:.74rem;font-weight:900;text-decoration:none}.hero-copy>span,.section-title>span,.purpose span,.urmel-brand>span,.next>div>span,.gallery-head span{display:block;color:var(--uy);font-size:.64rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.hero-copy>span{margin-top:44px}.hero h1,.report h2,.purpose h2,.urmel-info h2,.next h2,.gallery h2{margin:12px 0 22px;font-size:clamp(3rem,5.8vw,6rem);line-height:.9;letter-spacing:-.05em}.hero h1 em,.report h2 em,.purpose h2 em,.urmel-info h2 em,.next h2 em,.gallery h2 em{font-family:Georgia,serif;font-weight:400;color:var(--uy)}.hero-copy>p{max-width:650px;color:#d2e0d7;line-height:1.72}.hero-meta{margin-top:28px;display:flex;gap:10px}.hero-meta>span{padding:11px 13px;display:grid;gap:2px}.next-date{background:var(--uy);color:var(--ug)}.review-date{border:1px solid #ffffff33}.hero-meta small{font-size:.54rem;font-weight:950;text-transform:uppercase}.hero-meta em{color:#abc0b3;font-size:.6rem;font-style:normal}.hero-card{min-height:390px;padding:34px;display:flex;flex-direction:column;justify-content:center;gap:18px;background:#fff;box-shadow:18px 18px 0 #00000029;transform:rotate(1deg)}.hero-card img{width:100%;max-height:230px;object-fit:contain}.hero-card small{color:var(--um);font-weight:950;text-transform:uppercase}.hero-card strong{color:var(--ug);font-size:2rem}.hero-card strong em{color:#93bd00}.report{padding:90px 0 72px;display:grid;grid-template-columns:.85fr 1.15fr;gap:78px}.section-title>span,.gallery-head span,.urmel-brand>span,.next>div>span{color:var(--um)}.report h2,.gallery h2,.purpose h2,.urmel-info h2,.next h2{font-size:clamp(2.6rem,4.5vw,4.6rem)}.report h2 em,.gallery h2 em,.urmel-info h2 em,.next h2 em{color:var(--um)}.report-copy p,.purpose-copy p,.urmel-info-card p,.next p,.gallery-head p{color:#607067;line-height:1.8}.facts{padding:0 0 80px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.facts article{padding:24px;background:#fff;border-top:4px solid var(--uy)}.facts small{color:var(--um);font-weight:950}.facts strong{display:block;margin:25px 0 8px}.facts p{color:#68776e;font-size:.75rem}.gallery{padding:70px 0 95px;border-top:1px solid #d9e2dc}.gallery-head{display:flex;align-items:end;justify-content:space-between;gap:50px}.gallery-head p{max-width:390px}.year-tabs{margin:20px 0 16px;border-bottom:1px solid #d7dfda}.year-tabs span{display:inline-block;padding:10px 20px;background:var(--ug);color:#fff;font-weight:950;box-shadow:inset 0 -4px var(--uy)}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.gallery-item{position:relative;display:block;overflow:hidden;aspect-ratio:3/2;background:#dce6df}.gallery-item.is-wide{grid-column:span 2}.gallery-item img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .25s}.gallery-item:hover img{transform:scale(1.025)}.gallery-item>span{position:absolute;z-index:2;left:10px;bottom:10px;padding:6px 8px;background:rgb(9 47 32 / 90%);color:#fff;font-size:.58rem;font-weight:850}.purpose{padding:82px 0;background:var(--ug);color:#fff}.purpose-grid,.urmel-info-card,.next{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px}.purpose h2{color:#fff}.purpose-copy p{color:#c2d2c8}.urmel-info{padding:92px 0}.urmel-info-card{padding:50px;background:#fff}.urmel-brand img{width:min(100%,330px);margin-bottom:25px}.actions{display:flex;gap:10px;flex-wrap:wrap}.actions a,.next a{padding:15px 17px;background:var(--ug);color:#fff;text-decoration:none;font-weight:950}.actions a.is-yellow{background:var(--uy);color:var(--ug)}.next{margin-bottom:95px;padding:44px 48px;background:#edf2ee;border-left:6px solid var(--uy)}@media(max-width:900px){.hero-grid,.report,.purpose-grid,.urmel-info-card,.next{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero-meta{flex-direction:column}.facts,.gallery-grid{grid-template-columns:1fr}.gallery-item.is-wide{grid-column:auto}.gallery-head{display:block}.hero-card{min-height:280px}.urmel-info-card,.next{padding:30px 26px}}
 </style>
