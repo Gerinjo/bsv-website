@@ -123,6 +123,8 @@ Deno.serve(async (request) => {
   const lastName = text(body.lastName, 80);
   const email = text(body.email, 160).toLowerCase();
   const phone = text(body.phone, 40);
+  const clubName = text(body.clubName, 160);
+  const opponentTeam = text(body.opponentTeam, 100);
   const message = text(body.message, 5000);
   const captchaToken = text(body.captchaToken, 80);
   const captchaAnswer = typeof body.captchaAnswer === 'number'
@@ -133,6 +135,10 @@ Deno.serve(async (request) => {
 
   if (!routing || firstName.length < 2 || lastName.length < 2 || message.length < 10) {
     return json({ ok: false, message: 'Bitte prüfe deine Eingaben.' }, 422, origin);
+  }
+
+  if (routing.requestType === 'freundschaftsspiel' && (clubName.length < 2 || opponentTeam.length < 1)) {
+    return json({ ok: false, message: 'Bitte gib den Vereinsnamen und die Mannschaftsbezeichnung an.' }, 422, origin);
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -191,6 +197,8 @@ Deno.serve(async (request) => {
       nachname: lastName,
       email,
       telefon: phone || null,
+      gegner_verein: routing.requestType === 'freundschaftsspiel' ? clubName : null,
+      gegner_mannschaft: routing.requestType === 'freundschaftsspiel' ? opponentTeam : null,
       nachricht: message,
       datenschutz_bestaetigt: true,
     })
@@ -206,6 +214,11 @@ Deno.serve(async (request) => {
   const emailConfig = getEmailRuntimeConfig();
   const safeMessage = escapeHtml(message).replaceAll('\n', '<br>');
   const safeFullName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;
+  const friendlyMatchRows = routing.requestType === 'freundschaftsspiel'
+    ? `
+            <tr><td><strong>Verein</strong></td><td>${escapeHtml(clubName)}</td></tr>
+            <tr><td><strong>Mannschaft</strong></td><td>${escapeHtml(opponentTeam)}</td></tr>`
+    : '';
 
   try {
     const emailResult = await sendEmail({
@@ -218,6 +231,7 @@ Deno.serve(async (request) => {
           <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px">
             <tr><td><strong>Anliegen</strong></td><td>${escapeHtml(routing.inquiryLabel)}</td></tr>
             <tr><td><strong>Zuordnung</strong></td><td>${escapeHtml(recipient.bezeichnung)}</td></tr>
+            ${friendlyMatchRows}
             <tr><td><strong>Name</strong></td><td>${safeFullName}</td></tr>
             <tr><td><strong>E-Mail</strong></td><td>${escapeHtml(email)}</td></tr>
             <tr><td><strong>Telefon</strong></td><td>${phone ? escapeHtml(phone) : 'nicht angegeben'}</td></tr>

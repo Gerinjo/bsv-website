@@ -27,6 +27,10 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
           </div>
           <div id="team-field" class="field full conditional" hidden><label for="team-select">Welche Mannschaft?</label><select id="team-select"><option value="">Bitte Mannschaft auswählen …</option></select></div>
           <div id="request-field" class="field full conditional" hidden><label for="request-type">Was möchtest du anfragen?</label><select id="request-type"><option value="">Bitte auswählen …</option><option value="trial">Probetraining</option><option value="friendly">Freundschaftsspiel</option><option value="general">Allgemeines</option></select></div>
+          <div id="friendly-fields" class="friendly-fields full conditional" hidden>
+            <div class="field"><label for="club-name">Vereinsname</label><input id="club-name" name="clubName" minlength="2" maxlength="160" autocomplete="organization" /></div>
+            <div class="field"><label for="opponent-team">Mannschaftsbezeichnung <small>(z. B. E1 oder E2)</small></label><input id="opponent-team" name="opponentTeam" minlength="1" maxlength="100" /></div>
+          </div>
           <div class="field"><label for="first-name">Vorname</label><input id="first-name" name="firstName" autocomplete="given-name" minlength="2" maxlength="80" required /></div>
           <div class="field"><label for="last-name">Name</label><input id="last-name" name="lastName" autocomplete="family-name" minlength="2" maxlength="80" required /></div>
           <div class="field"><label for="phone">Telefon <small>(optional)</small></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
@@ -50,6 +54,9 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   const teamSelect = document.querySelector('#team-select');
   const requestField = document.querySelector('#request-field');
   const requestType = document.querySelector('#request-type');
+  const friendlyFields = document.querySelector('#friendly-fields');
+  const clubName = document.querySelector('#club-name');
+  const opponentTeam = document.querySelector('#opponent-team');
   const topicInput = document.querySelector('#topic');
   const description = document.querySelector('#topic-description');
   const status = document.querySelector('#form-status');
@@ -94,13 +101,17 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
     requestField.hidden = !isTeam || !teamSelect.value;
     teamSelect.required = isTeam;
     requestType.required = isTeam;
+    const team = teams.find((entry) => entry.key === teamSelect.value);
+    const isFriendly = Boolean(isTeam && team && requestType.value === 'friendly');
+    friendlyFields.hidden = !isFriendly;
+    clubName.required = isFriendly;
+    opponentTeam.required = isFriendly;
     if (!isTeam) {
       topicInput.value = fixed?.id ?? '';
       description.textContent = fixed?.description ?? 'Bitte wähle zunächst einen Eintrag aus der Liste.';
       updateSubmitState();
       return;
     }
-    const team = teams.find((entry) => entry.key === teamSelect.value);
     if (!team) {
       topicInput.value = '';
       description.textContent = 'Wähle im nächsten Schritt die gewünschte Mannschaft aus.';
@@ -117,7 +128,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
     description.textContent = requestType.value === 'trial'
       ? `Nutze diese Auswahl für ein Probetraining bei ${team.name}. Nenne bitte Alter beziehungsweise Jahrgang und mögliche Trainingstage. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`
       : requestType.value === 'friendly'
-        ? `Diese Auswahl ist für ein Freundschaftsspiel gegen ${team.name}. Nenne bitte Altersklasse, Wunschtermin, Spielort und eine Rückrufmöglichkeit. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`
+        ? `Diese Auswahl ist für ein Freundschaftsspiel gegen ${team.name}. Ergänze bitte deinen Vereinsnamen und deine Mannschaftsbezeichnung. Nenne in der Nachricht außerdem Wunschtermin, Spielort und eine Rückrufmöglichkeit. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`
         : `Nutze diese Auswahl für alle anderen Fragen zu ${team.name}. Beschreibe dein Anliegen bitte möglichst konkret. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`;
     updateSubmitState();
   };
@@ -169,6 +180,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
       topicInput.value = '';
       teamField.hidden = true;
       requestField.hidden = true;
+      friendlyFields.hidden = true;
       description.textContent = 'Bitte wähle zunächst einen Eintrag aus der Liste.';
       await createCaptcha();
       status.textContent = result.message || 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
@@ -183,5 +195,5 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
 </script>
 
 <style>
-  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.contact-hero{padding:100px 0 92px;color:white;background:#092f20}.contact-hero span,.contact-layout aside>span{color:#f4d638;font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.contact-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3rem,7vw,6.5rem);line-height:.88;letter-spacing:-.055em}.contact-hero h1 em{color:#f4d638;font-weight:400}.contact-hero p{max-width:600px;margin:0;color:#b6c6bc;font-size:1.05rem;line-height:1.7}.contact-section{padding:90px 0 110px}.contact-layout{display:grid;grid-template-columns:300px 1fr;gap:90px}.contact-layout aside h2{margin:15px 0 20px;font-family:Georgia,serif;font-size:2.2rem;line-height:1.05}.contact-layout aside p{color:#607067;line-height:1.7}form{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:38px;background:white;box-shadow:0 20px 60px rgb(9 47 32 / 8%)}.field{display:grid;gap:8px}.field.full,.privacy,.submit-row{grid-column:1/-1}label{font-size:.77rem;font-weight:800}label small{color:#76837b;font-weight:500}input,select,textarea{width:100%;border:1px solid #ccd5cf;border-radius:0;padding:14px 15px;background:#fbfcfb;color:#17251b;font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}textarea{min-height:170px;resize:vertical}.conditional{padding:20px;border-left:3px solid #91c82f;background:#f3f7ef}.conditional[hidden]{display:none}.topic-description{margin:3px 0 0;padding:16px 18px;border-left:3px solid #91c82f;background:#f3f7ef;color:#526158;font-size:.86rem;line-height:1.6}.captcha{max-width:320px}.honeypot{position:absolute;left:-10000px}.privacy{display:flex;align-items:flex-start;gap:10px;color:#526158;font-size:.78rem;line-height:1.5}.privacy input{width:auto;margin-top:3px}.privacy a{color:#092f20}.submit-row{display:flex;align-items:center;gap:22px}.submit-row button{flex:0 0 auto;border:0;padding:16px 22px;background:#91c82f;color:#092f20;font-weight:900;cursor:pointer}.submit-row button:hover:not(:disabled){background:#f4d638}.submit-row button:disabled{opacity:.45;cursor:not-allowed}.submit-row button.is-submitting{cursor:wait}.submit-feedback{display:grid;gap:5px}.submit-feedback p{margin:0;font-size:.82rem;line-height:1.45}.submit-hint{color:#6c7971;font-weight:500}#form-status{color:#263d2e;font-weight:800}.submit-row span{margin-left:16px}@media(max-width:850px){.contact-layout{grid-template-columns:1fr;gap:35px}.contact-layout aside{max-width:540px}}@media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.contact-hero{padding:70px 0}.contact-section{padding:55px 0}form{grid-template-columns:1fr;padding:22px}.field{grid-column:1/-1}.submit-row{align-items:flex-start;flex-direction:column}}
+  .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.contact-hero{padding:100px 0 92px;color:white;background:#092f20}.contact-hero span,.contact-layout aside>span{color:#f4d638;font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.contact-hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3rem,7vw,6.5rem);line-height:.88;letter-spacing:-.055em}.contact-hero h1 em{color:#f4d638;font-weight:400}.contact-hero p{max-width:600px;margin:0;color:#b6c6bc;font-size:1.05rem;line-height:1.7}.contact-section{padding:90px 0 110px}.contact-layout{display:grid;grid-template-columns:300px 1fr;gap:90px}.contact-layout aside h2{margin:15px 0 20px;font-family:Georgia,serif;font-size:2.2rem;line-height:1.05}.contact-layout aside p{color:#607067;line-height:1.7}form{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:38px;background:white;box-shadow:0 20px 60px rgb(9 47 32 / 8%)}.field{display:grid;gap:8px}.field.full,.friendly-fields,.privacy,.submit-row{grid-column:1/-1}.friendly-fields{display:grid;grid-template-columns:1fr 1fr;gap:24px}label{font-size:.77rem;font-weight:800}label small{color:#76837b;font-weight:500}input,select,textarea{width:100%;border:1px solid #ccd5cf;border-radius:0;padding:14px 15px;background:#fbfcfb;color:#17251b;font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}textarea{min-height:170px;resize:vertical}.conditional{padding:20px;border-left:3px solid #91c82f;background:#f3f7ef}.conditional[hidden]{display:none}.topic-description{margin:3px 0 0;padding:16px 18px;border-left:3px solid #91c82f;background:#f3f7ef;color:#526158;font-size:.86rem;line-height:1.6}.captcha{max-width:320px}.honeypot{position:absolute;left:-10000px}.privacy{display:flex;align-items:flex-start;gap:10px;color:#526158;font-size:.78rem;line-height:1.5}.privacy input{width:auto;margin-top:3px}.privacy a{color:#092f20}.submit-row{display:flex;align-items:center;gap:22px}.submit-row button{flex:0 0 auto;border:0;padding:16px 22px;background:#91c82f;color:#092f20;font-weight:900;cursor:pointer}.submit-row button:hover:not(:disabled){background:#f4d638}.submit-row button:disabled{opacity:.45;cursor:not-allowed}.submit-row button.is-submitting{cursor:wait}.submit-feedback{display:grid;gap:5px}.submit-feedback p{margin:0;font-size:.82rem;line-height:1.45}.submit-hint{color:#6c7971;font-weight:500}#form-status{color:#263d2e;font-weight:800}.submit-row span{margin-left:16px}@media(max-width:850px){.contact-layout{grid-template-columns:1fr;gap:35px}.contact-layout aside{max-width:540px}}@media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.contact-hero{padding:70px 0}.contact-section{padding:55px 0}form{grid-template-columns:1fr;padding:22px}.field,.friendly-fields{grid-column:1/-1}.friendly-fields{grid-template-columns:1fr}.submit-row{align-items:flex-start;flex-direction:column}}
 </style>
