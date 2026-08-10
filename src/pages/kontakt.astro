@@ -4,6 +4,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { contactTeams, fixedContactTopics } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
+
+const configuredContactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
+const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
 ---
 
 <Layout title="Kontakt | BSV Nordstern Radolfzell" description="Kontaktformular des BSV Nordstern Radolfzell für Vereins- und Mannschaftsanfragen.">
@@ -15,7 +18,7 @@ import { withBase } from '../utils/paths';
     <section class="contact-section">
       <div class="shell contact-layout">
         <aside><span>Kontakt</span><h2>Eine Nachricht.<br />Der richtige Weg.</h2><p>Wir verwenden deine Angaben ausschließlich, um deine Anfrage zu bearbeiten.</p></aside>
-        <form id="contact-form" action="https://bsvnordstern.de/api/contact.php" method="post">
+        <form id="contact-form" action={contactEndpoint} method="post">
           <div class="field full">
             <label for="topic-area">Worum geht es?</label>
             <select id="topic-area" required><option value="">Bitte auswählen …</option>{fixedContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}<option value="active-team">Aktive Mannschaft</option><option value="youth-team">Jugendmannschaft</option></select>
@@ -29,7 +32,7 @@ import { withBase } from '../utils/paths';
           <div class="field"><label for="phone">Telefon <small>(optional)</small></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
           <div class="field"><label for="email">E-Mail</label><input id="email" name="email" type="email" autocomplete="email" maxlength="160" required /></div>
           <div class="field full"><label for="message">Deine Nachricht</label><textarea id="message" name="message" rows="8" minlength="10" maxlength="5000" required></textarea></div>
-          <div class="field captcha"><label for="captcha-answer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" required /></div>
+          <div class="field captcha"><label for="captcha-answer">Spamschutz: Wie viel ist <strong id="captcha-question"></strong>?</label><input id="captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" min="2" max="18" required /><input id="captcha-token" name="captchaToken" type="hidden" /></div>
           <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
           <label class="privacy"><input type="checkbox" name="privacy" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz')}>Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
           <div class="submit-row"><button type="submit">Nachricht senden <span>↗</span></button><p id="form-status" role="status"></p></div>
@@ -40,7 +43,7 @@ import { withBase } from '../utils/paths';
   <Footer />
 </Layout>
 
-<script define:vars={{ fixedTopics: fixedContactTopics, teams: contactTeams }}>
+<script define:vars={{ fixedTopics: fixedContactTopics, teams: contactTeams, contactEndpoint }}>
   const form = document.querySelector('#contact-form');
   const area = document.querySelector('#topic-area');
   const teamField = document.querySelector('#team-field');
@@ -51,15 +54,18 @@ import { withBase } from '../utils/paths';
   const description = document.querySelector('#topic-description');
   const status = document.querySelector('#form-status');
   const button = form.querySelector('button[type="submit"]');
+  const captchaToken = document.querySelector('#captcha-token');
   const fixedById = new Map(fixedTopics.map((topic) => [topic.id, topic]));
 
   const createCaptcha = async () => {
     document.querySelector('#captcha-answer').value = '';
+    captchaToken.value = '';
     try {
-      const response = await fetch(form.action, { credentials: 'include', headers: { Accept: 'application/json' } });
+      const response = await fetch(contactEndpoint, { headers: { Accept: 'application/json' } });
       const challenge = await response.json();
-      if (!response.ok || !challenge.ok) throw new Error();
+      if (!response.ok || !challenge.ok || !challenge.token) throw new Error();
       document.querySelector('#captcha-question').textContent = `${challenge.a} + ${challenge.b}`;
+      captchaToken.value = challenge.token;
     } catch {
       document.querySelector('#captcha-question').textContent = '? + ?';
       status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
@@ -121,7 +127,15 @@ import { withBase } from '../utils/paths';
     button.disabled = true;
     status.textContent = 'Nachricht wird gesendet …';
     try {
-      const response = await fetch(form.action, { method: 'POST', credentials: 'include', body: new FormData(form), headers: { Accept: 'application/json' } });
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      payload.privacyAccepted = formData.get('privacy') === 'accepted';
+      delete payload.privacy;
+      const response = await fetch(contactEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      });
       const responseText = await response.text();
       let result;
       try {
@@ -136,7 +150,7 @@ import { withBase } from '../utils/paths';
       requestField.hidden = true;
       description.textContent = 'Bitte wähle zunächst einen Eintrag aus der Liste.';
       await createCaptcha();
-      status.textContent = 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
+      status.textContent = result.message || 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
     } catch (error) {
       status.textContent = error instanceof Error ? error.message : 'Die Nachricht konnte nicht gesendet werden.';
       await createCaptcha();

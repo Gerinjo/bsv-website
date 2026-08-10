@@ -94,5 +94,9 @@ export const sendEmail = async (message: EmailMessage) => {
     throw new Error(`E-Mail-Versand fehlgeschlagen (${response.status}): ${detail}`);
   }
 
-  return { mode: config.mode };
+  const result = await response.json().catch(() => ({})) as { id?: unknown };
+  return {
+    mode: config.mode,
+    id: typeof result.id === 'string' ? result.id : null,
+  };
 };
