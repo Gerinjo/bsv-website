@@ -5,12 +5,6 @@ import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
 
-const news = [
-  { tag: 'Junge Sterne', date: '22. April 2026', title: 'Zeller Grundschulturnier 2026', text: 'Gemeinsam mit den Radolfzeller Grundschulen bringen wir Bewegung, Teamgeist und jede Menge Fußballfreude auf den Platz.', tone: 'lime' },
-  { tag: 'Event', date: '01. April 2026', title: 'Urmel Bambini Spieltag', text: 'Kids spielen für Kids: Ein besonderer Fußballtag für unsere jüngsten Kickerinnen und Kicker.', tone: 'green' },
-  { tag: 'Juniorinnen', date: '20. Dezember 2025', title: 'Herbst-Mädchen-Fußballcamp', text: 'Drei Tage voller Fußball, Gemeinschaft und persönlicher Entwicklung in den Herbstferien.', tone: 'yellow' },
-];
-
 const departments = [
   { number: '01', name: 'Fußball', detail: 'Aktive · Junge Sterne · Juniorinnen', href: '/fussball' },
   { number: '02', name: 'Bogensport', detail: 'Präzision · Fokus · Gemeinschaft', href: '/abteilungen/bogensport' },
@@ -145,25 +139,6 @@ const getEventType = (title: string) => {
       </div>
     </section>
 
-    <section class="news-section" id="neuigkeiten">
-      <div class="shell">
-        <div class="section-head"><div><p class="kicker dark"><span></span> Neues vom Nordstern</p><h2>Immer am Ball.</h2></div><a class="button button-outline" href={withBase('/#neuigkeiten')}>Alle Neuigkeiten <span>→</span></a></div>
-        <div class="news-grid">
-          {news.map((item, index) => (
-            <article class={`news-card ${item.tone}`}>
-              <div class="news-visual"><span class="news-index">0{index + 1}</span><span class="news-icon">{index === 0 ? '◎' : index === 1 ? '⚑' : '✦'}</span></div>
-              <div class="news-content">
-                <p class="meta"><span>{item.tag}</span> {item.date}</p>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-                <a href={withBase('/#neuigkeiten')}>Weiterlesen <span>↗</span></a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
     <section class="departments-section">
       <div class="shell departments-grid">
         <div class="departments-intro"><p class="kicker light"><span></span> Ein Verein, viele Wege</p><h2>Finde deinen<br /><em>Sport.</em></h2><p>Ob auf Tore, ins Gold oder einfach gemeinsam in Bewegung – beim BSV ist für alle etwas dabei.</p></div>
@@ -246,10 +221,9 @@ const getEventType = (title: string) => {
   .date-card > b { position: absolute; right: 15px; bottom: 13px; color: #6f9b18; font-size: .82rem; }
   .dates-empty { padding: 24px; border-left: 4px solid var(--yellow); background: white; color: #64736a; }
 
-  .news-section, .join-section { padding: 110px 0; }
-  .news-section { background: #fff; }.button-outline { border: 1px solid #bcc8c0; background: white; }.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }.news-card { overflow: hidden; border-radius: 7px; background: #f3f5f2; }.news-visual { position: relative; height: 220px; display: grid; place-items: center; overflow: hidden; background: var(--green); color: white; }.news-card.lime .news-visual { background: #b7d64b; color: var(--green-dark); }.news-card.yellow .news-visual { background: var(--yellow); color: var(--green); }.news-visual::after { content: ''; position: absolute; width: 240px; aspect-ratio: 1; border: 1px solid currentColor; border-radius: 50%; opacity: .28; box-shadow: 0 0 0 35px rgb(255 255 255 / 8%), 0 0 0 70px rgb(255 255 255 / 6%); }.news-index { position: absolute; left: 18px; top: 16px; font-size: .7rem; font-weight: 900; }.news-icon { z-index: 1; font-size: 4rem; }.news-content { padding: 26px; }.meta { color: #829087; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }.meta span { margin-right: 10px; color: var(--green); }.news-content h3 { min-height: 58px; margin-bottom: 13px; font-size: 1.35rem; line-height: 1.12; }.news-content > p:not(.meta) { min-height: 72px; color: #65736a; font-size: .88rem; line-height: 1.55; }.news-content a { color: var(--green); font-size: .8rem; font-weight: 900; text-decoration: none; }.news-content a span { float: right; }
+  .join-section { padding: 110px 0; }
   .departments-section { padding: 120px 0; color: white; background: var(--green-dark); }.departments-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 100px; }.departments-intro h2 { color: white; }.departments-intro > p:last-child { max-width: 420px; margin-top: 30px; color: #9eb5a7; line-height: 1.7; }.department-list { border-top: 1px solid rgb(255 255 255 / 18%); }.department-list a { display: grid; grid-template-columns: 45px 1fr 40px; align-items: center; gap: 12px; padding: 24px 5px; border-bottom: 1px solid rgb(255 255 255 / 18%); color: white; text-decoration: none; transition: .2s; }.department-list a:hover { padding-left: 15px; background: rgb(255 255 255 / 4%); }.department-list > a > span { color: var(--yellow); font-size: .65rem; }.department-list strong,.department-list small { display: block; }.department-list strong { font-size: 1.45rem; }.department-list small { margin-top: 5px; color: #8da598; font-size: .72rem; }.department-list b { display: grid; place-items: center; width: 36px; aspect-ratio: 1; border: 1px solid rgb(255 255 255 / 30%); border-radius: 50%; }
   .join-section { background: #fff; }.join-card { position: relative; overflow: hidden; min-height: 330px; padding: 65px 70px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 70px; background: var(--yellow); border-radius: 8px; }.join-card::after { content: ''; position: absolute; right: -80px; top: -160px; width: 380px; aspect-ratio: 1; border: 1px solid rgb(9 47 32 / 18%); border-radius: 50%; box-shadow: 0 0 0 50px rgb(9 47 32 / 5%), 0 0 0 100px rgb(9 47 32 / 4%); }.join-star { position: absolute; right: 35px; top: 25px; color: white; font-size: 3rem; }.join-card h2 em { color: var(--green); }.join-copy { position: relative; z-index: 1; }.join-copy p { margin-bottom: 28px; color: #3b4c3f; line-height: 1.6; }.button-dark { background: var(--green-dark); color: white; }
-  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 330px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.news-grid { grid-template-columns: 1fr 1fr; }.news-card:last-child { display: none; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
-  @media (max-width: 650px) { .shell { width: min(100% - 30px, 1160px); }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 250px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.news-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.news-grid { grid-template-columns: 1fr; }.news-card:last-child { display: block; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 330px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
+  @media (max-width: 650px) { .shell { width: min(100% - 30px, 1160px); }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 250px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
 </style>
