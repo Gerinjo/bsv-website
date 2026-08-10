@@ -208,8 +208,6 @@ const bGirlsGallery: TeamPhoto[] = [
 ];
 
 const bGirlsCupFinal2026Gallery: TeamPhoto[] = [
-  ['0082', 'Pokalsiegerinnen 2026'],
-  ['0081', 'Gemeinsamer Jubel nach dem Finale'],
   ['0080', 'Auszeichnung für den Schiedsrichter'],
   ['0078', 'Abschluss im Pokalfinale'],
   ['0079', 'Jubel nach dem Treffer'],
