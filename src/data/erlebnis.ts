@@ -44,7 +44,7 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
   {
     id: 'tag-des-maedchenfussballs', partner: 'BSV Nordstern Radolfzell · Südbadischer Fußballverband', title: 'Ein Aktionstag ganz im Zeichen des Mädchenfußballs.', menuTitle: 'Tag des Mädchenfußballs', category: 'Mädchenfußball · Aktionstag',
     summary: 'Bewegung, Fairplay und jede Menge Spaß: Beim Tag des Mädchenfußballs können junge Spielerinnen Technik, Spielformen und gemeinsames Fußballerlebnis ohne Leistungsdruck entdecken.', facts: ['Technikstationen mit Dribbling, Passen und Schießen','Spiele in gemischten Teams und DFB-Abzeichen','Rückblick auf den Aktionstag vom 11. Mai 2025'],
-    actionLabel: 'Rückblick 2025 ansehen', actionHref: '/erlebnis/tag-des-maedchenfussballs', external: false, accent: '#f4d638', symbol: '♀︎⚽', logoSrc: '/images/events/tdm/2025/01-gruppenfoto.jpg', logoAlt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025', logoBackground: '#164f32', date: '11. Mai 2025',
+    actionLabel: 'Rückblick 2025 ansehen', actionHref: '/erlebnis/tag-des-maedchenfussballs', external: false, accent: '#a8cbb4', symbol: '♀︎⚽', logoSrc: '/images/events/tdm/2025/01-gruppenfoto.jpg', logoAlt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025', logoBackground: '#164f32', date: '11. Mai 2025',
   },
   {
     id: 'urmel-bambini-spieltag', partner: 'URMEL Bambini Spieltag', title: 'Kids spielen für Kids – Bambini-Fußball mit Herz.', menuTitle: 'URMEL Bambini Spieltag', category: 'Bambini · Benefizspieltag',

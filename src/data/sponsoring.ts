@@ -70,7 +70,7 @@ export const sponsorshipLevels: SponsorshipLevel[] = [
     price: '2.500 €',
     tagline: 'Starker Partner des Nordsterns',
     summary: 'Die umfassende Partnerschaft für Unternehmen, die den BSV langfristig begleiten und besonders präsent auftreten möchten.',
-    accent: '#f4d638',
+    accent: '#a8cbb4',
     features: [
       'Alle Leistungen des Silber-Pakets',
       'Top-Platzierung als Gold-Partner in ausgewählten Vereinsmedien',
