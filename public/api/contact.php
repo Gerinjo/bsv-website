@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $teamRecipients = array(
     'fussball--herren--bezirksliga' => 'Torsten.Parzich@bsvnordstern.de',
     'fussball--herren--kreisliga-2' => 'Alexander.Kaiser@bsvnordstern.de',
-    'fussball--frauen--bezirksliga' => 'Matthias.Becht@bsvnordstern.de',
+    'fussball--frauen--bezirksliga' => 'Mathias.Becht@bsvnordstern.de',
     'fussball--frauen--kreisliga' => 'Myriam.Lipp@bsvnordstern.de',
     'fussball--alte-herren' => 'alteherren@bsvnordstern.de',
     'jugend--u11-e1' => 'niku.pourheidari@bsvnordstern.de',

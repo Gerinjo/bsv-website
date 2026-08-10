@@ -319,7 +319,7 @@ const configs: TeamConfig[] = [
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
     image: '/images/aktive/teams/2526/frauen.jpg',
     coaches: [
-      { name: 'Mathias Becht', role: 'Trainer' },
+      { name: 'Mathias Becht', role: 'Trainer', email: 'Mathias.Becht@bsvnordstern.de', phone: '+49 1523 8252979' },
       { name: 'Max Menzel', role: 'Co-Trainer', phone: '+49 170 4971707' },
     ],
   },
