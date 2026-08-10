@@ -104,7 +104,7 @@ for (const [file, route] of Object.entries(routes)) {
     const decodedName = decodeURIComponent(basename(new URL(raw).pathname)).replace(/[^a-zA-Z0-9._-]+/g, '-');
     const hash = createHash('sha1').update(raw).digest('hex').slice(0, 10);
     const extension = extname(decodedName) || '.jpg';
-    const local = `/images/archive/legacy/${hash}-${decodedName || `bild${extension}`}`;
+    const local = `/images/imported/joomla/${hash}-${decodedName || `bild${extension}`}`;
     imageMap.set(raw, local);
     article = article.split(match[1]).join(local);
     article = article.replace(new RegExp(`${local.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}#[^"']*`, 'g'), local);
@@ -115,9 +115,9 @@ for (const [file, route] of Object.entries(routes)) {
     .replace(/href=["']\/j4\/images\/([^"']+)["']/gi, 'href="https://bsvnordstern.de/j4/images/$1"')
     .replaceAll('/j4/docs/BSV%20Nordstern%20Vereinssatzung%20Stand%2031.01.2023.pdf', '/dokumente/bsv-nordstern-satzung-2023.pdf')
     // Three files are already missing on the former site. Use the current equivalent instead.
-    .replaceAll('/images/archive/legacy/58ca5255c3-bsv_beitragsordnung_240101.pdf', '/images/archive/legacy/7bdd8e83ca-BSV_Beitragsordnung_260101.pdf')
-    .replaceAll('/images/archive/legacy/2b523be8d9-297-Herren-mit-Arztkoffer-Cropped.jpg', '/images/archive/legacy/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg')
-    .replaceAll('/images/archive/legacy/70a1a31a66-Neues-Trikot.JPG', '/images/archive/legacy/598a03eb56-BSV-Frauen-25-26-Mannschaftsbild.jpg');
+    .replaceAll('/images/imported/joomla/58ca5255c3-bsv_beitragsordnung_240101.pdf', '/dokumente/bsv-beitragsordnung-2026.pdf')
+    .replaceAll('/images/imported/joomla/2b523be8d9-297-Herren-mit-Arztkoffer-Cropped.jpg', '/images/aktive/teams/2526/cf63f0ccb1-BSV-Herren-2526-Trikotsatz-gruen.jpeg')
+    .replaceAll('/images/imported/joomla/70a1a31a66-Neues-Trikot.JPG', '/images/aktive/teams/2526/frauen.jpg');
 
   if (route === 'jugend/vorstandschaft') article = updateYouthBoard(article);
 
