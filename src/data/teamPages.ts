@@ -108,7 +108,7 @@ const associationTeamPaths = new Set([
 
 const coachHomeClubs: Record<string, string> = {
   'Mathias Becht': 'BSV Nordstern Radolfzell',
-  'Max Menzel': 'BSV Nordstern Radolfzell',
+  'Max Menzel': 'FC Öhningen-Gaienhofen',
   'Miriam Lipp': 'FC Öhningen-Gaienhofen',
   'Emel Bayram': 'BSV Nordstern Radolfzell',
   'Ole Schmal': 'BSV Nordstern Radolfzell',
