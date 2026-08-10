@@ -58,8 +58,16 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
       </div>
       <div class="quick-links">
         <a href="https://shop.bsvnordstern.de" target="_blank" rel="noreferrer"><span aria-hidden="true">✦</span> JAKO Shop</a>
-        <a href={withBase('/fussball/spielplan')}><span aria-hidden="true">◎</span> Spielplan</a>
-        <a href={withBase('/kontakt')}><span aria-hidden="true">↗</span> Kontakt</a>
+        <a href={withBase('/fussball/spielplan')}>
+          <span class="quick-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="8.6" cy="4.3" r="2" /><path d="m8.2 7 3.8 2.6 3.4-1.8M11.6 9.5l-2.8 4.7-4.1 1.5M11.8 10.2l3 3.3 3.2.8" /><circle cx="19.2" cy="18.2" r="2.3" /></svg>
+          </span>
+          Spielplan
+        </a>
+        <a href={withBase('/kontakt')}>
+          <span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
+          Kontakt
+        </a>
       </div>
     </div>
   </div>
@@ -190,6 +198,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .top-icon svg { width:14px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
   .top-copy small,.top-copy strong { display:block; }.top-copy small { margin-bottom:1px; color:#779383; font-size:.53rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }.top-copy strong { color:#d7e5dc; font-size:.66rem; font-weight:700; }
   .quick-links { display:flex; gap:16px; margin-left:auto; }.quick-links a { display:flex; align-items:center; gap:5px; color:#a9beb1; font-size:.66rem; font-weight:750; }.quick-links a span { color:#a8cbb4; }.quick-links a:hover { color:#fff; }
+  .quick-icon { display:grid; place-items:center; flex:0 0 auto; }.quick-icon svg { width:14px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
   .navigation { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
   .brand { display: flex; align-items: center; gap: 12px; color: #173d28; text-decoration: none; flex: 0 0 auto; }
   .brand-mark { display:grid; place-items:center; width:60px; height:60px; flex:0 0 auto; }
@@ -270,9 +279,12 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   @media (max-width: 620px) {
     .shell { width: min(100% - 28px, 1180px); }
     .topbar-inner { min-height:44px; justify-content:space-between; gap:10px; }
-    .topbar-contact { gap:12px; }.topbar-contact > a:nth-child(2),.quick-links a:not(:last-child) { display:none; }
+    .topbar-contact { display:none; }
     .top-icon { width:28px; }.top-copy small { display:none; }.top-copy strong { font-size:.62rem; }
-    .quick-links { margin-left: 0; }
+    .quick-links { width:100%; margin-left:0; justify-content:space-between; gap:14px; }
+    .quick-links a { gap:7px; color:#d7e5dc; font-size:.68rem; }
+    .quick-links a:first-child { display:none; }
+    .quick-icon { width:28px; aspect-ratio:1; border:1px solid rgb(255 255 255 / 16%); border-radius:50%; background:rgb(255 255 255 / 5%); }
     .navigation { min-height: 74px; }
     .brand-mark { width:50px; height:50px; }
     .brand strong { font-size: .92rem; }
