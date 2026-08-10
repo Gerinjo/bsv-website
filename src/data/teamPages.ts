@@ -486,7 +486,14 @@ const configs: TeamConfig[] = [
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image: '/images/jugend/teams/2526/u13-d-juniorinnen.jpg', gallery: dGirlsGallery,
+    trial: `Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image: '/images/jugend/teams/2526/u13-d-juniorinnen.jpg',
+    galleryTabs: [
+      {
+        id: '2025-saisonabschluss',
+        label: '2025 – Saisonabschluss',
+        photos: dGirlsGallery,
+      },
+    ],
     coaches: [{ name: 'Dana Bulander', role: 'Trainerin', qualification: 'C-Lizenz', image: '/images/verein/personen/dana-bulander.jpg', email: 'dana.bulander@bsvnordstern.de' }],
   },
 ];
