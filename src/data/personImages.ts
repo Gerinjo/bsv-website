@@ -7,6 +7,7 @@ export const personImageByName: Record<string, string> = {
   'Claudia Gastaudo': '/images/verein/personen/claudia-gastaudo.jpg',
   'Dana Bulander': '/images/verein/personen/dana-bulander.jpg',
   'Eberhard Klinkenberg': '/images/verein/personen/eberhard-klinkenberg.jpg',
+  'Emel Bayram': '/images/verein/personen/emel-bayram.jpg',
   'Ella Kramer': '/images/verein/personen/ella-kramer.jpeg',
   'Fabian Keller': '/images/verein/personen/fabian-keller.jpg',
   'Felix Schüle': '/images/verein/personen/felix-schuele.jpg',

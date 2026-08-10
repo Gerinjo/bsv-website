@@ -334,7 +334,10 @@ const configs: TeamConfig[] = [
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
     image: '/images/aktive/teams/2526/frauen.jpg',
-    coaches: [{ name: 'Myriam Lipp', role: 'Chef-Trainerin' }, { name: 'Emel Bayram', role: 'Co-Trainerin' }],
+    coaches: [
+      { name: 'Myriam Lipp', role: 'Chef-Trainerin', phone: '+49 1522 3307366' },
+      { name: 'Emel Bayram', role: 'Co-Trainerin', email: 'emel.bayram@bsvnordstern.de', phone: '+49 173 1543544' },
+    ],
   },
   {
     path: 'fussball/alte-herren', kicker: 'Ü35 Senioren', headline: 'Am Ball.<br /><em>Aus Freude.</em>', letter: 'AH',
