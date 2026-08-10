@@ -21,7 +21,7 @@ const people: Person[] = [
   { name: 'Claudia Gastaudo', role: 'Kassiererin', image: '/images/verein/personen/claudia-gastaudo.jpg' },
   { name: 'Michaela Auer', role: 'Schriftführerin', image: '/images/verein/personen/michaela-auer.jpg' },
   { name: 'Felix Schüle', role: 'Sportlicher Leiter Herren', image: '/images/verein/personen/felix-schuele.jpg' },
-  { name: 'Ann-Kathrin Sugg', role: 'Sportliche Leitung Frauen' },
+  { name: 'Ann-Kathrin Sugg', role: 'Sportliche Leitung Frauen', image: '/images/verein/personen/ann-kathrin-sugg.jpg' },
   { name: 'Karsten Grammel', role: 'Sportliche Leitung Alte Herren' },
   { name: 'Oliver Schillinger', role: 'Spielbetrieb' },
   { name: 'Manuel Schellhammer', role: 'Passwesen', image: '/images/verein/personen/manuel-schellhammer.jpg' },
@@ -180,7 +180,19 @@ const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganiz
   : legacyContent[page.path];
 const importedBody = legacyBody ? migrateLegacyPersonImages(legacyBody) : undefined;
 const migratedLegacyBody = page.path === 'verein/vorstandschaft' && importedBody
-  ? addLegacyPersonToSection(removeLegacyPersonCard(importedBody, 'Nicole Erbes'), 'Felix Schüle', 'Sportlicher Leiter Herren', 'Herren', '/images/verein/personen/felix-schuele.jpg')
+  ? addLegacyPersonToSection(
+      replaceLegacyPersonCard(
+        removeLegacyPersonCard(importedBody, 'Nicole Erbes'),
+        'Ann-Kathrin Sugg',
+        'Ann-Kathrin Sugg',
+        'Sportliche Leitung Frauen',
+        '/images/verein/personen/ann-kathrin-sugg.jpg',
+      ),
+      'Felix Schüle',
+      'Sportlicher Leiter Herren',
+      'Herren',
+      '/images/verein/personen/felix-schuele.jpg',
+    )
   : page.path === 'jugend/vorstandschaft' && importedBody
     ? addLegacyYouthRepresentative(
         addLegacyYouthRepresentative(
