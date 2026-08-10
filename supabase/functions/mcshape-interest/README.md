@@ -9,10 +9,32 @@ Die Edge Function `mcshape-interest` verarbeitet das Formular auf `/erlebnis/mcs
 - kurze Eingangsbestätigung an die anfragende Person
 - keine E-Mail-Adressen sind im Frontend fest verdrahtet
 
+### Testmodus
+
+Die Function läuft standardmäßig im sicheren Testmodus. Dabei werden alle
+Nachrichten – auch die Bestätigung für die anfragende Person – ausschließlich
+an `EMAIL_TEST_RECIPIENT` gesendet. Im Betreff und im Mailtext steht,
+welche Nachricht und welcher Live-Empfänger simuliert wurden.
+
+```bash
+supabase secrets set EMAIL_TEST_MODE=true
+supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
+```
+
+Erst der explizite Wert `false` aktiviert die echten Empfänger. Diese beiden
+Secrets gelten zentral für alle Supabase-Mailfunktionen, die den gemeinsamen
+Maildienst unter `_shared/email-service.ts` verwenden.
+
+```bash
+supabase secrets set EMAIL_TEST_MODE=false
+```
+
 ## Erforderliche Supabase-Secrets
 
 ```bash
 supabase secrets set RESEND_API_KEY=...
+supabase secrets set EMAIL_TEST_MODE=true
+supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
 supabase secrets set MCSHAPE_RECIPIENT_EMAIL=...
 supabase secrets set BSV_CONFIRMATION_EMAIL=...
 supabase secrets set MAIL_FROM="BSV Nordstern <...>"

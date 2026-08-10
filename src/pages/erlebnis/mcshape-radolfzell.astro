@@ -145,6 +145,8 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
   const form = document.querySelector<HTMLFormElement>('#mcshape-interest-form');
   const status = document.querySelector<HTMLElement>('#mcshape-form-status');
   const success = document.querySelector<HTMLElement>('#mcshape-form-success');
+  const successTitle = success?.querySelector<HTMLElement>('strong');
+  const successText = success?.querySelector<HTMLElement>('p');
   const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
   const buttonLabel = button?.querySelector<HTMLElement>('[data-submit-label]');
   const birthInput = form?.querySelector<HTMLInputElement>('#mc-birth-date');
@@ -273,6 +275,25 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || !result?.ok) throw new Error(result?.message || 'Die Anfrage konnte nicht gesendet werden.');
+
+      if (successTitle && successText) {
+        if (result.notificationStatus === 'versendet') {
+          successTitle.textContent = result.mailMode === 'test'
+            ? 'Test erfolgreich – beide E-Mails wurden versendet.'
+            : 'Vielen Dank – deine Anfrage wurde gespeichert.';
+          successText.textContent = result.mailMode === 'test'
+            ? 'Der Testmodus war aktiv. Alle Nachrichten gingen ausschließlich an die hinterlegte Testadresse.'
+            : 'Deine Angaben wurden sicher übernommen. Wir kümmern uns um die weitere Bearbeitung und Terminvereinbarung.';
+        } else if (result.notificationStatus === 'teilweise') {
+          successTitle.textContent = 'Anfrage gespeichert – E-Mail-Versand nur teilweise erfolgreich.';
+          successText.textContent = 'Die Hauptbenachrichtigung wurde versendet, die Eingangsbestätigung aber nicht. Der Fehler wurde für die weitere Prüfung gespeichert.';
+        } else {
+          successTitle.textContent = 'Anfrage gespeichert – E-Mail-Versand fehlgeschlagen.';
+          successText.textContent = result.mailMode === 'test'
+            ? `Der Testdatensatz wurde angelegt, aber die Testmails konnten nicht versendet werden.${result.notificationError ? ` Ursache: ${result.notificationError}` : ' Bitte prüfe die serverseitige Mail-Konfiguration.'}`
+            : 'Deine Angaben sind sicher gespeichert. Die Benachrichtigung konnte momentan jedoch nicht versendet werden.';
+        }
+      }
 
       form.reset();
       form.hidden = true;

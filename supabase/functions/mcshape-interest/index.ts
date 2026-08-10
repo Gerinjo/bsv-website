@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { MCSHAPE_MINIMUM_AGE, MCSHAPE_TEST_RECIPIENT_EMAIL } from '../_shared/mcshape-config.ts';
+import { getEmailRuntimeConfig, sendEmail, type EmailMessage } from '../_shared/email-service.ts';
+import { MCSHAPE_MINIMUM_AGE } from '../_shared/mcshape-config.ts';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -44,25 +45,6 @@ const ageOnDate = (birthDate: string, now = new Date()) => {
   const currentDay = now.getUTCDate();
   if (currentMonth < month || (currentMonth === month && currentDay < day)) age -= 1;
   return age;
-};
-
-const sendResendMail = async (payload: Record<string, unknown>) => {
-  const apiKey = Deno.env.get('RESEND_API_KEY');
-  if (!apiKey) throw new Error('RESEND_API_KEY fehlt.');
-
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`E-Mail-Versand fehlgeschlagen (${response.status}): ${detail}`);
-  }
 };
 
 Deno.serve(async (request) => {
@@ -188,19 +170,30 @@ Deno.serve(async (request) => {
     if (error) console.error('Benachrichtigungsstatus konnte nicht aktualisiert werden:', error);
   };
 
-  const mcShapeRecipient = Deno.env.get('MCSHAPE_RECIPIENT_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
-  const bsvConfirmationRecipient = Deno.env.get('BSV_CONFIRMATION_EMAIL') ?? MCSHAPE_TEST_RECIPIENT_EMAIL;
-  const mailFrom = Deno.env.get('MAIL_FROM');
+  const configuredMcShapeRecipient = Deno.env.get('MCSHAPE_RECIPIENT_EMAIL')?.trim() ?? '';
+  const configuredBsvRecipient = Deno.env.get('BSV_CONFIRMATION_EMAIL')?.trim() ?? '';
+  const emailConfig = getEmailRuntimeConfig();
+  const mailMode = emailConfig.mode;
 
-  if (!mcShapeRecipient || !bsvConfirmationRecipient || !mailFrom) {
-    console.error('E-Mail-Konfiguration fehlt; Anfrage wurde trotzdem gespeichert.');
+  const missingMailConfig = [
+    !emailConfig.resendApiKey && 'RESEND_API_KEY',
+    !emailConfig.mailFrom && 'MAIL_FROM',
+    emailConfig.testMode && !emailConfig.testRecipient && 'EMAIL_TEST_RECIPIENT',
+    !emailConfig.testMode && !configuredMcShapeRecipient && 'MCSHAPE_RECIPIENT_EMAIL',
+    !emailConfig.testMode && !configuredBsvRecipient && 'BSV_CONFIRMATION_EMAIL',
+  ].filter(Boolean);
+
+  if (missingMailConfig.length) {
+    console.error(`E-Mail-Konfiguration fehlt (${missingMailConfig.join(', ')}); Anfrage wurde trotzdem gespeichert.`);
     await setNotificationStatus('fehler');
     return json({
       ok: true,
       saved: true,
+      mailMode,
       notificationStatus: 'fehler',
       requesterConfirmationSent: false,
       registrationId,
+      ...(emailConfig.testMode ? { notificationError: `Fehlende Konfiguration: ${missingMailConfig.join(', ')}` } : {}),
       message: 'Die Anfrage wurde gespeichert.',
     }, 201, origin);
   }
@@ -224,37 +217,38 @@ Deno.serve(async (request) => {
     </table>
     <p style="font-family:Arial,sans-serif;font-size:13px;color:#666">Die Person hat der Verarbeitung und Weitergabe der Angaben zur Terminvereinbarung an MC Shape Radolfzell zugestimmt.</p>`;
 
-  const mainMail: Record<string, unknown> = {
-    from: mailFrom,
-    to: [mcShapeRecipient],
+  const mainMail: EmailMessage = {
+    to: configuredMcShapeRecipient ? [configuredMcShapeRecipient] : [],
     reply_to: email,
     subject: `BSV Nordstern · MC-Shape-Anfrage von ${firstName} ${lastName}`,
     html: detailsHtml,
   };
 
-  if (bsvConfirmationRecipient.toLowerCase() !== mcShapeRecipient.toLowerCase()) {
-    mainMail.bcc = [bsvConfirmationRecipient];
+  if (configuredBsvRecipient && configuredBsvRecipient.toLowerCase() !== configuredMcShapeRecipient.toLowerCase()) {
+    mainMail.bcc = [configuredBsvRecipient];
   }
 
   try {
-    await sendResendMail(mainMail);
+    await sendEmail(mainMail);
   } catch (error) {
     console.error('Hauptbenachrichtigung konnte nicht versendet werden:', error);
     await setNotificationStatus('fehler');
+    const notificationError = error instanceof Error ? error.message : 'Unbekannter E-Mail-Fehler';
     return json({
       ok: true,
       saved: true,
+      mailMode,
       notificationStatus: 'fehler',
       requesterConfirmationSent: false,
       registrationId,
+      ...(emailConfig.testMode ? { notificationError } : {}),
       message: 'Die Anfrage wurde gespeichert.',
     }, 201, origin);
   }
 
   let requesterConfirmationSent = true;
   try {
-    await sendResendMail({
-      from: mailFrom,
+    await sendEmail({
       to: [email],
       subject: 'Deine Anfrage zu den BSV-Konditionen bei MC Shape',
       html: `
@@ -277,6 +271,7 @@ Deno.serve(async (request) => {
   return json({
     ok: true,
     saved: true,
+    mailMode,
     notificationStatus,
     requesterConfirmationSent,
     registrationId,
