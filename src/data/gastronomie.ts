@@ -2,8 +2,8 @@ const gastronomyPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo
 
 export const gastronomyLinks = [
   { label: 'Über uns', href: '/gastronomie/ueber-uns', description: 'Küche, Atmosphäre und Feiern' },
-  { label: 'Öffnungszeiten', href: '/gastronomie/oeffnungszeiten', description: 'Gaststätte und Lieferservice' },
-  { label: 'Speisekarte', href: '/gastronomie/speisekarte', description: 'Angebot als PDF ansehen' },
+  { label: 'Öffnungszeiten', href: '/gastronomie/oeffnungszeiten', description: 'Aktuelle Zeiten und Urlaub' },
+  { label: 'Speisekarte', href: '/gastronomie/speisekarte', description: 'Noch etwas Geduld' },
   { label: 'Events', href: '/gastronomie/events', description: 'Termine und Rückblicke' },
 ] as const;
 
@@ -15,6 +15,11 @@ export const gastronomy = {
   phoneHref: 'tel:+497732910080',
   reservationPhone: '+49 160 92658131',
   reservationPhoneHref: 'tel:+4916092658131',
+  vacation: {
+    from: '17. August 2026',
+    through: '7. September 2026',
+    reopens: '8. September 2026',
+  },
   menuPdf: 'https://bsvnordstern.de/j4/images/bsv/gastro/speisekarte/Speisekarte_BSV_JAN_2024.pdf',
   lieferandoImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/lieferando.jpg',
   karaokeImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/events/karaoke.jpg',
@@ -27,15 +32,7 @@ export const gastronomy = {
   ],
   openingHours: [
     { days: 'Montag', hours: 'Ruhetag' },
-    { days: 'Dienstag bis Donnerstag', hours: '16:00 bis 22:00 Uhr' },
-    { days: 'Freitag', hours: '16:00 bis 24:00 Uhr' },
-    { days: 'Samstag', hours: '14:00 bis 24:00 Uhr' },
-    { days: 'Sonntag', hours: '14:00 bis 22:00 Uhr' },
-  ],
-  deliveryHours: [
-    { days: 'Montag', hours: 'Ruhetag' },
-    { days: 'Dienstag bis Donnerstag', hours: '16:30 bis 21:30 Uhr' },
-    { days: 'Freitag und Samstag', hours: '16:00 bis 21:30 Uhr' },
-    { days: 'Sonntag', hours: '16:30 bis 21:30 Uhr' },
+    { days: 'Dienstag bis Samstag', hours: '16:00 bis 21:30 Uhr' },
+    { days: 'Sonntag', hours: '16:00 bis 21:00 Uhr' },
   ],
 } as const;

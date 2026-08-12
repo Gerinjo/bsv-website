@@ -49,11 +49,10 @@ import { withBase } from '../utils/paths';
       <h2>Öffnungszeiten</h2>
       <dl>
         <div><dt>Mo</dt><dd>Ruhetag</dd></div>
-        <div><dt>Di–Do</dt><dd>16–22 Uhr</dd></div>
-        <div><dt>Fr</dt><dd>16–24 Uhr</dd></div>
-        <div><dt>Sa</dt><dd>14–24 Uhr</dd></div>
-        <div><dt>So</dt><dd>14–22 Uhr</dd></div>
+        <div><dt>Di–Sa</dt><dd>16:00–21:30</dd></div>
+        <div><dt>So</dt><dd>16:00–21:00</dd></div>
       </dl>
+      <p class="gastro-vacation-compact">Urlaub 17.08.–07.09.2026<br /><strong>Ab 08.09. wieder geöffnet</strong></p>
       <a class="gastro-menu-cta" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
       <a class="gastro-reservation" href={gastronomy.reservationPhoneHref}><small>Reservierung</small><strong>{gastronomy.reservationPhone}</strong></a>
     </aside>
@@ -119,6 +118,7 @@ import { withBase } from '../utils/paths';
   .gastro-mega-info h2{margin:8px 0 17px!important;color:white!important;font-family:Georgia,serif;font-size:1.55rem!important;letter-spacing:0!important;text-transform:none!important}
   .gastro-mega-info dl{margin:0}.gastro-mega-info dl>div{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid rgb(255 255 255 / 12%)}
   .gastro-mega-info dt{color:#b8cbbf;font-size:.7rem;font-weight:800}.gastro-mega-info dd{margin:0;color:white;font-size:.7rem;font-weight:800}
+  .gastro-vacation-compact{margin:14px 0 0;padding:10px 12px;border-left:3px solid #f4d638;background:rgb(255 255 255 / 8%);color:#cbd9d0;font-size:.66rem;line-height:1.45}.gastro-vacation-compact strong{color:white}
   .gastro-menu-cta{margin-top:18px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;background:#f4d638;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none}
   .gastro-reservation{margin-top:12px;padding:10px 12px;display:block;border:1px solid rgb(255 255 255 / 20%);color:white;text-decoration:none}
   .gastro-reservation small,.gastro-reservation strong{display:block}.gastro-reservation small{color:#7f9a89;font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.gastro-reservation strong{margin-top:3px;font-size:.76rem}

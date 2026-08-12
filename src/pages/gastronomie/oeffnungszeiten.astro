@@ -6,16 +6,22 @@ import { withBase } from '../../utils/paths';
 
 <GastroPage
   title="Öffnungszeiten"
-  description="Öffnungszeiten der BSV Nordstern Vereinsgaststätte und Zeiten des Lieferservices."
+  description="Aktuelle Öffnungszeiten und Betriebsurlaub der BSV Nordstern Vereinsgaststätte."
   eyebrow="Öffnungszeiten"
   headline="Zeit für Genuss<br />und Begegnung."
-  intro="Hier finden Sie die regulären Öffnungszeiten der Vereinsgaststätte sowie die auf der bisherigen Homepage veröffentlichten Lieferzeiten."
+  intro="Hier finden Sie die aktuellen Öffnungszeiten der Vereinsgaststätte und Hinweise zu unserem Betriebsurlaub."
   heroImage={gastronomy.gallery[2]}
   activePath="/gastronomie/oeffnungszeiten"
 >
   <span class="gastro-section-label">Wann wir geöffnet haben</span>
-  <h2 class="gastro-title">Gaststätte & Lieferservice.</h2>
-  <p class="gastro-lead">Kurzfristige Änderungen, Betriebsferien und Sonderöffnungszeiten werden gesondert bekanntgegeben. Für Reservierungen empfiehlt sich eine kurze telefonische Rückfrage.</p>
+  <h2 class="gastro-title">Unsere Öffnungszeiten.</h2>
+  <p class="gastro-lead">Wir freuen uns auf Ihren Besuch. Für Reservierungen empfiehlt sich eine kurze telefonische Rückfrage.</p>
+
+  <aside class="vacation-notice">
+    <span>Betriebsurlaub</span>
+    <strong>{gastronomy.vacation.from} bis {gastronomy.vacation.through}</strong>
+    <p>Ab dem {gastronomy.vacation.reopens} sind wir wieder für Sie da.</p>
+  </aside>
 
   <div class="hours-grid">
     <section class="hours-card">
@@ -26,32 +32,20 @@ import { withBase } from '../../utils/paths';
       <a href={gastronomy.phoneHref}>Rückfrage: {gastronomy.phone}</a>
     </section>
 
-    <section class="hours-card delivery-card">
-      <div class="hours-head"><span>Für zuhause</span><h2>Lieferzeiten</h2></div>
-      <dl>
-        {gastronomy.deliveryHours.map((entry) => <div><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}
-      </dl>
+    <section class="hours-card info-card">
+      <div class="hours-head"><span>Gut zu wissen</span><h2>Speisekarte & Bilder</h2></div>
+      <p>Bei neuen Bildern und der aktualisierten Speisekarte bitten wir noch um etwas Geduld.</p>
       <a href={withBase('/gastronomie/speisekarte')}>Zur Speisekarte ↗</a>
     </section>
   </div>
-
-  <section class="delivery-info">
-    <div>
-      <span class="gastro-section-label">Lieferangebot</span>
-      <h2 class="gastro-title">Leckeres Essen auch zuhause.</h2>
-      <p>Die bisherige Homepage weist auf ein Lieferangebot der Vereinsgaststätte hin. Bestellungen und aktuelle Liefermöglichkeiten bitte direkt telefonisch mit der Gaststätte abstimmen.</p>
-      <a class="gastro-button" href={gastronomy.phoneHref}>Jetzt anrufen ↗</a>
-    </div>
-    <div class="delivery-logo"><img src={gastronomy.lieferandoImage} alt="Lieferando" width="720" height="450" loading="lazy" /></div>
-  </section>
 </GastroPage>
 
 <style>
+  .vacation-notice{margin-top:34px;padding:24px 28px;border-left:6px solid #f4d638;background:#092f20;color:white;box-shadow:9px 9px 0 #f4d638}.vacation-notice span,.vacation-notice strong{display:block}.vacation-notice span{color:#f4d638;font-size:.68rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.vacation-notice strong{margin-top:7px;font-family:Georgia,serif;font-size:clamp(1.45rem,3vw,2.3rem)}.vacation-notice p{margin:7px 0 0;color:#cfddd4}
   .hours-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:42px}
   .hours-card{padding:34px;background:white;box-shadow:0 16px 45px rgb(9 47 32 / 7%);border-top:5px solid #164f32}
-  .delivery-card{border-top-color:#f4d638}
+  .info-card{border-top-color:#f4d638}.info-card p{color:#59685e;line-height:1.75}
   .hours-head>span{color:#6c7b71;font-size:.67rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.hours-head h2{margin:8px 0 25px;font-family:Georgia,serif;font-size:2rem}
   dl{margin:0}dl>div{display:flex;justify-content:space-between;gap:25px;padding:14px 0;border-bottom:1px solid #e2e8e3}dt{font-weight:800}dd{margin:0;color:#59685e;text-align:right}.hours-card>a{display:inline-block;margin-top:24px;color:#164f32;font-weight:900;text-decoration:none}
-  .delivery-info{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.8fr);gap:65px;align-items:center;margin-top:85px;padding-top:70px;border-top:1px solid #d9dfda}.delivery-info p{color:#58685d;line-height:1.8}.delivery-logo{min-height:320px;display:grid;place-items:center;padding:25px;background:white;box-shadow:10px 10px 0 #f4d638}.delivery-logo img{max-width:100%;max-height:280px;object-fit:contain}
-  @media(max-width:800px){.hours-grid,.delivery-info{grid-template-columns:1fr}.delivery-info{gap:32px}}
+  @media(max-width:800px){.hours-grid{grid-template-columns:1fr}}
 </style>

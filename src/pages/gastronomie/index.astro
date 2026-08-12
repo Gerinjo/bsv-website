@@ -15,6 +15,12 @@ import { withBase } from '../../utils/paths';
   <h2 class="gastro-title">Mehr als eine Vereinsgaststätte.</h2>
   <p class="gastro-lead">Frische Salate, hausgemachte Pasta, Meeresfrüchte, Burger, passende Getränke und ein unkompliziertes Miteinander: Die Gaststätte ist Treffpunkt für Mitglieder, Nachbarschaft, Mannschaften und Gäste.</p>
 
+  <aside class="vacation-teaser">
+    <span>Betriebsurlaub</span>
+    <strong>{gastronomy.vacation.from} bis {gastronomy.vacation.through}</strong>
+    <p>Ab dem {gastronomy.vacation.reopens} sind wir wieder für Sie da. Bei neuen Bildern und der aktualisierten Speisekarte bitten wir noch um etwas Geduld.</p>
+  </aside>
+
   <div class="gastro-grid link-grid">
     {gastronomyLinks.map((link, index) => (
       <a class="section-link" href={withBase(link.href)}>
@@ -39,6 +45,7 @@ import { withBase } from '../../utils/paths';
 </GastroPage>
 
 <style>
+  .vacation-teaser{margin:34px 0 0;padding:22px 26px;border-left:6px solid #f4d638;background:#092f20;color:white}.vacation-teaser span,.vacation-teaser strong{display:block}.vacation-teaser span{color:#f4d638;font-size:.66rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.vacation-teaser strong{margin-top:6px;font-family:Georgia,serif;font-size:clamp(1.3rem,3vw,2rem)}.vacation-teaser p{margin:7px 0 0;color:#cfddd4;line-height:1.6}
   .link-grid{margin:42px 0 95px}
   .section-link{min-height:120px;padding:24px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;background:white;color:#17251b;text-decoration:none;box-shadow:0 15px 42px rgb(9 47 32 / 7%);transition:.18s ease}
   .section-link:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgb(9 47 32 / 12%)}
