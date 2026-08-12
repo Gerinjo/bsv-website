@@ -38,7 +38,7 @@ const {
         <p>{intro}</p>
         <div class="hero-actions">
           <a class="primary" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
-          <a class="secondary" href={gastronomy.reservationPhoneHref}>Reservieren: {gastronomy.reservationPhone}</a>
+          <a class="secondary" href={gastronomy.phoneHref}>Vereinsgaststätte: {gastronomy.phone}</a>
         </div>
       </div>
     </header>
@@ -66,7 +66,8 @@ const {
           <p>Für Geburtstage, Jubiläen, Firmenfeiern und gesellige Abende steht das Team der Vereinsgaststätte gerne zur Verfügung.</p>
         </div>
         <div class="contact-actions">
-          <a href={gastronomy.reservationPhoneHref}>{gastronomy.reservationPhone}</a>
+          <a href={gastronomy.phoneHref}>Vereinsgaststätte: {gastronomy.phone}</a>
+          <a href={gastronomy.reservationPhoneHref}>Reservierungen: {gastronomy.reservationPhone}</a>
           <a href="https://www.google.com/maps/search/?api=1&query=Schlesierstra%C3%9Fe+43%2C+78315+Radolfzell" target="_blank" rel="noreferrer">Anfahrt öffnen ↗</a>
         </div>
       </div>
