@@ -1,1 +1,1 @@
-export const MCSHAPE_MINIMUM_AGE = 15;
+export const MCSHAPE_MINIMUM_AGE = 14;

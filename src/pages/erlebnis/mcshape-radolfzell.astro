@@ -41,8 +41,8 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
           <div class="price-compare">
             <span>Regulär · Classic</span>
             <div class="regular-rates"><b>12 Monate</b><del>49,90 €</del><b>24 Monate</b><del>39,90 €</del></div>
-            <strong>bis zu 20 € weniger / Monat</strong>
-            <small>gegenüber dem regulären 12-Monats-Tarif: 240 € Vorteil über 12 Monate</small>
+            <strong>10 € weniger / Monat</strong>
+            <small>gegenüber dem regulären 24-Monats-Tarif: 240 € Vorteil über 24 Monate</small>
           </div>
           <p>Nutzung der Studioeinrichtungen und des Kursangebots bei MC Shape Radolfzell.</p>
         </article>
@@ -53,8 +53,8 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
           <div class="price-compare">
             <span>Regulär · All-In</span>
             <div class="regular-rates"><b>12 Monate</b><del>59,90 €</del><b>24 Monate</b><del>49,90 €</del></div>
-            <strong>bis zu 20 € weniger / Monat</strong>
-            <small>gegenüber dem regulären 12-Monats-Tarif: 240 € Vorteil über 12 Monate</small>
+            <strong>10 € weniger / Monat</strong>
+            <small>gegenüber dem regulären 24-Monats-Tarif: 240 € Vorteil über 24 Monate</small>
           </div>
           <p>Die Leistungen der Kooperation inklusive des optionalen Wellnessbereichs.</p>
         </article>
@@ -64,14 +64,15 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
           <strong><span>39,90 €</span><b>Startgebühr</b></strong>
           <div class="price-compare is-neutral">
             <span>Reguläres Startpaket</span>
-            <strong>ebenfalls 39,90 €</strong>
+            <del>99,90 €</del>
+            <strong>60 € BSV-Vorteil</strong>
           </div>
           <p>Einmalige Gebühr für das Basisstartpaket bei Abschluss der Mitgliedschaft.</p>
         </article>
       </div>
 
       <div class="price-source">
-        <div><strong>Preisvergleich · Stand 07.08.2026</strong><span>Reguläre Tarife laut offizieller MC-Shape-Seite für Radolfzell. Zeitlich begrenzte Aktionen können abweichen.</span></div>
+        <div><strong>Preisvergleich · Stand 12.08.2026</strong><span>Reguläre Tarife laut offizieller MC-Shape-Seite für Radolfzell. Zeitlich begrenzte Aktionen können abweichen.</span></div>
         <a href={regularPriceUrl} target="_blank" rel="noopener noreferrer">Reguläre Tarife bei MC Shape prüfen <b>↗</b></a>
       </div>
     </section>
@@ -87,8 +88,8 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
       <aside class="facts-card">
         <h3>Auf einen Blick</h3>
         <ul>
-          <li><strong>12 Monate</strong><span>Laufzeit der Mitgliedschaft über die Kooperation</span></li>
-          <li><strong>Keine automatische Verlängerung</strong><span>Eine Verlängerung erfolgt wieder über den Verein.</span></li>
+          <li><strong>24 Monate</strong><span>Mindestlaufzeit der Mitgliedschaft über die Kooperation</span></li>
+          <li><strong>Danach monatlich</strong><span>Nach der Mindestlaufzeit verlängert sich der Vertrag jeweils um einen Monat.</span></li>
           <li><strong>Direkte Zahlung</strong><span>Der Mitgliedsbeitrag wird direkt mit MC Shape abgerechnet.</span></li>
           <li><strong>Kooperationszugang</strong><span>Die Berechtigung wird über den BSV bestätigt und freigeschaltet.</span></li>
         </ul>
@@ -151,7 +152,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
   const buttonLabel = button?.querySelector<HTMLElement>('[data-submit-label]');
   const birthInput = form?.querySelector<HTMLInputElement>('#mc-birth-date');
   const birthHint = document.querySelector<HTMLElement>('#mc-birth-hint');
-  const minimumAge = Number(form?.dataset.minAge ?? '15');
+  const minimumAge = Number(form?.dataset.minAge ?? '14');
   let isSubmitting = false;
 
   const calculateAge = (value: string) => {
