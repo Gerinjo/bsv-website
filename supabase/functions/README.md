@@ -7,14 +7,22 @@ Alle Supabase Edge Functions, die E-Mails versenden, verwenden
 ## Zentrale Secrets
 
 ```bash
-supabase secrets set EMAIL_TEST_MODE=true
+supabase secrets set EMAIL_DELIVERY_MODE=test
 supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
 supabase secrets set RESEND_API_KEY=...
 supabase secrets set MAIL_FROM="BSV Nordstern Radolfzell <...>"
 ```
 
-`EMAIL_TEST_MODE` ist standardmäßig aktiv. Nur der explizite Wert `false`
-schaltet auf Live-Empfänger um.
+Der Versand ist ausfallsicher auf Test gestellt. Für Live-Zustellung müssen
+**beide** Werte bewusst gesetzt sein:
+
+```bash
+supabase secrets set EMAIL_DELIVERY_MODE=live
+supabase secrets set EMAIL_LIVE_CONFIRMATION=SEND_BSV_EMAILS_TO_REAL_RECIPIENTS
+```
+
+Fehlt die Bestätigung oder ist sie falsch, bleibt der Testmodus aktiv. Das
+frühere Secret `EMAIL_TEST_MODE` wird absichtlich nicht mehr ausgewertet.
 
 Auch das allgemeine Kontaktformular verwendet diesen Versandweg. Die Edge
 Function `contact-request` speichert die Anfrage, liest den zuständigen
@@ -48,3 +56,16 @@ https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request
 
 Optional kann er beim Website-Build mit `PUBLIC_CONTACT_FORM_ENDPOINT`
 überschrieben werden.
+
+## Mitgliedsantrag
+
+`membership-email` ist die geschützte Mailbrücke für den bestehenden
+PHP-Endpunkt, der PDF und Anlagen erzeugt. Zusätzlich erforderlich:
+
+```bash
+supabase secrets set MEMBERSHIP_EMAIL_SECRET=...
+supabase secrets set MEMBERSHIP_RECIPIENT_EMAIL=...
+```
+
+Auf dem PHP-Webspace wird derselbe geheime Wert als
+`BSV_MEMBERSHIP_EMAIL_SECRET` gesetzt. Ohne ihn wird keine Mail versendet.

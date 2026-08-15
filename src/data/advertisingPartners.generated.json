@@ -1,0 +1,42 @@
+[
+  {
+    "sourceId": "32ae5fba-c614-46e7-9a7f-d88a8890b34b",
+    "slug": "sparkasse-hegau-bodensee",
+    "name": "Sparkasse Hegau-Bodensee",
+    "logoSrc": "/images/sponsors/synced/sparkasse-hegau-bodensee.png",
+    "logoAlt": "Logo von Sparkasse Hegau-Bodensee",
+    "website": "https://www.sparkasse-hegau-bodensee.de/",
+    "sortOrder": 10,
+    "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
+  },
+  {
+    "sourceId": "eb24aa2a-332a-4ca7-93ff-41ad61431902",
+    "slug": "bgv",
+    "name": "BGV",
+    "logoSrc": "/images/sponsors/synced/bgv.png",
+    "logoAlt": "Logo von BGV",
+    "website": "https://www.bgv.de/agenturen/carmenmartin.xhtml",
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-08-15T16:04:52.96596+00:00"
+  },
+  {
+    "sourceId": "1482b8f5-73c5-4e09-8599-3f5383a4c8fa",
+    "slug": "bufee-radolfzell",
+    "name": "Büfee Radolfzell",
+    "logoSrc": "/images/sponsors/synced/bufee-radolfzell.png",
+    "logoAlt": "Logo von Büfee Radolfzell",
+    "website": "https://www.instagram.com/bufee.radolfzell/",
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-08-15T17:05:29.548437+00:00"
+  },
+  {
+    "sourceId": "9ccba025-28e5-42dc-8564-0933c0151302",
+    "slug": "freibad-steisslinger-see",
+    "name": "Freibad Steisslinger See",
+    "logoSrc": "/images/sponsors/synced/freibad-steisslinger-see.png",
+    "logoAlt": "Logo von Freibad Steisslinger See",
+    "website": null,
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
+  }
+]

@@ -1,0 +1,55 @@
+name: Sync advertising partners
+
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advertising-partner-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Import approved partners
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Synchronize partner data and logos
+        env:
+          SPONSOR_FEED_URL: https://maejihwjzxkmthjavgnx.supabase.co/functions/v1/website-sponsor-feed
+          SPONSOR_FEED_SECRET: ${{ secrets.SPONSOR_FEED_SECRET }}
+        run: node scripts/sync-advertising-partners.mjs
+
+      - name: Verify production build
+        run: npm run build
+
+      - name: Commit synchronized partners
+        run: |
+          if [ -z "$(git status --porcelain -- src/data/advertisingPartners.generated.json public/images/sponsors/synced)" ]; then
+            echo "The website partner list is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/advertisingPartners.generated.json public/images/sponsors/synced
+          git commit -m "Sync advertising partners"
+          git pull --rebase origin main
+          git push origin HEAD:main

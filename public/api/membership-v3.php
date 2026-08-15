@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int)$_SERVER['CONTENT_LENGTH'] : 0;
-if ($contentLength > 25 * 1024 * 1024) {
+if ($contentLength > 18 * 1024 * 1024) {
     $respond(413, array('ok' => false, 'message' => 'Die hochgeladenen Dateien sind insgesamt zu groß. Bitte reduziere die Dateigröße.'));
 }
 
@@ -313,7 +313,7 @@ $readUploads = function ($field, $label, $required, $multiple = false) use (
         $data = file_get_contents($file['tmp_name']);
         if ($data === false) $fail('Die Datei „' . $label . '“ konnte nicht gelesen werden.');
         $totalUploadBytes += strlen($data);
-        if ($totalUploadBytes > 15 * 1024 * 1024) $fail('Die Anhänge sind insgesamt zu groß. Bitte reduziere die Dateigröße auf zusammen höchstens 15 MB.');
+        if ($totalUploadBytes > 10 * 1024 * 1024) $fail('Die Anhänge sind insgesamt zu groß. Bitte reduziere die Dateigröße auf zusammen höchstens 10 MB.');
         $suffix = $multiple ? '-' . $number : '';
         $attachments[] = array(
             'name' => $cleanFilename($label . $suffix . '.' . $allowedMimes[$mime]),
@@ -633,48 +633,52 @@ $pdfAttachment = array('name' => $pdfFilename, 'mime' => 'application/pdf', 'dat
 $signatureAttachment = array('name' => 'Unterschrift-' . $applicationNumber . '.png', 'mime' => 'image/png', 'data' => $signatureBinary, 'label' => 'Unterschrift');
 $allAttachments = array_merge(array($pdfAttachment, $signatureAttachment), $attachments);
 
-$headerSafe = function ($text) { return str_replace(array("\r", "\n"), ' ', (string)$text); };
-$encodedSubject = function ($subject) { return '=?UTF-8?B?' . base64_encode($subject) . '?='; };
 $htmlEscape = function ($text) { return htmlspecialchars((string)$text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); };
-$sendMail = function ($to, $subject, $textBody, $files, $replyTo, $htmlBody = null) use ($headerSafe, $encodedSubject) {
-    $mixedBoundary = 'bsv_mixed_' . bin2hex(random_bytes(16));
-    $alternativeBoundary = 'bsv_alt_' . bin2hex(random_bytes(16));
-    $headers = array(
-        'From: BSV Nordstern <info@bsvnordstern.de>',
-        'Reply-To: ' . $headerSafe($replyTo),
-        'MIME-Version: 1.0',
-        'Content-Type: multipart/mixed; boundary="' . $mixedBoundary . '"',
-        'X-Mailer: PHP/' . phpversion(),
-    );
-
-    $body = '--' . $mixedBoundary . "\r\n";
-    if ($htmlBody !== null && $htmlBody !== '') {
-        $body .= 'Content-Type: multipart/alternative; boundary="' . $alternativeBoundary . '"' . "\r\n\r\n";
-        $body .= '--' . $alternativeBoundary . "\r\n";
-        $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
-        $body .= chunk_split(base64_encode($textBody)) . "\r\n";
-        $body .= '--' . $alternativeBoundary . "\r\n";
-        $body .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
-        $body .= chunk_split(base64_encode($htmlBody)) . "\r\n";
-        $body .= '--' . $alternativeBoundary . "--\r\n";
-    } else {
-        $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
-        $body .= chunk_split(base64_encode($textBody)) . "\r\n";
-    }
-
+$mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
+if (!$mailBridgeEndpoint) $mailBridgeEndpoint = 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/membership-email';
+$mailBridgeSecret = (string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET');
+$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null) use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape) {
+    if ($mailBridgeSecret === '' || !function_exists('curl_init')) return false;
+    $encodedFiles = array();
     foreach ($files as $file) {
-        $filename = $headerSafe($file['name']);
-        $body .= '--' . $mixedBoundary . "\r\n";
-        $body .= 'Content-Type: ' . $file['mime'] . '; name="' . $filename . '"' . "\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n";
-        $body .= 'Content-Disposition: attachment; filename="' . $filename . '"' . "\r\n\r\n";
-        $body .= chunk_split(base64_encode($file['data'])) . "\r\n";
+        $encodedFiles[] = array(
+            'filename' => str_replace(array("\r", "\n", '/', '\\'), '-', (string)$file['name']),
+            'contentType' => (string)$file['mime'],
+            'content' => base64_encode($file['data']),
+        );
     }
-    $body .= '--' . $mixedBoundary . "--\r\n";
-    return mail($to, $encodedSubject($subject), $body, implode("\r\n", $headers));
+    $payload = json_encode(array(
+        'messageType' => $messageType,
+        'to' => (string)$to,
+        'subject' => (string)$subject,
+        'text' => (string)$textBody,
+        'html' => $htmlBody !== null && $htmlBody !== ''
+            ? (string)$htmlBody
+            : '<div style="font-family:Arial,sans-serif;white-space:pre-wrap">' . $htmlEscape($textBody) . '</div>',
+        'replyTo' => (string)$replyTo,
+        'attachments' => $encodedFiles,
+    ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($payload === false) return false;
+
+    $request = curl_init($mailBridgeEndpoint);
+    curl_setopt_array($request, array(
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT => 90,
+        CURLOPT_HTTPHEADER => array(
+            'Accept: application/json',
+            'Content-Type: application/json',
+            'X-BSV-Membership-Secret: ' . $mailBridgeSecret,
+        ),
+        CURLOPT_POSTFIELDS => $payload,
+    ));
+    $responseBody = curl_exec($request);
+    $responseCode = (int)curl_getinfo($request, CURLINFO_HTTP_CODE);
+    curl_close($request);
+    if ($responseBody === false || $responseCode < 200 || $responseCode >= 300) return false;
+    $result = json_decode($responseBody, true);
+    return is_array($result) && isset($result['ok']) && $result['ok'] === true;
 };
 
 $emailConsentSummary =
@@ -695,7 +699,6 @@ $checkboxSummary =
         : "Spielberichtsdaten für DFBnet und FUSSBALL.DE: nicht relevant\n" .
           "Marketing durch DFB, Verbände und Partner: nicht relevant\n");
 
-$internalRecipient = 'jerome.ernsberger@gmail.com';
 $internalSubject = 'BSV Mitgliedsantrag ' . $applicationNumber . ': ' . $firstName . ' ' . $lastName;
 $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     "Antragsnummer: {$applicationNumber}\n" .
@@ -719,7 +722,7 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     ($isFootball ? "Spielgenehmigung: {$registrationLabels[$registrationType]}\nIdentitätsnachweis: {$proofLabels[$identityProofType]}\n\n" : '') .
     "Das PDF, die Unterschrift und alle hochgeladenen Unterlagen sind beigefügt.\n";
 
-if (!$sendMail($internalRecipient, $internalSubject, $internalBody, $allAttachments, (string)$email)) {
+if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
     $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Bitte versuche es später erneut.'));
 }
 
@@ -926,6 +929,7 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '</table></td></tr></table></body></html>';
 
 $applicantSent = $sendMail(
+    'applicant',
     (string)$email,
     $applicantSubject,
     $applicantText,

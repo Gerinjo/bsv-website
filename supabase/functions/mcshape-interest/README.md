@@ -17,23 +17,24 @@ an `EMAIL_TEST_RECIPIENT` gesendet. Im Betreff und im Mailtext steht,
 welche Nachricht und welcher Live-Empfänger simuliert wurden.
 
 ```bash
-supabase secrets set EMAIL_TEST_MODE=true
+supabase secrets set EMAIL_DELIVERY_MODE=test
 supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
 ```
 
-Erst der explizite Wert `false` aktiviert die echten Empfänger. Diese beiden
-Secrets gelten zentral für alle Supabase-Mailfunktionen, die den gemeinsamen
-Maildienst unter `_shared/email-service.ts` verwenden.
+Live-Versand benötigt zwei unabhängig gesetzte Werte. Fehlt die zweite
+Bestätigung, bleibt der Testmodus aktiv. Diese Secrets gelten zentral für alle
+Supabase-Mailfunktionen, die den gemeinsamen Maildienst verwenden.
 
 ```bash
-supabase secrets set EMAIL_TEST_MODE=false
+supabase secrets set EMAIL_DELIVERY_MODE=live
+supabase secrets set EMAIL_LIVE_CONFIRMATION=SEND_BSV_EMAILS_TO_REAL_RECIPIENTS
 ```
 
 ## Erforderliche Supabase-Secrets
 
 ```bash
 supabase secrets set RESEND_API_KEY=...
-supabase secrets set EMAIL_TEST_MODE=true
+supabase secrets set EMAIL_DELIVERY_MODE=test
 supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
 supabase secrets set MCSHAPE_RECIPIENT_EMAIL=...
 supabase secrets set BSV_CONFIRMATION_EMAIL=...

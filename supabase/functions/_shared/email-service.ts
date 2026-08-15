@@ -1,4 +1,12 @@
+import { resolveEmailMode } from './email-mode.mjs';
+
 export type EmailMode = 'test' | 'live';
+
+export type EmailAttachment = {
+  filename: string;
+  content: string;
+  content_type?: string;
+};
 
 export type EmailMessage = {
   to: string | string[];
@@ -7,6 +15,8 @@ export type EmailMessage = {
   reply_to?: string;
   subject: string;
   html: string;
+  text?: string;
+  attachments?: EmailAttachment[];
 };
 
 export type EmailRuntimeConfig = {
@@ -18,8 +28,6 @@ export type EmailRuntimeConfig = {
 };
 
 const DEFAULT_TEST_RECIPIENT = 'jerome.ernsberger@gmail.com';
-const LIVE_TEST_MODE_VALUES = new Set(['false', '0', 'off', 'no']);
-
 const list = (value?: string | string[]) => {
   if (!value) return [];
   return (Array.isArray(value) ? value : [value]).map((item) => item.trim()).filter(Boolean);
@@ -33,12 +41,14 @@ const escapeHtml = (value: string) => value
   .replaceAll("'", '&#039;');
 
 export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
-  const rawTestMode = Deno.env.get('EMAIL_TEST_MODE')?.trim().toLowerCase() ?? 'true';
-  const testMode = !LIVE_TEST_MODE_VALUES.has(rawTestMode);
+  const resolvedMode = resolveEmailMode((name: string) => Deno.env.get(name));
+  if (resolvedMode.liveBlocked) {
+    console.error('Live-E-Mail wurde angefordert, aber EMAIL_LIVE_CONFIRMATION fehlt oder ist ungültig. Testmodus bleibt aktiv.');
+  }
 
   return {
-    mode: testMode ? 'test' : 'live',
-    testMode,
+    mode: resolvedMode.mode,
+    testMode: resolvedMode.testMode,
     testRecipient: Deno.env.get('EMAIL_TEST_RECIPIENT')?.trim() || DEFAULT_TEST_RECIPIENT,
     mailFrom: Deno.env.get('MAIL_FROM')?.trim() ?? '',
     resendApiKey: Deno.env.get('RESEND_API_KEY')?.trim() ?? '',
@@ -69,6 +79,13 @@ export const sendEmail = async (message: EmailMessage) => {
         </div>${message.html}`
       : message.html,
   };
+
+  if (message.text) {
+    payload.text = config.testMode
+      ? `TESTMODUS – Zustellung ausschließlich an ${config.testRecipient}.\nVorgesehene Live-Zustellung: ${intendedRecipients.join(' · ') || 'noch nicht konfiguriert'}\n\n${message.text}`
+      : message.text;
+  }
+  if (message.attachments?.length) payload.attachments = message.attachments;
 
   if (config.testMode) {
     payload.reply_to = config.testRecipient;
