@@ -122,6 +122,7 @@ export const menu: MenuItem[] = [
         { label: 'Gold-Sponsor', href: '/sponsoring#gold' },
       ]},
       { title: 'Partnerschaft', links: [
+        { label: 'Unsere Werbepartner', href: '/werbepartner' },
         { label: 'Pakete vergleichen', href: '/sponsoring#vergleich' },
         { label: 'Einzelbausteine', href: '/sponsoring#bausteine' },
         { label: 'Sponsoring anfragen', href: '/kontakt?thema=sponsoring' },
