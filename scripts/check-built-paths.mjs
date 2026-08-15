@@ -4,7 +4,9 @@ import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 const projectRoot = resolve(import.meta.dirname, '..');
 const distRoot = join(projectRoot, 'dist');
 const publicRoot = join(projectRoot, 'public');
-const base = '/bsv-website/';
+const configuredBase = process.env.SITE_BASE_PATH ?? '/';
+const baseSegment = configuredBase.replace(/^\/+|\/+$/g, '');
+const base = baseSegment ? `/${baseSegment}/` : '/';
 
 const walk = (directory) => readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
   const entryPath = join(directory, entry.name);
@@ -39,7 +41,7 @@ const validateReference = (sourceFile, rawReference) => {
 
   checkedReferences += 1;
 
-  if (reference.startsWith('/') && !reference.startsWith(base)) {
+  if (base !== '/' && reference.startsWith('/') && !reference.startsWith(base)) {
     issues.push(`${relative(projectRoot, sourceFile)}: Basis-Pfad fehlt: ${reference}`);
     return;
   }

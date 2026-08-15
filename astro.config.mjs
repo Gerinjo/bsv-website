@@ -3,6 +3,5 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://gerinjo.github.io',
-    base: '/bsv-website',
+    site: 'https://bsvnordstern.de',
 });
