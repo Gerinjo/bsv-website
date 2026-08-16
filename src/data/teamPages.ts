@@ -7,7 +7,6 @@ export type TeamCoach = {
   club?: string;
   qualification?: string;
   image?: string;
-  email?: string;
   phone?: string;
 };
 
@@ -150,7 +149,6 @@ const extractCoaches = (path: string): TeamCoach[] => {
     const rawQualification = qualificationMatch ? plainText(qualificationMatch[2]).replace(/^Lizenz:\s*/i, '') : undefined;
     const qualification = rawQualification && !/^keine Angab/i.test(rawQualification) ? rawQualification : undefined;
     const image = card.match(/<img[^>]+src="([^"]+)"/i)?.[1];
-    const email = card.match(/href="mailto:([^"?]+)(?:\?[^\"]*)?"/i)?.[1];
     const phone = card.match(/href="tel:([^"]+)"/i)?.[1];
 
     return [{
@@ -158,7 +156,6 @@ const extractCoaches = (path: string): TeamCoach[] => {
       role,
       qualification,
       image: image && image !== placeholderImage ? image : undefined,
-      email: email ? decodeURIComponent(email) : undefined,
       phone,
     }];
   });
@@ -319,7 +316,7 @@ const configs: TeamConfig[] = [
     trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
     image: '/images/aktive/teams/2526/frauen.jpg',
     coaches: [
-      { name: 'Mathias Becht', role: 'Trainer', email: 'Mathias.Becht@bsvnordstern.de', phone: '+49 1523 8252979' },
+      { name: 'Mathias Becht', role: 'Trainer', phone: '+49 1523 8252979' },
       { name: 'Max Menzel', role: 'Co-Trainer', phone: '+49 170 4971707' },
     ],
   },
@@ -336,7 +333,7 @@ const configs: TeamConfig[] = [
     image: '/images/aktive/teams/2526/frauen.jpg',
     coaches: [
       { name: 'Myriam Lipp', role: 'Chef-Trainerin', phone: '+49 1522 3307366' },
-      { name: 'Emel Bayram', role: 'Co-Trainerin', email: 'emel.bayram@bsvnordstern.de', phone: '+49 173 1543544' },
+      { name: 'Emel Bayram', role: 'Co-Trainerin', phone: '+49 173 1543544' },
     ],
   },
   {
@@ -362,7 +359,7 @@ const configs: TeamConfig[] = [
     training: [{ day: 'Aktuell', time: 'Termin folgt', place: 'BSV Nordstern' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', email: 'marcelino.rueth@bsvnordstern.de', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer', email: 'mohamad.mahmoudi@bsvnordstern.de' }],
+    coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer' }],
   },
   {
     path: 'jugend/u11-e3', kicker: 'Kinderfußball', headline: 'Entdecken.<br /><em>Zusammen wachsen.</em>', letter: 'E3',
@@ -371,7 +368,7 @@ const configs: TeamConfig[] = [
     training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [{ name: 'Stefan Sulger', role: 'Trainer', qualification: 'Kindertrainer-Zertifikat', email: 'stefan.sulger@bsvnordstern.de' }, { name: 'Michael Sick', role: 'Trainer', email: 'michael.sick@bsvnordstern.de' }],
+    coaches: [{ name: 'Stefan Sulger', role: 'Trainer', qualification: 'Kindertrainer-Zertifikat' }, { name: 'Michael Sick', role: 'Trainer' }],
   },
   {
     path: 'jugend/u9-f', kicker: 'Kinderfußball', headline: 'Dribbeln.<br /><em>Freude teilen.</em>', letter: 'U9',
@@ -477,7 +474,7 @@ const configs: TeamConfig[] = [
         photos: bGirlsGallery,
       },
     ],
-    coaches: [{ name: 'Sven Goldhagen', role: 'Cheftrainer', qualification: 'DFB-Basis-Coach', image: '/images/verein/personen/sven-goldhagen.jpg', email: 'sven.goldhagen@bsvnordstern.de', phone: '+491727404080' }, { name: 'Sonja Thomen', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach', email: 'sonja.thomen@bsvnordstern.de' }],
+    coaches: [{ name: 'Sven Goldhagen', role: 'Cheftrainer', qualification: 'DFB-Basis-Coach', image: '/images/verein/personen/sven-goldhagen.jpg', phone: '+491727404080' }, { name: 'Sonja Thomen', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach' }],
   },
   {
     path: 'jugend/juniorinnen/u15', kicker: 'C-Juniorinnen', headline: 'Lernen.<br /><em>Wachsen.</em>', letter: 'C',
@@ -485,7 +482,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Die aktuellen Trainingszeiten erhältst du direkt beim Trainer.',
     training: [{ day: 'Nach Absprache', time: 'Termin erfragen', place: 'BSV Nordstern' }],
     trial: `Spielerinnen der Jahrgänge ${youthYears.c} können beim Trainer ein unverbindliches Probetraining vereinbaren.`,
-    coaches: [{ name: 'Alexander Kramer', role: 'Trainer', qualification: 'DFB-Basis-Coach', email: 'alexander.kramer@bsvnordstern.de', phone: '+491733276748' }],
+    coaches: [{ name: 'Alexander Kramer', role: 'Trainer', qualification: 'DFB-Basis-Coach', phone: '+491733276748' }],
   },
   {
     path: 'jugend/juniorinnen/u13', kicker: 'D wie Durchstarten', headline: 'Am Ball.<br /><em>Als Team.</em>', letter: 'D',
@@ -501,7 +498,7 @@ const configs: TeamConfig[] = [
         photos: dGirlsGallery,
       },
     ],
-    coaches: [{ name: 'Dana Bulander', role: 'Trainerin', qualification: 'C-Lizenz', image: '/images/verein/personen/dana-bulander.jpg', email: 'dana.bulander@bsvnordstern.de' }],
+    coaches: [{ name: 'Dana Bulander', role: 'Trainerin', qualification: 'C-Lizenz', image: '/images/verein/personen/dana-bulander.jpg' }],
   },
 ];
 

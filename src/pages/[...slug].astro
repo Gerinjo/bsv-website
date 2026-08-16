@@ -745,7 +745,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
                 {teamProfile.coaches.map((coach) => (
                   <article class="coach-card">
                     {coach.image ? <div class="coach-portrait"><img src={withBase(coach.image)} alt={coach.name} width="677" height="1000" loading="lazy" /></div> : <div class="coach-portrait coach-placeholder" aria-hidden="true">{coach.name.split(' ').map((part) => part[0]).join('')}</div>}
-                    <div class="coach-details"><small>{coach.role}</small><h3>{coach.name}</h3>{coach.qualification && <p>{coach.qualification}</p>}{coach.club && <p class="coach-club"><small>Stammverein</small><strong>{coach.club}</strong></p>}{(coach.email || coach.phone) && <div class="contact-icons">{coach.email && <a href={`mailto:${coach.email}`} aria-label={`E-Mail an ${coach.name}`}>✉</a>}{coach.phone && <a href={`tel:${coach.phone}`} aria-label={`${coach.name} anrufen`}>☎</a>}</div>}</div>
+                    <div class="coach-details"><small>{coach.role}</small><h3>{coach.name}</h3>{coach.qualification && <p>{coach.qualification}</p>}{coach.club && <p class="coach-club"><small>Stammverein</small><strong>{coach.club}</strong></p>}<div class="contact-icons"><a class="team-contact-link" href={withBase(`/kontakt?thema=team--${page.path.replaceAll('/', '--')}--general`)} aria-label={`Kontakt zu ${coach.name} aufnehmen`}>✉</a>{coach.phone && <a href={`tel:${coach.phone}`} aria-label={`${coach.name} anrufen`}>☎</a>}</div></div>
                   </article>
                 ))}
               </div>
@@ -1280,6 +1280,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .coach-card:nth-child(even) .coach-club { border-top-color:rgb(255 255 255 / 16%); }
   .coach-card:nth-child(even) .coach-club strong { color:white; }
   :global(.d-girls-page .contact-icons) { min-height:70px; margin-top:20px; display:flex; align-items:flex-start; flex-wrap:wrap; gap:8px; }
+  :global(.d-girls-page .team-contact-link) { width:40px; height:40px; display:grid; place-items:center; border:1px solid rgb(9 47 32 / 22%); border-radius:50%; background:white; color:var(--green); text-decoration:none; }
+  :global(.d-girls-page .team-contact-link:hover),:global(.d-girls-page .team-contact-link:focus-visible) { background:var(--yellow); color:var(--dark); }
   :global(.d-girls-page .contact-toggle) { width:40px; height:40px; padding:0; display:grid; place-items:center; border:1px solid rgb(9 47 32 / 22%); border-radius:50%; background:white; color:var(--green); cursor:pointer; }
   :global(.d-girls-page .contact-toggle:hover),:global(.d-girls-page .contact-toggle[aria-expanded='true']) { background:var(--yellow); color:var(--dark); }
   :global(.d-girls-page .contact-toggle::before) { font-size:1rem; font-weight:900; }
