@@ -40,6 +40,7 @@ const getEventType = (title: string) => {
           <p class="intro">Seit 1956 bewegen wir Radolfzell. Auf dem Platz, in der Halle und weit darüber hinaus.</p>
           <div class="hero-actions">
             <a class="button button-yellow" href={withBase('/verein/mitglied-werden')}>Jetzt Mitglied werden <span>↗</span></a>
+            <a class="button button-shop" href="https://shop.bsvnordstern.de/" target="_blank" rel="noopener noreferrer">Zum BSV Shop <span>↗</span></a>
             <a class="text-link" href={withBase('/verein/geschichte')}>Den BSV entdecken <span>→</span></a>
           </div>
         </div>
@@ -179,6 +180,8 @@ const getEventType = (title: string) => {
   .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 28px; }
   .button { display: inline-flex; align-items: center; justify-content: center; gap: 22px; min-height: 52px; padding: 0 22px; border-radius: 4px; color: var(--ink); font-size: .85rem; font-weight: 800; text-decoration: none; }
   .button-yellow { background: var(--yellow); box-shadow: 0 7px 0 #bda51e; }.button-yellow:hover { transform: translateY(2px); box-shadow: 0 5px 0 #bda51e; }
+  .button-shop { border: 2px solid rgb(255 255 255 / 72%); color: white; background: rgb(255 255 255 / 8%); box-shadow: 0 7px 0 rgb(5 30 19 / 45%); }
+  .button-shop:hover { transform: translateY(2px); border-color: white; background: rgb(255 255 255 / 15%); box-shadow: 0 5px 0 rgb(5 30 19 / 45%); }
   .text-link { color: white; font-size: .85rem; font-weight: 800; text-decoration: none; }.text-link span { margin-left: 10px; }.dark-link { color: var(--ink); }
   .hero-art { position: relative; min-height: 440px; }
   .year { position: absolute; z-index: 1; right: 0; top: -25px; color: rgb(255 255 255 / 8%); font-size: 9rem; font-weight: 900; line-height: 1; writing-mode: vertical-rl; }.year span { color: rgb(244 214 56 / 15%); }
