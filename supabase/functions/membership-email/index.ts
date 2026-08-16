@@ -1,4 +1,6 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail, type EmailAttachment } from '../_shared/email-service.ts';
+import { collectRecipientEmails, getMembershipRoutingKeys } from '../_shared/membership-routing.mjs';
 
 const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
 const MAX_ATTACHMENT_BYTES = 12 * 1024 * 1024;
@@ -23,6 +25,16 @@ function attachmentBytes(base64: string): number {
   const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
   return Math.floor(base64.length * 3 / 4) - padding;
 }
+
+const getSupabase = () => {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!supabaseUrl || !serviceRoleKey) return null;
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+};
 
 Deno.serve(async (request) => {
   if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
@@ -49,10 +61,45 @@ Deno.serve(async (request) => {
   const html = text(body.html, 300_000);
   const replyTo = text(body.replyTo, 200).toLowerCase();
   const applicantAddress = text(body.to, 200).toLowerCase();
-  const internalAddress = Deno.env.get('MEMBERSHIP_RECIPIENT_EMAIL')?.trim().toLowerCase() ?? '';
-  const recipient = messageType === 'internal' ? internalAddress : messageType === 'applicant' ? applicantAddress : '';
+  const routingKey = text(body.routingKey, 200).toLowerCase();
+  let recipient: string | string[] = '';
 
-  if (!recipient || !validEmail(recipient) || !subject || !plainText || !html) {
+  if (messageType === 'applicant') {
+    recipient = applicantAddress;
+  } else {
+    const routingKeys = getMembershipRoutingKeys(messageType, routingKey);
+    if (!routingKeys) return json({ error: 'invalid_routing' }, 422);
+
+    const supabase = getSupabase();
+    if (!supabase) return json({ error: 'recipient_lookup_not_configured' }, 503);
+
+    const { data: recipientRows, error: recipientError } = await supabase
+      .from('contact_empfaenger')
+      .select('schluessel, email, weitere_emails')
+      .in('schluessel', routingKeys)
+      .eq('aktiv', true);
+
+    if (recipientError) {
+      console.error('Mitgliedsantrags-Empfaenger konnten nicht geladen werden:', recipientError);
+      return json({ error: 'recipient_lookup_failed' }, 500);
+    }
+
+    const foundKeys = new Set((recipientRows ?? []).map((row) => row.schluessel));
+    if (routingKeys.some((key) => !foundKeys.has(key))) {
+      console.error('Mitgliedsantrags-Routing ist unvollstaendig:', routingKeys, [...foundKeys]);
+      return json({ error: 'recipient_not_configured' }, 503);
+    }
+
+    const recipients = collectRecipientEmails(recipientRows ?? []);
+    if (!recipients?.length) return json({ error: 'invalid_recipient_configuration' }, 503);
+    recipient = recipients;
+  }
+
+  if (
+    (!Array.isArray(recipient) && (!recipient || !validEmail(recipient))) ||
+    (Array.isArray(recipient) && recipient.some((address) => !validEmail(address))) ||
+    !subject || !plainText || !html
+  ) {
     return json({ error: 'invalid_message' }, 422);
   }
   if (replyTo && !validEmail(replyTo)) return json({ error: 'invalid_reply_to' }, 422);

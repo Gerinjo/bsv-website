@@ -131,31 +131,31 @@ if (!$birth || ($birthErrors !== false && ($birthErrors['warning_count'] > 0 || 
 $age = $birth->diff(new DateTime('today'))->y;
 
 $youthTeamOptions = array(
-    'bambini-u6' => array('label' => 'U6 G-Junioren Spielgruppe', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa'),
-    'bambini-u7' => array('label' => 'U7 G-Junioren Bambinis', 'trainers' => 'M. Meiss, M. Tassone, L. Gastaudo'),
-    'f-u8' => array('label' => 'U8 F-Junioren', 'trainers' => 'F. Keller, P. Dieterle'),
-    'f-u9' => array('label' => 'U9 F-Junioren', 'trainers' => 'A. Wolfmüller, S. Rauch, M. Rüth'),
-    'e1-junioren' => array('label' => 'U11 E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst'),
-    'e2-junioren' => array('label' => 'U11 E2-Junioren', 'trainers' => 'M. Rüth, M. Mahmoudi'),
-    'e3-junioren' => array('label' => 'U11 E3-Junioren', 'trainers' => 'S. Sulger, M. Sick'),
-    'd1-junioren' => array('label' => 'U13 D1-Junioren', 'trainers' => 'S. Hellmann'),
-    'd2-junioren' => array('label' => 'U13 D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner'),
-    'd3-junioren' => array('label' => 'U13 D3-Junioren', 'trainers' => 'H. Ho'),
-    'c1-junioren' => array('label' => 'U15 C1-Junioren', 'trainers' => 'A. Scholpre, S. Bühler, T. Parthenschlager'),
-    'c2-junioren' => array('label' => 'U15 C2-Junioren', 'trainers' => 'S. Bäuerle'),
-    'b-junioren' => array('label' => 'U17 B-Junioren', 'trainers' => 'M. Geismann, A. Basile'),
-    'a-junioren' => array('label' => 'U19 A-Junioren', 'trainers' => 'M. Jentsch, O. Schmal, F. Demmer'),
-    'b-juniorinnen' => array('label' => 'U17 B-Juniorinnen', 'trainers' => 'S. Goldhagen, S. Thomen'),
-    'c-juniorinnen' => array('label' => 'U15 C-Juniorinnen', 'trainers' => 'A. Kramer'),
-    'd-juniorinnen' => array('label' => 'U13 D-Juniorinnen', 'trainers' => 'D. Bulander'),
+    'bambini-u6' => array('label' => 'U6 G-Junioren Spielgruppe', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa', 'routingKey' => 'team--jugend--u6-g'),
+    'bambini-u7' => array('label' => 'U7 G-Junioren Bambinis', 'trainers' => 'M. Meiss, M. Tassone, L. Gastaudo', 'routingKey' => 'team--jugend--u7-g'),
+    'f-u8' => array('label' => 'U8 F-Junioren', 'trainers' => 'F. Keller, P. Dieterle', 'routingKey' => 'team--jugend--u8-f'),
+    'f-u9' => array('label' => 'U9 F-Junioren', 'trainers' => 'A. Wolfmüller, S. Rauch, M. Rüth', 'routingKey' => 'team--jugend--u9-f'),
+    'e1-junioren' => array('label' => 'U11 E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst', 'routingKey' => 'team--jugend--u11-e1'),
+    'e2-junioren' => array('label' => 'U11 E2-Junioren', 'trainers' => 'M. Rüth, M. Mahmoudi', 'routingKey' => 'team--jugend--u11-e2'),
+    'e3-junioren' => array('label' => 'U11 E3-Junioren', 'trainers' => 'S. Sulger, M. Sick', 'routingKey' => 'team--jugend--u11-e3'),
+    'd1-junioren' => array('label' => 'U13 D1-Junioren', 'trainers' => 'S. Hellmann', 'routingKey' => 'team--jugend--u13-d1'),
+    'd2-junioren' => array('label' => 'U13 D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner', 'routingKey' => 'team--jugend--u13-d2'),
+    'd3-junioren' => array('label' => 'U13 D3-Junioren', 'trainers' => 'H. Ho', 'routingKey' => 'team--jugend--u13-d3'),
+    'c1-junioren' => array('label' => 'U15 C1-Junioren', 'trainers' => 'A. Schäuble, S. Bühler, T. Parthenschlager', 'routingKey' => 'team--jugend--u15-c1'),
+    'c2-junioren' => array('label' => 'U15 C2-Junioren', 'trainers' => 'S. Bäuerle', 'routingKey' => 'team--jugend--u15-c2'),
+    'b-junioren' => array('label' => 'U17 B-Junioren', 'trainers' => 'M. Geismann, A. Basile', 'routingKey' => 'team--jugend--u17'),
+    'a-junioren' => array('label' => 'U19 A-Junioren', 'trainers' => 'M. Jentsch, O. Schmal, F. Demmer', 'routingKey' => 'team--jugend--u19'),
+    'b-juniorinnen' => array('label' => 'U17 B-Juniorinnen', 'trainers' => 'S. Goldhagen, S. Thomen', 'routingKey' => 'team--jugend--juniorinnen--u17'),
+    'c-juniorinnen' => array('label' => 'U15 C-Juniorinnen', 'trainers' => 'A. Kramer', 'routingKey' => 'team--jugend--juniorinnen--u15'),
+    'd-juniorinnen' => array('label' => 'U13 D-Juniorinnen', 'trainers' => 'D. Bulander', 'routingKey' => 'team--jugend--juniorinnen--u13'),
 );
 $adultMaleTeamOptions = array(
-    'herren-1' => array('label' => 'BSV Nordstern Radolfzell · Kreisliga B Staffel 1', 'trainers' => 'T. Parzich, T. Altenburg'),
-    'herren-2' => array('label' => 'SG Herren 2 · Kreisliga C Staffel 1', 'trainers' => 'A. Kaiser'),
+    'herren-1' => array('label' => 'BSV Nordstern Radolfzell · Kreisliga B Staffel 1', 'trainers' => 'T. Parzich, T. Altenburg', 'routingKey' => 'team--fussball--herren--bezirksliga'),
+    'herren-2' => array('label' => 'SG Herren 2 · Kreisliga C Staffel 1', 'trainers' => 'A. Kaiser', 'routingKey' => 'team--fussball--herren--kreisliga-2'),
 );
 $adultFemaleTeamOptions = array(
-    'frauen-1' => array('label' => 'SG Frauen 1 · Bezirksliga Bodensee', 'trainers' => 'M. Becht'),
-    'frauen-2' => array('label' => 'SG Frauen 2 · Kreisliga A', 'trainers' => 'M. Lipp, E. Bayram'),
+    'frauen-1' => array('label' => 'SG Frauen 1 · Bezirksliga Bodensee', 'trainers' => 'M. Becht', 'routingKey' => 'team--fussball--frauen--bezirksliga'),
+    'frauen-2' => array('label' => 'SG Frauen 2 · Kreisliga A', 'trainers' => 'M. Lipp, E. Bayram', 'routingKey' => 'team--fussball--frauen--kreisliga'),
 );
 
 $teamQuestionApplies = $isYouthFootball || ($department === 'adult-football' && in_array($gender, array('männlich', 'weiblich'), true));
@@ -182,6 +182,7 @@ if ($teamQuestionApplies) {
 
 $selectedTeamLabel = $teamSelection !== '' ? $availableTeamOptions[$teamSelection]['label'] : '';
 $selectedTeamTrainers = $teamSelection !== '' ? $availableTeamOptions[$teamSelection]['trainers'] : '';
+$selectedTeamRoutingKey = $teamSelection !== '' ? $availableTeamOptions[$teamSelection]['routingKey'] : '';
 
 $guardianLastName = $value('guardianLastName');
 $guardianFirstName = $value('guardianFirstName');
@@ -637,7 +638,7 @@ $htmlEscape = function ($text) { return htmlspecialchars((string)$text, ENT_QUOT
 $mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
 if (!$mailBridgeEndpoint) $mailBridgeEndpoint = 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/membership-email';
 $mailBridgeSecret = (string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET');
-$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null) use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape) {
+$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape) {
     if ($mailBridgeSecret === '' || !function_exists('curl_init')) return false;
     $encodedFiles = array();
     foreach ($files as $file) {
@@ -656,6 +657,7 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
             ? (string)$htmlBody
             : '<div style="font-family:Arial,sans-serif;white-space:pre-wrap">' . $htmlEscape($textBody) . '</div>',
         'replyTo' => (string)$replyTo,
+        'routingKey' => (string)$routingKey,
         'attachments' => $encodedFiles,
     ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if ($payload === false) return false;
@@ -726,7 +728,40 @@ if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments,
     $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Bitte versuche es später erneut.'));
 }
 
-$siteBase = 'https://gerinjo.github.io/bsv-website';
+$trainerNotificationSent = null;
+if ($teamKnown === 'yes' && $selectedTeamRoutingKey !== '') {
+    $trainerSubject = 'Neuer Mitgliedsantrag für ' . $selectedTeamLabel . ': ' . $lastName . ' ' . $firstName;
+    $trainerBody = "Neuer Online-Mitgliedsantrag für eure Mannschaft\n\n" .
+        "Antragsnummer: {$applicationNumber}\n" .
+        "Mitglied: {$lastName} {$firstName}\n" .
+        "Geburtsdatum: " . $displayDate($birthDate) . "\n" .
+        "Abteilung: {$departments[$department]}\n" .
+        "Mannschaft bereits bekannt: Ja\n" .
+        "Ausgewählte Mannschaft: {$selectedTeamLabel}\n" .
+        "Aktuelles Trainerteam: {$selectedTeamTrainers}\n" .
+        "Anschrift: {$street}, {$postalCode} {$city}\n" .
+        "E-Mail: {$email}\n" .
+        "Telefon: {$phone}\n" .
+        ($isYouthFootball && $age < 18
+            ? "\nKontaktperson: {$guardianFirstName} {$guardianLastName}\nTelefon Kontaktperson: " . ($guardianPhone !== '' ? $guardianPhone : 'nicht angegeben') . "\n"
+            : '');
+
+    $trainerNotificationSent = $sendMail(
+        'team',
+        '',
+        $trainerSubject,
+        $trainerBody,
+        array(),
+        (string)$email,
+        null,
+        $selectedTeamRoutingKey
+    );
+    if (!$trainerNotificationSent) {
+        error_log('Trainerbenachrichtigung fehlgeschlagen für Mitgliedsantrag ' . $applicationNumber . ' und Routing ' . $selectedTeamRoutingKey);
+    }
+}
+
+$siteBase = 'https://bsvnordstern.de';
 $memberName = trim($firstName . ' ' . $lastName);
 $departmentName = $departments[$department];
 $isMinor = $age < 18;
@@ -939,4 +974,9 @@ $applicantSent = $sendMail(
 );
 
 $_SESSION['membership_last_submit'] = time();
-$respond(200, array('ok' => true, 'applicationNumber' => $applicationNumber, 'confirmationEmailSent' => $applicantSent));
+$respond(200, array(
+    'ok' => true,
+    'applicationNumber' => $applicationNumber,
+    'confirmationEmailSent' => $applicantSent,
+    'trainerNotificationSent' => $trainerNotificationSent,
+));

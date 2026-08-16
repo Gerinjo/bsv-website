@@ -64,8 +64,21 @@ PHP-Endpunkt, der PDF und Anlagen erzeugt. Zusätzlich erforderlich:
 
 ```bash
 supabase secrets set MEMBERSHIP_EMAIL_SECRET=...
-supabase secrets set MEMBERSHIP_RECIPIENT_EMAIL=...
 ```
 
 Auf dem PHP-Webspace wird derselbe geheime Wert als
 `BSV_MEMBERSHIP_EMAIL_SECRET` gesetzt. Ohne ihn wird keine Mail versendet.
+
+Die internen Empfänger werden nicht mehr über ein Edge Secret gepflegt,
+sondern serverseitig aus `public.contact_empfaenger` geladen:
+
+- `membership` und `passwesen` erhalten den vollständigen Antrag samt Anlagen.
+- Bei bekannter Mannschaft erhält der passende `team--...`-Eintrag eine
+  getrennte Information mit den erforderlichen Mitglieds- und Kontaktdaten,
+  aber ohne Bankdaten, Unterschrift, PDF oder weitere Uploads.
+- Zusätzliche Traineradressen stehen in `weitere_emails`. Die primäre Adresse
+  bleibt in `email`.
+
+RLS und fehlende Rechte für `anon` und `authenticated` verhindern, dass die
+Empfängeradressen über die öffentliche Website ausgelesen werden. Auch diese
+Nachrichten verwenden den zentralen Testmodus aus `_shared/email-service.ts`.
