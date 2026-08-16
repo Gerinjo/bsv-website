@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/check-built-paths.mjs",
+    "build": "astro build && node scripts/remove-server-only-build-files.mjs && node scripts/check-built-paths.mjs",
     "test": "node --test tests/*.test.mjs",
     "check:paths": "node scripts/check-built-paths.mjs",
     "preview": "astro preview",

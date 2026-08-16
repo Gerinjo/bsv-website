@@ -50,6 +50,7 @@ jobs:
           npx --no-install astro build \
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
+          node scripts/remove-server-only-build-files.mjs
           node scripts/check-built-paths.mjs
 
       - name: Upload artifact
