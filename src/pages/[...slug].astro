@@ -46,8 +46,6 @@ const pages: Page[] = [
   { path: 'verein/beitragsordnung', eyebrow: 'Transparent & fair', title: 'Beitragsordnung', intro: 'Mitgliedsbeiträge sichern Trainingsbetrieb, Anlagen und eine verlässliche Vereinsarbeit.', image: '/images/verein/bereiche/verein.jpeg', kind: 'document', body: ['Die Beitragsordnung regelt Beitragshöhen, Fälligkeiten und Ermäßigungen. Zum 1. Januar 2026 wurde die Beitragsordnung durch die Mitgliederversammlung angepasst.', 'Die vollständige, rechtsverbindliche Fassung bleibt maßgeblich. Bei Fragen hilft die Vorstandschaft gerne weiter.'] },
   { path: 'verein/mitglied-werden', eyebrow: 'Willkommen beim BSV', title: 'Mitglied werden', intro: 'Lebe deinen Sport, lerne neue Menschen kennen und werde Teil unserer lebendigen Gemeinschaft.', image: '/images/verein/bereiche/verein.jpeg', body: ['Als Mitglied kannst du in unseren Mannschaften und Abteilungen trainieren, an Veranstaltungen teilnehmen oder dich ehrenamtlich engagieren.', 'Unsere Trainerinnen, Trainer und Verantwortlichen begleiten dich beim Einstieg und finden gemeinsam mit dir das passende Angebot.'] },
   { path: 'verein/kuendigung', eyebrow: 'Mitgliedschaft beenden', title: 'Mitgliedschaft kündigen', intro: 'Hier erfährst du, wie eine wirksame Austrittserklärung eingereicht wird und zu welchem Zeitpunkt deine Mitgliedschaft endet.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document' },
-  { path: 'foerderverein/vorstandschaft', eyebrow: 'Unterstützen & ermöglichen', title: 'Förderverein', intro: 'Der Förderverein schafft zusätzliche Möglichkeiten für Sport, Jugend und Vereinsleben.', image: '/images/verein/bereiche/geschichte.jpg', body: ['Mit persönlichem Einsatz, Veranstaltungen und finanzieller Unterstützung hilft der Förderverein dort, wo gute Ideen zusätzliche Kraft brauchen.', 'Bei Fragen zur Arbeit und Vorstandschaft des Fördervereins erreichst du uns über die zentrale Vereinsadresse.'] },
-  { path: 'foerderverein/mitglied-werden', eyebrow: 'Gemeinsam fördern', title: 'Fördermitglied werden', intro: 'Unterstütze Projekte, Ausstattung und die Zukunft des BSV Nordstern Radolfzell.', image: '/images/verein/bereiche/verein.jpeg', body: ['Du kannst bei Veranstaltungen mithelfen, Sportgeräte und Ausstattung ermöglichen oder die finanzielle Basis unserer Vereinsarbeit stärken.', 'Jeder Beitrag – ob Zeit, Idee oder Förderung – kommt unserer Vereinsgemeinschaft zugute.'] },
   { path: 'abteilungen/gymnastik', eyebrow: 'Beweglich & gemeinsam', title: 'Gymnastik', intro: 'Fitness erhalten und gemeinsam Spaß an der Bewegung haben.', image: '/images/verein/bereiche/gymnastik.jpeg', body: ['Abteilungsleiterin: Luzia Menz', 'Training: Dienstag von 19:00 bis 20:15 Uhr in der Gymnastikhalle des BSV Nordstern.'] },
   { path: 'abteilungen/bogensport', eyebrow: 'Ruhe. Fokus. Präzision.', title: 'Bogensport', intro: 'Breiten- und Leistungssport auf unserem Nebenplatz an der Schlesierstraße.', image: '/images/verein/bereiche/bogensport.jpg', body: ['Abteilungsleiter: Konrad Mauz', 'Training: Freitag von 17:30 bis 19:00 Uhr auf dem Nebenplatz des BSV Nordstern. Die Abteilung führt derzeit eine Warteliste für Interessierte.'] },
   { path: 'abteilungen/wandergruppe', eyebrow: 'Draußen zuhause', title: 'Wandergruppe', intro: 'Gemeinsam unterwegs – bei jeder Witterung und mit Freude an Natur und Geselligkeit.', image: '/images/verein/bereiche/wandern.jpg', people: [
@@ -77,8 +75,7 @@ export function getStaticPaths() {
   return [
     'verein', 'verein/vorstandschaft', 'verein/geschichte', 'verein/organigramm',
     'verein/satzung', 'verein/beitragsordnung', 'verein/mitglied-werden',
-    'verein/kuendigung', 'foerderverein/vorstandschaft',
-    'foerderverein/mitglied-werden', 'abteilungen/gymnastik',
+    'verein/kuendigung', 'abteilungen/gymnastik',
     'abteilungen/bogensport', 'abteilungen/wandergruppe',
     'events', 'events/tag-des-maedchenfussballs', 'events/allianz-juniors-cup-d',
     'events/allianz-juniors-cup-c', 'events/grundschulturnier',
@@ -646,7 +643,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </div>
             <div class="governance-support">
               <div><small>Unterstützende Aufgaben</small><ul><li>Finanzcontrolling</li><li>Kassenwesen</li><li>Recht</li><li>Datenschutz</li><li>Vertragswesen</li></ul></div>
-              <a href={withBase('/foerderverein/vorstandschaft')}><span>Eigenständiger Partner</span><strong>Förderverein</strong><small>Förderung · Projekte · Sponsoring</small><b aria-hidden="true">↗</b></a>
+              <a href={withBase('/foerderverein')}><span>Eigenständiger Partner</span><strong>Förderverein</strong><small>Förderung · Projekte · Gemeinschaft</small><b aria-hidden="true">↗</b></a>
             </div>
           </section>
 

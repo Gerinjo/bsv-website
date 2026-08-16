@@ -39,6 +39,7 @@ export const menu: MenuItem[] = [
         { label: 'Mitgliedschaft kündigen', href: '/verein/kuendigung' },
       ]},
       { title: 'Förderverein', links: [
+        { label: 'Förderverein entdecken', href: '/foerderverein' },
         { label: 'Vorstandschaft', href: '/foerderverein/vorstandschaft' },
         { label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
       ]},

@@ -47,7 +47,7 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
   }
 
   return {
-    mode: resolvedMode.mode,
+    mode: resolvedMode.mode as EmailMode,
     testMode: resolvedMode.testMode,
     testRecipient: Deno.env.get('EMAIL_TEST_RECIPIENT')?.trim() || DEFAULT_TEST_RECIPIENT,
     mailFrom: Deno.env.get('MAIL_FROM')?.trim() ?? '',

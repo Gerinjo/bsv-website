@@ -849,7 +849,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     $textLink('Allgemeiner Kontakt', $siteBase . '/kontakt/?thema=general') . "\n" .
     "FÖRDERVEREIN\n" .
     "Der Förderverein unterstützt unter anderem Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.\n" .
-    $textLink('Förderverein kennenlernen', $siteBase . '/foerderverein/vorstandschaft/') .
+    $textLink('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
     $textLink('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') . "\n" .
     "DEINE AUSWAHL ZUR E-MAIL-KOMMUNIKATION\n" .
     $emailConsentSummary .
@@ -948,7 +948,7 @@ $linkButtonsHtml .
 '<tr><td style="padding:28px 36px;background:#092f20;color:#ffffff;">' .
 '<h2 style="margin:0 0 12px;color:#f4d638;font-size:21px;">Förderverein</h2>' .
 '<p style="margin:0 0 16px;line-height:1.65;color:#d3dfd7;">Der Förderverein unterstützt Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.</p>' .
-$linkButton('Förderverein kennenlernen', $siteBase . '/foerderverein/vorstandschaft/') .
+$linkButton('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
 $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') .
 '</td></tr>' .
 '<tr><td style="padding:28px 36px;">' .

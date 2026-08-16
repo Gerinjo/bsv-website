@@ -57,6 +57,28 @@ https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request
 Optional kann er beim Website-Build mit `PUBLIC_CONTACT_FORM_ENDPOINT`
 überschrieben werden.
 
+## Fördervereinsantrag
+
+`foerderverein-membership` nimmt den vollständigen Online-Antrag inklusive
+SEPA-Mandat und digitaler Unterschrift entgegen. Der zuständige Empfänger wird
+mit dem Schlüssel `foerderverein` aus `public.contact_empfaenger` gelesen. Die
+Antragstellenden erhalten eine separate Eingangsbestätigung ohne Bankdaten.
+
+In `public.foerderverein_antraege` wird nur ein minimales Versandprotokoll
+gespeichert. IBAN, BIC, Anschrift, Geburtsdatum, Telefonnummer, Freitexte und
+Unterschrift werden dort ausdrücklich nicht abgelegt. Die Function verwendet
+den gemeinsamen E-Mail-Testmodus und den einmal nutzbaren Spamschutz des
+Kontaktformulars.
+
+Der öffentliche Endpunkt lautet:
+
+```text
+https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/foerderverein-membership
+```
+
+Optional kann er beim Website-Build mit
+`PUBLIC_FOERDERVEREIN_FORM_ENDPOINT` überschrieben werden.
+
 ## Mitgliedsantrag
 
 `membership-email` ist die geschützte Mailbrücke für den bestehenden
