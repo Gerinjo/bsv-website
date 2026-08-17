@@ -40,7 +40,6 @@ export const menu: MenuItem[] = [
       ]},
       { title: 'Förderverein', links: [
         { label: 'Förderverein entdecken', href: '/foerderverein' },
-        { label: 'Vorstandschaft', href: '/foerderverein/vorstandschaft' },
         { label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
       ]},
     ],

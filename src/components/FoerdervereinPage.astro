@@ -21,13 +21,7 @@ const pages = {
     headline: 'Rückenwind für|den BSV.',
     intro: 'Der Förderverein stärkt Ideen, Projekte und Anschaffungen, die unseren Sport und unsere Gemeinschaft nachhaltig voranbringen.',
   },
-  board: {
-    title: 'Vorstandschaft Förderverein | BSV Nordstern Radolfzell',
-    description: 'Die Vorstandschaft und Ansprechpersonen des Fördervereins des BSV Nordstern Radolfzell.',
-    eyebrow: 'Verantwortung & Engagement',
-    headline: 'Menschen, die|Mögliches schaffen.',
-    intro: 'Die Vorstandschaft organisiert die Arbeit des Fördervereins, verwaltet die Mittel und bringt neue Förderideen gemeinsam auf den Weg.',
-  },
+  // board view removed — Förderverein Vorstandschaft is no longer current
   join: {
     title: 'Mitglied im Förderverein werden | BSV Nordstern Radolfzell',
     description: 'Mitgliedschaft im Förderverein des BSV Nordstern: Beiträge, Vorteile und Aufnahmeantrag.',
@@ -42,8 +36,7 @@ const [headline, emphasis] = page.headline.split('|');
 
 const sectionLinks = [
   { key: 'overview', number: '01', label: 'Förderverein', href: '/foerderverein' },
-  { key: 'board', number: '02', label: 'Vorstandschaft', href: '/foerderverein/vorstandschaft' },
-  { key: 'join', number: '03', label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
+  { key: 'join', number: '02', label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
 ] as const;
 
 const impactAreas = [
@@ -128,9 +121,6 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
 
         <section class="path-section">
           <div class="shell path-grid">
-            <a class="path-card path-board" href={withBase('/foerderverein/vorstandschaft')}>
-              <small>Die Menschen dahinter</small><h2>Verantwortung<br />übernehmen.</h2><p>Lerne die Vorstandschaft und ihre Aufgaben kennen.</p><strong>Zur Vorstandschaft <span>↗</span></strong>
-            </a>
             <a class="path-card path-join" href={withBase('/foerderverein/mitglied-werden')}>
               <small>Teil der Unterstützung werden</small><h2>Gemeinsam<br />mehr bewegen.</h2><p>Schon ein verlässlicher Jahresbeitrag schafft neue Möglichkeiten.</p><strong>Mitglied werden <span>↗</span></strong>
             </a>
@@ -139,41 +129,7 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
       </>
     )}
 
-    {view === 'board' && (
-      <>
-        <section class="board-intro">
-          <div class="shell intro-grid">
-            <div><p class="eyebrow dark"><span></span>Gemeinsam organisiert</p><h2>Engagement mit<br /><em>Verantwortung.</em></h2></div>
-            <div class="intro-copy"><p class="lead">Die Vorstandschaft vertritt den Förderverein, koordiniert seine Aktivitäten und sorgt für einen verantwortungsvollen Einsatz der verfügbaren Mittel.</p><p>Unterstützt wird sie von Beisitzerinnen und Beisitzern, die Ideen, Kontakte und praktische Hilfe in die gemeinsame Arbeit einbringen.</p></div>
-          </div>
-        </section>
-
-        <section class="people-section">
-          <div class="shell">
-            <header class="people-head"><span>Das Team</span><strong>{String(boardMembers.length).padStart(2, '0')} Engagierte</strong></header>
-            <div class="people-grid">
-              {boardMembers.map((member, index) => (
-                <article class:list={['person-card', { featured: index < 2 }]}>
-                  <div class="person-media">
-                    {member.image ? <img src={withBase(member.image)} alt={member.name} width="560" height="700" loading="lazy" /> : <span>{initials(member.name)}</span>}
-                    <small>{String(index + 1).padStart(2, '0')}</small>
-                  </div>
-                  <div class="person-copy"><span>{member.role}</span><h2>{member.name}</h2></div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section class="contact-section">
-          <div class="shell contact-card">
-            <span class="contact-symbol" aria-hidden="true">?</span>
-            <div><p class="eyebrow dark"><span></span>Direkter Draht</p><h2>Fragen, Ideen oder<br />Lust mitzumachen?</h2><p>Die Vorstandschaft freut sich über deine Nachricht und neue Impulse für die Förderung des BSV.</p></div>
-            <a href={withBase('/kontakt?thema=foerderverein')}>Kontaktformular öffnen <span>↗</span></a>
-          </div>
-        </section>
-      </>
-    )}
+    {/* board view removed — no current Vorstandschaft for Förderverein */}
 
     {view === 'join' && (
       <>
@@ -207,6 +163,11 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
         <FoerdervereinApplicationForm />
       </>
     )}
+    <section class="contact-section">
+      <div class="shell">
+        <a class="contact-link" href={withBase('/kontakt?thema=foerderverein')}>Kontakt zum Förderverein</a>
+      </div>
+    </section>
   </main>
 
   <Footer />

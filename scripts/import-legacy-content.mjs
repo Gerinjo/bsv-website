@@ -12,7 +12,6 @@ const routes = {
   'verein-mitglied': 'verein/mitglied-werden',
   'verein-kuendigung': 'verein/kuendigung',
   'verein-termine': 'verein/termine',
-  'fv-vorstand': 'foerderverein/vorstandschaft',
   'fv-mitglied': 'foerderverein/mitglied-werden',
   'abt-gymnastik': 'abteilungen/gymnastik',
   'abt-bogensport': 'abteilungen/bogensport',
