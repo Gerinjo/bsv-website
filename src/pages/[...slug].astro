@@ -25,7 +25,7 @@ const people: Person[] = [
   { name: 'Oliver Schillinger', role: 'Spielbetrieb' },
   { name: 'Manuel Schellhammer', role: 'Passwesen', image: '/images/verein/personen/manuel-schellhammer.jpg' },
   { name: 'Konrad Mauz', role: 'Abteilungsleiter Bogensport', image: '/images/verein/personen/konrad-mauz.jpg' },
-  { name: 'Heike Seidel', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/heike-seidel.jpg' },
+  { name: 'Sigrid Burkhardt', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/sigrid-burkhardt.jpg' },
   { name: 'Thomas Graf', role: 'Abteilungsleiter Wandern' },
   { name: 'Sigrid Burkhardt', role: 'Mitgliederbestandspflege', image: '/images/verein/personen/sigrid-burkhardt.jpg' },
   { name: 'Jérôme Ernsberger', role: 'IT & Administration', image: '/images/verein/personen/jerome-ernsberger.jpg' },
@@ -114,7 +114,7 @@ const removeLegacyPersonCard = (html: string, personName: string) => {
 
   return result;
 };
-const replaceLegacyPersonCard = (html: string, oldName: string, newName: string, newRole: string, image: string) => {
+const replaceLegacyPersonCard = (html: string, oldName: string, newName: string, newRole: string, image: string, email?: string) => {
   const personIndex = html.indexOf(oldName);
   if (personIndex === -1) return html;
 
@@ -122,7 +122,7 @@ const replaceLegacyPersonCard = (html: string, oldName: string, newName: string,
   const cardEnd = html.indexOf('</li>', personIndex);
   if (cardStart === -1 || cardEnd === -1) return html;
 
-  const card = html.slice(cardStart, cardEnd + 5)
+  let card = html.slice(cardStart, cardEnd + 5)
     .replaceAll(oldName, newName)
     .replace(/(<a href=")[^"]*(">\s*<img)/, `$1${image}$2`)
     .replace(/(<img[^>]*\ssrc=")[^"]*(")/, `$1${image}$2`)
@@ -130,6 +130,13 @@ const replaceLegacyPersonCard = (html: string, oldName: string, newName: string,
       /<div class="qualification-wrapper">[\s\S]*?<\/div>\s*<\/div>/,
       `<div class="qualification-wrapper"><div>${newRole}</div></div>`,
     );
+
+  if (email) {
+    card = card.replace(
+      /<div class="contact-icons">[\s\S]*?<\/div>/,
+      `<div class="contact-icons"><a href="mailto:${email}" title="E-Mail an ${newName}" aria-label="E-Mail an ${newName}"><i class="bi bi-envelope"></i></a></div>`,
+    );
+  }
 
   return `${html.slice(0, cardStart)}${card}${html.slice(cardEnd + 5)}`;
 };
@@ -174,18 +181,25 @@ const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganiz
   : legacyContent[page.path];
 const importedBody = legacyBody || undefined;
 const migratedLegacyBody = page.path === 'verein/vorstandschaft' && importedBody
-  ? addLegacyPersonToSection(
-      replaceLegacyPersonCard(
-        removeLegacyPersonCard(importedBody, 'Nicole Erbes'),
-        'Ann-Kathrin Sugg',
-        'Ann-Kathrin Sugg',
-        'Sportliche Leitung Frauen',
-        '/images/verein/personen/ann-kathrin-sugg.jpg',
+  ? replaceLegacyPersonCard(
+      addLegacyPersonToSection(
+        replaceLegacyPersonCard(
+          removeLegacyPersonCard(importedBody, 'Nicole Erbes'),
+          'Ann-Kathrin Sugg',
+          'Ann-Kathrin Sugg',
+          'Sportliche Leitung Frauen',
+          '/images/verein/personen/ann-kathrin-sugg.jpg',
+        ),
+        'Felix Schüle',
+        'Sportlicher Leiter Herren',
+        'Herren',
+        '/images/verein/personen/felix-schuele.jpg',
       ),
-      'Felix Schüle',
-      'Sportlicher Leiter Herren',
-      'Herren',
-      '/images/verein/personen/felix-schuele.jpg',
+      'Heike Seidel',
+      'Sigrid Burkhardt',
+      'Abteilungsleitung: Gymnastik',
+      '/images/verein/personen/sigrid-burkhardt.jpg',
+      'verwaltung@bsvnordstern.de',
     )
   : page.path === 'jugend/vorstandschaft' && importedBody
     ? addLegacyYouthRepresentative(
@@ -333,7 +347,7 @@ const organizationUnits = [
     number: '03', title: 'Breitensport', intro: 'Sportliche Angebote abseits des Fußballplatzes für unterschiedliche Generationen.',
     people: [
       { role: 'Bogensport', name: 'Konrad Mauz' },
-      { role: 'Gymnastik', name: 'Heike Seidel' },
+      { role: 'Gymnastik', name: 'Sigrid Burkhardt' },
       { role: 'Wandern', name: 'Thomas Graf' },
     ],
     tasks: ['Bogensport', 'Gymnastik', 'Wandergruppe'],
@@ -392,7 +406,7 @@ const departmentPages = {
     description: 'Die Übungen fördern Beweglichkeit, Stabilität und allgemeine Fitness. Im Mittelpunkt stehen ein gutes Körpergefühl und der Spaß am gemeinsamen Training.',
     facts: [{ label: 'Training', value: 'Dienstag', detail: '19:00 – 20:15 Uhr' }, { label: 'Ort', value: 'Gymnastikhalle', detail: 'BSV Nordstern' }, { label: 'Angebot', value: 'Fitness', detail: 'Bewegung in der Gruppe' }],
     qualities: [{ icon: '↔', title: 'Beweglichkeit', text: 'Mobilisation und vielseitige Übungen halten den Körper geschmeidig.' }, { icon: '▲', title: 'Stabilität', text: 'Gezieltes Training kräftigt den gesamten Körper und verbessert die Haltung.' }, { icon: '♥', title: 'Gemeinsam aktiv', text: 'Regelmäßige Bewegung macht in einer vertrauten Gruppe doppelt Freude.' }],
-    people: [{ name: 'Luzia Menz', role: 'Abteilungsleiterin Gymnastik', email: 'info@bsvnordstern.de' }],
+    people: [{ name: 'Sigrid Burkhardt', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/sigrid-burkhardt.jpg', email: 'verwaltung@bsvnordstern.de' }],
     gallery: [],
     notice: 'Du möchtest die Gymnastikgruppe kennenlernen? Melde dich über die Vereinsadresse – wir stellen gerne den Kontakt zur Abteilungsleitung her.',
   },
