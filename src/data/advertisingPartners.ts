@@ -7,6 +7,7 @@ export type AdvertisingPartner = {
   logoSrc: string;
   logoAlt: string;
   website: string | null;
+  teamAudienceSlugs: string[];
   sortOrder: number;
   sourceUpdatedAt: string;
 };

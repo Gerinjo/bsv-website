@@ -1,4 +1,5 @@
 import { legacyContent } from './legacyContent.ts';
+import { advertisingPartners } from './advertisingPartners';
 import { personImageByName } from './personImages';
 
 export type TeamCoach = {
@@ -37,7 +38,8 @@ export type TeamPartner = {
 export type TeamSponsor = {
   name: string;
   image: string;
-  href: string;
+  imageAlt: string;
+  href?: string;
 };
 
 export type TeamProfile = {
@@ -60,7 +62,7 @@ export type TeamProfile = {
   fussballDeUrl?: string;
   fussballDeWidgetId?: string;
   fussballDeTableWidgetId?: string;
-  sponsor?: TeamSponsor;
+  sponsors?: TeamSponsor[];
 };
 
 type TeamConfig = Omit<TeamProfile, 'coaches' | 'gallery' | 'squad'> & {
@@ -96,6 +98,31 @@ const youthAssociationPartners: TeamPartner[] = [
   { label: 'SV Markelfingen', href: 'https://www.sv-markelfingen.de/' },
   { label: 'SG Liggeringen-Güttingen', href: 'https://www.sg-liggeringen-guettingen.de/' },
 ];
+
+const sponsorAudienceByTeamPath: Record<string, string> = {
+  'fussball/herren/bezirksliga': 'herren-1',
+  'fussball/herren/kreisliga-2': 'herren-2',
+  'fussball/frauen/bezirksliga': 'frauen-1',
+  'fussball/frauen/kreisliga': 'frauen-2',
+  'fussball/alte-herren': 'alte-herren',
+  'jugend/u19': 'u19-junioren',
+  'jugend/u17': 'u17-junioren',
+  'jugend/u15-c1': 'u15-c1-junioren',
+  'jugend/u15-c2': 'u15-c2-junioren',
+  'jugend/u13-d1': 'u13-d1-junioren',
+  'jugend/u13-d2': 'u13-d2-junioren',
+  'jugend/u13-d3': 'u13-d3-junioren',
+  'jugend/u11-e1': 'u11-e1-junioren',
+  'jugend/u11-e2': 'u11-e2-junioren',
+  'jugend/u11-e3': 'u11-e3-junioren',
+  'jugend/u9-f': 'u9-f-junioren',
+  'jugend/u8-f': 'u8-f-junioren',
+  'jugend/u7-g': 'u7-bambinis',
+  'jugend/u6-g': 'u6-spielgruppe',
+  'jugend/juniorinnen/u17': 'u17-juniorinnen',
+  'jugend/juniorinnen/u15': 'u15-juniorinnen',
+  'jugend/juniorinnen/u13': 'u13-juniorinnen',
+};
 
 const associationTeamPaths = new Set([
   'fussball/herren/kreisliga-2',
@@ -283,11 +310,6 @@ const configs: TeamConfig[] = [
     fussballDeUrl: 'https://www.fussball.de/mannschaft/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/011MICLVK0000000VTVG0001VTR8C1K7',
     fussballDeWidgetId: 'af96d999-a7ba-432a-87c5-439ab401516d',
     fussballDeTableWidgetId: '52d29828-708d-438f-be85-3c8b47a58b44',
-    sponsor: {
-      name: 'Sparkasse Hegau-Bodensee',
-      image: '/images/sponsors/sparkasse-hegau-bodensee.png',
-      href: 'https://www.sparkasse-hegau-bodensee.de/',
-    },
     opening: ['Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1 und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
     training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
@@ -506,8 +528,20 @@ export const teamProfiles: Record<string, TeamProfile> = Object.fromEntries(conf
   const { showSquad, sourcePath, ...profile } = config;
   const legacyPath = sourcePath ?? config.path;
   const coaches = config.coaches ?? extractCoaches(legacyPath);
+  const sponsorAudience = sponsorAudienceByTeamPath[config.path];
+  const sponsors = sponsorAudience
+    ? advertisingPartners
+        .filter((partner) => partner.teamAudienceSlugs.includes(sponsorAudience))
+        .map((partner) => ({
+          name: partner.name,
+          image: partner.logoSrc,
+          imageAlt: partner.logoAlt,
+          href: partner.website ?? undefined,
+        }))
+    : [];
   return [config.path, {
     ...profile,
+    sponsors: sponsors.length ? sponsors : undefined,
     coaches: coaches.map((coach) => ({
       ...coach,
       name: coachDisplayNames[coach.name] ?? coach.name,

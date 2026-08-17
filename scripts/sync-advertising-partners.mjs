@@ -53,11 +53,17 @@ for (const source of payload.partners) {
   const name = String(source.name ?? '').trim();
   const logoUrl = String(source.logoUrl ?? '').trim();
   const sourceUpdatedAt = String(source.updatedAt ?? '').trim();
+  const teamAudienceSlugs = Array.isArray(source.teamAudienceSlugs)
+    ? [...new Set(source.teamAudienceSlugs.map((value) => String(value).trim()))].sort()
+    : [];
   const sortOrder = Number(source.sortOrder);
   if (!uuidPattern.test(sourceId) || !slugPattern.test(slug) || !name || name.length > 120) {
     throw new Error('Ein Werbepartner im Feed enthält ungültige Stammdaten.');
   }
   if (ids.has(sourceId) || slugs.has(slug)) throw new Error(`Werbepartner ${slug} ist im Feed doppelt vorhanden.`);
+  if (teamAudienceSlugs.some((audienceSlug) => !slugPattern.test(audienceSlug))) {
+    throw new Error(`Eine Mannschaftszuweisung für ${slug} ist ungültig.`);
+  }
   ids.add(sourceId);
   slugs.add(slug);
   if (!Number.isInteger(sortOrder) || sortOrder < 0) throw new Error(`Sortierung für ${slug} ist ungültig.`);
@@ -90,6 +96,7 @@ for (const source of payload.partners) {
     logoSrc: `/images/sponsors/synced/${logoFilename}`,
     logoAlt: `Logo von ${name}`,
     website: profileUrl(source.websiteUrl, source.instagramHandle),
+    teamAudienceSlugs,
     sortOrder,
     sourceUpdatedAt,
   });
