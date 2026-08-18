@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import HomeSponsorShowcase from '../components/HomeSponsorShowcase.astro';
 import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
@@ -137,6 +138,7 @@ const getEventType = (title: string) => {
         ) : (
           <div class="dates-empty">Aktuell sind keine kommenden Vereinstermine verfügbar.</div>
         )}
+        <HomeSponsorShowcase />
       </div>
     </section>
 
