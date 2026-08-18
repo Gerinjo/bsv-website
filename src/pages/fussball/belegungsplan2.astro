@@ -2,7 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import TrainingPlanFilter from '../../components/TrainingPlanFilter.astro';
 import { teamProfiles } from '../../data/teamPages';
+import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
 import { findTrainingConflicts } from '../../utils/trainingConflicts.mjs';
 
@@ -12,45 +14,6 @@ type Allocation = { pitch: Pitch; share: number; shareLabel: string; tone: Tone 
 type ProposalChange = { day?: string; time?: string; place?: string; allocation?: Partial<Allocation> };
 
 const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
-const filterOptions = [
-  { key: 'all', label: 'Alle', fullLabel: 'Alle Mannschaften' },
-  { key: 'men', label: 'Herren', fullLabel: 'Herren 1, Herren 2 und Alte Herren' },
-  { key: 'women', label: 'Frauen', fullLabel: 'Frauen 1 und Frauen 2' },
-  { key: 'a', label: 'A', fullLabel: 'A-Junioren' },
-  { key: 'b', label: 'B', fullLabel: 'B-Junioren' },
-  { key: 'bm', label: 'BM', fullLabel: 'B-Juniorinnen' },
-  { key: 'c', label: 'C', fullLabel: 'C1- und C2-Junioren' },
-  { key: 'cm', label: 'CM', fullLabel: 'C-Juniorinnen' },
-  { key: 'd', label: 'D', fullLabel: 'D1-, D2- und D3-Junioren' },
-  { key: 'dm', label: 'DM', fullLabel: 'D-Juniorinnen' },
-  { key: 'e', label: 'E', fullLabel: 'E1-, E2- und E3-Junioren' },
-  { key: 'f', label: 'F', fullLabel: 'F-Junioren' },
-  { key: 'g', label: 'G', fullLabel: 'G-Junioren' },
-];
-const filterKeyByTeam: Record<string, string> = {
-  'fussball/herren/bezirksliga': 'men',
-  'fussball/herren/kreisliga-2': 'men',
-  'fussball/alte-herren': 'men',
-  'fussball/frauen/bezirksliga': 'women',
-  'fussball/frauen/kreisliga': 'women',
-  'jugend/u19': 'a',
-  'jugend/u17': 'b',
-  'jugend/juniorinnen/u17': 'bm',
-  'jugend/u15-c1': 'c',
-  'jugend/u15-c2': 'c',
-  'jugend/juniorinnen/u15': 'cm',
-  'jugend/u13-d1': 'd',
-  'jugend/u13-d2': 'd',
-  'jugend/u13-d3': 'd',
-  'jugend/juniorinnen/u13': 'dm',
-  'jugend/u11-e1': 'e',
-  'jugend/u11-e2': 'e',
-  'jugend/u11-e3': 'e',
-  'jugend/u9-f': 'f',
-  'jugend/u8-f': 'f',
-  'jugend/u7-g': 'g',
-  'jugend/u6-g': 'g',
-};
 const teamNames: Record<string, string> = {
   'fussball/herren/bezirksliga': 'Herren 1',
   'fussball/herren/kreisliga-2': 'Herren 2',
@@ -118,15 +81,51 @@ const changes: Record<string, ProposalChange> = {
 };
 
 const actionItems = [
-  ['Alte Herren', 'Mittwoch auf 19:00–20:30 Uhr festgelegt und auf den Hauptplatz verschoben.'],
-  ['A-Junioren', 'BSV-Einheit von Dienstag auf Montag, 19:30–21:00 Uhr, auf den Nebenplatz verschoben. Donnerstag in Markelfingen bleibt bestehen.'],
-  ['C1-Junioren', 'Dienstagseinheit auf Montag, 19:00–20:30 Uhr, Hauptplatz verschoben; Platzbedarf jeweils auf ½ Platz festgelegt.'],
-  ['C2-Junioren', 'Dienstagseinheit auf Freitag, 19:00–20:30 Uhr, und Donnerstagseinheit auf Montag, 19:00–20:30 Uhr, verschoben; beide Einheiten mit ½ Hauptplatz.'],
-  ['D3-Junioren', 'Donnerstagseinheit auf Freitag, 17:30–19:00 Uhr, Hauptplatz verschoben.'],
-  ['B-Junioren', 'Donnerstag auf 19:00–20:30 Uhr verschoben.'],
-  ['D2-Junioren', 'Montag auf 16:30–18:00 Uhr vorgezogen; Mittwoch bei gleicher Zeit auf den Hauptplatz gelegt.'],
-  ['U6 & U7', 'Mittwoch bei gleicher Zeit auf den Hauptplatz gelegt und der Platzbedarf jeweils auf ⅓ reduziert.'],
-  ['Herren am Donnerstag', 'Herren 1 teilt sich den Nebenplatz mit der B-Jugend; Herren 2 trainiert in diesem Entwurf in Markelfingen.'],
+  {
+    team: 'Alte Herren',
+    original: 'Mittwoch ab 19:00 Uhr auf dem Nebenplatz; keine Endzeit angegeben.',
+    proposal: 'Mittwoch 19:00–20:30 Uhr auf dem Hauptplatz.',
+  },
+  {
+    team: 'A-Junioren',
+    original: 'Dienstag 19:00–20:30 Uhr, ganzer Hauptplatz; Donnerstag zur gleichen Zeit in Markelfingen.',
+    proposal: 'BSV-Einheit am Montag 19:30–21:00 Uhr, ganzer Nebenplatz; Donnerstag in Markelfingen unverändert.',
+  },
+  {
+    team: 'C1-Junioren',
+    original: 'Dienstag und Donnerstag 18:30–20:00 Uhr, jeweils ganzer Hauptplatz.',
+    proposal: 'Montag 19:00–20:30 Uhr und Donnerstag 18:30–20:00 Uhr, jeweils ½ Hauptplatz.',
+  },
+  {
+    team: 'C2-Junioren',
+    original: 'Dienstag und Donnerstag 18:30–20:00 Uhr, jeweils ½ Nebenplatz.',
+    proposal: 'Montag und Freitag 19:00–20:30 Uhr, jeweils ½ Hauptplatz.',
+  },
+  {
+    team: 'D3-Junioren',
+    original: 'Montag und Donnerstag 17:00–18:30 Uhr, jeweils ⅓ Hauptplatz.',
+    proposal: 'Montag unverändert; zweite Einheit Freitag 17:30–19:00 Uhr, ⅓ Hauptplatz.',
+  },
+  {
+    team: 'B-Junioren',
+    original: 'Dienstag 19:00–20:30 Uhr in Markelfingen; Donnerstag 18:30–20:00 Uhr auf ½ Nebenplatz beim BSV.',
+    proposal: 'Dienstag unverändert; Donnerstag 19:00–20:30 Uhr auf ½ Nebenplatz beim BSV.',
+  },
+  {
+    team: 'D2-Junioren',
+    original: 'Montag und Mittwoch 17:30–19:00 Uhr, jeweils ⅓ Nebenplatz.',
+    proposal: 'Montag 16:30–18:00 Uhr auf ⅓ Nebenplatz; Mittwoch 17:30–19:00 Uhr auf ⅓ Hauptplatz.',
+  },
+  {
+    team: 'U6 & U7',
+    original: 'Mittwoch 16:30–17:30 Uhr auf dem Hauptplatz, jeweils ½ Platz.',
+    proposal: 'Zeit und Hauptplatz bleiben unverändert; Platzbedarf wird jeweils auf ⅓ reduziert.',
+  },
+  {
+    team: 'Herren am Donnerstag',
+    original: 'Herren 1 und Herren 2 trainieren 19:00–20:30 Uhr mit jeweils ½ Hauptplatz beim BSV.',
+    proposal: 'Herren 1 trainiert zur gleichen Zeit auf ½ Nebenplatz; Herren 2 trainiert in Markelfingen. Dienstag bleibt unverändert.',
+  },
 ];
 
 const timeValue = (time: string) => {
@@ -144,7 +143,7 @@ const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
     return {
       path,
       team: teamNames[path] ?? profile.letter,
-      filterKey: filterKeyByTeam[path],
+      filterKey: trainingFilterKeyByTeam[path],
       ...slot,
       ...change,
       allocation,
@@ -161,7 +160,7 @@ const openSessions = allTraining.filter((session) => !dayOrder.includes(session.
 const sessionsFor = (day: string, pitch: Pitch) => bsvSessions.filter((session) => session.day === day && session.allocation?.pitch === pitch);
 const trainingConflicts = findTrainingConflicts(bsvSessions);
 const conflictsFor = (day: string, pitch: Pitch) => trainingConflicts.filter((conflict) => conflict.day === day && conflict.pitch === pitch);
-const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([path, name]) => [name, filterKeyByTeam[path]]));
+const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([path, name]) => [name, trainingFilterKeyByTeam[path]]));
 ---
 
 <Layout
@@ -185,14 +184,23 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
     <section id="aenderungen" class="actions-section">
       <div class="shell actions-grid">
         <div class="actions-heading">
-          <span>Durchgeführte Aktionen</span>
-          <h2>Was in diesem Entwurf geändert wurde.</h2>
-          <p>Die Änderungen beziehen sich ausschließlich auf diesen Belegungsplan 2. Die Mannschaftsseiten und der aktuelle Belegungsplan bleiben unverändert.</p>
+          <span>Änderungen gegenüber dem Originalplan</span>
+          <h2>Originalplan und Plan 2 im direkten Vergleich.</h2>
+          <p><strong>Vergleichsgrundlage ist immer der aktuell auf der Homepage verlinkte Belegungsplan.</strong> Die Liste zeigt ausschließlich dessen Unterschiede zu Plan 2 – nicht die Änderungen seit einem früheren Stand von Plan 2.</p>
           <aside><strong>Planungsannahme</strong>Der Donnerstagstermin der Herren 2 in Markelfingen muss noch mit der SG abgestimmt werden.</aside>
         </div>
         <ol class="action-list">
-          {actionItems.map(([team, action], index) => (
-            <li><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{team}</strong><p>{action}</p></div></li>
+          {actionItems.map((item, index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <strong>{item.team}</strong>
+                <dl>
+                  <div><dt>Original</dt><dd>{item.original}</dd></div>
+                  <div><dt>Plan 2</dt><dd>{item.proposal}</dd></div>
+                </dl>
+              </div>
+            </li>
           ))}
         </ol>
       </div>
@@ -207,21 +215,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
 
     <section id="wochenplan" class="schedule-section">
       <div class="shell section-head"><div><span>Montag bis Freitag</span><h2>Der vorgeschlagene Wochenplan.</h2></div><p>Hauptplatz und Nebenplatz werden getrennt dargestellt. Die farbigen Balken zeigen den jeweils vorgesehenen Platzanteil.</p></div>
-      <div class="shell filter-panel" data-training-filter>
-        <div class="filter-copy"><span>Mannschaftsfilter</span><strong>Termine gezielt anzeigen</strong><p data-filter-status aria-live="polite">Alle Termine werden angezeigt.</p></div>
-        <div class="filter-buttons" role="group" aria-label="Mannschaft auswählen">
-          {filterOptions.map((option, index) => (
-            <button
-              type="button"
-              data-filter-button={option.key}
-              data-filter-label={option.fullLabel}
-              aria-label={option.fullLabel}
-              aria-pressed={index === 0 ? 'true' : 'false'}
-              class:list={{ 'is-active': index === 0 }}
-            >{option.label}</button>
-          ))}
-        </div>
-      </div>
+      <div class="shell"><TrainingPlanFilter /></div>
       <div class="shell schedule-list" data-schedule-list>
         {dayOrder.map((day) => (
           <article class="day-card" data-schedule-day>
@@ -261,9 +255,9 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
       <div class="shell detail-grid">
         <article class="detail-card">
           <span>Spielgemeinschaften</span><h2>Training an anderen Orten.</h2>
-          <div class="detail-list">
+          <div class="detail-list" data-filter-detail-list>
             {offsiteSessions.map((session) => <a data-team-filter={session.filterKey} href={withBase(`/${session.path}`)}><div><strong>{session.team}</strong><span>{session.place}</span></div><b>{session.day}<br />{session.time}</b></a>)}
-            <p class="detail-empty" data-offsite-empty hidden>Für diese Auswahl gibt es keine auswärtigen Termine.</p>
+            <p class="detail-empty" data-filter-detail-empty hidden>Für diese Auswahl gibt es keine auswärtigen Termine.</p>
           </div>
         </article>
         <article class="detail-card is-open">
@@ -279,65 +273,11 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
   <Footer />
 </Layout>
 
-<script>
-  const filterRoot = document.querySelector<HTMLElement>('[data-training-filter]');
-  const scheduleList = document.querySelector<HTMLElement>('[data-schedule-list]');
-
-  if (filterRoot && scheduleList) {
-    const buttons = [...filterRoot.querySelectorAll<HTMLButtonElement>('[data-filter-button]')];
-    const filterableItems = [...document.querySelectorAll<HTMLElement>('[data-team-filter]')];
-    const status = filterRoot.querySelector<HTMLElement>('[data-filter-status]');
-    const offsiteEmpty = document.querySelector<HTMLElement>('[data-offsite-empty]');
-
-    const applyFilter = (filterKey: string, label: string) => {
-      buttons.forEach((button) => {
-        const isActive = button.dataset.filterButton === filterKey;
-        button.classList.toggle('is-active', isActive);
-        button.setAttribute('aria-pressed', String(isActive));
-      });
-
-      filterableItems.forEach((item) => {
-        item.hidden = filterKey !== 'all' && item.dataset.teamFilter !== filterKey;
-      });
-
-      scheduleList.querySelectorAll<HTMLElement>('[data-conflict-list]').forEach((conflictList) => {
-        const conflictItems = [...conflictList.querySelectorAll<HTMLElement>('[data-conflict-filter-keys]')];
-        conflictItems.forEach((item) => {
-          const keys = item.dataset.conflictFilterKeys?.split(' ') ?? [];
-          item.hidden = filterKey !== 'all' && !keys.includes(filterKey);
-        });
-        conflictList.hidden = filterKey !== 'all' && !conflictItems.some((item) => !item.hidden);
-      });
-
-      scheduleList.querySelectorAll<HTMLElement>('[data-pitch-card]').forEach((pitchCard) => {
-        const hasVisibleBooking = [...pitchCard.querySelectorAll<HTMLElement>('.booking[data-team-filter]')].some((booking) => !booking.hidden);
-        const emptyMessage = pitchCard.querySelector<HTMLElement>('[data-filter-empty]');
-        if (emptyMessage) emptyMessage.hidden = filterKey === 'all' || hasVisibleBooking;
-      });
-
-      scheduleList.querySelectorAll<HTMLElement>('[data-schedule-day]').forEach((dayCard) => {
-        const hasVisibleBooking = [...dayCard.querySelectorAll<HTMLElement>('.booking[data-team-filter]')].some((booking) => !booking.hidden);
-        dayCard.hidden = filterKey !== 'all' && !hasVisibleBooking;
-      });
-
-      if (offsiteEmpty) {
-        const offsiteItems = [...offsiteEmpty.parentElement!.querySelectorAll<HTMLElement>('a[data-team-filter]')];
-        offsiteEmpty.hidden = filterKey === 'all' || offsiteItems.some((item) => !item.hidden);
-      }
-      if (status) status.textContent = filterKey === 'all' ? 'Alle Termine werden angezeigt.' : `Auswahl: ${label}`;
-    };
-
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => applyFilter(button.dataset.filterButton ?? 'all', button.dataset.filterLabel ?? button.textContent ?? ''));
-    });
-  }
-</script>
-
 <style>
   :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
   html{scroll-behavior:smooth}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
   .hero{position:relative;min-height:570px;display:flex;align-items:flex-end;overflow:hidden;background:var(--dark);color:white}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(5 34 22 / 96%) 0%,rgb(5 34 22 / 80%) 48%,rgb(5 34 22 / 20%) 84%),linear-gradient(0deg,rgb(5 34 22 / 82%),transparent 58%)}.hero-inner{position:relative;z-index:1;padding:95px 0 72px}.hero-inner>span,.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.4rem,7vw,6.6rem);line-height:.88;letter-spacing:-.055em}.hero h1 em{color:var(--yellow);font-weight:400}.hero p{max-width:730px;margin:0;color:#cfddd4;font-size:1.05rem;line-height:1.72}.hero a{display:inline-flex;align-items:center;gap:22px;margin-top:29px;padding:15px 19px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none}
-  .actions-section{scroll-margin-top:30px;padding:90px 0;background:white}.actions-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:70px}.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--green)}.actions-heading h2,.allocation-card h2,.section-head h2,.detail-card h2{margin:14px 0 0;color:var(--ink);font-family:Georgia,serif;font-size:clamp(2.35rem,4.2vw,4rem);line-height:.98;letter-spacing:-.045em}.actions-heading>p{color:#5a695f;line-height:1.72}.actions-heading aside{margin-top:28px;padding:18px 20px;border-left:5px solid var(--yellow);background:#fff8cf;color:#4f594f;line-height:1.55}.actions-heading aside strong{display:block;color:var(--dark);font-size:.77rem;text-transform:uppercase;letter-spacing:.08em}.action-list{margin:0;padding:0;list-style:none;border-top:1px solid #dce3dd}.action-list li{display:grid;grid-template-columns:44px 1fr;gap:15px;padding:15px 0;border-bottom:1px solid #dce3dd}.action-list li>span{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:50%;background:#e8f0e9;color:var(--green);font-size:.68rem;font-weight:950}.action-list strong{color:var(--dark)}.action-list p{margin:3px 0 0;color:#647168;font-size:.88rem;line-height:1.5}
+  .actions-section{scroll-margin-top:30px;padding:90px 0;background:white}.actions-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:70px}.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--green)}.actions-heading h2,.allocation-card h2,.section-head h2,.detail-card h2{margin:14px 0 0;color:var(--ink);font-family:Georgia,serif;font-size:clamp(2.35rem,4.2vw,4rem);line-height:.98;letter-spacing:-.045em}.actions-heading>p{color:#5a695f;line-height:1.72}.actions-heading>p strong{color:var(--dark)}.actions-heading aside{margin-top:28px;padding:18px 20px;border-left:5px solid var(--yellow);background:#fff8cf;color:#4f594f;line-height:1.55}.actions-heading aside strong{display:block;color:var(--dark);font-size:.77rem;text-transform:uppercase;letter-spacing:.08em}.action-list{margin:0;padding:0;list-style:none;border-top:1px solid #dce3dd}.action-list li{display:grid;grid-template-columns:44px 1fr;gap:15px;padding:18px 0;border-bottom:1px solid #dce3dd}.action-list li>span{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:50%;background:#e8f0e9;color:var(--green);font-size:.68rem;font-weight:950}.action-list li>div>strong{color:var(--dark);font-size:1rem}.action-list dl{display:grid;gap:7px;margin:9px 0 0}.action-list dl>div{display:grid;grid-template-columns:62px 1fr;gap:9px}.action-list dt{color:#728078;font-size:.66rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}.action-list dd{margin:0;color:#647168;font-size:.84rem;line-height:1.48}.action-list dl>div:last-child dt{color:var(--green)}.action-list dl>div:last-child dd{color:#263b2d;font-weight:650}
   .allocation-section{padding:0 0 90px;background:white}.allocation-card{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:58px;align-items:end;padding:46px 50px;background:var(--yellow);box-shadow:10px 10px 0 var(--dark)}.allocation-card h2{font-size:clamp(2.15rem,3.7vw,3.45rem)}.allocation-card p{margin:0;color:#475449;line-height:1.7}
   .schedule-section{padding:95px 0 115px;background:var(--light)}.section-head{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:55px;align-items:end;margin-bottom:34px}.section-head p{margin:0;color:#5a695f;line-height:1.65}.filter-panel{display:grid;grid-template-columns:245px 1fr;gap:28px;align-items:center;margin-bottom:32px;padding:21px 23px;border:1px solid #d9e2da;background:white;box-shadow:0 10px 28px rgb(9 47 32 / 6%)}.filter-copy>span{display:block;color:var(--green);font-size:.64rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.filter-copy>strong{display:block;margin-top:3px;color:var(--dark);font-family:Georgia,serif;font-size:1.22rem}.filter-copy p{margin:5px 0 0;color:#6b776f;font-size:.75rem}.filter-buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.filter-buttons button{min-width:43px;min-height:42px;padding:0 13px;border:1px solid #cbd7cd;border-radius:3px;background:#f3f7f4;color:var(--dark);font:inherit;font-size:.78rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease}.filter-buttons button:hover,.filter-buttons button:focus-visible{border-color:var(--green);transform:translateY(-1px)}.filter-buttons button.is-active{border-color:var(--dark);background:var(--dark);color:var(--yellow);box-shadow:0 4px 0 var(--yellow)}.schedule-list{display:grid;gap:24px}.day-card{overflow:hidden;border:1px solid #dbe3dc;background:white;box-shadow:0 14px 38px rgb(9 47 32 / 6%)}.day-card>header{display:flex;align-items:center;gap:15px;padding:17px 20px;background:var(--dark);color:white}.day-card>header>span{display:grid;place-items:center;width:40px;aspect-ratio:1;background:var(--yellow);color:var(--dark);font-size:.7rem;font-weight:950}.day-card>header h3{margin:0;font-family:Georgia,serif;font-size:1.8rem}.pitch-grid{display:grid;grid-template-columns:1fr 1fr}.pitch-card{min-width:0;padding:22px}.pitch-card+.pitch-card{border-left:1px solid #dbe3dc}.pitch-title{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid #e2e8e3}.pitch-title>span{display:grid;place-items:center;width:35px;aspect-ratio:1;border-radius:50%;background:#e6efe8;color:var(--green);font-size:.67rem;font-weight:950}.pitch-title small,.pitch-title h4{display:block}.pitch-title small{color:#738078;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.pitch-title h4{margin:1px 0 0;color:var(--ink);font-size:1.08rem}.booking-list{display:grid;gap:9px;padding-top:14px}.booking{display:grid;grid-template-columns:125px minmax(0,1fr) 115px;gap:12px;align-items:center;padding:12px 13px;border-left:5px solid var(--green);background:#f3f7f4;color:var(--ink);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}.booking:hover,.booking:focus{transform:translateY(-2px);box-shadow:0 8px 20px rgb(9 47 32 / 10%)}.booking.is-girls{border-color:#9b4e87;background:#faf3f8}.booking.is-youth{border-color:#34739b;background:#f1f7fa}.booking.is-kids{border-color:#d39c16;background:#fff9e8}.booking.is-other{border-color:#85491d;background:#fbf2eb}.booking-time{color:#647168;font-size:.74rem;font-weight:800}.booking strong{font-size:.92rem}.share{position:relative;height:29px;padding-top:9px}.share:after{content:'';position:absolute;left:0;right:0;top:4px;height:4px;border-radius:99px;background:#d7dfd8}.share i{position:absolute;z-index:1;left:0;top:4px;width:var(--share);height:4px;border-radius:99px;background:var(--green)}.share b{display:block;color:#657269;font-size:.68rem;text-align:right}.free{margin:4px 0;padding:18px;background:#f6f8f6;color:#7a857e;font-size:.82rem}.filter-empty{border-left:4px solid var(--yellow)}.conflict-list{margin-top:14px;padding:13px;background:#fff0f0;color:#7b1d1d}.conflict-list p{margin:0;font-size:.8rem}.conflict-list strong{display:block}.booking[hidden],.day-card[hidden],.detail-list a[hidden],.filter-empty[hidden],.detail-empty[hidden],.conflict-list[hidden],.conflict-list p[hidden]{display:none}
   .details-section{padding:95px 0;background:white}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.detail-card{padding:38px;background:#edf3ee}.detail-card.is-open{background:#fff6c9}.detail-card h2{font-size:clamp(2rem,3.5vw,3.2rem)}.detail-card>p{color:#59665d;line-height:1.65}.detail-list{display:grid;margin-top:25px}.detail-list a{display:grid;grid-template-columns:1fr auto;gap:20px;padding:16px 0;border-top:1px solid rgb(9 47 32 / 16%);color:var(--ink);text-decoration:none}.detail-list a:hover strong{text-decoration:underline}.detail-list strong,.detail-list span{display:block}.detail-list span{margin-top:3px;color:#657269;font-size:.78rem}.detail-list a>b{color:var(--green);font-size:.78rem;text-align:right}.detail-empty{margin:15px 0 0;padding:15px;background:rgb(255 255 255 / 58%);color:#657269;font-size:.82rem}
