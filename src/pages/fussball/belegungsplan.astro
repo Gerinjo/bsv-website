@@ -25,7 +25,7 @@ const teamNames: Record<string, string> = {
   'jugend/u11-e2': 'E2-Junioren',
   'jugend/u11-e3': 'E3-Junioren',
   'jugend/u9-f': 'U9 F-Junioren',
-  'jugend/u8-f': 'U8 F-Junioren',
+  'jugend/u8-f': 'F2 + F3-Junioren',
   'jugend/u7-g': 'U7 G-Junioren',
   'jugend/u6-g': 'U6 Spielgruppe',
   'jugend/u19': 'A-Junioren',
@@ -50,7 +50,7 @@ const allocationByTeam: Record<string, Allocation> = {
   'jugend/u11-e2': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
   'jugend/u11-e3': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
   'jugend/u9-f': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
-  'jugend/u8-f': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
+  'jugend/u8-f': { pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz', tone: 'kids' },
   'jugend/u7-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
   'jugend/u6-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
   'jugend/u19': { pitch: 'Hauptplatz', share: 1, shareLabel: 'Ganzer Platz', tone: 'youth' },
@@ -128,7 +128,8 @@ const conflictsFor = (day: string, pitch: Pitch) => trainingConflicts.filter((co
         <div class="allocation-heading"><span>Geplante Platzanteile</span><h2>Vom Drittel bis zum ganzen Feld.</h2><p>Bei zeitgleich angesetzten Aktiven-Teams wird der jeweilige Platz hälftig dargestellt. Die Angaben sind die Grundlage für die Abstimmung vor Ort.</p></div>
         <div class="allocation-list">
           <div><b>G-Jugend</b><span>je ½ Platz</span></div>
-          <div><b>F-, E- und D-Jugend</b><span>je ⅓ Platz</span></div>
+          <div><b>F1-, E- und D-Jugend</b><span>je ⅓ Platz</span></div>
+          <div><b>F2- & F3-Junioren</b><span>je ½ Platz</span></div>
           <div><b>D- bis B-Juniorinnen</b><span>je ⅓ Platz</span></div>
           <div><b>C1-Junioren</b><span>ganzer Platz</span></div>
           <div><b>C2- & B-Junioren</b><span>je ½ Platz</span></div>

@@ -22,7 +22,7 @@ export const sportsPages = [
   { path: 'jugend/jugendschiedsrichter', eyebrow: 'Verantwortung übernehmen', title: 'Jugendschiedsrichter', intro: 'Junge Menschen, die Spiele leiten und Fairness vorleben.', image: '/images/jugend/schiedsrichter/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg' },
   ...[
     ['jugend/u11-e1','U11 E1-Junioren','Kinderfußball'], ['jugend/u11-e2','U11 E2-Junioren','Kinderfußball'], ['jugend/u11-e3','U11 E3-Junioren','Kinderfußball'],
-    ['jugend/u9-f','U9 F-Junioren','Kinderfußball'], ['jugend/u8-f','U8 F-Junioren','Kinderfußball'], ['jugend/u7-g','U7 G-Junioren Bambinis','Kinderfußball'], ['jugend/u6-g','U6 G-Junioren Spielgruppe','Kinderfußball'],
+    ['jugend/u9-f','U9 F-Junioren','Kinderfußball'], ['jugend/u8-f','U8 F2 + F3-Junioren','Kinderfußball'], ['jugend/u7-g','U7 G-Junioren Bambinis','Kinderfußball'], ['jugend/u6-g','U6 G-Junioren Spielgruppe','Kinderfußball'],
     ['jugend/u19','U19 A-Junioren','Leistungsfußball'], ['jugend/u17','U17 B-Junioren','Leistungsfußball'], ['jugend/u15-c1','U15 C1-Junioren','Leistungsfußball'], ['jugend/u15-c2','U15 C2-Junioren','Leistungsfußball'], ['jugend/u13-d1','U13 D1-Junioren','Leistungsfußball'], ['jugend/u13-d2','U13 D2-Junioren','Leistungsfußball'], ['jugend/u13-d3','U13 D3-Junioren','Leistungsfußball'],
   ].map(([path,title,eyebrow]) => ({ path, title, eyebrow, intro: 'Mannschaft, Trainingszeiten und Ansprechpersonen auf einen Blick.', image: juniorsImage })),
   { path: 'jugend/juniorinnen/spielberichte', eyebrow: 'Juniorinnen', title: 'Spielberichte', intro: 'Neuigkeiten und Berichte aus dem Juniorinnenfußball.', image: youthImage },
