@@ -1,0 +1,117 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+
+const vacancies = [
+  { team: 'D3-Junioren', role: 'Trainer:in', kind: 'Verantwortung übernehmen', featured: true },
+  { team: 'D1-Junioren', role: 'Co-Trainer:in', kind: 'Team verstärken' },
+  { team: 'C2-Junioren', role: 'Co-Trainer:in', kind: 'Team verstärken' },
+  { team: 'D-Juniorinnen', role: 'Co-Trainer:in', kind: 'Team verstärken' },
+  { team: 'C-Juniorinnen', role: 'Co-Trainer:in', kind: 'Team verstärken' },
+];
+
+const contactPath = withBase('/kontakt?thema=youth');
+---
+
+<Layout
+  title="Trainer:innen gesucht | BSV Nordstern Radolfzell"
+  description="Die Jugendabteilung des BSV Nordstern Radolfzell sucht Trainer:innen und Co-Trainer:innen für mehrere Junioren- und Juniorinnenteams."
+>
+  <Header />
+
+  <main class="coach-page">
+    <section class="hero">
+      <div class="pitch-lines" aria-hidden="true"><span></span></div>
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <a class="back-link" href={withBase('/jugend/alle-inhalte')}><span aria-hidden="true">←</span> Junge Sterne</a>
+          <p class="eyebrow"><i></i> Verstärkung gesucht</p>
+          <h1>Gemeinsam am Rand.<br /><em>Stark auf dem Platz.</em></h1>
+          <p class="lead">Du musst nicht schon alles können. Wenn du zuverlässig bist, gerne mit Kindern und Jugendlichen arbeitest und Teil eines Teams sein möchtest, bist du bei uns genau richtig.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#offene-positionen">Offene Positionen <span aria-hidden="true">↓</span></a>
+            <a class="secondary" href={contactPath}>Unverbindlich melden <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+
+        <aside class="tactics-card" aria-label="Übersicht der offenen Trainerstellen">
+          <div class="card-head"><span>Jugend · Saisonstart</span><strong>05</strong></div>
+          <div class="formation" aria-hidden="true">
+            <span class="goal"></span>
+            <span class="line center"></span>
+            <span class="circle"></span>
+            <i class="player p1">D3</i><i class="player p2">D1</i><i class="player p3">C2</i><i class="player p4">DJ</i><i class="player p5">CJ</i>
+          </div>
+          <div class="card-foot"><span>Teams suchen Unterstützung</span><b>#aufgehtsgrün</b></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="vacancies shell" id="offene-positionen" aria-labelledby="vacancies-title">
+      <div class="section-head">
+        <div><p class="eyebrow dark"><i></i> Wo du gebraucht wirst</p><h2 id="vacancies-title">Fünf Teams.<br /><em>Viele Möglichkeiten.</em></h2></div>
+        <p>In einigen Mannschaften brauchen wir zusätzliche Unterstützung, damit Training und Spielbetrieb zuverlässig, gut organisiert und mit einer guten Betreuung stattfinden können.</p>
+      </div>
+
+      <div class="vacancy-grid">
+        {vacancies.map((vacancy, index) => (
+          <article class:list={['vacancy-card', { featured: vacancy.featured }]}>
+            <header><span>{String(index + 1).padStart(2, '0')}</span><small>{vacancy.kind}</small></header>
+            <div><h3>{vacancy.team}</h3><strong>{vacancy.role} gesucht</strong></div>
+            <a href={contactPath} aria-label={`Interesse als ${vacancy.role} bei den ${vacancy.team} melden`}>Interesse melden <span aria-hidden="true">↗</span></a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="reassurance">
+      <div class="shell reassurance-grid">
+        <div class="reassurance-copy">
+          <p class="eyebrow"><i></i> Dein Einstieg</p>
+          <h2>Kein Sprung<br />ins kalte Wasser.</h2>
+          <p>Niemand muss sofort allein eine Mannschaft übernehmen. Oft geht es zuerst darum, ein bestehendes Trainerteam zu unterstützen, beim Training mitzuhelfen oder organisatorisch zu entlasten.</p>
+        </div>
+        <div class="support-grid">
+          <article><span>01</span><strong>Gemeinsam starten</strong><p>Du lernst das Team und die Abläufe in Ruhe kennen.</p></article>
+          <article><span>02</span><strong>Training planen</strong><p>Erfahrene Trainer:innen helfen dir mit Ideen und Einheiten.</p></article>
+          <article><span>03</span><strong>Begleitung erhalten</strong><p>Die Jugendleitung ist bei Fragen und Organisation für dich da.</p></article>
+          <article><span>04</span><strong>Weiterkommen</strong><p>Auf Wunsch unterstützen wir Lehrgänge und Qualifizierungen.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="invitation shell">
+      <div class="invitation-label"><span>Was zählt</span><b>?</b></div>
+      <div class="invitation-copy">
+        <h2>Fußballwissen hilft.<br /><em>Haltung entscheidet.</em></h2>
+        <p>Fußballerische Erfahrung ist hilfreich, aber nicht zwingend erforderlich. Viel wichtiger sind Zuverlässigkeit, Freude am Umgang mit Kindern und Jugendlichen sowie die Bereitschaft, Teil eines Teams zu sein.</p>
+        <p>Vielleicht gibt es unter euch Eltern, älteren Geschwistern, Verwandten oder Bekannten jemanden, der sich eine Unterstützung vorstellen kann. Auch kleine Schritte helfen: regelmäßig im Training dabei sein, einzelne Einheiten begleiten oder zunächst einfach unverbindlich reinschnuppern.</p>
+      </div>
+      <ol class="start-steps">
+        <li><span>01</span><div><strong>Reinschnuppern</strong><p>Komm unverbindlich vorbei und lerne Team und Training kennen.</p></div></li>
+        <li><span>02</span><div><strong>Mithelfen</strong><p>Begleite einzelne Einheiten oder übernimm kleine Aufgaben.</p></div></li>
+        <li><span>03</span><div><strong>Hineinwachsen</strong><p>Entwickle deine Rolle in deinem Tempo – mit Rückhalt im Verein.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="contact-section">
+      <div class="shell contact-card">
+        <div>
+          <p class="eyebrow dark"><i></i> Lust, etwas zu bewegen?</p>
+          <h2>Lass uns einfach reden.</h2>
+          <p>Wer Interesse hat oder jemanden kennt, darf sich sehr gerne bei uns melden. Ganz unverbindlich und ohne fertigen Trainerplan in der Tasche.</p>
+          <span>Viele Grüße · Jérôme & Ole<br />BSV Nordstern Radolfzell – Jugendabteilung</span>
+        </div>
+        <a href={contactPath}>Jugendleitung kontaktieren <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  :global(html){scroll-behavior:smooth}.coach-page,.coach-page *{box-sizing:border-box}.coach-page{background:#f3f6f2;color:#14251a}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.hero{position:relative;overflow:hidden;min-height:690px;color:#fff;background:linear-gradient(118deg,#061f15 0%,#0b3825 58%,#155736 100%)}.hero::after{position:absolute;right:-18vw;bottom:-26vw;width:58vw;aspect-ratio:1;border:1px solid rgb(255 255 255 / 10%);border-radius:50%;box-shadow:0 0 0 6vw rgb(255 255 255 / 2.5%),0 0 0 12vw rgb(255 255 255 / 2%);content:''}.pitch-lines{position:absolute;inset:0;opacity:.12;background:repeating-linear-gradient(105deg,transparent 0 86px,#fff 87px 88px);mask-image:linear-gradient(90deg,transparent,#000 52%,#000)}.pitch-lines span{position:absolute;right:8%;top:14%;width:420px;height:560px;border:2px solid white}.pitch-lines span::before{position:absolute;left:-120px;top:145px;width:240px;height:240px;border:2px solid white;border-radius:50%;content:''}.pitch-lines span::after{position:absolute;left:-8px;top:210px;width:90px;height:130px;border:2px solid white;content:''}.hero-grid{position:relative;z-index:1;min-height:690px;padding:72px 0 86px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(330px,.62fr);align-items:center;gap:90px}.back-link{display:inline-flex;gap:9px;align-items:center;margin-bottom:56px;color:#aac2b3;font-size:.76rem;font-weight:800;text-decoration:none}.back-link:hover{color:white}.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 16px;color:#f4d638;font-size:.67rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.eyebrow i{display:block;width:28px;height:2px;background:currentColor}.hero h1{max-width:790px;margin:0;font-size:clamp(3.2rem,6.25vw,6.25rem);line-height:.91;letter-spacing:-.057em}.hero h1 em,.section-head h2 em,.invitation h2 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.lead{max-width:690px;margin:28px 0 0;color:#c9d9cf;font-size:1.04rem;line-height:1.8}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:35px}.hero-actions a{min-height:54px;padding:0 20px;display:inline-flex;align-items:center;justify-content:space-between;gap:32px;font-size:.78rem;font-weight:900;text-decoration:none}.primary{background:#f4d638;color:#092f20;box-shadow:6px 6px 0 rgb(0 0 0 / 18%)}.secondary{border:1px solid rgb(255 255 255 / 20%);color:#fff;background:rgb(255 255 255 / 6%)}.hero-actions a span{font-size:1.05rem}.tactics-card{position:relative;padding:22px;background:#f4d638;color:#092f20;box-shadow:16px 16px 0 rgb(0 0 0 / 18%);transform:rotate(1.5deg)}.card-head,.card-foot{display:flex;align-items:center;justify-content:space-between;gap:15px}.card-head span{font-size:.63rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.card-head strong{font-size:2.15rem;letter-spacing:-.06em}.formation{position:relative;aspect-ratio:.83;margin:16px 0;background:#164f32;border:2px solid #fff}.formation::before{position:absolute;inset:50% 0 auto;height:2px;background:white;content:''}.formation .circle{position:absolute;left:50%;top:50%;width:92px;aspect-ratio:1;border:2px solid white;border-radius:50%;transform:translate(-50%,-50%)}.formation .goal{position:absolute;left:28%;right:28%;top:0;height:18%;border:2px solid #fff;border-top:0}.player{position:absolute;width:48px;aspect-ratio:1;display:grid;place-items:center;border:3px solid #f4d638;border-radius:50%;background:#fff;color:#092f20;font-size:.72rem;font-style:normal;font-weight:950;box-shadow:0 6px 14px rgb(0 0 0 / 20%)}.p1{left:50%;top:16%;transform:translateX(-50%)}.p2{left:17%;top:41%}.p3{right:17%;top:41%}.p4{left:25%;bottom:13%}.p5{right:25%;bottom:13%}.card-foot span{font-size:.67rem;font-weight:850}.card-foot b{font-size:.63rem}.vacancies{padding:105px 0 115px}.section-head{display:grid;grid-template-columns:1.1fr .9fr;align-items:end;gap:90px;margin-bottom:44px}.eyebrow.dark{color:#17613a}.section-head h2,.invitation h2,.reassurance h2,.contact-card h2{margin:0;font-size:clamp(2.65rem,4.8vw,4.8rem);line-height:.98;letter-spacing:-.045em}.section-head h2 em,.invitation h2 em{color:#17613a}.section-head>p{max-width:510px;margin:0;color:#5c6d61;line-height:1.8}.vacancy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.vacancy-card{min-height:255px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;border-top:4px solid #164f32;background:white;box-shadow:0 12px 35px rgb(9 47 32 / 7%)}.vacancy-card header{display:flex;justify-content:space-between;color:#7a897f;font-size:.64rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase}.vacancy-card h3{margin:34px 0 7px;color:#164f32;font-size:1.5rem}.vacancy-card strong{color:#3f5045;font-size:.8rem}.vacancy-card a{display:flex;align-items:center;justify-content:space-between;margin-top:28px;padding-top:15px;border-top:1px solid #e1e7e2;color:#164f32;font-size:.72rem;font-weight:900;text-decoration:none}.vacancy-card a span{display:grid;place-items:center;width:28px;aspect-ratio:1;border-radius:50%;background:#f4d638}.vacancy-card.featured{grid-row:span 2;background:#164f32;border-top-color:#f4d638;color:white}.vacancy-card.featured header{color:#a8c2b2}.vacancy-card.featured h3{color:#f4d638;font-size:2rem}.vacancy-card.featured strong{color:white}.vacancy-card.featured a{border-color:rgb(255 255 255 / 14%);color:white}.reassurance{padding:102px 0;background:#092f20;color:white}.reassurance-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:90px}.reassurance-copy>p:last-child{margin:28px 0 0;color:#b5c9bc;line-height:1.8}.support-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.support-grid article{min-height:205px;padding:25px;border:1px solid rgb(255 255 255 / 11%);background:rgb(255 255 255 / 4%)}.support-grid article>span{color:#f4d638;font-size:.66rem;font-weight:950}.support-grid strong{display:block;margin-top:28px;font-size:1.02rem}.support-grid p{margin:10px 0 0;color:#a9bdb1;font-size:.86rem;line-height:1.65}.invitation{padding:115px 0;display:grid;grid-template-columns:.28fr 1fr .9fr;align-items:start;gap:60px}.invitation-label{position:sticky;top:24px;padding-top:8px;display:flex;align-items:center;justify-content:space-between;border-top:4px solid #164f32;color:#164f32;font-size:.67rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.invitation-label b{display:grid;place-items:center;width:34px;aspect-ratio:1;border-radius:50%;background:#f4d638;font-size:1rem}.invitation-copy>p{color:#5c6d61;line-height:1.85}.invitation-copy>p:first-of-type{margin-top:28px}.start-steps{margin:0;padding:0;list-style:none;border-top:1px solid #cfd8d1}.start-steps li{padding:24px 0;display:grid;grid-template-columns:42px 1fr;gap:18px;border-bottom:1px solid #cfd8d1}.start-steps li>span{color:#17613a;font-size:.68rem;font-weight:950}.start-steps strong{display:block;color:#163e29}.start-steps p{margin:7px 0 0;color:#65756a;font-size:.83rem;line-height:1.65}.contact-section{padding:0 0 110px}.contact-card{padding:52px 56px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:70px;background:#fff;box-shadow:0 16px 45px rgb(9 47 32 / 8%)}.contact-card h2{font-size:clamp(2.5rem,4vw,4rem)}.contact-card p:not(.eyebrow){max-width:690px;color:#5e6e63;line-height:1.75}.contact-card div>span{display:block;margin-top:24px;color:#164f32;font-size:.79rem;font-weight:800;line-height:1.6}.contact-card>a{min-width:250px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:#f4d638;color:#092f20;font-size:.78rem;font-weight:950;text-decoration:none;box-shadow:6px 6px 0 #164f32}.contact-card>a span{font-size:1rem}@media(max-width:980px){.hero-grid{grid-template-columns:1fr;gap:55px}.tactics-card{width:min(430px,100%);transform:none}.section-head,.reassurance-grid{grid-template-columns:1fr;gap:38px}.invitation{grid-template-columns:1fr 1fr}.invitation-label{grid-column:1/-1;position:static}.vacancy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vacancy-card.featured{grid-row:auto}.contact-card{grid-template-columns:1fr}.contact-card>a{justify-self:start}}@media(max-width:660px){.shell{width:min(100% - 30px,1160px)}.hero-grid{padding:52px 0 72px}.back-link{margin-bottom:44px}.hero-actions{align-items:stretch;flex-direction:column}.hero-actions a{width:100%}.vacancies{padding:78px 0 85px}.vacancy-grid,.support-grid,.invitation{grid-template-columns:1fr}.reassurance{padding:78px 0}.invitation{padding:82px 0}.contact-card{padding:34px 25px}.contact-card>a{width:100%;min-width:0}.pitch-lines span{right:-55%;opacity:.6}}
+</style>

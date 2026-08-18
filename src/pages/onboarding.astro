@@ -1,0 +1,174 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Layout from '../layouts/Layout.astro';
+import { withBase } from '../utils/paths';
+
+const contactPath = withBase('/kontakt?thema=youth');
+---
+
+<Layout
+  title="Trainer-Onboarding | BSV Nordstern Radolfzell"
+  description="Interner Ablauf für neue Trainerinnen und Trainer beim BSV Nordstern Radolfzell."
+  noindex
+>
+  <Header />
+
+  <main class="onboarding-page">
+    <section class="onboarding-hero">
+      <div class="orbit" aria-hidden="true"></div>
+      <div class="shell hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Intern · Trainer-Onboarding</p>
+          <h1>Dein Start<br /><em>beim BSV.</em></h1>
+          <p>Sechs Schritte, ein klarer Ablauf. Hier siehst du, welche Angaben, Zugänge und Übergaben wir gemeinsam erledigen, bevor du mit deinem Team loslegst.</p>
+        </div>
+        <aside class="progress-card" aria-live="polite">
+          <div><span>Dein Fortschritt</span><strong><b id="progress-count">0</b> / 6</strong></div>
+          <div class="progress-track"><span id="progress-bar"></span></div>
+          <p id="progress-copy">Bereit für den ersten Schritt.</p>
+        </aside>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Onboarding-Schritte">
+      <div class="shell">
+        <a href="#schritt-1"><span>01</span>Erfassung</a>
+        <a href="#schritt-2"><span>02</span>Formalitäten</a>
+        <a href="#schritt-3"><span>03</span>TimeTree</a>
+        <a href="#schritt-4"><span>04</span>Schlüssel</a>
+        <a href="#schritt-5"><span>05</span>DFBnet</a>
+        <a href="#schritt-6"><span>06</span>Teambus</a>
+      </div>
+    </nav>
+
+    <section class="intro shell">
+      <div><p class="eyebrow dark"><span></span> Gut vorbereitet</p><h2>Schritt für Schritt.<br />Nichts geht verloren.</h2></div>
+      <p>Die Jugendleitung begleitet dich durch den gesamten Ablauf. Hake einen Schritt erst ab, wenn die Übergabe oder Freischaltung bestätigt ist. Dein Fortschritt wird ausschließlich in diesem Browser gespeichert.</p>
+    </section>
+
+    <section class="steps shell" aria-label="Die sechs Onboarding-Schritte">
+      <article class="step-card featured" id="schritt-1" data-step="1">
+        <div class="step-number"><span>01</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Grundlage</small><h2>Persönliche Erfassung</h2></div><span class="status">Offen</span></header>
+          <p>Zu Beginn erfassen wir dich als neue Trainerin oder neuen Trainer. Die Jugendleitung teilt dir dafür den vereinbarten, geschützten Übermittlungsweg mit.</p>
+          <div class="detail-grid">
+            <section><h3>Persönliche Angaben</h3><ul><li>Vor- und Nachname</li><li>Geburtsdatum und Anschrift</li><li>Mobilnummer und E-Mail-Adresse</li><li>Mannschaft und vorgesehene Funktion</li><li>Bereits Mitglied im Verein: ja oder nein</li></ul></section>
+            <section><h3>Benötigte Nachweise</h3><div class="document-list"><span><i aria-hidden="true">ID</i>Personalausweis</span><span><i aria-hidden="true">FS</i>Führerschein</span></div><p>Bitte jeweils gut lesbar und vollständig hochladen. Sensible Dokumente nicht unaufgefordert per normaler E-Mail versenden.</p></section>
+          </div>
+          <aside class="privacy-note"><strong>Datenschutz</strong><span>Die Dokumente dienen ausschließlich der internen Erfassung und – beim Führerschein – der Prüfung für die Fahrzeugnutzung. Details zur Ablage und Löschung klärt die Jugendleitung beim Start.</span></aside>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+
+      <article class="step-card" id="schritt-2" data-step="2">
+        <div class="step-number"><span>02</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Verein & Jugendschutz</small><h2>Formalitäten klären</h2></div><span class="status">Offen</span></header>
+          <p>Wir prüfen deine Vereinsmitgliedschaft und klären alle Unterlagen, die für die Arbeit mit Kindern und Jugendlichen benötigt werden.</p>
+          <ul class="checklist"><li><span>Mitgliedschaft</span><b>Besteht bereits oder wird gemeinsam angestoßen</b></li><li><span>Jugendschutz</span><b>Erweitertes Führungszeugnis beziehungsweise erforderliche Nachweise klären</b></li><li><span>Vereinsgrundlagen</span><b>Ansprechpersonen, Leitlinien und wichtige Abläufe kennenlernen</b></li></ul>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+
+      <article class="step-card" id="schritt-3" data-step="3">
+        <div class="step-number"><span>03</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Organisation</small><h2>TimeTree einrichten</h2></div><span class="status">Offen</span></header>
+          <p>TimeTree ist unser gemeinsamer Kalender für die Administration. Du erhältst die Einladung und wirst dem passenden Teamkalender zugeordnet.</p>
+          <div class="info-stripe"><span>Training</span><span>Spiele & Turniere</span><span>Teamtermine</span><span>Busbelegung</span></div>
+          <p class="hint"><strong>Wichtig:</strong> Termine vollständig und frühzeitig eintragen, damit Jugendleitung, Teams und Ressourcen verlässlich planen können.</p>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+
+      <article class="step-card" id="schritt-4" data-step="4">
+        <div class="step-number"><span>04</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Zugang zum Gelände</small><h2>Persönlichen Schlüssel erhalten</h2></div><span class="status">Offen</span></header>
+          <p>Jede Trainerin und jeder Trainer erhält einen eigenen Schlüssel. Die Ausgabe wird über das Schlüsselmanagement dokumentiert.</p>
+          <div class="two-column"><section><strong>Bei der Übergabe</strong><p>Schlüsselnummer, berechtigte Bereiche und Rückgabe werden festgehalten.</p></section><section><strong>Im Alltag</strong><p>Schlüssel nicht weitergeben. Verlust bitte sofort an Schlüsselmanagement und Jugendleitung melden.</p></section></div>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+
+      <article class="step-card" id="schritt-5" data-step="5">
+        <div class="step-number"><span>05</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Spielbetrieb</small><h2>DFBnet-Zugang beantragen</h2></div><span class="status">Offen</span></header>
+          <p>Den persönlichen DFBnet-Zugang beantragt der Verein für dich. Die Rechte werden passend zu deiner Mannschaft und Aufgabe vergeben.</p>
+          <ol class="mini-flow"><li><span>1</span><div><strong>Antrag</strong><p>Jugendleitung gibt deine Daten und Rolle weiter.</p></div></li><li><span>2</span><div><strong>Freischaltung</strong><p>Du erhältst die Zugangsinformationen an deine E-Mail-Adresse.</p></div></li><li><span>3</span><div><strong>Einweisung</strong><p>Spielbericht und relevante Abläufe werden kurz erklärt.</p></div></li></ol>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+
+      <article class="step-card final-step" id="schritt-6" data-step="6">
+        <div class="step-number"><span>06</span><i></i></div>
+        <div class="step-body">
+          <header><div><small>Mobil mit dem Team</small><h2>Mannschaftsbus kennenlernen</h2></div><span class="status">Offen</span></header>
+          <p>Der Mannschaftsbus steht grundsätzlich allen Teams zur Verfügung. Vor der ersten Fahrt erfolgt eine kurze Einweisung; die Nutzung wird verbindlich abgestimmt.</p>
+          <div class="bus-rules"><span><b>01</b>Fahrt rechtzeitig abstimmen</span><span><b>02</b>Fahrberechtigung bestätigen lassen</span><span><b>03</b>Bus ordentlich zurückgeben</span><span><b>04</b>Schäden oder Probleme direkt melden</span></div>
+          <button class="step-toggle" type="button" aria-pressed="false"><span class="check" aria-hidden="true">✓</span><span class="toggle-label">Als erledigt markieren</span></button>
+        </div>
+      </article>
+    </section>
+
+    <section class="finish-section">
+      <div class="shell finish-card">
+        <div><p class="eyebrow dark"><span></span> Fragen oder etwas fehlt?</p><h2>Die Jugendleitung hilft dir weiter.</h2><p>Wenn ein Zugang noch nicht angekommen ist, eine Übergabe offen ist oder du bei einem Schritt unsicher bist, melde dich direkt bei uns.</p></div>
+        <a href={contactPath}>Jugendleitung kontaktieren <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const storageKey = 'bsv-trainer-onboarding-v1';
+  const cards = [...document.querySelectorAll<HTMLElement>('.step-card[data-step]')];
+  const count = document.querySelector<HTMLElement>('#progress-count');
+  const bar = document.querySelector<HTMLElement>('#progress-bar');
+  const copy = document.querySelector<HTMLElement>('#progress-copy');
+
+  let completed: string[] = [];
+  try {
+    const stored = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
+    if (Array.isArray(stored)) completed = stored.filter((step): step is string => typeof step === 'string');
+  } catch {}
+
+  const render = () => {
+    cards.forEach((card) => {
+      const step = card.dataset.step ?? '';
+      const done = completed.includes(step);
+      card.classList.toggle('is-complete', done);
+      const button = card.querySelector<HTMLButtonElement>('.step-toggle');
+      const label = card.querySelector<HTMLElement>('.toggle-label');
+      const status = card.querySelector<HTMLElement>('.status');
+      button?.setAttribute('aria-pressed', String(done));
+      if (label) label.textContent = done ? 'Erledigt' : 'Als erledigt markieren';
+      if (status) status.textContent = done ? 'Erledigt' : 'Offen';
+    });
+
+    const total = completed.length;
+    if (count) count.textContent = String(total);
+    if (bar) bar.style.width = `${(total / cards.length) * 100}%`;
+    if (copy) copy.textContent = total === cards.length
+      ? 'Alles erledigt – willkommen im Trainerteam!'
+      : total === 0 ? 'Bereit für den ersten Schritt.' : `Noch ${cards.length - total} ${cards.length - total === 1 ? 'Schritt' : 'Schritte'} bis zum Ziel.`;
+  };
+
+  cards.forEach((card) => card.querySelector('.step-toggle')?.addEventListener('click', () => {
+    const step = card.dataset.step ?? '';
+    completed = completed.includes(step) ? completed.filter((value) => value !== step) : [...completed, step];
+    localStorage.setItem(storageKey, JSON.stringify(completed));
+    render();
+  }));
+
+  render();
+</script>
+
+<style>
+  :global(html){scroll-behavior:smooth}.onboarding-page,.onboarding-page *{box-sizing:border-box}.onboarding-page{background:#f3f6f2;color:#14251a}.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.onboarding-hero{position:relative;overflow:hidden;padding:104px 0 112px;color:white;background:linear-gradient(120deg,#061f15,#0d3b27 64%,#155334)}.orbit{position:absolute;right:-170px;top:-240px;width:620px;aspect-ratio:1;border:1px solid rgb(244 214 56 / 16%);border-radius:50%;box-shadow:0 0 0 70px rgb(255 255 255 / 2%),0 0 0 140px rgb(255 255 255 / 2%)}.hero-inner{position:relative;display:grid;grid-template-columns:1fr 360px;align-items:end;gap:100px}.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 16px;color:#f4d638;font-size:.67rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.eyebrow>span{display:block;width:28px;height:2px;background:currentColor}.hero-copy h1{margin:0;font-size:clamp(3.7rem,7vw,6.8rem);line-height:.88;letter-spacing:-.06em}.hero-copy h1 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.hero-copy>p:last-child{max-width:700px;margin:28px 0 0;color:#c9d9cf;font-size:1.02rem;line-height:1.8}.progress-card{position:relative;padding:28px;background:white;color:#163d29;box-shadow:10px 10px 0 #f4d638}.progress-card>div:first-child{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.progress-card>div:first-child>span{font-size:.65rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.progress-card strong{font-size:1.35rem}.progress-card strong b{font-size:2.9rem;letter-spacing:-.08em}.progress-track{height:9px;margin:20px 0 15px;overflow:hidden;background:#dfe7e1}.progress-track span{display:block;width:0;height:100%;background:#17613a;transition:width .35s ease}.progress-card p{margin:0;color:#65766b;font-size:.78rem}.step-nav{position:sticky;z-index:5;top:0;background:white;box-shadow:0 8px 25px rgb(9 47 32 / 7%)}.step-nav .shell{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}.step-nav a{padding:18px 12px;display:flex;align-items:center;justify-content:center;gap:8px;border-right:1px solid #e1e7e2;color:#526258;font-size:.68rem;font-weight:850;text-decoration:none}.step-nav a:first-child{border-left:1px solid #e1e7e2}.step-nav a:hover{color:#164f32;background:#f4d638}.step-nav span{color:#17613a;font-size:.6rem}.intro{padding:92px 0 64px;display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:80px}.eyebrow.dark{color:#17613a}.intro h2,.finish-card h2{margin:0;font-size:clamp(2.7rem,4.4vw,4.4rem);line-height:.98;letter-spacing:-.045em}.intro>p{margin:0;color:#5f6f64;line-height:1.8}.steps{padding-bottom:110px}.step-card{display:grid;grid-template-columns:90px 1fr;scroll-margin-top:76px}.step-number{position:relative;padding-top:36px}.step-number span{position:relative;z-index:1;display:grid;place-items:center;width:54px;aspect-ratio:1;border:2px solid #164f32;border-radius:50%;background:#f3f6f2;color:#164f32;font-size:.73rem;font-weight:950;transition:.2s ease}.step-number i{position:absolute;left:26px;top:88px;bottom:-36px;width:2px;background:#cfd9d1}.final-step .step-number i{display:none}.step-body{margin-bottom:24px;padding:36px 38px;border-top:4px solid #164f32;background:#fff;box-shadow:0 12px 35px rgb(9 47 32 / 6%)}.step-body header{display:flex;align-items:flex-start;justify-content:space-between;gap:30px}.step-body header small{color:#17613a;font-size:.62rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.step-body h2{margin:7px 0 0;color:#153e29;font-size:clamp(1.8rem,3vw,2.7rem);letter-spacing:-.035em}.status{padding:7px 11px;border-radius:99px;background:#eef2ef;color:#6b796f;font-size:.61rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.step-body>p{max-width:800px;margin:20px 0 0;color:#5e6e63;line-height:1.75}.step-card.featured .step-body{background:#092f20;color:white;border-top-color:#f4d638}.step-card.featured h2{color:white}.step-card.featured .step-body header small{color:#f4d638}.step-card.featured .step-body>p{color:#b8cabf}.detail-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.detail-grid section{padding:24px;background:rgb(255 255 255 / 6%);border:1px solid rgb(255 255 255 / 11%)}.detail-grid h3{margin:0 0 16px;color:white;font-size:.92rem}.detail-grid ul{margin:0;padding-left:18px;color:#b9cbbf;font-size:.84rem;line-height:1.9}.document-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}.document-list span{padding:12px;display:flex;align-items:center;gap:10px;background:white;color:#173e2a;font-size:.75rem;font-weight:850}.document-list i{display:grid;place-items:center;width:32px;aspect-ratio:1;border-radius:50%;background:#f4d638;font-size:.58rem;font-style:normal}.detail-grid section>p{margin:16px 0 0;color:#91aa9b;font-size:.73rem;line-height:1.6}.privacy-note{margin-top:12px;padding:15px 17px;display:grid;grid-template-columns:auto 1fr;gap:14px;border-left:3px solid #f4d638;background:rgb(255 255 255 / 5%);color:#a9bdb1;font-size:.73rem;line-height:1.6}.privacy-note strong{color:#f4d638}.step-toggle{margin-top:28px;padding:0;border:0;display:inline-flex;align-items:center;gap:11px;background:none;color:#164f32;font:inherit;font-size:.72rem;font-weight:900;cursor:pointer}.featured .step-toggle{color:white}.check{display:grid;place-items:center;width:30px;aspect-ratio:1;border:2px solid currentColor;border-radius:50%;color:transparent;transition:.18s ease}.step-toggle:hover .check{border-color:#f4d638}.step-card.is-complete .step-number span{border-color:#17613a;background:#17613a;color:white}.step-card.is-complete .step-body{border-top-color:#f4d638}.step-card.is-complete .status{background:#e2f1e6;color:#17613a}.step-card.is-complete .check{border-color:#f4d638;background:#f4d638;color:#092f20}.checklist{margin:28px 0 0;padding:0;list-style:none;border-top:1px solid #dce4de}.checklist li{padding:17px 0;display:grid;grid-template-columns:180px 1fr;gap:30px;border-bottom:1px solid #dce4de}.checklist span{color:#17613a;font-size:.68rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em}.checklist b{color:#4f6055;font-size:.8rem}.info-stripe{margin-top:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.info-stripe span{padding:17px 10px;text-align:center;background:#edf3ee;color:#164f32;font-size:.7rem;font-weight:900}.hint{padding:14px 16px;border-left:3px solid #f4d638;background:#f7f8f4;font-size:.78rem!important}.two-column{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.two-column section{padding:22px;background:#f0f4f0}.two-column strong{color:#164f32}.two-column p{margin:8px 0 0;color:#617168;font-size:.79rem;line-height:1.65}.mini-flow{margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;list-style:none}.mini-flow li{padding:21px;display:flex;gap:14px;border:1px solid #dce4de}.mini-flow li>span{display:grid;place-items:center;width:30px;height:30px;flex:0 0 auto;border-radius:50%;background:#f4d638;color:#092f20;font-size:.68rem;font-weight:950}.mini-flow strong{color:#164f32;font-size:.82rem}.mini-flow p{margin:6px 0 0;color:#69786e;font-size:.72rem;line-height:1.55}.bus-rules{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:9px}.bus-rules span{padding:17px;display:flex;align-items:center;gap:15px;background:#f0f4f0;color:#485a4e;font-size:.78rem;font-weight:800}.bus-rules b{color:#17613a;font-size:.63rem}.finish-section{padding:0 0 110px}.finish-card{padding:52px 55px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:60px;background:#f4d638;box-shadow:10px 10px 0 #164f32}.finish-card h2{font-size:clamp(2.4rem,4vw,3.8rem)}.finish-card p:not(.eyebrow){max-width:710px;color:#46564b;line-height:1.7}.finish-card>a{min-width:250px;padding:17px 19px;display:flex;align-items:center;justify-content:space-between;gap:22px;background:#092f20;color:white;font-size:.76rem;font-weight:950;text-decoration:none}.finish-card>a span{color:#f4d638}@media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:55px}.progress-card{width:min(420px,100%)}.step-nav a{font-size:0}.step-nav span{font-size:.68rem}.intro{grid-template-columns:1fr;gap:30px}.finish-card{grid-template-columns:1fr}.finish-card>a{justify-self:start}.detail-grid{grid-template-columns:1fr}.mini-flow{grid-template-columns:1fr}}@media(max-width:640px){.shell{width:min(100% - 30px,1120px)}.onboarding-hero{padding:76px 0 82px}.step-card{grid-template-columns:1fr}.step-number{padding:0 0 12px}.step-number i{display:none}.step-body{padding:28px 23px}.step-body header{gap:15px}.detail-grid,.two-column,.bus-rules,.info-stripe{grid-template-columns:1fr}.document-list{grid-template-columns:1fr 1fr}.checklist li{grid-template-columns:1fr;gap:7px}.privacy-note{grid-template-columns:1fr}.finish-card{padding:38px 25px}.finish-card>a{width:100%;min-width:0}}
+</style>

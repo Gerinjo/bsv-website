@@ -6,8 +6,12 @@ import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
 import TagDesMaedchenfussballMenuEnhancer from '../components/TagDesMaedchenfussballMenuEnhancer.astro';
 import { withBase } from '../utils/paths';
 
-interface Props { title?: string; description?: string }
-const { title = 'BSV Nordstern Radolfzell', description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell' } = Astro.props;
+interface Props { title?: string; description?: string; noindex?: boolean }
+const {
+	title = 'BSV Nordstern Radolfzell',
+	description = 'Offizielle Webseite des BSV Nordstern e.V. Radolfzell',
+	noindex = false,
+} = Astro.props;
 const contactPath = withBase('/kontakt');
 const basePath = withBase('/');
 const friendlyMatchTeamPaths = [
@@ -35,6 +39,7 @@ const friendlyMatchTeamPaths = [
 		<link rel="icon" type="image/gif" href={withBase('/images/verein/wappen/bsv-nordstern.gif')} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<title>{title}</title>
 		<script is:inline type="text/javascript" src="https://www.fussball.de/widgets.js"></script>
 	</head>
