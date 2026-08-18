@@ -7,6 +7,8 @@ const teamPagesSource = readFileSync(new URL('../src/data/teamPages.ts', import.
 const legacySource = readFileSync(new URL('../src/data/legacyContent.ts', import.meta.url), 'utf8');
 const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8');
 const urmelSource = readFileSync(new URL('../src/pages/erlebnis/urmel-bambini-spieltag.astro', import.meta.url), 'utf8');
+const erlebnisDataSource = readFileSync(new URL('../src/data/erlebnis.ts', import.meta.url), 'utf8');
+const erlebnisOverviewSource = readFileSync(new URL('../src/pages/erlebnis/index.astro', import.meta.url), 'utf8');
 
 test('the board page includes Stefan Gastaudo as data protection officer', () => {
   assert.match(pageSource, /'Stefan Gastaudo',\s*'Datenschutzbeauftragter'/);
@@ -51,4 +53,11 @@ test('Marcelino Rueth teams use the updated Monday and Wednesday training times'
 test('E2 is always allocated to the main pitch', () => {
   assert.match(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Hauptplatz'/);
   assert.doesNotMatch(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Nebenplatz'/);
+});
+
+test('the girls football day overview card uses a cover photo and names SBFV support', () => {
+  assert.match(erlebnisDataSource, /partner: 'Tag des Mädchenfußballs'/);
+  assert.match(erlebnisDataSource, /Unterstützung des Südbadischen Fußballverbands \(SBFV\)/);
+  assert.match(erlebnisOverviewSource, /tag-des-maedchenfussballs' \? 'cover'/);
+  assert.match(erlebnisOverviewSource, /\[data-kind='cover'\] \.logo-stage img\{[^}]*width:100%;height:100%;[^}]*object-fit:cover/);
 });

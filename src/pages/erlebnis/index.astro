@@ -38,7 +38,7 @@ import { withBase } from '../../utils/paths';
         {erlebnisCooperations.map((cooperation) => (
           <a
             class="partner-card"
-            data-kind={cooperation.logoSrc ? 'logo' : 'label'}
+            data-kind={cooperation.id === 'tag-des-maedchenfussballs' ? 'cover' : cooperation.logoSrc ? 'logo' : 'label'}
             href={withBase(cooperation.actionHref)}
             style={`--accent:${cooperation.accent};--logo-bg:${cooperation.logoBackground}`}
           >
@@ -83,6 +83,7 @@ import { withBase } from '../../utils/paths';
   .overview{padding:100px 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:60px;margin-bottom:45px}.section-head span{color:var(--green)}.section-head h2,.future h2{margin:12px 0 0;font-size:clamp(2.7rem,5vw,4.6rem);line-height:.94;letter-spacing:-.05em}.section-head>p{max-width:430px;margin:0;color:#617066;line-height:1.7}
   .partner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:25px}.partner-card{overflow:hidden;border-top:5px solid var(--accent);background:white;color:inherit;text-decoration:none;box-shadow:0 16px 42px rgb(9 47 32 / 8%);transition:.2s ease}.partner-card:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgb(9 47 32 / 13%)}
   .logo-stage{height:190px;padding:28px;display:flex;align-items:center;justify-content:center;gap:24px;background:var(--logo-bg);border-bottom:1px solid #e1e7e2}.logo-stage img{display:block;max-width:78%;max-height:132px;object-fit:contain}.logo-label{display:flex;flex-direction:column;color:#173d6f;font-size:1.15rem;font-weight:900;line-height:1.08}.partner-card[data-kind='label'] .logo-label{max-width:340px;color:#f4d638;font-size:1.55rem;line-height:1;text-align:center;letter-spacing:.02em;text-transform:uppercase}.partner-card[data-kind='label'] .logo-stage::before{content:'♥';margin-right:8px;color:#f4d638;font-size:2rem}
+  .partner-card[data-kind='cover'] .logo-stage{padding:0}.partner-card[data-kind='cover'] .logo-stage img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}
   .partner-copy{padding:30px}.partner-copy>span{color:var(--accent);font-size:.62rem;font-weight:950;letter-spacing:.11em;text-transform:uppercase}.partner-copy h2{margin:9px 0 8px;font-size:1.6rem;line-height:1.15}.partner-copy p{margin:0;color:#617066;line-height:1.6}.partner-copy small{display:block;margin-top:15px;color:#526158;font-weight:850}.partner-copy>strong{margin-top:25px;display:flex;align-items:center;justify-content:space-between;color:var(--green);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}.partner-copy>strong b{color:var(--accent);font-size:1rem}
   .future{margin-bottom:105px;padding:55px 60px;display:grid;grid-template-columns:1fr 1fr;gap:70px;background:var(--dark);color:white}.future span{color:var(--yellow)}.future h2{color:white}.future>p{margin:auto 0;color:#bfd0c5;font-size:1.02rem;line-height:1.8}
   @media(max-width:900px){.hero-grid,.future{grid-template-columns:1fr}.partner-grid{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column;gap:20px}}
