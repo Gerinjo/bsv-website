@@ -1,8 +1,9 @@
 ---
 import LegalPage from '../components/LegalPage.astro';
+import { umami } from '../utils/umami';
 ---
 
-<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated="17. August 2026">
+<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated={umami.enabled ? '18. August 2026' : '17. August 2026'}>
   <section>
     <h2>Verantwortliche Stelle</h2>
     <div class="legal-card">
@@ -58,7 +59,16 @@ import LegalPage from '../components/LegalPage.astro';
 
   <section>
     <h2>Cookies, Analyse & externe Inhalte</h2>
-    <div class="legal-card"><strong>Datensparsame Umsetzung:</strong> Die aktuelle Website setzt keine Analyse- oder Marketingdienste, keine extern geladenen Webfonts und keine eingebetteten Karten oder Social-Media-Plugins ein. Es werden durch die Website selbst keine nicht notwendigen Cookies gesetzt.</div>
+    {umami.enabled ? (
+      <>
+        <div class="legal-card"><strong>Datensparsame Reichweitenmessung:</strong> Wir nutzen Umami ausschließlich, um anonyme Seitenaufrufe auszuwerten. Umami setzt keine Cookies und erstellt keine personenbezogenen Nutzerprofile.</div>
+        <p>Erfasst werden insbesondere aufgerufene Seiten, Zeitpunkt, verweisende Seite, Browser, Betriebssystem, Gerätetyp, Bildschirmgröße, Sprache und ungefährer Standort. URL-Suchparameter schließen wir von der Erfassung aus. Die IP-Adresse wird vom Umami-Server zur anonymen Zuordnung und Standortbestimmung verarbeitet, nach Angaben des Anbieters jedoch nicht gespeichert. Die Browsereinstellung „Do Not Track“ wird respektiert.</p>
+        <p>Wir betreiben Umami in einer eigenen Instanz auf Vercel. Die anonymisierten Statistikdaten werden in einer Neon-Postgres-Datenbank in Frankfurt gespeichert. Vercel und Neon werden als technische Dienstleister eingesetzt.</p>
+        <p>Die Auswertung dient uns dazu, Inhalte und Navigation bedarfsgerecht zu verbessern. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der anonymen Reichweitenmessung und Verbesserung unseres Webangebots. Darüber hinaus setzt die Website keine Analyse- oder Marketingdienste, keine extern geladenen Webfonts und keine eingebetteten Karten oder Social-Media-Plugins ein.</p>
+      </>
+    ) : (
+      <div class="legal-card"><strong>Datensparsame Umsetzung:</strong> Die aktuelle Website setzt keine Analyse- oder Marketingdienste, keine extern geladenen Webfonts und keine eingebetteten Karten oder Social-Media-Plugins ein. Es werden durch die Website selbst keine nicht notwendigen Cookies gesetzt.</div>
+    )}
     <p>Links zum JAKO Shop, zu Kartendiensten oder anderen externen Angeboten sind als normale Verweise eingebunden. Erst wenn Sie einen solchen Link öffnen, gelten die Datenschutzbestimmungen des jeweiligen externen Anbieters. Dabei können technische Zugriffsdaten, insbesondere Ihre IP-Adresse, an diesen Anbieter übermittelt werden.</p>
   </section>
 

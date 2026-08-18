@@ -4,6 +4,7 @@ import GastroMegaEnhancer from '../components/GastroMegaEnhancer.astro';
 import HomeShopEnhancer from '../components/HomeShopEnhancer.astro';
 import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
 import TagDesMaedchenfussballMenuEnhancer from '../components/TagDesMaedchenfussballMenuEnhancer.astro';
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string; noindex?: boolean }
@@ -41,6 +42,7 @@ const friendlyMatchTeamPaths = [
 		<meta name="description" content={description} />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<title>{title}</title>
+		<UmamiAnalytics />
 		<script is:inline type="text/javascript" src="https://www.fussball.de/widgets.js"></script>
 	</head>
 	<body>

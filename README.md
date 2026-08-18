@@ -26,6 +26,12 @@ Inside of your Astro project, you'll see the following folders and files:
 └── package.json
 ```
 
+## Umami Analytics
+
+Das Tracking wird nur eingebunden, wenn `PUBLIC_UMAMI_WEBSITE_ID` beim Build gesetzt ist. Die selbst gehostete Umami-Instanz läuft unter `https://bsv-nordstern-umami.vercel.app`; ihre Tracking-URL kann über `PUBLIC_UMAMI_SCRIPT_URL` konfiguriert werden.
+
+Für GitHub Pages werden beide Werte als Repository-Variablen unter **Settings → Secrets and variables → Actions → Variables** hinterlegt. Die Website-ID ist die ID aus dem Tracking-Code der in Umami angelegten Website `bsvnordstern.de`.
+
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
 
 ## 🧞 Commands

@@ -1,0 +1,17 @@
+---
+import { umami } from '../utils/umami';
+---
+
+{
+	umami.enabled && (
+		<script
+			is:inline
+			defer
+			src={umami.scriptUrl}
+			data-website-id={umami.websiteId}
+			data-domains="bsvnordstern.de,www.bsvnordstern.de"
+			data-exclude-search="true"
+			data-do-not-track="true"
+		></script>
+	)
+}

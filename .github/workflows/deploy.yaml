@@ -45,6 +45,8 @@ jobs:
       - name: Build with Astro
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.PUBLIC_UMAMI_WEBSITE_ID }}
+          PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.PUBLIC_UMAMI_SCRIPT_URL }}
           SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
           npx --no-install astro build \
