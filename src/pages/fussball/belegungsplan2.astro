@@ -1,0 +1,234 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { teamProfiles } from '../../data/teamPages';
+import { withBase } from '../../utils/paths';
+import { findTrainingConflicts } from '../../utils/trainingConflicts.mjs';
+
+type Pitch = 'Hauptplatz' | 'Nebenplatz';
+type Tone = 'active' | 'girls' | 'youth' | 'kids';
+type Allocation = { pitch: Pitch; share: number; shareLabel: string; tone: Tone };
+type ProposalChange = { day?: string; time?: string; place?: string; allocation?: Partial<Allocation> };
+
+const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+const teamNames: Record<string, string> = {
+  'fussball/herren/bezirksliga': 'Herren 1',
+  'fussball/herren/kreisliga-2': 'Herren 2',
+  'fussball/frauen/bezirksliga': 'Frauen 1',
+  'fussball/frauen/kreisliga': 'Frauen 2',
+  'fussball/alte-herren': 'Alte Herren',
+  'jugend/u11-e1': 'E1-Junioren',
+  'jugend/u11-e2': 'E2-Junioren',
+  'jugend/u11-e3': 'E3-Junioren',
+  'jugend/u9-f': 'U9 F-Junioren',
+  'jugend/u8-f': 'F2 + F3-Junioren',
+  'jugend/u7-g': 'U7 G-Junioren',
+  'jugend/u6-g': 'U6 Spielgruppe',
+  'jugend/u19': 'A-Junioren',
+  'jugend/u17': 'B-Junioren',
+  'jugend/u15-c1': 'C1-Junioren',
+  'jugend/u15-c2': 'C2-Junioren',
+  'jugend/u13-d1': 'D1-Junioren',
+  'jugend/u13-d2': 'D2-Junioren',
+  'jugend/u13-d3': 'D3-Junioren',
+  'jugend/juniorinnen/u17': 'B-Juniorinnen',
+  'jugend/juniorinnen/u15': 'C-Juniorinnen',
+  'jugend/juniorinnen/u13': 'D-Juniorinnen',
+};
+
+const allocationByTeam: Record<string, Allocation> = {
+  'fussball/herren/bezirksliga': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
+  'fussball/herren/kreisliga-2': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
+  'fussball/frauen/bezirksliga': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'girls' },
+  'fussball/frauen/kreisliga': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'girls' },
+  'fussball/alte-herren': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
+  'jugend/u11-e1': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
+  'jugend/u11-e2': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
+  'jugend/u11-e3': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
+  'jugend/u9-f': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
+  'jugend/u8-f': { pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz', tone: 'kids' },
+  'jugend/u7-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
+  'jugend/u6-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
+  'jugend/u19': { pitch: 'Hauptplatz', share: 1, shareLabel: 'Ganzer Platz', tone: 'youth' },
+  'jugend/u17': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
+  'jugend/u15-c1': { pitch: 'Hauptplatz', share: 1, shareLabel: 'Ganzer Platz', tone: 'youth' },
+  'jugend/u15-c2': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
+  'jugend/u13-d1': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
+  'jugend/u13-d2': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
+  'jugend/u13-d3': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
+  'jugend/juniorinnen/u17': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
+  'jugend/juniorinnen/u15': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
+  'jugend/juniorinnen/u13': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
+};
+
+const changes: Record<string, ProposalChange> = {
+  'fussball/alte-herren|Mittwoch': { time: '19:30 – 21:00 Uhr' },
+  'jugend/u19|Dienstag': { day: 'Montag', time: '19:30 – 21:00 Uhr', allocation: { pitch: 'Nebenplatz' } },
+  'jugend/u15-c1|Dienstag': { day: 'Montag', time: '19:00 – 20:30 Uhr' },
+  'jugend/u15-c2|Dienstag': { day: 'Freitag', time: '19:00 – 20:30 Uhr' },
+  'jugend/u15-c2|Donnerstag': { day: 'Mittwoch', time: '19:30 – 21:00 Uhr' },
+  'jugend/u13-d3|Donnerstag': { day: 'Freitag', time: '17:30 – 19:00 Uhr' },
+  'jugend/u17|Donnerstag': { time: '19:00 – 20:30 Uhr' },
+  'jugend/u13-d2|Montag': { time: '16:30 – 18:00 Uhr' },
+  'jugend/u13-d2|Mittwoch': { allocation: { pitch: 'Hauptplatz' } },
+  'jugend/u7-g|Mittwoch': { allocation: { pitch: 'Nebenplatz' } },
+  'jugend/u6-g|Mittwoch': { allocation: { pitch: 'Nebenplatz' } },
+  'fussball/herren/bezirksliga|Donnerstag': { allocation: { pitch: 'Nebenplatz' } },
+  'fussball/herren/kreisliga-2|Donnerstag': { place: 'SV Markelfingen' },
+};
+
+const actionItems = [
+  ['Alte Herren', 'Mittwoch auf 19:30–21:00 Uhr verschoben.'],
+  ['A-Junioren', 'BSV-Einheit von Dienstag auf Montag, 19:30–21:00 Uhr, Nebenplatz verschoben. Donnerstag in Markelfingen bleibt bestehen.'],
+  ['C1-Junioren', 'Dienstagseinheit auf Montag, 19:00–20:30 Uhr, Hauptplatz verschoben.'],
+  ['C2-Junioren', 'Dienstagseinheit auf Freitag, 19:00–20:30 Uhr, und Donnerstagseinheit auf Mittwoch, 19:30–21:00 Uhr, verschoben.'],
+  ['D3-Junioren', 'Donnerstagseinheit auf Freitag, 17:30–19:00 Uhr, Hauptplatz verschoben.'],
+  ['B-Junioren', 'Donnerstag auf 19:00–20:30 Uhr verschoben.'],
+  ['D2-Junioren', 'Montag auf 16:30–18:00 Uhr vorgezogen; Mittwoch bei gleicher Zeit auf den Hauptplatz gelegt.'],
+  ['U6 & U7', 'Mittwoch bei gleicher Zeit auf den Nebenplatz gelegt.'],
+  ['Herren am Donnerstag', 'Herren 1 teilt sich den Nebenplatz mit der B-Jugend; Herren 2 trainiert in diesem Entwurf in Markelfingen.'],
+];
+
+const timeValue = (time: string) => {
+  const match = time.match(/(\d{1,2}):(\d{2})/);
+  return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
+};
+const isAtBsv = (place: string) => /BSV Nordstern/i.test(place);
+
+const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
+  profile.training.map((slot) => {
+    const change = changes[`${path}|${slot.day}`] ?? {};
+    const allocation = allocationByTeam[path]
+      ? { ...allocationByTeam[path], ...(change.allocation ?? {}) }
+      : undefined;
+    return {
+      path,
+      team: teamNames[path] ?? profile.letter,
+      ...slot,
+      ...change,
+      allocation,
+    };
+  }),
+);
+const bsvSessions = allTraining
+  .filter((session) => isAtBsv(session.place) && dayOrder.includes(session.day) && session.allocation)
+  .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time) || left.team.localeCompare(right.team, 'de'));
+const offsiteSessions = allTraining
+  .filter((session) => !isAtBsv(session.place) && dayOrder.includes(session.day))
+  .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time));
+const openSessions = allTraining.filter((session) => !dayOrder.includes(session.day));
+const sessionsFor = (day: string, pitch: Pitch) => bsvSessions.filter((session) => session.day === day && session.allocation?.pitch === pitch);
+const trainingConflicts = findTrainingConflicts(bsvSessions);
+const conflictsFor = (day: string, pitch: Pitch) => trainingConflicts.filter((conflict) => conflict.day === day && conflict.pitch === pitch);
+---
+
+<Layout
+  title="Belegungsplan 2 – Diskussionsstand | BSV Nordstern Radolfzell"
+  description="Nicht verlinkter Entwurf eines optimierten Trainings- und Platzbelegungsplans für den BSV Nordstern."
+  noindex
+>
+  <Header />
+  <main>
+    <header class="hero">
+      <img src={withBase('/images/fussball/sportplaetze/bd41b6f7d7-hauptplatz-hp.png')} alt="Hauptplatz des BSV Nordstern Radolfzell" width="1600" height="1011" />
+      <div class="shade"></div>
+      <div class="shell hero-inner">
+        <span>Entwurf · nicht öffentlich verlinkt</span>
+        <h1>Belegungsplan 2.<br /><em>Optimierter Vorschlag.</em></h1>
+        <p>Diskussionsstand für die Trainings- und Platzbelegung der Saison 2026/27. Die unten genannten Änderungen sind noch nicht als verbindliche Trainingszeiten veröffentlicht.</p>
+        <a href="#aenderungen">Änderungen ansehen <b aria-hidden="true">↓</b></a>
+      </div>
+    </header>
+
+    <section id="aenderungen" class="actions-section">
+      <div class="shell actions-grid">
+        <div class="actions-heading">
+          <span>Durchgeführte Aktionen</span>
+          <h2>Was in diesem Entwurf geändert wurde.</h2>
+          <p>Die Änderungen beziehen sich ausschließlich auf diesen Belegungsplan 2. Die Mannschaftsseiten und der aktuelle Belegungsplan bleiben unverändert.</p>
+          <aside><strong>Planungsannahme</strong>Der Donnerstagstermin der Herren 2 in Markelfingen muss noch mit der SG abgestimmt werden.</aside>
+        </div>
+        <ol class="action-list">
+          {actionItems.map(([team, action], index) => (
+            <li><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{team}</strong><p>{action}</p></div></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="allocation-section">
+      <div class="shell allocation-card">
+        <div><span>Ergebnis</span><h2>Rechnerisch ohne Überbelegung.</h2></div>
+        <p>Die eingetragenen Platzanteile überschreiten in diesem Entwurf zu keiner Zeit die Kapazität des jeweiligen Platzes. Übergänge um 19:00 bzw. 19:30 Uhr schließen direkt aneinander an.</p>
+      </div>
+    </section>
+
+    <section id="wochenplan" class="schedule-section">
+      <div class="shell section-head"><div><span>Montag bis Freitag</span><h2>Der vorgeschlagene Wochenplan.</h2></div><p>Hauptplatz und Nebenplatz werden getrennt dargestellt. Die farbigen Balken zeigen den jeweils vorgesehenen Platzanteil.</p></div>
+      <div class="shell schedule-list">
+        {dayOrder.map((day) => (
+          <article class="day-card">
+            <header><span>{day.slice(0, 2).toUpperCase()}</span><h3>{day}</h3></header>
+            <div class="pitch-grid">
+              {(['Hauptplatz', 'Nebenplatz'] as Pitch[]).map((pitch) => {
+                const sessions = sessionsFor(day, pitch);
+                const conflicts = conflictsFor(day, pitch);
+                const hasArchery = day === 'Freitag' && pitch === 'Nebenplatz';
+                return (
+                  <section class="pitch-card">
+                    <div class="pitch-title"><span>{pitch === 'Hauptplatz' ? '01' : '02'}</span><div><small>BSV-Sportgelände</small><h4>{pitch}</h4></div></div>
+                    <div class="booking-list">
+                      {hasArchery && <a class="booking is-other" href={withBase('/abteilungen/bogensport')}><span class="booking-time">17:30 – 19:00 Uhr</span><strong>Bogensport</strong><span class="share"><i style="--share:100%"></i><b>Nebenplatz belegt</b></span></a>}
+                      {sessions.map((session) => (
+                        <a class:list={['booking', `is-${session.allocation?.tone}`]} href={withBase(`/${session.path}`)}>
+                          <span class="booking-time">{session.time}</span><strong>{session.team}</strong>
+                          <span class="share"><i style={`--share:${(session.allocation?.share ?? 0) * 100}%`}></i><b>{session.allocation?.shareLabel}</b></span>
+                        </a>
+                      ))}
+                      {!sessions.length && !hasArchery && <p class="free">Keine feste Belegung eingetragen.</p>}
+                    </div>
+                    {conflicts.length > 0 && <div class="conflict-list">
+                      {conflicts.map((conflict) => <p><strong>Überlastung · {conflict.time}</strong>{conflict.teams.join(', ')}: {conflict.occupancyPercent} %.</p>)}
+                    </div>}
+                  </section>
+                );
+              })}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="details-section">
+      <div class="shell detail-grid">
+        <article class="detail-card">
+          <span>Spielgemeinschaften</span><h2>Training an anderen Orten.</h2>
+          <div class="detail-list">
+            {offsiteSessions.map((session) => <a href={withBase(`/${session.path}`)}><div><strong>{session.team}</strong><span>{session.place}</span></div><b>{session.day}<br />{session.time}</b></a>)}
+          </div>
+        </article>
+        <article class="detail-card is-open">
+          <span>Status</span><h2>Entwurf zur Abstimmung.</h2>
+          <p>Dieser Plan ist nicht in der Navigation verlinkt und für Suchmaschinen auf „noindex“ gesetzt. Erst nach Abstimmung sollten die Änderungen in den Mannschaftsseiten und den offiziellen Belegungsplan übernommen werden.</p>
+          {openSessions.length > 0 && <div class="detail-list">
+            {openSessions.map((session) => <a href={withBase(`/${session.path}`)}><div><strong>{session.team}</strong><span>{session.place}</span></div><b>{session.day}<br />{session.time}</b></a>)}
+          </div>}
+        </article>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
+  html{scroll-behavior:smooth}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  .hero{position:relative;min-height:570px;display:flex;align-items:flex-end;overflow:hidden;background:var(--dark);color:white}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(5 34 22 / 96%) 0%,rgb(5 34 22 / 80%) 48%,rgb(5 34 22 / 20%) 84%),linear-gradient(0deg,rgb(5 34 22 / 82%),transparent 58%)}.hero-inner{position:relative;z-index:1;padding:95px 0 72px}.hero-inner>span,.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.4rem,7vw,6.6rem);line-height:.88;letter-spacing:-.055em}.hero h1 em{color:var(--yellow);font-weight:400}.hero p{max-width:730px;margin:0;color:#cfddd4;font-size:1.05rem;line-height:1.72}.hero a{display:inline-flex;align-items:center;gap:22px;margin-top:29px;padding:15px 19px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none}
+  .actions-section{scroll-margin-top:30px;padding:90px 0;background:white}.actions-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:70px}.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--green)}.actions-heading h2,.allocation-card h2,.section-head h2,.detail-card h2{margin:14px 0 0;color:var(--ink);font-family:Georgia,serif;font-size:clamp(2.35rem,4.2vw,4rem);line-height:.98;letter-spacing:-.045em}.actions-heading>p{color:#5a695f;line-height:1.72}.actions-heading aside{margin-top:28px;padding:18px 20px;border-left:5px solid var(--yellow);background:#fff8cf;color:#4f594f;line-height:1.55}.actions-heading aside strong{display:block;color:var(--dark);font-size:.77rem;text-transform:uppercase;letter-spacing:.08em}.action-list{margin:0;padding:0;list-style:none;border-top:1px solid #dce3dd}.action-list li{display:grid;grid-template-columns:44px 1fr;gap:15px;padding:15px 0;border-bottom:1px solid #dce3dd}.action-list li>span{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:50%;background:#e8f0e9;color:var(--green);font-size:.68rem;font-weight:950}.action-list strong{color:var(--dark)}.action-list p{margin:3px 0 0;color:#647168;font-size:.88rem;line-height:1.5}
+  .allocation-section{padding:0 0 90px;background:white}.allocation-card{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:58px;align-items:end;padding:46px 50px;background:var(--yellow);box-shadow:10px 10px 0 var(--dark)}.allocation-card h2{font-size:clamp(2.15rem,3.7vw,3.45rem)}.allocation-card p{margin:0;color:#475449;line-height:1.7}
+  .schedule-section{padding:95px 0 115px;background:var(--light)}.section-head{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:55px;align-items:end;margin-bottom:45px}.section-head p{margin:0;color:#5a695f;line-height:1.65}.schedule-list{display:grid;gap:24px}.day-card{overflow:hidden;border:1px solid #dbe3dc;background:white;box-shadow:0 14px 38px rgb(9 47 32 / 6%)}.day-card>header{display:flex;align-items:center;gap:15px;padding:17px 20px;background:var(--dark);color:white}.day-card>header>span{display:grid;place-items:center;width:40px;aspect-ratio:1;background:var(--yellow);color:var(--dark);font-size:.7rem;font-weight:950}.day-card>header h3{margin:0;font-family:Georgia,serif;font-size:1.8rem}.pitch-grid{display:grid;grid-template-columns:1fr 1fr}.pitch-card{min-width:0;padding:22px}.pitch-card+.pitch-card{border-left:1px solid #dbe3dc}.pitch-title{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid #e2e8e3}.pitch-title>span{display:grid;place-items:center;width:35px;aspect-ratio:1;border-radius:50%;background:#e6efe8;color:var(--green);font-size:.67rem;font-weight:950}.pitch-title small,.pitch-title h4{display:block}.pitch-title small{color:#738078;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.pitch-title h4{margin:1px 0 0;color:var(--ink);font-size:1.08rem}.booking-list{display:grid;gap:9px;padding-top:14px}.booking{display:grid;grid-template-columns:125px minmax(0,1fr) 115px;gap:12px;align-items:center;padding:12px 13px;border-left:5px solid var(--green);background:#f3f7f4;color:var(--ink);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}.booking:hover,.booking:focus{transform:translateY(-2px);box-shadow:0 8px 20px rgb(9 47 32 / 10%)}.booking.is-girls{border-color:#9b4e87;background:#faf3f8}.booking.is-youth{border-color:#34739b;background:#f1f7fa}.booking.is-kids{border-color:#d39c16;background:#fff9e8}.booking.is-other{border-color:#85491d;background:#fbf2eb}.booking-time{color:#647168;font-size:.74rem;font-weight:800}.booking strong{font-size:.92rem}.share{position:relative;height:29px;padding-top:9px}.share:after{content:'';position:absolute;left:0;right:0;top:4px;height:4px;border-radius:99px;background:#d7dfd8}.share i{position:absolute;z-index:1;left:0;top:4px;width:var(--share);height:4px;border-radius:99px;background:var(--green)}.share b{display:block;color:#657269;font-size:.68rem;text-align:right}.free{margin:4px 0;padding:18px;background:#f6f8f6;color:#7a857e;font-size:.82rem}.conflict-list{margin-top:14px;padding:13px;background:#fff0f0;color:#7b1d1d}.conflict-list p{margin:0;font-size:.8rem}.conflict-list strong{display:block}
+  .details-section{padding:95px 0;background:white}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.detail-card{padding:38px;background:#edf3ee}.detail-card.is-open{background:#fff6c9}.detail-card h2{font-size:clamp(2rem,3.5vw,3.2rem)}.detail-card>p{color:#59665d;line-height:1.65}.detail-list{display:grid;margin-top:25px}.detail-list a{display:grid;grid-template-columns:1fr auto;gap:20px;padding:16px 0;border-top:1px solid rgb(9 47 32 / 16%);color:var(--ink);text-decoration:none}.detail-list a:hover strong{text-decoration:underline}.detail-list strong,.detail-list span{display:block}.detail-list span{margin-top:3px;color:#657269;font-size:.78rem}.detail-list a>b{color:var(--green);font-size:.78rem;text-align:right}
+  @media(max-width:900px){.actions-grid,.allocation-card,.section-head,.detail-grid{grid-template-columns:1fr}.pitch-grid{grid-template-columns:1fr}.pitch-card+.pitch-card{border-left:0;border-top:1px solid #dbe3dc}.section-head,.allocation-card{gap:25px}.booking{grid-template-columns:115px minmax(0,1fr) 105px}}
+  @media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.hero{min-height:560px}.shade{background:linear-gradient(0deg,rgb(5 34 22 / 96%),rgb(5 34 22 / 36%))}.hero-inner{padding:75px 0 55px}.actions-section,.schedule-section,.details-section{padding:65px 0}.actions-grid{gap:42px}.allocation-section{padding-bottom:70px}.allocation-card{padding:32px 24px;box-shadow:7px 7px 0 var(--dark)}.day-card>header{padding:14px}.pitch-card{padding:16px 13px}.booking{grid-template-columns:1fr auto;gap:5px 12px}.booking-time{grid-column:1/-1}.share{width:105px}.detail-card{padding:28px 22px}}
+</style>
