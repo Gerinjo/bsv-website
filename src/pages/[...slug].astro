@@ -92,6 +92,7 @@ const isHistoryPage = page.path === 'verein/geschichte';
 const isOrganizationPage = page.path === 'verein/organigramm';
 const teamProfile = teamProfiles[page.path];
 const isTeamPage = Boolean(teamProfile);
+const isOldMenTeam = page.path === 'fussball/alte-herren';
 const hasTeamGallery = Boolean(teamProfile && (
   teamProfile.gallery.length > 0 ||
   teamProfile.galleryTabs?.some((gallery) => gallery.photos.length > 0)
@@ -770,7 +771,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
           {teamProfile.coaches.length > 0 && (
             <section class="d-girls-coaches">
-              <div class="d-girls-section-head"><div><span>Ansprechpersonen</span><h2>Das Trainerteam.</h2></div><p>Klare Zuständigkeiten und ein direkter Draht für Spieler:innen und Eltern.</p></div>
+              <div class="d-girls-section-head"><div><span>{isOldMenTeam ? 'Kontakt' : 'Ansprechpersonen'}</span><h2>{isOldMenTeam ? 'Ansprechperson.' : 'Das Trainerteam.'}</h2></div><p>{isOldMenTeam ? 'Der direkte Draht für Fragen rund um die Alten Herren.' : 'Klare Zuständigkeiten und ein direkter Draht für Spieler:innen und Eltern.'}</p></div>
               <div class:list={["coach-grid", { "is-single": teamProfile.coaches.length === 1 }]}>
                 {teamProfile.coaches.map((coach) => (
                   <article class="coach-card">

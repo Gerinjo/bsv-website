@@ -364,7 +364,7 @@ const configs: TeamConfig[] = [
     trainingLead: 'Ein fester Termin für Fußball, Freundschaft und gemeinsame Erlebnisse.',
     training: [{ day: 'Mittwoch', time: '19:00 Uhr', place: 'BSV Nordstern Sportplatz' }],
     trial: 'Wir freuen uns über jedes neue Gesicht. Komm direkt zum gemeinsamen Fußballspiel vorbei oder melde dich vorab.',
-    coaches: [{ name: 'Torben Schmidt', role: 'Ansprechperson Alte Herren', phone: '+491715680710' }],
+    coaches: [{ name: 'Christian Stielow', role: 'Ansprechperson Alte Herren' }],
   },
   {
     path: 'jugend/u11-e1', kicker: 'Kinderfußball', headline: 'Spielen.<br /><em>Mutig werden.</em>', letter: 'E1',
