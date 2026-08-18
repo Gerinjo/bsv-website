@@ -25,6 +25,9 @@ test('Belegungsplan 2 contains the conflict-adjusted proposal', () => {
   assert.match(proposalSource, /'fussball\/herren\/kreisliga-2\|Donnerstag': \{ place: 'SV Markelfingen' \}/);
   assert.match(proposalSource, /'jugend\/u7-g\|Mittwoch': \{ allocation: \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz' \} \}/);
   assert.match(proposalSource, /'jugend\/u6-g\|Mittwoch': \{ allocation: \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz' \} \}/);
+  assert.match(proposalSource, /'jugend\/u15-c1': \{ pitch: 'Hauptplatz', share: \.5, shareLabel: '½ Platz'/);
+  assert.match(proposalSource, /'jugend\/u15-c2': \{ pitch: 'Hauptplatz', share: \.5, shareLabel: '½ Platz'/);
+  assert.match(proposalSource, /Rechnerisch ohne Überbelegung/);
 });
 
 test('Belegungsplan 2 offers the requested accessible team filters', () => {
