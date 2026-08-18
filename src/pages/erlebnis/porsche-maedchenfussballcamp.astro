@@ -8,22 +8,37 @@ import { withBase } from '../../utils/paths';
 const cooperation = erlebnisCooperations.find((item) => item.id === 'porsche-maedchencamp')!;
 const eventUrl = 'https://fussballschule.stuttgarter-kickers.de/de/portal/events/767-herbstcamp-m-dchen-bsv-nordstern-radolfzell-halle/';
 const registrationUrl = eventUrl;
-const gallery = [
+const galleries = [
   {
-    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/24/xlarge_Foto_28.10.23__11_30_10.jpg',
-    alt: 'Mädchen beim Dribblingtraining vor dem Tor beim Porsche Fußballcamp',
+    year: '2024',
+    images: [
+      { src: withBase('/images/events/porsche-maedchenfussballcamp/2024/01-hallencamp-team.webp'), alt: 'Teilnehmerinnen des Porsche Mädchenfußballcamps 2024 bei einer Besprechung in der Sporthalle' },
+      { src: withBase('/images/events/porsche-maedchenfussballcamp/2024/02-hallencamp-gruppe.webp'), alt: 'Teilnehmerinnen des Porsche Mädchenfußballcamps 2024 gemeinsam in der Sporthalle' },
+      { src: withBase('/images/events/porsche-maedchenfussballcamp/2024/03-ballkontrolle.webp'), alt: 'Spielerin beim Training der Ballkontrolle im Porsche Mädchenfußballcamp 2024' },
+      { src: withBase('/images/events/porsche-maedchenfussballcamp/2024/04-training-in-der-halle.webp'), alt: 'Teilnehmerin während einer Trainingseinheit beim Porsche Mädchenfußballcamp 2024' },
+      { src: withBase('/images/events/porsche-maedchenfussballcamp/2024/05-anlauf-zum-ball.webp'), alt: 'Spielerin beim Anlauf zum Ball im Porsche Mädchenfußballcamp 2024' },
+    ],
   },
   {
-    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/26/xlarge_Foto_28.10.23__11_30_15.jpg',
-    alt: 'Drei Teilnehmerinnen beim Fußballtraining auf dem Platz',
-  },
-  {
-    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/25/xlarge_Foto_28.10.23__11_33_06.jpg',
-    alt: 'Teilnehmerinnen des Mädchenfußballcamps als Gruppe mit Bällen',
-  },
-  {
-    src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/23/xlarge_Foto_28.10.23__11_24_35.jpg',
-    alt: 'Mädchen beim Dribbling während des Porsche Fußballcamps',
+    year: '2023',
+    images: [
+      {
+        src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/24/xlarge_Foto_28.10.23__11_30_10.jpg',
+        alt: 'Mädchen beim Dribblingtraining vor dem Tor beim Porsche Fußballcamp',
+      },
+      {
+        src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/26/xlarge_Foto_28.10.23__11_30_15.jpg',
+        alt: 'Drei Teilnehmerinnen beim Fußballtraining auf dem Platz',
+      },
+      {
+        src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/25/xlarge_Foto_28.10.23__11_33_06.jpg',
+        alt: 'Teilnehmerinnen des Mädchenfußballcamps als Gruppe mit Bällen',
+      },
+      {
+        src: 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/23/xlarge_Foto_28.10.23__11_24_35.jpg',
+        alt: 'Mädchen beim Dribbling während des Porsche Fußballcamps',
+      },
+    ],
   },
 ];
 ---
@@ -124,14 +139,51 @@ const gallery = [
         </div>
         <p>Training, Teamgefühl und ganz viel Ball am Fuß – Impressionen aus den Mädchencamps der Porsche Fußballschule.</p>
       </div>
-      <div class="gallery-grid">
-        {gallery.map((image, index) => (
-          <figure class:list={{ wide: index === 0 }}>
-            <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
-          </figure>
+      <div class="gallery-tabs" role="tablist" aria-label="Campjahr auswählen">
+        {galleries.map((gallery, index) => (
+          <button
+            type="button"
+            class="gallery-tab"
+            id={`porsche-gallery-tab-${gallery.year}`}
+            role="tab"
+            aria-selected={index === 0 ? 'true' : 'false'}
+            aria-controls={`porsche-gallery-panel-${gallery.year}`}
+            tabindex={index === 0 ? 0 : -1}
+            data-porsche-gallery-year={gallery.year}
+          >
+            <strong>{gallery.year}</strong>
+            <span>{gallery.images.length} Bilder</span>
+          </button>
         ))}
       </div>
+
+      {galleries.map((gallery, galleryIndex) => (
+        <div
+          class="gallery-panel"
+          id={`porsche-gallery-panel-${gallery.year}`}
+          role="tabpanel"
+          aria-labelledby={`porsche-gallery-tab-${gallery.year}`}
+          hidden={galleryIndex !== 0}
+          data-porsche-gallery-panel={gallery.year}
+        >
+          <div class="gallery-grid">
+            {gallery.images.map((image, imageIndex) => (
+              <button class="gallery-image" type="button" data-lightbox-src={image.src} data-lightbox-alt={image.alt} aria-label={`Bild ${imageIndex + 1} aus ${gallery.year} vergrößern`}>
+                <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                <span aria-hidden="true">↗</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
+
+    <dialog class="gallery-lightbox" id="porsche-gallery-lightbox" aria-label="Großansicht der Campbilder">
+      <button class="lightbox-close" type="button" aria-label="Großansicht schließen">×</button>
+      <button class="lightbox-nav is-prev" type="button" aria-label="Vorheriges Bild">‹</button>
+      <figure><img src="" alt="" /><figcaption aria-live="polite"></figcaption></figure>
+      <button class="lightbox-nav is-next" type="button" aria-label="Nächstes Bild">›</button>
+    </dialog>
 
     <section class="parents shell" aria-labelledby="parents-title">
       <div>
@@ -163,6 +215,83 @@ const gallery = [
   <Footer />
 </Layout>
 
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-porsche-gallery-year]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-porsche-gallery-panel]')];
+
+  const activateYear = (year: string, moveFocus = false) => {
+    tabs.forEach((tab) => {
+      const selected = tab.dataset.porscheGalleryYear === year;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      if (selected && moveFocus) tab.focus();
+    });
+    panels.forEach((panel) => { panel.hidden = panel.dataset.porscheGalleryPanel !== year; });
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => activateYear(tab.dataset.porscheGalleryYear ?? ''));
+    tab.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const nextIndex = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? tabs.length - 1
+          : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      activateYear(tabs[nextIndex].dataset.porscheGalleryYear ?? '', true);
+    });
+  });
+
+  const lightbox = document.querySelector<HTMLDialogElement>('#porsche-gallery-lightbox');
+  const lightboxImage = lightbox?.querySelector<HTMLImageElement>('figure img');
+  const lightboxCaption = lightbox?.querySelector<HTMLElement>('figcaption');
+  const closeButton = lightbox?.querySelector<HTMLButtonElement>('.lightbox-close');
+  const previousButton = lightbox?.querySelector<HTMLButtonElement>('.is-prev');
+  const nextButton = lightbox?.querySelector<HTMLButtonElement>('.is-next');
+  let activeImages: HTMLButtonElement[] = [];
+  let activeIndex = 0;
+  let lastTrigger: HTMLButtonElement | null = null;
+
+  const showLightboxImage = (index: number) => {
+    if (!lightboxImage || !lightboxCaption || !activeImages.length) return;
+    activeIndex = (index + activeImages.length) % activeImages.length;
+    const item = activeImages[activeIndex];
+    const alt = item.dataset.lightboxAlt ?? '';
+    lightboxImage.src = item.dataset.lightboxSrc ?? '';
+    lightboxImage.alt = alt;
+    lightboxCaption.textContent = `${activeIndex + 1} / ${activeImages.length} · ${alt}`;
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('.gallery-image').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!lightbox) return;
+      const panel = button.closest<HTMLElement>('[data-porsche-gallery-panel]');
+      activeImages = panel ? [...panel.querySelectorAll<HTMLButtonElement>('.gallery-image')] : [button];
+      activeIndex = Math.max(0, activeImages.indexOf(button));
+      lastTrigger = button;
+      showLightboxImage(activeIndex);
+      lightbox.showModal();
+    });
+  });
+
+  closeButton?.addEventListener('click', () => lightbox?.close());
+  previousButton?.addEventListener('click', () => showLightboxImage(activeIndex - 1));
+  nextButton?.addEventListener('click', () => showLightboxImage(activeIndex + 1));
+  lightbox?.addEventListener('click', (event) => { if (event.target === lightbox) lightbox.close(); });
+  lightbox?.addEventListener('close', () => lastTrigger?.focus());
+  lightbox?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showLightboxImage(activeIndex - 1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showLightboxImage(activeIndex + 1);
+    }
+  });
+</script>
+
 <style>
   :global(:root){--kickers-blue:#009fe3;--kickers-deep:#006f9f;--kickers-ink:#102430}
   .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.partner-page{background:#f5f7f4;color:#14251a}.section-label{display:block;color:var(--kickers-deep);font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
@@ -171,9 +300,9 @@ const gallery = [
   .intro{padding:80px 0 55px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:70px;align-items:start}.intro h2,.included h2,.schedule h2,.gallery h2,.parents h2,.cta h2{margin:10px 0 20px;font-size:clamp(2.7rem,5vw,4.8rem);line-height:.92;letter-spacing:-.05em}.intro p,.schedule-copy p,.gallery-heading p{color:#5c6c63;line-height:1.8}.price-card{padding:28px;background:var(--kickers-ink);color:#fff;border-top:5px solid var(--kickers-blue);box-shadow:0 18px 42px rgb(0 0 0 / 10%)}.price-card>span{font-size:.63rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#a9dff4}.price{margin:18px 0 16px;display:flex;align-items:baseline;gap:13px}.price strong{font-size:2.65rem;letter-spacing:-.05em}.price-card p{color:#c9d5db;font-size:.72rem;line-height:1.55}.price-card>b{display:block;margin-top:16px;color:#fff;font-size:.75rem}.price-card>a{margin-top:22px;min-height:50px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--kickers-blue);color:#fff;text-decoration:none;font-size:.74rem;font-weight:950}
   .included{padding:55px 0 85px}.included-heading{max-width:800px}.benefit-grid{margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.benefit-grid article{min-height:230px;padding:25px;background:#fff;border-top:4px solid var(--kickers-blue)}.benefit-grid article>span{color:var(--kickers-blue);font-size:.65rem;font-weight:950}.benefit-grid h3{margin:28px 0 10px;font-size:1.08rem}.benefit-grid p{margin:0;color:#65756c;font-size:.78rem;line-height:1.6}
   .schedule{padding:74px 0;display:grid;grid-template-columns:.85fr 1.15fr;gap:65px;background:transparent}.days{display:grid;gap:10px}.days article{padding:22px 24px;display:grid;grid-template-columns:130px 150px 1fr;gap:20px;align-items:center;background:#fff;border-left:5px solid var(--kickers-blue)}.days span{color:var(--kickers-deep);font-size:.7rem;font-weight:950;text-transform:uppercase}.days strong{font-size:1.1rem}.days p{margin:0;color:#69786f;font-size:.75rem;line-height:1.5}
-  .gallery{padding:45px 0 95px}.gallery-heading{display:flex;justify-content:space-between;gap:55px;align-items:end}.gallery-heading>p{max-width:340px;margin-bottom:20px;font-size:.84rem}.gallery-grid{display:grid;grid-template-columns:1.25fr .75fr .75fr;grid-template-rows:260px 260px;gap:10px}.gallery-grid figure{margin:0;overflow:hidden;background:#dfe9ed}.gallery-grid figure.wide{grid-row:1/-1}.gallery-grid figure:last-child{grid-column:2/-1}.gallery-grid img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease}.gallery-grid figure:hover img{transform:scale(1.025)}
+  .gallery{padding:45px 0 95px}.gallery-heading{display:flex;justify-content:space-between;gap:55px;align-items:end}.gallery-heading>p{max-width:340px;margin-bottom:20px;font-size:.84rem}.gallery-tabs{display:flex;gap:8px;margin:6px 0 24px;border-bottom:1px solid #d8e0e4}.gallery-tab{min-width:125px;padding:15px 18px 14px;border:0;border-bottom:4px solid transparent;background:transparent;color:#63747d;text-align:left;cursor:pointer}.gallery-tab strong,.gallery-tab span{display:block}.gallery-tab strong{font-size:1.05rem}.gallery-tab span{margin-top:3px;font-size:.64rem;font-weight:750}.gallery-tab[aria-selected='true']{border-bottom-color:#fff;background:var(--kickers-deep);color:#fff;box-shadow:inset 0 -4px var(--kickers-blue)}.gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.gallery-image{position:relative;aspect-ratio:4/3;padding:0;overflow:hidden;border:0;background:#dfe9ed;cursor:zoom-in}.gallery-image img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .3s ease}.gallery-image:hover img,.gallery-image:focus-visible img{transform:scale(1.035)}.gallery-image>span{position:absolute;right:10px;bottom:10px;width:31px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:rgb(0 80 115 / 92%);color:#fff;font-weight:950}.gallery-lightbox{width:min(1180px,calc(100vw - 32px));max-width:none;height:min(88vh,900px);max-height:calc(100vh - 32px);padding:0;overflow:hidden;border:0;background:var(--kickers-ink);color:#fff;box-sizing:border-box;box-shadow:0 30px 90px rgb(0 0 0 / 55%)}.gallery-lightbox::backdrop{background:rgb(0 0 0 / 84%);backdrop-filter:blur(4px)}.gallery-lightbox figure{width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:45px 70px 38px;overflow:hidden;display:grid;grid-template-rows:minmax(0,1fr) auto;place-items:center;box-sizing:border-box}.gallery-lightbox figure img{display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain}.gallery-lightbox figcaption{margin-top:10px;color:#c9dce6;font-size:.72rem;font-weight:800;text-align:center}.lightbox-close,.lightbox-nav{position:absolute;z-index:2;border:0;background:rgb(255 255 255 / 12%);color:#fff;cursor:pointer}.lightbox-close{right:14px;top:14px;width:42px;height:42px;font-size:1.8rem}.lightbox-nav{top:50%;width:48px;height:64px;font-size:2.3rem;transform:translateY(-50%)}.lightbox-nav.is-prev{left:12px}.lightbox-nav.is-next{right:12px}.lightbox-close:hover,.lightbox-nav:hover,.lightbox-close:focus-visible,.lightbox-nav:focus-visible{background:var(--kickers-blue);color:#fff}
   .parents{padding:70px 0 90px;border-top:1px solid #dfe6e1}.parents>div:first-child{max-width:760px}.parent-grid{margin-top:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.parent-grid article{padding:24px 26px;background:#fff}.parent-grid strong{color:var(--kickers-deep);font-size:.9rem}.parent-grid p{margin:8px 0 0;color:#64736a;font-size:.77rem;line-height:1.6}
   .cta{margin-bottom:90px;padding:42px 44px;display:grid;grid-template-columns:1fr 340px;gap:55px;align-items:center;background:var(--kickers-blue);color:#fff}.cta>div>span{font-size:.66rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.cta h2{margin-bottom:0}.cta p{max-width:600px;color:#edfaff;line-height:1.65}.cta-side{padding:25px;background:#fff;color:var(--kickers-ink)}.cta-side strong,.cta-side small{display:block}.cta-side strong{font-size:1.2rem}.cta-side small{margin-top:5px;color:#718089;font-size:.7rem}.cta-side>a:not(.source-link){min-height:52px;margin-top:20px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--kickers-ink);color:#fff;text-decoration:none;font-size:.74rem;font-weight:950}.source-link{display:inline-block;margin-top:13px;color:var(--kickers-deep);font-size:.65rem;font-weight:850}
-  @media(max-width:900px){.hero-grid,.intro,.schedule,.cta{grid-template-columns:1fr}.event-card{max-width:520px}.benefit-grid{grid-template-columns:1fr 1fr}.gallery-heading{display:block}.gallery-heading>p{max-width:650px}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:300px 220px 220px}.gallery-grid figure.wide{grid-column:1/-1;grid-row:auto}.gallery-grid figure:last-child{grid-column:1/-1}.kickers-lockup small{display:none}}
-  @media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero{padding:65px 0 105px}.hero-grid{gap:35px}.hero h1{font-size:clamp(3.2rem,16vw,4.8rem)}.hero-actions{display:grid}.primary-button,.secondary-button{width:100%}.logo-shell{margin-top:-48px}.kickers-lockup{padding:20px;gap:17px}.kickers-lockup img{width:66px;height:66px}.intro{padding-top:62px;gap:32px}.price-card{padding:24px}.benefit-grid,.parent-grid{grid-template-columns:1fr}.benefit-grid article{min-height:0}.days article{grid-template-columns:1fr;gap:5px}.gallery-grid{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(4,240px)}.gallery-grid figure.wide,.gallery-grid figure:last-child{grid-column:auto}.cta{padding:28px 24px;gap:30px}}
+  @media(max-width:900px){.hero-grid,.intro,.schedule,.cta{grid-template-columns:1fr}.event-card{max-width:520px}.benefit-grid{grid-template-columns:1fr 1fr}.gallery-heading{display:block}.gallery-heading>p{max-width:650px}.gallery-grid{grid-template-columns:1fr 1fr}.kickers-lockup small{display:none}}
+  @media(max-width:620px){.shell{width:min(100% - 32px,1120px)}.hero{padding:65px 0 105px}.hero-grid{gap:35px}.hero h1{font-size:clamp(3.2rem,16vw,4.8rem)}.hero-actions{display:grid}.primary-button,.secondary-button{width:100%}.logo-shell{margin-top:-48px}.kickers-lockup{padding:20px;gap:17px}.kickers-lockup img{width:66px;height:66px}.intro{padding-top:62px;gap:32px}.price-card{padding:24px}.benefit-grid,.parent-grid{grid-template-columns:1fr}.benefit-grid article{min-height:0}.days article{grid-template-columns:1fr;gap:5px}.gallery-tabs{overflow-x:auto}.gallery-tab{flex:0 0 auto}.gallery-grid{grid-template-columns:1fr}.gallery-lightbox figure{padding:55px 14px 40px}.lightbox-nav{width:42px;height:56px;background:rgb(16 36 48 / 80%)}.cta{padding:28px 24px;gap:30px}}
 </style>
