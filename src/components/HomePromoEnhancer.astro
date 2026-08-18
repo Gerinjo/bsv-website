@@ -4,66 +4,95 @@ import { withBase } from '../utils/paths';
 const shopHref = withBase('/shop');
 const skechersHref = withBase('/erlebnis/skechers-fussballschule');
 const mcshapeHref = withBase('/erlebnis/mcshape-radolfzell');
-const eventHref = withBase('/erlebnis/porsche-maedchenfussballcamp');
+const girlsCampHref = withBase('/erlebnis/porsche-maedchenfussballcamp');
+const primarySchoolTournamentHref = withBase('/erlebnis/buergerstiftung-grundschulturnier');
+const trainerHref = withBase('/jugend/trainer-gesucht');
 const showroomImage = withBase('/images/shop/Showroom_2024_820x370px.jpg');
 const skechersLogo = withBase('/images/partners/skechers-fussballschule-logo-white.svg');
 const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
+const primarySchoolTournamentImage = withBase('/images/events/grundschulturnier/2026/gst-2026-024.webp');
+const trainerImage = withBase('/images/home/trainer-gesucht.webp');
 const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/marketing_photo/photo/24/xlarge_Foto_28.10.23__11_30_10.jpg';
 ---
 
 <template id="home-promo-template">
-  <a class="promo-card home-promo-card home-promo-shop" href={shopHref}>
-    <span class="promo-index">01</span>
-    <div class="home-promo-visual is-photo">
-      <img src={showroomImage} alt="JAKO Showroom von Teamsport Bodensee" decoding="async" />
-    </div>
-    <div class="promo-copy">
-      <small>BSV Shop · Teamsport Bodensee</small>
-      <h2>Zeig deine Farben.</h2>
-      <p>Vereinskleidung, Trainingswear und mehr für den BSV Nordstern.</p>
-      <strong>BSV Shop entdecken <b>↗</b></strong>
-    </div>
-  </a>
-
   <a class="promo-card home-promo-card home-promo-skechers" href={skechersHref}>
-    <span class="promo-index">02</span>
+    <span class="promo-index">01</span>
     <div class="home-promo-visual is-logo skechers-visual">
       <img src={skechersLogo} alt="SKECHERS Fußballschule mit Bernd Voss" decoding="async" />
       <span class="home-promo-badge">Sommerferien 2027</span>
     </div>
     <div class="promo-copy">
       <small>Fußballcamp & Nachwuchsförderung</small>
-      <h2>SKECHERS Fußballschule.</h2>
-      <p>Das große Fußballcamp beim BSV – Training, Wettbewerbe und Fußballspaß.</p>
+      <h2>SKECHERS Fußballcamp.</h2>
+      <p>Training, Wettbewerbe und Fußballspaß beim großen Feriencamp des BSV.</p>
       <strong>Camp entdecken <b>↗</b></strong>
     </div>
   </a>
 
-  <a class="promo-card home-promo-card home-promo-mcshape" href={mcshapeHref}>
+  <a class="promo-card home-promo-card home-promo-event" href={girlsCampHref}>
+    <span class="promo-index">02</span>
+    <div class="home-promo-visual is-photo event-photo">
+      <img src={porscheCampImage} alt="Teilnehmerinnen beim Porsche Mädchenfußballcamp" decoding="async" />
+      <span class="event-date">26.–28. Oktober 2026</span>
+    </div>
+    <div class="promo-copy">
+      <small>Herbstferien · Mädchenfußball</small>
+      <h2>Porsche Mädchenfußballcamp.</h2>
+      <p>Drei Camptage mit Training, Ausstattung und jeder Menge Fußball.</p>
+      <strong>Camp entdecken <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-primary-school" href={primarySchoolTournamentHref}>
     <span class="promo-index">03</span>
+    <div class="home-promo-visual is-photo primary-school-photo">
+      <img src={primarySchoolTournamentImage} alt="Kinder beim Zeller Grundschulturnier" loading="lazy" decoding="async" />
+    </div>
+    <div class="promo-copy">
+      <small>Schule · Sport · Gemeinschaft</small>
+      <h2>Grundschulturnier.</h2>
+      <p>Der große Fußball- und Begegnungstag für Radolfzeller Grundschulen.</p>
+      <strong>Turnier entdecken <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-shop" href={shopHref}>
+    <span class="promo-index">04</span>
+    <div class="home-promo-visual is-photo shop-photo">
+      <img src={showroomImage} alt="JAKO Showroom von Teamsport Bodensee" loading="lazy" decoding="async" />
+    </div>
+    <div class="promo-copy">
+      <small>JAKO · BSV Vereinskleidung</small>
+      <h2>BSV Shop.</h2>
+      <p>Trikots, Trainingskleidung und mehr – unser Shop ist jetzt sofort zu erkennen.</p>
+      <strong>Zum BSV Shop <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-trainer" href={trainerHref}>
+    <span class="promo-index">05</span>
+    <div class="home-promo-visual is-photo trainer-photo">
+      <img src={trainerImage} alt="Trainer gesucht – Kinder und Jugendtraining beim BSV Nordstern" loading="lazy" decoding="async" />
+    </div>
+    <div class="promo-copy">
+      <small>Jugendabteilung · Verstärkung gesucht</small>
+      <h2>Trainer:innen gesucht.</h2>
+      <p>Bring Kinder in Bewegung und werde Teil unseres Trainerteams.</p>
+      <strong>Mehr erfahren <b>↗</b></strong>
+    </div>
+  </a>
+
+  <a class="promo-card home-promo-card home-promo-mcshape" href={mcshapeHref}>
+    <span class="promo-index">06</span>
     <div class="home-promo-visual is-logo mcshape-visual">
-      <img src={mcshapeLogo} alt="MC Shape Radolfzell" decoding="async" />
+      <img src={mcshapeLogo} alt="MC Shape Radolfzell" loading="lazy" decoding="async" />
     </div>
     <div class="promo-copy">
       <small>Kooperation & Benefit</small>
       <h2>MC Shape Radolfzell.</h2>
       <p>Fitness und Athletik als starke Ergänzung zur BSV Vereinswelt.</p>
       <strong>Kooperation entdecken <b>↗</b></strong>
-    </div>
-  </a>
-
-  <a class="promo-card home-promo-card home-promo-event" href={eventHref}>
-    <span class="promo-index">04</span>
-    <div class="home-promo-visual is-photo event-photo">
-      <img src={porscheCampImage} alt="Teilnehmerinnen beim Porsche Mädchenfußballcamp" decoding="async" />
-      <span class="event-focus">Aktuell im Fokus</span>
-      <span class="event-date">26.–28. Oktober 2026</span>
-    </div>
-    <div class="promo-copy">
-      <small>Herbstferien · Mädchenfußball</small>
-      <h2>Porsche Mädchenfußballcamp.</h2>
-      <p>Drei Camptage mit Training, Ausstattung, Mittagessen und jeder Menge Fußball.</p>
-      <strong>Camp entdecken <b>↗</b></strong>
     </div>
   </a>
 </template>
@@ -87,12 +116,12 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
 </script>
 
 <style>
-  :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+  :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 
   :global(.home-promo-card),
   :global(.home-promo-card:visited){
     position:relative;
-    min-height:286px!important;
+    min-height:350px!important;
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -133,7 +162,7 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
     text-transform:uppercase;
   }
   :global(.home-promo-card .promo-copy h2){
-    min-height:0;
+    min-height:2.12em;
     margin:7px 0 8px;
     color:#10251a!important;
     font-size:1.24rem;
@@ -172,7 +201,7 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
     font-size:.66rem;
   }
 
-  :global(.home-promo-visual){position:relative;height:128px;flex:0 0 128px;overflow:hidden;display:grid;place-items:center}
+  :global(.home-promo-visual){position:relative;width:100%;height:auto;aspect-ratio:16/9;flex:0 0 auto;overflow:hidden;display:grid;place-items:center}
   :global(.home-promo-visual.is-photo img){width:100%;height:100%;display:block;object-fit:cover}
   :global(.home-promo-visual.is-logo img){display:block;max-width:78%;max-height:76px;object-fit:contain}
   :global(.skechers-visual){padding:20px;background:#164f32}
@@ -184,6 +213,9 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
   :global(.event-photo::after){content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgb(0 0 0 / 8%) 25%,rgb(0 0 0 / 58%) 100%);pointer-events:none}
   :global(.event-focus){position:absolute;z-index:2;left:12px;top:11px;padding:5px 7px;background:#009fe3;color:#fff;font-size:.52rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
   :global(.event-date){position:absolute;z-index:2;left:12px;bottom:10px;padding:5px 7px;background:#fff;color:#006f9f;font-size:.52rem;font-weight:950;letter-spacing:.055em;text-transform:uppercase}
+  :global(.primary-school-photo img){object-position:center 43%}
+  :global(.shop-photo img){object-position:center 46%}
+  :global(.trainer-photo img){object-position:center center}
 
   @media(max-width:1050px){
     :global(.promo-grid.home-promo-grid){grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -193,6 +225,6 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
     :global(.promo-grid.home-promo-grid){grid-template-columns:1fr}
     :global(.home-promo-grid .promo-card:last-child){grid-column:auto!important}
     :global(.home-promo-card){min-height:0!important}
-    :global(.home-promo-visual){height:145px;flex-basis:145px}
+    :global(.home-promo-card .promo-copy h2){min-height:0}
   }
 </style>
