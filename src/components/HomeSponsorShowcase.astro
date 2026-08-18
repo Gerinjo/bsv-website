@@ -1,0 +1,68 @@
+---
+import { advertisingPartners } from '../data/advertisingPartners';
+import { withBase } from '../utils/paths';
+
+// Diese Liste wird ausschließlich aus aktiven, freigegebenen Sponsoren mit
+// hinterlegtem Transparent-Logo in bsv-socialmedia synchronisiert.
+const approvedSponsors = advertisingPartners;
+---
+
+{approvedSponsors.length > 0 && (
+  <section class="home-sponsors" id="home-sponsors" aria-labelledby="home-sponsors-title">
+    <div class="home-sponsors-copy">
+      <div>
+        <span>Gemeinsam stark</span>
+        <h2 id="home-sponsors-title">Danke für euren Rückhalt.</h2>
+      </div>
+      <p>Wir bedanken uns herzlich bei unseren Sponsoren für ihre Unterstützung und dafür, dass sie Sport, Jugend und Gemeinschaft beim BSV Nordstern möglich machen.</p>
+    </div>
+
+    <div class="home-sponsor-grid" data-home-sponsor-grid>
+      {approvedSponsors.map((sponsor) => sponsor.website ? (
+        <a class="home-sponsor-logo" href={sponsor.website} target="_blank" rel="noopener noreferrer" aria-label={`${sponsor.name} besuchen`}>
+          <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
+        </a>
+      ) : (
+        <article class="home-sponsor-logo" aria-label={sponsor.name}>
+          <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+<script>
+  const randomizeHomeSponsors = () => {
+    const grid = document.querySelector<HTMLElement>('[data-home-sponsor-grid]');
+    if (!grid || grid.dataset.randomized === 'true') return;
+
+    const sponsors = [...grid.children];
+    for (let index = sponsors.length - 1; index > 0; index -= 1) {
+      const target = Math.floor(Math.random() * (index + 1));
+      [sponsors[index], sponsors[target]] = [sponsors[target], sponsors[index]];
+    }
+
+    grid.replaceChildren(...sponsors);
+    grid.dataset.randomized = 'true';
+  };
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', randomizeHomeSponsors, { once: true });
+  } else {
+    randomizeHomeSponsors();
+  }
+</script>
+
+<style>
+  .home-sponsors{margin-top:42px;padding-top:36px;border-top:1px solid #ccd6ce}
+  .home-sponsors-copy{display:grid;grid-template-columns:.9fr 1.1fr;align-items:end;gap:65px;margin-bottom:26px}
+  .home-sponsors-copy span{display:block;color:#17613a;font-size:.63rem;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+  .home-sponsors-copy h2{margin:8px 0 0;color:#10251a;font-size:clamp(1.8rem,3vw,2.7rem);line-height:.98;letter-spacing:-.045em}
+  .home-sponsors-copy p{max-width:650px;margin:0;color:#64736a;line-height:1.7}
+  .home-sponsor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .home-sponsor-logo{min-width:0;height:132px;padding:24px;box-sizing:border-box;display:grid;place-items:center;border:1px solid #d7dfd9;background:#fff;color:inherit;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
+  .home-sponsor-logo:nth-child(n+4){display:none}
+  .home-sponsor-logo img{display:block;width:100%;height:82px;object-fit:contain}
+  a.home-sponsor-logo:hover,a.home-sponsor-logo:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 12px 28px rgb(9 47 32 / 10%)}
+  @media(max-width:760px){.home-sponsors-copy{grid-template-columns:1fr;gap:16px}.home-sponsor-grid{grid-template-columns:1fr}.home-sponsor-logo{height:118px}.home-sponsor-logo img{height:72px}}
+</style>
