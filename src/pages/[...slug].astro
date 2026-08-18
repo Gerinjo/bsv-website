@@ -140,8 +140,8 @@ const replaceLegacyPersonCard = (html: string, oldName: string, newName: string,
 
   return `${html.slice(0, cardStart)}${card}${html.slice(cardEnd + 5)}`;
 };
-const addLegacyYouthRepresentative = (html: string, name: string, role: string, image: string) => {
-  const sectionStart = html.indexOf('<h3>Jugendvertreter</h3>');
+const addLegacyPersonCardToSection = (html: string, name: string, role: string, image: string, sectionHeading: string) => {
+  const sectionStart = html.indexOf(sectionHeading);
   if (sectionStart === -1 || html.slice(sectionStart).includes(`<h4 class="uk-card-title">${name}</h4>`)) return html;
 
   const listEnd = html.indexOf('</ul>', sectionStart);
@@ -181,38 +181,40 @@ const legacyBody = isYouthConcept || isRefereePage || isHistoryPage || isOrganiz
   : legacyContent[page.path];
 const importedBody = legacyBody || undefined;
 const migratedLegacyBody = page.path === 'verein/vorstandschaft' && importedBody
-  ? replaceLegacyPersonCard(
-      addLegacyPersonToSection(
-        replaceLegacyPersonCard(
-          removeLegacyPersonCard(importedBody, 'Nicole Erbes'),
-          'Ann-Kathrin Sugg',
-          'Ann-Kathrin Sugg',
-          'Sportliche Leitung Frauen',
-          '/images/verein/personen/ann-kathrin-sugg.jpg',
+  ? addLegacyPersonCardToSection(
+      replaceLegacyPersonCard(
+        addLegacyPersonToSection(
+          replaceLegacyPersonCard(
+            removeLegacyPersonCard(importedBody, 'Nicole Erbes'),
+            'Ann-Kathrin Sugg',
+            'Ann-Kathrin Sugg',
+            'Sportliche Leitung Frauen',
+            '/images/verein/personen/ann-kathrin-sugg.jpg',
+          ),
+          'Felix Schüle',
+          'Sportlicher Leiter Herren',
+          'Herren',
+          '/images/verein/personen/felix-schuele.jpg',
         ),
-        'Felix Schüle',
-        'Sportlicher Leiter Herren',
-        'Herren',
-        '/images/verein/personen/felix-schuele.jpg',
+        'Heike Seidel',
+        'Sigrid Burkhardt',
+        'Abteilungsleitung: Gymnastik',
+        '/images/verein/personen/sigrid-burkhardt.jpg',
+        'verwaltung@bsvnordstern.de',
       ),
-      'Heike Seidel',
-      'Sigrid Burkhardt',
-      'Abteilungsleitung: Gymnastik',
-      '/images/verein/personen/sigrid-burkhardt.jpg',
-      'verwaltung@bsvnordstern.de',
+      'Stefan Gastaudo',
+      'Datenschutzbeauftragter',
+      '/images/verein/personen/stefan-gastaudo.jpg',
+      '<h2>Vereinspflege</h2>',
     )
   : page.path === 'jugend/vorstandschaft' && importedBody
-    ? addLegacyYouthRepresentative(
-        addLegacyYouthRepresentative(
-          replaceLegacyPersonCard(importedBody, 'Sina Rauch', 'Laila Goldhagen', 'Jugendvertretung C–B-Juniorinnen', '/images/verein/personen/laila-goldhagen.jpeg')
-            .replace('Vertretung B-/A-Junioren', 'Jugendvertretung B–A-Junioren'),
-          'Ella Kramer',
-          'Jugendvertretung G–D-Junioren & Juniorinnen',
-          '/images/verein/personen/ella-kramer.jpeg',
-        ),
-        'Annika Peglau',
+    ? addLegacyPersonCardToSection(
+        replaceLegacyPersonCard(importedBody, 'Sina Rauch', 'Laila Goldhagen', 'Jugendvertretung C–B-Juniorinnen', '/images/verein/personen/laila-goldhagen.jpeg')
+          .replace('Vertretung B-/A-Junioren', 'Jugendvertretung B–A-Junioren'),
+        'Ella Kramer',
         'Jugendvertretung G–D-Junioren & Juniorinnen',
-        '/images/verein/personen/annika-peglau.jpeg',
+        '/images/verein/personen/ella-kramer.jpeg',
+        '<h3>Jugendvertreter</h3>',
       )
     : importedBody;
 const migratedBody = migratedLegacyBody ? withBaseInHtml(migratedLegacyBody) : undefined;
