@@ -85,7 +85,7 @@ export const menu: MenuItem[] = [
         { label: 'U11 E2-Junioren', href: '/jugend/u11-e2' },
         { label: 'U11 E3-Junioren', href: '/jugend/u11-e3' },
         { label: 'U9 F-Junioren', href: '/jugend/u9-f' },
-        { label: 'U8 F-Junioren', href: '/jugend/u8-f' },
+        { label: 'U8 F2 + F3-Junioren', href: '/jugend/u8-f' },
         { label: 'U7 G-Junioren Bambinis', href: '/jugend/u7-g' },
         { label: 'U6 G-Junioren Spielgruppe', href: '/jugend/u6-g' },
       ]},

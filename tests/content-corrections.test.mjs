@@ -61,6 +61,17 @@ test('E2 is always allocated to the main pitch', () => {
   assert.doesNotMatch(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Nebenplatz'/);
 });
 
+test('F2 and F3 use the training data from the 2026/27 allocation graphic', () => {
+  const u8Start = teamPagesSource.indexOf("path: 'jugend/u8-f'");
+  const u7Start = teamPagesSource.indexOf("path: 'jugend/u7-g'", u8Start);
+  const f2AndF3Section = teamPagesSource.slice(u8Start, u7Start);
+
+  assert.match(f2AndF3Section, /Dienstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz'/);
+  assert.match(f2AndF3Section, /Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz'/);
+  assert.match(trainingPlanSource, /'jugend\/u8-f': \{ pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz'/);
+  assert.match(trainingPlanSource, /'jugend\/u8-f': 'F2 \+ F3-Junioren'/);
+});
+
 test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {
   const u19Start = teamPagesSource.indexOf("path: 'jugend/u19'");
   const u17Start = teamPagesSource.indexOf("path: 'jugend/u17'", u19Start);
