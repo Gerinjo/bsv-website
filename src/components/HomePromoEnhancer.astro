@@ -7,7 +7,7 @@ const mcshapeHref = withBase('/erlebnis/mcshape-radolfzell');
 const girlsCampHref = withBase('/erlebnis/porsche-maedchenfussballcamp');
 const primarySchoolTournamentHref = withBase('/erlebnis/buergerstiftung-grundschulturnier');
 const trainerHref = withBase('/jugend/trainer-gesucht');
-const showroomImage = withBase('/images/shop/Showroom_2024_820x370px.jpg');
+const jakoLogoImage = withBase('/images/shop/jako-logo.jpg');
 const skechersLogo = withBase('/images/partners/skechers-fussballschule-logo-white.svg');
 const mcshapeLogo = withBase('/images/partners/MCShape-Logo-2023-v3.png');
 const primarySchoolTournamentImage = withBase('/images/events/grundschulturnier/2026/gst-2026-024.webp');
@@ -60,7 +60,7 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
   <a class="promo-card home-promo-card home-promo-shop" href={shopHref}>
     <span class="promo-index">04</span>
     <div class="home-promo-visual is-photo shop-photo">
-      <img src={showroomImage} alt="JAKO Showroom von Teamsport Bodensee" loading="lazy" decoding="async" />
+      <img src={jakoLogoImage} alt="JAKO – Living Sports" loading="lazy" decoding="async" />
     </div>
     <div class="promo-copy">
       <small>JAKO · BSV Vereinskleidung</small>
@@ -214,7 +214,8 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
   :global(.event-focus){position:absolute;z-index:2;left:12px;top:11px;padding:5px 7px;background:#009fe3;color:#fff;font-size:.52rem;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
   :global(.event-date){position:absolute;z-index:2;left:12px;bottom:10px;padding:5px 7px;background:#fff;color:#006f9f;font-size:.52rem;font-weight:950;letter-spacing:.055em;text-transform:uppercase}
   :global(.primary-school-photo img){object-position:center 43%}
-  :global(.shop-photo img){object-position:center 46%}
+  :global(.shop-photo){background:#078bca}
+  :global(.shop-photo img){object-position:center center}
   :global(.trainer-photo img){object-position:center center}
 
   @media(max-width:1050px){
