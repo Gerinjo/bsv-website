@@ -426,7 +426,7 @@ const configs: TeamConfig[] = [
     opening: ['Unsere A-Junioren spielen in einer Spielgemeinschaft mit dem SV Markelfingen, SV Güttingen und SV Liggeringen.', `Zum Team gehören Jugendliche der Jahrgänge ${youthYears.a}.`],
     partners: youthAssociationPartners,
     trainingLead: 'Bitte mindestens 15 Minuten vor Trainingsbeginn vor Ort sein.',
-    training: [{ day: 'Montag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen' }, { day: 'Mittwoch', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
+    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen' }],
     trial: `Neue Spieler der Jahrgänge ${youthYears.a} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
   },
   {
