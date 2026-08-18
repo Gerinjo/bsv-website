@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const pageSource = readFileSync(new URL('../src/pages/[...slug].astro', import.meta.url), 'utf8');
 const teamPagesSource = readFileSync(new URL('../src/data/teamPages.ts', import.meta.url), 'utf8');
+const layoutSource = readFileSync(new URL('../src/layouts/Layout.astro', import.meta.url), 'utf8');
 const legacySource = readFileSync(new URL('../src/data/legacyContent.ts', import.meta.url), 'utf8');
 const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8');
 const urmelSource = readFileSync(new URL('../src/pages/erlebnis/urmel-bambini-spieltag.astro', import.meta.url), 'utf8');
@@ -17,6 +18,11 @@ test('the board page includes Stefan Gastaudo as data protection officer', () =>
 
 test('Annika Peglau is no longer added as a youth representative', () => {
   assert.doesNotMatch(pageSource, /Annika Peglau/);
+});
+
+test('the favicon uses the filled PNG crest', () => {
+  assert.match(layoutSource, /rel="icon" type="image\/png"[^>]*bsv-nordstern\.png/);
+  assert.doesNotMatch(layoutSource, /rel="icon"[^>]*bsv-nordstern\.gif/);
 });
 
 test('the URMEL page announces 2027 without the obsolete 2026 link', () => {
@@ -53,6 +59,16 @@ test('Marcelino Rueth teams use the updated Monday and Wednesday training times'
 test('E2 is always allocated to the main pitch', () => {
   assert.match(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Hauptplatz'/);
   assert.doesNotMatch(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Nebenplatz'/);
+});
+
+test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {
+  const u19Start = teamPagesSource.indexOf("path: 'jugend/u19'");
+  const u17Start = teamPagesSource.indexOf("path: 'jugend/u17'", u19Start);
+  const u19Section = teamPagesSource.slice(u19Start, u17Start);
+
+  assert.match(u19Section, /Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell'/);
+  assert.match(u19Section, /Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen'/);
+  assert.doesNotMatch(u19Section, /Montag|Mittwoch/);
 });
 
 test('the girls football day overview card uses a cover photo and names SBFV support', () => {
