@@ -378,7 +378,7 @@ const configs: TeamConfig[] = [
     path: 'jugend/u11-e2', kicker: 'Kinderfußball', headline: 'Lernen.<br /><em>Gemeinsam spielen.</em>', letter: 'E2',
     opening: ['Bei den E2-Junioren stehen viele Ballkontakte, Spielfreude und das Lernen in der Gruppe im Mittelpunkt.', `Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
-    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
+    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
     coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer' }],

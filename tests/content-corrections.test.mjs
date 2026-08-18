@@ -5,6 +5,7 @@ import test from 'node:test';
 const pageSource = readFileSync(new URL('../src/pages/[...slug].astro', import.meta.url), 'utf8');
 const teamPagesSource = readFileSync(new URL('../src/data/teamPages.ts', import.meta.url), 'utf8');
 const legacySource = readFileSync(new URL('../src/data/legacyContent.ts', import.meta.url), 'utf8');
+const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8');
 const urmelSource = readFileSync(new URL('../src/pages/erlebnis/urmel-bambini-spieltag.astro', import.meta.url), 'utf8');
 
 test('the board page includes Stefan Gastaudo as data protection officer', () => {
@@ -41,7 +42,13 @@ test('Marcelino Rueth teams use the updated Monday and Wednesday training times'
 
   assert.match(e2Section, /Montag', time: '17:30 – 19:00 Uhr'/);
   assert.match(e2Section, /Mittwoch', time: '17:30 – 19:00 Uhr'/);
+  assert.equal((e2Section.match(/place: 'BSV Nordstern Hauptplatz'/g) ?? []).length, 2);
   assert.match(u9Section, /Montag', time: '16:00 – 17:30 Uhr'/);
   assert.match(u9Section, /Mittwoch', time: '16:00 – 17:30 Uhr'/);
   assert.doesNotMatch(e2Section, /Termin folgt/);
+});
+
+test('E2 is always allocated to the main pitch', () => {
+  assert.match(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Hauptplatz'/);
+  assert.doesNotMatch(trainingPlanSource, /'jugend\/u11-e2': \{ pitch: 'Nebenplatz'/);
 });
