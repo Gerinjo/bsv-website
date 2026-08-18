@@ -377,8 +377,8 @@ const configs: TeamConfig[] = [
   {
     path: 'jugend/u11-e2', kicker: 'Kinderfußball', headline: 'Lernen.<br /><em>Gemeinsam spielen.</em>', letter: 'E2',
     opening: ['Bei den E2-Junioren stehen viele Ballkontakte, Spielfreude und das Lernen in der Gruppe im Mittelpunkt.', `Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`],
-    trainingLead: 'Die neuen Trainingszeiten werden durch das Trainerteam bekanntgegeben.',
-    training: [{ day: 'Aktuell', time: 'Termin folgt', place: 'BSV Nordstern' }],
+    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
+    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
     trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
     coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer' }],
@@ -396,7 +396,7 @@ const configs: TeamConfig[] = [
     path: 'jugend/u9-f', kicker: 'Kinderfußball', headline: 'Dribbeln.<br /><em>Freude teilen.</em>', letter: 'U9',
     opening: [`Unsere U9 bietet Kindern der Jahrgänge ${youthYears.f} einen spielerischen Einstieg mit vielen Ballkontakten.`, 'Gemeinsames Entdecken und die Freude am Fußball stehen dabei immer an erster Stelle.'],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November.',
-    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
+    training: [{ day: 'Montag', time: '16:00 – 17:30 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '16:00 – 17:30 Uhr', place: 'BSV Nordstern' }],
     trial: `Jungs und Mädchen der Jahrgänge ${youthYears.f} sind herzlich willkommen. Bitte melde dich vorab beim Trainerteam.`,
   },
   {

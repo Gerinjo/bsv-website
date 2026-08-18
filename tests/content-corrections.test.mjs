@@ -31,3 +31,17 @@ test('the old men team names Christian Stielow as contact instead of a coach', (
 test('Torben Altenburg remains co-coach of the first men team', () => {
   assert.match(legacySource, /Torben Altenburg \(Co-Trainer\)/);
 });
+
+test('Marcelino Rueth teams use the updated Monday and Wednesday training times', () => {
+  const e2Start = teamPagesSource.indexOf("path: 'jugend/u11-e2'");
+  const u9Start = teamPagesSource.indexOf("path: 'jugend/u9-f'");
+  const u8Start = teamPagesSource.indexOf("path: 'jugend/u8-f'");
+  const e2Section = teamPagesSource.slice(e2Start, u9Start);
+  const u9Section = teamPagesSource.slice(u9Start, u8Start);
+
+  assert.match(e2Section, /Montag', time: '17:30 – 19:00 Uhr'/);
+  assert.match(e2Section, /Mittwoch', time: '17:30 – 19:00 Uhr'/);
+  assert.match(u9Section, /Montag', time: '16:00 – 17:30 Uhr'/);
+  assert.match(u9Section, /Mittwoch', time: '16:00 – 17:30 Uhr'/);
+  assert.doesNotMatch(e2Section, /Termin folgt/);
+});
