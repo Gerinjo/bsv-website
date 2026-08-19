@@ -33,6 +33,7 @@ test('Belegungsplan 2 contains the conflict-adjusted proposal', () => {
   assert.match(proposalSource, /'jugend\/u15-c2\|Donnerstag': \{ day: 'Montag', time: '19:00 – 20:30 Uhr' \}/);
   assert.match(proposalSource, /'jugend\/u13-d3\|Donnerstag': \{ day: 'Freitag', time: '17:30 – 19:00 Uhr' \}/);
   assert.match(proposalSource, /'jugend\/u17\|Donnerstag': \{ time: '19:00 – 20:30 Uhr' \}/);
+  assert.doesNotMatch(proposalSource, /'jugend\/u13-d2\|/);
   assert.match(proposalSource, /'fussball\/herren\/kreisliga-2\|Dienstag': \{ place: 'SV Markelfingen' \}/);
   assert.match(proposalSource, /'fussball\/herren\/kreisliga-2\|Donnerstag': \{ allocation: \{ pitch: 'Nebenplatz' \} \}/);
   assert.doesNotMatch(proposalSource, /'fussball\/herren\/bezirksliga\|Dienstag':/);
@@ -41,6 +42,8 @@ test('Belegungsplan 2 contains the conflict-adjusted proposal', () => {
   assert.match(proposalSource, /'jugend\/u6-g\|Mittwoch': \{ allocation: \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz' \} \}/);
   assert.match(proposalSource, /'jugend\/u15-c1': \{ pitch: 'Hauptplatz', share: \.5, shareLabel: '½ Platz'/);
   assert.match(proposalSource, /'jugend\/u15-c2': \{ pitch: 'Hauptplatz', share: \.5, shareLabel: '½ Platz'/);
+  assert.match(proposalSource, /'jugend\/u13-d2': \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz'/);
+  assert.match(originalPlanSource, /'jugend\/u13-d2': \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz'/);
   assert.match(proposalSource, /Rechnerisch ohne Überbelegung/);
   assert.doesNotMatch(proposalSource, /zusammen 150 % des Hauptplatzes/);
 });

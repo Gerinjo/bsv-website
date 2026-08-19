@@ -92,6 +92,15 @@ test('D2 and D3 show the updated coaching teams and qualifications', () => {
   assert.match(coachVacanciesSource, /D3-Junioren', role: 'Trainer:in'/);
 });
 
+test('D2 trains Wednesday and Friday at the same time', () => {
+  const d2Start = teamPagesSource.indexOf("path: 'jugend/u13-d2'");
+  const d3Start = teamPagesSource.indexOf("path: 'jugend/u13-d3'", d2Start);
+  const d2Section = teamPagesSource.slice(d2Start, d3Start);
+
+  assert.match(d2Section, /training: \[\{ day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' \}, \{ day: 'Freitag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' \}\]/);
+  assert.doesNotMatch(d2Section, /day: 'Montag'/);
+});
+
 test('DFBnet qualifications are applied to the respective youth coaches', () => {
   for (const [name, qualification] of [
     ['Andreas Wolfmüller', 'DFB-Basis-Coach'],

@@ -481,7 +481,7 @@ const configs: TeamConfig[] = [
     path: 'jugend/u13-d2', kicker: 'Leistungsfußball', headline: 'Lernen.<br /><em>Als Mannschaft.</em>', letter: 'D2',
     opening: [`In der D2 spielen Kinder der Jahrgänge ${youthYears.d}.`, 'Altersgerechtes Training schafft die Grundlage für individuelle Entwicklung und gutes Zusammenspiel.'],
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.',
-    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
+    training: [{ day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Freitag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
     coaches: [
       { name: 'Jörg Boreatti', role: 'Trainer', qualification: 'C-Lizenz (ab 2023)', phone: '+491726240593' },
