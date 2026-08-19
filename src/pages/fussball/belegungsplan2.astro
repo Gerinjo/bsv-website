@@ -75,9 +75,7 @@ const changes: Record<string, ProposalChange> = {
   'jugend/u13-d2|Mittwoch': { allocation: { pitch: 'Hauptplatz' } },
   'jugend/u7-g|Mittwoch': { allocation: { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz' } },
   'jugend/u6-g|Mittwoch': { allocation: { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz' } },
-  'fussball/herren/bezirksliga|Dienstag': { day: 'Montag' },
-  'fussball/herren/bezirksliga|Donnerstag': { allocation: { pitch: 'Nebenplatz' } },
-  'fussball/herren/kreisliga-2|Donnerstag': { place: 'SV Markelfingen' },
+  'fussball/herren/kreisliga-2|Dienstag': { place: 'SV Markelfingen' },
 };
 
 const actionItems = [
@@ -124,7 +122,7 @@ const actionItems = [
   {
     team: 'Herren 1 & Herren 2',
     original: 'Beide Mannschaften trainieren dienstags und donnerstags 19:00–20:30 Uhr mit jeweils ½ Hauptplatz beim BSV.',
-    proposal: 'Herren 1 trainiert montags auf ½ Hauptplatz und donnerstags auf ½ Nebenplatz. Herren 2 bleibt dienstags auf ½ Hauptplatz beim BSV und trainiert donnerstags in Markelfingen.',
+    proposal: 'Herren 1 bleibt dienstags und donnerstags auf ½ Hauptplatz. Herren 2 trainiert dienstags in Markelfingen und donnerstags auf ½ Hauptplatz beim BSV.',
   },
 ];
 
@@ -187,7 +185,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
           <span>Änderungen gegenüber dem Originalplan</span>
           <h2>Originalplan und Plan 2 im direkten Vergleich.</h2>
           <p><strong>Vergleichsgrundlage ist immer der aktuell auf der Homepage verlinkte Belegungsplan.</strong> Die Liste zeigt ausschließlich dessen Unterschiede zu Plan 2 – nicht die Änderungen seit einem früheren Stand von Plan 2.</p>
-          <aside><strong>Planungsannahme</strong>Der Montagstermin der Herren 1 muss intern abgestimmt werden. Für Herren 2 bleibt nur der Donnerstagstermin in Markelfingen mit der SG abzustimmen; dienstags trainiert die Mannschaft beim BSV.</aside>
+          <aside><strong>Planungsannahme</strong>Der Dienstagstermin der Herren 2 in Markelfingen muss mit der SG abgestimmt werden. Die Überbelegung des Hauptplatzes am Donnerstag von 19:00 bis 20:00 Uhr bleibt im Plan bewusst sichtbar.</aside>
         </div>
         <ol class="action-list">
           {actionItems.map((item, index) => (
@@ -208,8 +206,8 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
 
     <section class="allocation-section">
       <div class="shell allocation-card">
-        <div><span>Ergebnis</span><h2>Rechnerisch ohne Überbelegung.</h2></div>
-        <p>C1 bleibt dienstags auf ½ Hauptplatz, Herren 2 nutzt ab 19:00 Uhr die andere Hälfte. Der Nebenplatz bleibt für Frauen 1 und Frauen 2 reserviert. Montags teilen sich C2 und Herren 1 den Hauptplatz; die A-Junioren trainieren parallel auf dem Nebenplatz. Herren 2 trainiert donnerstags in Markelfingen. Damit überschreiten die eingetragenen Platzanteile zu keiner Zeit die Kapazität des jeweiligen Platzes.</p>
+        <div><span>Ergebnis</span><h2>Eine Überbelegung bleibt sichtbar.</h2></div>
+        <p>C1 bleibt dienstags auf ½ Hauptplatz, Herren 1 nutzt ab 19:00 Uhr die andere Hälfte und Herren 2 trainiert in Markelfingen. Donnerstags benötigen C1, Herren 1 und Herren 2 zwischen 19:00 und 20:00 Uhr zusammen 150 % des Hauptplatzes. Dieses Zeitfenster wird im Wochenplan bewusst als Überlastung ausgewiesen.</p>
       </div>
     </section>
 
