@@ -1,0 +1,133 @@
+---
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Layout from '../../layouts/Layout.astro';
+import { menu } from '../../data/navigation';
+import { teamProfiles } from '../../data/teamPages';
+import { withBase } from '../../utils/paths';
+
+type QualifiedCoach = {
+  name: string;
+  qualification: string;
+  teams: string[];
+  image?: string;
+  upcoming?: boolean;
+};
+
+const youthLinks = menu
+  .find((item) => item.href === '/jugend')
+  ?.groups.flatMap((group) => group.links) ?? [];
+const teamNameByPath = new Map(youthLinks.map((link) => [link.href.slice(1), link.label]));
+const qualifiedByName = new Map<string, QualifiedCoach>();
+
+Object.entries(teamProfiles)
+  .filter(([path]) => path.startsWith('jugend/'))
+  .forEach(([path, profile]) => {
+    profile.coaches.filter((coach) => coach.qualification).forEach((coach) => {
+      const team = teamNameByPath.get(path) ?? profile.kicker;
+      const existing = qualifiedByName.get(coach.name);
+      if (existing) {
+        if (!existing.teams.includes(team)) existing.teams.push(team);
+        return;
+      }
+      qualifiedByName.set(coach.name, {
+        name: coach.name,
+        qualification: coach.qualification!,
+        teams: [team],
+        image: coach.image,
+      });
+    });
+  });
+
+const upcomingCoaches: QualifiedCoach[] = [
+  {
+    name: 'Mila Ernsberger',
+    qualification: 'DFB-Basis-Coach · Ausbildungsstart steht bevor',
+    teams: ['U6 G-Junioren Spielgruppe'],
+    image: '/images/verein/personen/mila-ernsberger.jpg',
+    upcoming: true,
+  },
+  {
+    name: 'Marlia-Lena Bulander',
+    qualification: 'DFB-Basis-Coach · Ausbildungsstart steht bevor',
+    teams: ['U6 G-Junioren Spielgruppe'],
+    image: '/images/verein/personen/marlia-burlander.jpg',
+    upcoming: true,
+  },
+];
+
+const qualifiedCoaches = [...qualifiedByName.values()]
+  .sort((a, b) => a.name.localeCompare(b.name, 'de'));
+const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
+const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join('');
+---
+
+<Layout
+  title="Qualitätsoffensive – BSV Nordstern Radolfzell"
+  description="Aus- und Weiterbildung unserer Jugendtrainerinnen und Jugendtrainer beim BSV Nordstern Radolfzell."
+>
+  <Header />
+  <main class="quality-page">
+    <section class="quality-hero">
+      <div class="shell hero-inner">
+        <div class="hero-copy">
+          <a class="back" href={withBase('/jugend')}>← Junge Sterne</a>
+          <p class="eyebrow">Jugendleitung · Qualitätsoffensive</p>
+          <h1>Wissen, das<br /><em>junge Sterne stärkt.</em></h1>
+          <p class="lead">Gutes Jugendtraining entsteht nicht zufällig. Deshalb investieren wir gezielt in die Aus- und Weiterbildung unserer Trainer:innen.</p>
+        </div>
+        <aside class="hero-statement">
+          <span>Unser Anspruch</span>
+          <strong>Jedes Team verdient gut ausgebildete Begleitung.</strong>
+          <p>Wir haben ein starkes Interesse daran, unsere Jugendtrainer:innen fachlich und persönlich weiterzuentwickeln – vom ersten Zertifikat bis zur Trainerlizenz.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="quality-intro shell">
+      <div><span>Qualität entwickeln</span><h2>Ausbildung ist<br />Teil unseres Konzepts.</h2></div>
+      <div class="intro-copy">
+        <p>Trainer:innen prägen, wie Kinder und Jugendliche Fußball erleben. Sie vermitteln Technik und Spielverständnis, geben Orientierung und schaffen ein Umfeld, in dem Entwicklung, Freude und Gemeinschaft zusammengehören.</p>
+        <p>Darum unterstützen wir Qualifizierungsmaßnahmen ausdrücklich und begleiten unsere Trainer:innen auf ihrem Ausbildungsweg. Unser Ziel ist, dass möglichst alle Jugendteams von passend qualifizierten Menschen betreut werden.</p>
+      </div>
+    </section>
+
+    <section class="upcoming-section">
+      <div class="shell upcoming-grid">
+        <div class="upcoming-copy"><span>Nächster Schritt</span><h2>Zwei junge Trainerinnen.<br />Ein klares Ziel.</h2><p>Mila Ernsberger und Marlia-Lena Bulander stehen unmittelbar vor dem Beginn ihrer DFB-Basis-Coach-Ausbildung in einem Online-Lehrgang des SBFV. Beide engagieren sich bereits als Trainerinnen unserer U6-Spielgruppe.</p></div>
+        <div class="upcoming-names">
+          {upcomingCoaches.map((coach, index) => <article><small>0{index + 1}</small><strong>{coach.name}</strong><span>DFB-Basis-Coach</span><p>Ausbildungsstart steht bevor</p></article>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="coaches-section shell">
+      <div class="section-head"><div><span>Unsere Jugendtrainer:innen</span><h2>Qualifiziert.<br /><em>Und immer in Entwicklung.</em></h2></div><p>Die Übersicht zeigt alle in den aktuellen Jugendteam-Daten hinterlegten Aus- und Weiterbildungen sowie die unmittelbar bevorstehenden Ausbildungsstarts.</p></div>
+      <div class="coach-grid">
+        {allCoaches.map((coach) => (
+          <article class:list={["coach-card", { upcoming: coach.upcoming }]}>
+            <div class="portrait">
+              {coach.image ? <img src={withBase(coach.image)} alt={coach.name} width="420" height="520" loading="lazy" /> : <span>{initials(coach.name)}</span>}
+              {coach.upcoming && <b>Start steht bevor</b>}
+            </div>
+            <div class="coach-info"><h3>{coach.name}</h3><strong>{coach.qualification}</strong><p>{coach.teams.join(' · ')}</p></div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="quality-cta shell">
+      <div><span>Gemeinsam besser werden</span><h2>Du möchtest dich weiterbilden?</h2><p>Die Jugendleitung unterstützt dich dabei, die passende Qualifizierung für deine Aufgabe im Nachwuchsfußball zu finden.</p></div>
+      <a href={withBase('/kontakt?thema=youth')}>Jugendleitung kontaktieren <b>↗</b></a>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .quality-page{--green:#0d7b4d;--dark:#092f20;--lime:#d9f34a;overflow:hidden;background:#f6f7f3;color:var(--dark)}
+  .shell{width:min(1180px,calc(100% - 40px));margin-inline:auto}.quality-hero{padding:96px 0 78px;background:var(--dark);color:white}.hero-inner{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:70px;align-items:end}.back{display:inline-block;margin-bottom:42px;color:#b8c9c0;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}.eyebrow,.quality-intro span,.upcoming-copy>span,.section-head span,.quality-cta span{display:block;margin:0 0 18px;color:var(--lime);font-size:.72rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-copy h1{max-width:800px;margin:0;font-size:clamp(3rem,7vw,6.8rem);line-height:.88;letter-spacing:-.065em}.hero-copy h1 em{color:var(--lime);font-family:Georgia,serif;font-weight:400}.lead{max-width:690px;margin:30px 0 0;color:#dce8e1;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.65}.hero-statement{padding:34px;border-top:4px solid var(--lime);background:#12442f}.hero-statement span{color:var(--lime);font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-statement strong{display:block;margin:18px 0;font-size:1.65rem;line-height:1.15}.hero-statement p{margin:0;color:#d8e5de;line-height:1.65}.quality-intro{display:grid;grid-template-columns:1fr 1.1fr;gap:90px;padding-block:110px}.quality-intro span,.section-head span,.quality-cta span{color:var(--green)}.quality-intro h2,.section-head h2,.quality-cta h2,.upcoming-copy h2{margin:0;font-size:clamp(2.3rem,5vw,4.7rem);line-height:.95;letter-spacing:-.05em}.intro-copy p{margin:0 0 22px;color:#4e6258;font-size:1.08rem;line-height:1.8}.upcoming-section{padding:90px 0;background:var(--green);color:white}.upcoming-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center}.upcoming-copy p{max-width:620px;color:#e4f0e9;font-size:1.05rem;line-height:1.75}.upcoming-names{display:grid;gap:14px}.upcoming-names article{position:relative;padding:28px 30px 25px 76px;background:white;color:var(--dark)}.upcoming-names small{position:absolute;left:25px;top:30px;color:var(--green);font-weight:900}.upcoming-names strong,.upcoming-names span{display:block}.upcoming-names strong{font-size:1.35rem}.upcoming-names span{margin-top:7px;color:var(--green);font-weight:900}.upcoming-names p{margin:4px 0 0;color:#6c7c74;font-size:.82rem}.coaches-section{padding-block:110px}.section-head{display:flex;justify-content:space-between;gap:50px;align-items:end;margin-bottom:55px}.section-head h2 em{color:var(--green);font-family:Georgia,serif;font-weight:400}.section-head>p{max-width:410px;margin:0;color:#64736b;line-height:1.65}.coach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.coach-card{overflow:hidden;background:white;box-shadow:0 16px 45px rgb(9 47 32 / 8%)}.portrait{position:relative;display:grid;height:260px;place-items:center;overflow:hidden;background:#dfe7e1}.portrait img{width:100%;height:100%;object-fit:cover;object-position:top center}.portrait>span{font-size:3rem;font-weight:900;color:#8ba095}.portrait b{position:absolute;right:12px;bottom:12px;padding:8px 10px;background:var(--lime);color:var(--dark);font-size:.65rem;letter-spacing:.06em;text-transform:uppercase}.coach-info{padding:22px}.coach-info h3{margin:0 0 10px;font-size:1.16rem}.coach-info strong{display:block;color:var(--green);font-size:.82rem;line-height:1.4}.coach-info p{margin:12px 0 0;color:#738078;font-size:.74rem;line-height:1.45}.coach-card.upcoming{outline:2px solid var(--lime);outline-offset:-2px}.quality-cta{display:flex;justify-content:space-between;gap:40px;align-items:center;margin-bottom:100px;padding:55px 60px;background:var(--dark);color:white}.quality-cta h2{font-size:clamp(2rem,4vw,3.4rem)}.quality-cta p{max-width:650px;margin:15px 0 0;color:#c9d9d0;line-height:1.6}.quality-cta a{flex:none;padding:18px 22px;background:var(--lime);color:var(--dark);font-weight:900;text-decoration:none}.quality-cta a b{margin-left:12px}
+  @media(max-width:1000px){.coach-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-inner,.upcoming-grid{gap:40px}}
+  @media(max-width:760px){.quality-hero{padding:70px 0 55px}.hero-inner,.quality-intro,.upcoming-grid{grid-template-columns:1fr}.hero-inner,.quality-intro,.upcoming-grid{gap:45px}.quality-intro,.coaches-section{padding-block:75px}.section-head,.quality-cta{display:block}.section-head>p{margin-top:25px}.coach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quality-cta{padding:38px 30px}.quality-cta a{display:inline-block;margin-top:28px}}
+  @media(max-width:480px){.shell{width:min(100% - 26px,1180px)}.coach-grid{grid-template-columns:1fr 1fr;gap:10px}.portrait{height:190px}.coach-info{padding:15px}.coach-info h3{font-size:.95rem}.coach-info strong{font-size:.72rem}.upcoming-names article{padding-left:60px}.upcoming-names small{left:18px}.quality-cta{margin-bottom:65px}}
+</style>

@@ -68,6 +68,7 @@ export const menu: MenuItem[] = [
       { title: 'Jugendabteilung', links: [
         { label: 'Jugendvorstandschaft', href: '/jugend/vorstandschaft' },
         { label: 'Jugendkonzept', href: '/jugend/jugendkonzept' },
+        { label: 'Qualitätsoffensive', href: '/jugend/qualitaetsoffensive' },
         { label: 'Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
         { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
         { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
