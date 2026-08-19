@@ -10,6 +10,10 @@ const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungs
 const urmelSource = readFileSync(new URL('../src/pages/erlebnis/urmel-bambini-spieltag.astro', import.meta.url), 'utf8');
 const erlebnisDataSource = readFileSync(new URL('../src/data/erlebnis.ts', import.meta.url), 'utf8');
 const erlebnisOverviewSource = readFileSync(new URL('../src/pages/erlebnis/index.astro', import.meta.url), 'utf8');
+const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
+const sportsPagesSource = readFileSync(new URL('../src/data/sportsPages.ts', import.meta.url), 'utf8');
+const membershipSource = readFileSync(new URL('../src/pages/verein/mitglied-werden.astro', import.meta.url), 'utf8');
+const coachVacanciesSource = readFileSync(new URL('../src/pages/jugend/trainer-gesucht.astro', import.meta.url), 'utf8');
 
 test('the board page includes Stefan Gastaudo as data protection officer', () => {
   assert.match(pageSource, /'Stefan Gastaudo',\s*'Datenschutzbeauftragter'/);
@@ -70,6 +74,48 @@ test('F2 and F3 use the training data from the 2026/27 allocation graphic', () =
   assert.match(f2AndF3Section, /Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz'/);
   assert.match(trainingPlanSource, /'jugend\/u8-f': \{ pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz'/);
   assert.match(trainingPlanSource, /'jugend\/u8-f': 'F2 \+ F3-Junioren'/);
+});
+
+test('D2 and D3 show the updated coaching teams and qualifications', () => {
+  const d2Start = teamPagesSource.indexOf("path: 'jugend/u13-d2'");
+  const d3Start = teamPagesSource.indexOf("path: 'jugend/u13-d3'", d2Start);
+  const girlsStart = teamPagesSource.indexOf("path: 'jugend/juniorinnen/u17'", d3Start);
+  const d2Section = teamPagesSource.slice(d2Start, d3Start);
+  const d3Section = teamPagesSource.slice(d3Start, girlsStart);
+
+  assert.match(d2Section, /Jörg Boreatti', role: 'Trainer', qualification: 'C-Lizenz \(ab 2023\)'/);
+  assert.match(d2Section, /Marko Eisner', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach'/);
+  assert.match(d2Section, /Patrick Müller', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach'/);
+  assert.match(d3Section, /Jérôme Ernsberger', role: 'Trainer', qualification: 'C-Lizenz'/);
+  assert.match(d3Section, /Hieu Ho', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach'/);
+  assert.match(membershipSource, /J\. Ernsberger, H\. Ho/);
+  assert.match(coachVacanciesSource, /D3-Junioren', role: 'Trainer:in'/);
+});
+
+test('DFBnet qualifications are applied to the respective youth coaches', () => {
+  for (const [name, qualification] of [
+    ['Andreas Wolfmüller', 'DFB-Basis-Coach'],
+    ['Fabian Keller', 'Kindertrainer-Zertifikat'],
+    ['Jérôme Ernsberger', 'Trainer-C Kinder und Jugend'],
+    ['Marcelino Rüth', 'Kindertrainer-Zertifikat'],
+    ['Niku Pourheidari', 'DFB-Basis-Coach'],
+    ['Pascal Dieterle', 'DFB-Basis-Coach'],
+    ['Sebastian Bäuerle', 'Kindertrainer-Zertifikat'],
+    ['Simon Bühler', 'Kindertrainer-Zertifikat'],
+    ['Sina Rauch', 'DFB-Basis-Coach'],
+    ['Stefan Sulger', 'Kindertrainer-Zertifikat'],
+    ['Stephan Hellmann', 'DFB-Basis-Coach'],
+  ]) {
+    assert.match(teamPagesSource, new RegExp(`'${name}': '${qualification}'`));
+  }
+  assert.match(teamPagesSource, /'Pascel Dieterle': 'Pascal Dieterle'/);
+});
+
+test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
+  assert.match(navigationSource, /Torwarttraining', href: '\/jugend\/torwarttraining'/);
+  assert.match(sportsPagesSource, /path: 'jugend\/torwarttraining'/);
+  assert.match(sportsPagesSource, /5er- und 7er-Tore/);
+  assert.match(sportsPagesSource, /Stefan Gastaudo', role: 'Torwarttrainer · C-Lizenz'/);
 });
 
 test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {

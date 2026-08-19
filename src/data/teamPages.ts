@@ -146,6 +146,25 @@ const coachHomeClubs: Record<string, string> = {
 
 const coachDisplayNames: Record<string, string> = {
   'Michael Jentsch': 'Migo Jentsch',
+  'Pascel Dieterle': 'Pascal Dieterle',
+};
+
+const coachQualifications: Record<string, string> = {
+  'Andreas Wolfmüller': 'DFB-Basis-Coach',
+  'Fabian Keller': 'Kindertrainer-Zertifikat',
+  'Jérôme Ernsberger': 'Trainer-C Kinder und Jugend',
+  'Jörg Boreatti': 'C-Lizenz (ab 2023)',
+  'Marcelino Rüth': 'Kindertrainer-Zertifikat',
+  'Marko Eisner': 'DFB-Basis-Coach',
+  'Niku Pourheidari': 'DFB-Basis-Coach',
+  'Pascal Dieterle': 'DFB-Basis-Coach',
+  'Pascel Dieterle': 'DFB-Basis-Coach',
+  'Patrick Müller': 'DFB-Basis-Coach',
+  'Sebastian Bäuerle': 'Kindertrainer-Zertifikat',
+  'Simon Bühler': 'Kindertrainer-Zertifikat',
+  'Sina Rauch': 'DFB-Basis-Coach',
+  'Stefan Sulger': 'Kindertrainer-Zertifikat',
+  'Stephan Hellmann': 'DFB-Basis-Coach',
 };
 
 const decodeHtml = (value: string) => value
@@ -464,6 +483,11 @@ const configs: TeamConfig[] = [
     trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.',
     training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
     trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
+    coaches: [
+      { name: 'Jörg Boreatti', role: 'Trainer', qualification: 'C-Lizenz (ab 2023)', phone: '+491726240593' },
+      { name: 'Marko Eisner', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach' },
+      { name: 'Patrick Müller', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach' },
+    ],
   },
   {
     path: 'jugend/u13-d3', kicker: 'Leistungsfußball', headline: 'Wachsen.<br /><em>Schritt für Schritt.</em>', letter: 'D3',
@@ -471,6 +495,10 @@ const configs: TeamConfig[] = [
     trainingLead: 'Zwei Einheiten pro Woche auf dem Gelände des BSV Nordstern.',
     training: [{ day: 'Montag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern' }],
     trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
+    coaches: [
+      { name: 'Jérôme Ernsberger', role: 'Trainer', qualification: 'C-Lizenz' },
+      { name: 'Hieu Ho', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach' },
+    ],
   },
   {
     path: 'jugend/juniorinnen/u17', kicker: 'B-Juniorinnen', headline: 'Entwicklung.<br /><em>Zusammenhalt.</em>', letter: 'B',
@@ -545,6 +573,7 @@ export const teamProfiles: Record<string, TeamProfile> = Object.fromEntries(conf
     coaches: coaches.map((coach) => ({
       ...coach,
       name: coachDisplayNames[coach.name] ?? coach.name,
+      qualification: coachQualifications[coach.name] ?? coach.qualification,
       image: personImageByName[coach.name] ?? coach.image,
       club: associationTeamPaths.has(config.path) ? (coach.club ?? coachHomeClubs[coach.name]) : coach.club,
     })),

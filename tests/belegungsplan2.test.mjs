@@ -28,12 +28,13 @@ test('the action list always compares the linked original plan with plan 2', () 
 test('Belegungsplan 2 contains the conflict-adjusted proposal', () => {
   assert.match(proposalSource, /'fussball\/alte-herren\|Mittwoch': \{ time: '19:00 – 20:30 Uhr', allocation: \{ pitch: 'Hauptplatz' \} \}/);
   assert.match(proposalSource, /'jugend\/u19\|Dienstag': \{ day: 'Montag', time: '19:30 – 21:00 Uhr', allocation: \{ pitch: 'Nebenplatz' \} \}/);
-  assert.match(proposalSource, /'jugend\/u15-c1\|Dienstag': \{ day: 'Montag', time: '19:00 – 20:30 Uhr' \}/);
+  assert.doesNotMatch(proposalSource, /'jugend\/u15-c1\|Dienstag':/);
   assert.match(proposalSource, /'jugend\/u15-c2\|Dienstag': \{ day: 'Freitag', time: '19:00 – 20:30 Uhr' \}/);
   assert.match(proposalSource, /'jugend\/u15-c2\|Donnerstag': \{ day: 'Montag', time: '19:00 – 20:30 Uhr' \}/);
   assert.match(proposalSource, /'jugend\/u13-d3\|Donnerstag': \{ day: 'Freitag', time: '17:30 – 19:00 Uhr' \}/);
   assert.match(proposalSource, /'jugend\/u17\|Donnerstag': \{ time: '19:00 – 20:30 Uhr' \}/);
   assert.match(proposalSource, /'fussball\/herren\/kreisliga-2\|Donnerstag': \{ place: 'SV Markelfingen' \}/);
+  assert.match(proposalSource, /'fussball\/herren\/kreisliga-2\|Dienstag': \{ place: 'SV Markelfingen' \}/);
   assert.match(proposalSource, /'jugend\/u7-g\|Mittwoch': \{ allocation: \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz' \} \}/);
   assert.match(proposalSource, /'jugend\/u6-g\|Mittwoch': \{ allocation: \{ pitch: 'Hauptplatz', share: 1 \/ 3, shareLabel: '⅓ Platz' \} \}/);
   assert.match(proposalSource, /'jugend\/u15-c1': \{ pitch: 'Hauptplatz', share: \.5, shareLabel: '½ Platz'/);
@@ -60,4 +61,10 @@ test('the linked original plan uses the same team filter as plan 2', () => {
   assert.match(originalPlanSource, /data-conflict-filter-keys=/);
   assert.match(proposalSource, /import TrainingPlanFilter/);
   assert.match(proposalSource, /<TrainingPlanFilter \/>/);
+});
+
+test('the shared filter ships its styles directly on both plan pages', () => {
+  assert.match(filterComponentSource, /<style is:inline>/);
+  assert.match(filterComponentSource, /\.booking\[hidden\][\s\S]*display:none/);
+  assert.doesNotMatch(filterComponentSource, /:global\(/);
 });

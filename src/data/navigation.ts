@@ -69,6 +69,7 @@ export const menu: MenuItem[] = [
         { label: 'Jugendvorstandschaft', href: '/jugend/vorstandschaft' },
         { label: 'Jugendkonzept', href: '/jugend/jugendkonzept' },
         { label: 'Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
+        { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
         { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
       ]},
       { title: 'Leistungssport', links: [

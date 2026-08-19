@@ -20,6 +20,18 @@ export const sportsPages = [
   { path: 'jugend/spielgenehmigung', eyebrow: 'Gut vorbereitet', title: 'Spielgenehmigung', intro: 'Alle Informationen und Unterlagen für den Start im Spielbetrieb.', image: juniorsImage },
   { path: 'jugend/jugendkonzept', eyebrow: 'Unser gemeinsamer Weg', title: 'Jugendkonzept', intro: 'Leitlinien für eine nachhaltige, altersgerechte und respektvolle Nachwuchsarbeit.', image: youthImage },
   { path: 'jugend/jugendschiedsrichter', eyebrow: 'Verantwortung übernehmen', title: 'Jugendschiedsrichter', intro: 'Junge Menschen, die Spiele leiten und Fairness vorleben.', image: '/images/jugend/schiedsrichter/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg' },
+  {
+    path: 'jugend/torwarttraining',
+    eyebrow: 'Zwischen den Pfosten',
+    title: 'Torwarttraining',
+    intro: 'Spezifisches Torwarttraining für Nachwuchstorhüter:innen an 5er- und 7er-Toren.',
+    image: youthImage,
+    body: [
+      'Stefan Gastaudo bietet in unserer Jugend ein gezieltes Torwarttraining für 5er- und 7er-Tore an. Im Mittelpunkt stehen altersgerechte Technik, Koordination, Reaktion und sicheres Torwartspiel.',
+      'Als Trainer mit C-Lizenz begleitet Stefan die jungen Torhüterinnen und Torhüter bei ihrer individuellen Entwicklung. Bei Interesse hilft die Jugendleitung gerne weiter.',
+    ],
+    people: [{ name: 'Stefan Gastaudo', role: 'Torwarttrainer · C-Lizenz', image: '/images/verein/personen/stefan-gastaudo.jpg' }],
+  },
   ...[
     ['jugend/u11-e1','U11 E1-Junioren','Kinderfußball'], ['jugend/u11-e2','U11 E2-Junioren','Kinderfußball'], ['jugend/u11-e3','U11 E3-Junioren','Kinderfußball'],
     ['jugend/u9-f','U9 F-Junioren','Kinderfußball'], ['jugend/u8-f','U8 F2 + F3-Junioren','Kinderfußball'], ['jugend/u7-g','U7 G-Junioren Bambinis','Kinderfußball'], ['jugend/u6-g','U6 G-Junioren Spielgruppe','Kinderfußball'],

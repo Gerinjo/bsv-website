@@ -67,7 +67,6 @@ const allocationByTeam: Record<string, Allocation> = {
 const changes: Record<string, ProposalChange> = {
   'fussball/alte-herren|Mittwoch': { time: '19:00 – 20:30 Uhr', allocation: { pitch: 'Hauptplatz' } },
   'jugend/u19|Dienstag': { day: 'Montag', time: '19:30 – 21:00 Uhr', allocation: { pitch: 'Nebenplatz' } },
-  'jugend/u15-c1|Dienstag': { day: 'Montag', time: '19:00 – 20:30 Uhr' },
   'jugend/u15-c2|Dienstag': { day: 'Freitag', time: '19:00 – 20:30 Uhr' },
   'jugend/u15-c2|Donnerstag': { day: 'Montag', time: '19:00 – 20:30 Uhr' },
   'jugend/u13-d3|Donnerstag': { day: 'Freitag', time: '17:30 – 19:00 Uhr' },
@@ -77,6 +76,7 @@ const changes: Record<string, ProposalChange> = {
   'jugend/u7-g|Mittwoch': { allocation: { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz' } },
   'jugend/u6-g|Mittwoch': { allocation: { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz' } },
   'fussball/herren/bezirksliga|Donnerstag': { allocation: { pitch: 'Nebenplatz' } },
+  'fussball/herren/kreisliga-2|Dienstag': { place: 'SV Markelfingen' },
   'fussball/herren/kreisliga-2|Donnerstag': { place: 'SV Markelfingen' },
 };
 
@@ -94,7 +94,7 @@ const actionItems = [
   {
     team: 'C1-Junioren',
     original: 'Dienstag und Donnerstag 18:30–20:00 Uhr, jeweils ganzer Hauptplatz.',
-    proposal: 'Montag 19:00–20:30 Uhr und Donnerstag 18:30–20:00 Uhr, jeweils ½ Hauptplatz.',
+    proposal: 'Dienstag und Donnerstag 18:30–20:00 Uhr, jeweils ½ Hauptplatz. Der Dienstag bleibt auf Wunsch des Trainers erhalten.',
   },
   {
     team: 'C2-Junioren',
@@ -122,9 +122,9 @@ const actionItems = [
     proposal: 'Zeit und Hauptplatz bleiben unverändert; Platzbedarf wird jeweils auf ⅓ reduziert.',
   },
   {
-    team: 'Herren am Donnerstag',
-    original: 'Herren 1 und Herren 2 trainieren 19:00–20:30 Uhr mit jeweils ½ Hauptplatz beim BSV.',
-    proposal: 'Herren 1 trainiert zur gleichen Zeit auf ½ Nebenplatz; Herren 2 trainiert in Markelfingen. Dienstag bleibt unverändert.',
+    team: 'Herren 1 & Herren 2',
+    original: 'Beide Mannschaften trainieren dienstags und donnerstags 19:00–20:30 Uhr mit jeweils ½ Hauptplatz beim BSV.',
+    proposal: 'Herren 1 bleibt dienstags auf ½ Hauptplatz und wechselt donnerstags auf ½ Nebenplatz. Herren 2 trainiert dienstags und donnerstags in Markelfingen.',
   },
 ];
 
@@ -187,7 +187,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
           <span>Änderungen gegenüber dem Originalplan</span>
           <h2>Originalplan und Plan 2 im direkten Vergleich.</h2>
           <p><strong>Vergleichsgrundlage ist immer der aktuell auf der Homepage verlinkte Belegungsplan.</strong> Die Liste zeigt ausschließlich dessen Unterschiede zu Plan 2 – nicht die Änderungen seit einem früheren Stand von Plan 2.</p>
-          <aside><strong>Planungsannahme</strong>Der Donnerstagstermin der Herren 2 in Markelfingen muss noch mit der SG abgestimmt werden.</aside>
+          <aside><strong>Planungsannahme</strong>Die Dienstags- und Donnerstagstermine der Herren 2 in Markelfingen müssen noch mit der SG abgestimmt werden.</aside>
         </div>
         <ol class="action-list">
           {actionItems.map((item, index) => (
@@ -209,7 +209,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
     <section class="allocation-section">
       <div class="shell allocation-card">
         <div><span>Ergebnis</span><h2>Rechnerisch ohne Überbelegung.</h2></div>
-        <p>C1 und C2 teilen sich montags den Hauptplatz mit jeweils ½ Platz. Die A-Junioren nutzen parallel den Nebenplatz. Damit überschreiten die eingetragenen Platzanteile zu keiner Zeit die Kapazität des jeweiligen Platzes.</p>
+        <p>C1 bleibt dienstags auf ½ Hauptplatz. Ab 19:00 Uhr nutzt Herren 1 die andere Hälfte; Herren 2 trainiert in Markelfingen. Der Nebenplatz bleibt für Frauen 1 und Frauen 2 reserviert. Die A-Junioren trainieren montags auf dem Nebenplatz, C2 nutzt dann ½ Hauptplatz. Damit überschreiten die eingetragenen Platzanteile zu keiner Zeit die Kapazität des jeweiligen Platzes.</p>
       </div>
     </section>
 

@@ -22,6 +22,7 @@ export const personImageByName: Record<string, string> = {
   'Manuel Bücheler': '/images/verein/personen/manuel-buecheler.jpg',
   'Manuel Schellhammer': '/images/verein/personen/manuel-schellhammer.jpg',
   'Marco Eisner': '/images/verein/personen/marco-eisner.jpg',
+  'Marko Eisner': '/images/verein/personen/marco-eisner.jpg',
   'Marcus Peglau': '/images/verein/personen/marcus-peglau.jpg',
   'Markus Sawicki': '/images/verein/personen/markus-sawicki.jpg',
   'Marlia Burlander': '/images/verein/personen/marlia-burlander.jpg',
