@@ -7,8 +7,7 @@
     "logoAlt": "Logo von Sparkasse Hegau-Bodensee",
     "website": "https://www.sparkasse-hegau-bodensee.de/",
     "teamAudienceSlugs": [
-      "herren-1",
-      "herren-2"
+      "herren-1"
     ],
     "sortOrder": 10,
     "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
@@ -20,9 +19,7 @@
     "logoSrc": "/images/sponsors/synced/bgv.png",
     "logoAlt": "Logo von BGV",
     "website": "https://www.bgv.de/agenturen/carmenmartin.xhtml",
-    "teamAudienceSlugs": [
-      "u15-c1-junioren"
-    ],
+    "teamAudienceSlugs": [],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T16:04:52.96596+00:00"
   },
@@ -34,8 +31,7 @@
     "logoAlt": "Logo von Büfee Radolfzell",
     "website": "https://www.instagram.com/bufee.radolfzell/",
     "teamAudienceSlugs": [
-      "herren-1",
-      "herren-2"
+      "herren-1"
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:05:29.548437+00:00"
@@ -48,8 +44,7 @@
     "logoAlt": "Logo von Freibad Steisslinger See",
     "website": null,
     "teamAudienceSlugs": [
-      "frauen-1",
-      "frauen-2"
+      "frauen-1"
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
