@@ -74,6 +74,9 @@ export const menu: MenuItem[] = [
         { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
         { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
       ]},
+      { title: 'Geschichten', links: [
+        { label: 'Vom BSV ins Nationaltrikot · Mariam Oboladze', href: '/jugend/geschichten/mariam-oboladze' },
+      ]},
       { title: 'Leistungssport', links: [
         { label: 'U19 A-Junioren', href: '/jugend/u19' },
         { label: 'U17 B-Junioren', href: '/jugend/u17' },
