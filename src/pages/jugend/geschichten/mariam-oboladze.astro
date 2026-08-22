@@ -4,7 +4,7 @@ import Header from '../../../components/Header.astro';
 import Layout from '../../../layouts/Layout.astro';
 import { withBase } from '../../../utils/paths';
 
-const mariamImage = withBase('/images/jugend/personen/file_00000000cbd882108257df76d10e6163.png');
+const mariamImage = withBase('/images/jugend/personen/mariam-oboladze.webp');
 const storyArticle = 'https://www.suedkurier.de/regionalsport/regionalsport-bodensee-west/georgiens-verband-bekommt-videos-von-mariam-oboladze-und-macht-die-singenerin-zur-nationalspielerin%3Bart2783%2C11918263';
 const debutArticle = 'https://www.suedkurier.de/regionalsport/regionalsport-bodensee-west/debuet-fuer-georgien-mariam-oboladze-verwirklicht-sich-ihren-traum-als-nationalspielerin%3Bart2783%2C11949542';
 const u19Article = 'https://hegauerfv.de/2024/12/09/mariam-oboladze-bei-georgien/';
@@ -16,7 +16,7 @@ const u19Article = 'https://hegauerfv.de/2024/12/09/mariam-oboladze-bei-georgien
     <section class="hero">
       <div class="shell hero-grid">
         <div class="hero-copy"><a href={withBase('/jugend')}>← Zurück zu Junge Sterne</a><span>Geschichten · Mädchenfußball</span><h1>Vom BSV<br /><em>ins Nationaltrikot.</em></h1><p>Manchmal beginnt eine große Fußballgeschichte auf einem ganz normalen Trainingsplatz. Für Mariam Oboladze führte der Weg von den B-Juniorinnen des BSV Nordstern bis in die georgische U17-Nationalmannschaft.</p></div>
-        <figure class="hero-photo"><img src={mariamImage} alt="Mariam Oboladze auf dem BSV-Nordstern-Gelände" /><figcaption>Foto: Dirk Salzmann / Südkurier · Verwendung mit Genehmigung</figcaption></figure>
+        <figure class="hero-photo"><img src={mariamImage} width="1200" height="960" fetchpriority="high" decoding="async" alt="Mariam Oboladze auf dem BSV-Nordstern-Gelände" /><figcaption>Foto: Dirk Salzmann / Südkurier · Verwendung mit Genehmigung</figcaption></figure>
       </div>
     </section>
 
