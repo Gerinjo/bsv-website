@@ -19,7 +19,20 @@ export const sportsPages = [
   { path: 'jugend/neuigkeiten', eyebrow: 'Neues vom Nachwuchs', title: 'Jugend-News', intro: 'Aktuelles aus unseren Mannschaften und der Jugendabteilung.', image: youthImage },
   { path: 'jugend/spielgenehmigung', eyebrow: 'Gut vorbereitet', title: 'Spielgenehmigung', intro: 'Alle Informationen und Unterlagen für den Start im Spielbetrieb.', image: juniorsImage },
   { path: 'jugend/jugendkonzept', eyebrow: 'Unser gemeinsamer Weg', title: 'Jugendkonzept', intro: 'Leitlinien für eine nachhaltige, altersgerechte und respektvolle Nachwuchsarbeit.', image: youthImage },
-  { path: 'jugend/jugendschiedsrichter', eyebrow: 'Verantwortung übernehmen', title: 'Jugendschiedsrichter', intro: 'Junge Menschen, die Spiele leiten und Fairness vorleben.', image: '/images/jugend/schiedsrichter/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg' },
+  {
+    path: 'jugend/jugendschiedsrichter',
+    eyebrow: 'Verantwortung übernehmen',
+    title: 'Schiedsrichter & Jugendschiedsrichter',
+    intro: 'Menschen aus unserer Jugendabteilung, die Spiele leiten, Verantwortung übernehmen und Fairness vorleben.',
+    image: '/images/jugend/schiedsrichter/7b4f53d574-WhatsApp_Bild_2024-05-29_um_16.44.07_afe27bc6.jpg',
+    body: [
+      'Schiedsrichterinnen und Schiedsrichter sind ein wichtiger Teil des Fußballs. Sie sorgen dafür, dass Spiele fair, verlässlich und mit gegenseitigem Respekt stattfinden.',
+      'Beim BSV möchten wir besonders junge Menschen für diese Aufgabe begeistern – und zugleich die erfahrenen Schiedsrichter sichtbar machen, die in unserer Jugendabteilung Verantwortung übernehmen und als Vorbilder zur Verfügung stehen.',
+    ],
+    people: [
+      { name: 'Sven Goldhagen', role: 'Schiedsrichter · Cheftrainer U17 B-Juniorinnen', image: '/images/verein/personen/sven-goldhagen.jpg' },
+    ],
+  },
   {
     path: 'jugend/torwarttraining',
     eyebrow: 'Zwischen den Pfosten',
