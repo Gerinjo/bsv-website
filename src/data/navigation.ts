@@ -70,7 +70,7 @@ export const menu: MenuItem[] = [
         { label: 'Jugendkonzept', href: '/jugend/jugendkonzept' },
         { label: 'Qualitätsoffensive', href: '/jugend/qualitaetsoffensive' },
         { label: 'Auszeichnungen', href: '/jugend/auszeichnungen' },
-        { label: 'Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
+        { label: 'Schiedsrichter & Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
         { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
         { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
       ]},
