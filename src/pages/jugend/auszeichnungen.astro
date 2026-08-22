@@ -1,0 +1,52 @@
+---
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+---
+
+<Layout title="Auszeichnungen | Junge Sterne | BSV Nordstern Radolfzell" description="Auszeichnungen für besonderes ehrenamtliches Engagement in der Jugendarbeit des BSV Nordstern Radolfzell.">
+  <Header />
+  <main class="awards-page">
+    <section class="hero">
+      <div class="shell">
+        <a href={withBase('/jugend')}>← Zurück zu Junge Sterne</a>
+        <span>Engagement · Verantwortung · Vorbilder</span>
+        <h1>Engagement,<br /><em>das Spuren hinterlässt.</em></h1>
+        <p>Jugendarbeit lebt von Menschen, die mehr tun als erwartet. Sie schenken Zeit, übernehmen Verantwortung und schaffen Räume, in denen Kinder und Jugendliche wachsen können. Einige dieser besonderen Leistungen wurden auch vom DFB und seinen Landesverbänden ausgezeichnet.</p>
+      </div>
+    </section>
+
+    <section class="intro shell">
+      <div><span>Ausgezeichnetes Ehrenamt</span><h2>Menschen machen<br />den Unterschied.</h2></div>
+      <p>Hinter jeder Mannschaft, jedem Training und jedem besonderen Erlebnis stehen Ehrenamtliche. Wir sind stolz darauf, dass dieses Engagement beim BSV Nordstern mehrfach über die Vereinsgrenzen hinaus Anerkennung gefunden hat.</p>
+    </section>
+
+    <section class="award-grid shell">
+      <article class="award-card hero-award">
+        <div class="award-number">100</div>
+        <div class="award-copy"><span>DFB-Ehrenamtspreis · Club 100</span><h2>Jérôme Ernsberger</h2><p>Als Bezirkssieger der DFB-Aktion Ehrenamt wurde Jérôme Ernsberger zusätzlich in den <strong>DFB Club 100</strong> aufgenommen. Dort würdigt der DFB besonders herausragendes ehrenamtliches Engagement im deutschen Amateurfußball.</p><strong class="statement">Für nachhaltige Jugendarbeit, Organisation und außergewöhnlichen Einsatz für den Verein.</strong></div>
+      </article>
+
+      <article class="award-card"><div class="badge">DFB</div><div class="award-copy"><span>Fußballheld · Aktion Junges Ehrenamt</span><h2>Ole Schmal</h2><p>Ole Schmal wurde als <strong>DFB-Fußballheld</strong> für besonderes junges Ehrenamt ausgezeichnet. Die Auszeichnung richtet sich an junge Menschen, die sich in besonderer Weise für ihren Verein und vor allem für den Nachwuchs engagieren.</p><strong class="statement">Ein Vorbild dafür, früh Verantwortung zu übernehmen und Jugendarbeit aktiv mitzugestalten.</strong></div></article>
+
+      <article class="award-card"><div class="badge">DFB</div><div class="award-copy"><span>Fußballheld · Aktion Junges Ehrenamt</span><h2>Tim Dölling</h2><p>Auch Tim Dölling erhielt die Auszeichnung als <strong>DFB-Fußballheld</strong>. Während seiner Zeit beim BSV engagierte er sich als Jugendtrainer und stellvertretender Jugendleiter, unterstützte eine Schul-Fußball-AG und organisierte Trainingslager mit sportlichen und teambildenden Elementen.</p><strong class="statement">Junges Ehrenamt mit Ideen, Leidenschaft und einem besonderen Draht zu Jugendlichen.</strong></div></article>
+    </section>
+
+    <section class="club-award">
+      <div class="shell club-award-grid"><div><span>Auszeichnung für den BSV</span><h2>Sepp-Herberger-Urkunde.</h2><p>2021 wurde auch die Nachwuchsarbeit des BSV Nordstern als Verein ausgezeichnet. Für das Engagement in der Zusammenarbeit von <strong>Schule und Verein</strong> erreichte der BSV bei den Sepp-Herberger-Urkunden bundesweit den <strong>3. Platz</strong>.</p></div><div class="place"><strong>3.</strong><span>Platz bundesweit</span><small>DFB-Stiftung Sepp Herberger · 2021</small></div></div>
+    </section>
+
+    <section class="legacy shell">
+      <div><span>Langjähriges Engagement</span><h2>Günther Glasze</h2></div>
+      <div><p>Günther Glasze gehört zu den Menschen, die sich über viele Jahre für den Nachwuchsfußball eingesetzt haben – unter anderem als Trainer im Juniorinnenbereich des BSV und in der Arbeit mit Kindern im Schulfußball.</p><p>Auch sein Engagement wurde im Fußball gewürdigt. Die genaue Bezeichnung und das Jahr der persönlichen DFB-Auszeichnung ergänzen wir an dieser Stelle, sobald sie verlässlich dokumentiert sind.</p></div>
+    </section>
+
+    <section class="closing"><div class="shell"><span>Danke.</span><h2>Auszeichnungen gehören Einzelnen.<br /><em>Erfolge gehören uns allen.</em></h2><p>Diese Ehrungen stehen stellvertretend für viele Trainerinnen und Trainer, Betreuer, Eltern, Organisatoren und Helfer, die unsere Jugendarbeit jeden Tag möglich machen.</p></div></section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+:root{--green:#092f20;--mid:#164f32;--yellow:#f4d638;--paper:#f4f7f4}.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.awards-page{background:var(--paper);color:#17251b}.hero{padding:90px 0 105px;background:linear-gradient(135deg,#061e14,#164f32);color:#fff}.hero a{color:var(--yellow);font-size:.75rem;font-weight:900;text-decoration:none}.hero>div>span,.intro span,.award-copy>span,.club-award span,.legacy span,.closing span{display:block;margin-top:45px;color:var(--yellow);font-size:.65rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{max-width:900px;margin:14px 0 25px;font-size:clamp(3.4rem,7vw,6.8rem);line-height:.88;letter-spacing:-.055em}.hero h1 em,.closing h2 em{font-family:Georgia,serif;font-weight:400;color:var(--yellow)}.hero p{max-width:760px;color:#d0ded5;font-size:1.05rem;line-height:1.75}.intro{padding:85px 0 55px;display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:end}.intro span,.legacy span{margin:0;color:var(--mid)}.intro h2,.legacy h2,.club-award h2,.closing h2{margin:10px 0 0;font-size:clamp(2.5rem,4.7vw,4.8rem);line-height:.94;letter-spacing:-.045em}.intro p,.legacy p{margin:0;color:#617067;line-height:1.8}.award-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:90px}.award-card{position:relative;min-height:390px;padding:38px;background:#fff;border-top:5px solid var(--yellow);box-shadow:0 15px 40px rgb(9 47 32 / 7%)}.hero-award{grid-column:1/-1;min-height:380px;display:grid;grid-template-columns:280px 1fr;align-items:center;background:var(--green);color:#fff;border:0}.award-number{color:var(--yellow);font-size:9rem;font-weight:950;line-height:.8;letter-spacing:-.08em}.badge{width:70px;height:70px;display:grid;place-items:center;margin-bottom:45px;border-radius:50%;background:var(--green);color:var(--yellow);font-weight:950}.award-copy>span{margin:0;color:var(--mid)}.hero-award .award-copy>span{color:var(--yellow)}.award-copy h2{margin:8px 0 20px;font-size:2.5rem;letter-spacing:-.04em}.award-copy p{color:#64736a;line-height:1.75}.hero-award .award-copy p{color:#c7d6cc}.statement{display:block;margin-top:28px;padding-top:22px;border-top:1px solid #dce4de;color:var(--mid);line-height:1.55}.hero-award .statement{border-color:#ffffff26;color:#fff}.club-award{padding:85px 0;background:var(--yellow)}.club-award-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:center}.club-award span{margin:0;color:var(--green)}.club-award p{max-width:650px;line-height:1.75}.place{padding:40px;background:var(--green);color:#fff}.place strong{display:block;color:var(--yellow);font-size:7rem;line-height:.85}.place span{margin-top:14px;color:#fff;font-size:1rem}.place small{display:block;margin-top:20px;color:#a9bdb0}.legacy{padding:90px 0;display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}.legacy p+p{margin-top:16px}.closing{padding:90px 0;background:var(--green);color:#fff}.closing span{margin:0}.closing h2{max-width:900px}.closing p{max-width:700px;color:#c7d6cc;line-height:1.75}@media(max-width:800px){.intro,.legacy,.club-award-grid,.hero-award{grid-template-columns:1fr;gap:35px}.award-grid{grid-template-columns:1fr}.hero-award{grid-column:auto}.award-number{font-size:6rem}.hero{padding:65px 0 80px}}@media(max-width:560px){.shell{width:min(100% - 32px,1120px)}.award-card{padding:28px}.hero-award{padding:32px}.hero h1{font-size:3.5rem}}
+</style>
