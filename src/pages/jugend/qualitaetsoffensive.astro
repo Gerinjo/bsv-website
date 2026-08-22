@@ -12,6 +12,7 @@ type QualifiedCoach = {
   teams: string[];
   image?: string;
   upcoming?: boolean;
+  nextQualification?: string;
 };
 
 const youthLinks = menu
@@ -23,20 +24,24 @@ const qualifiedByName = new Map<string, QualifiedCoach>();
 Object.entries(teamProfiles)
   .filter(([path]) => path.startsWith('jugend/'))
   .forEach(([path, profile]) => {
-    profile.coaches.filter((coach) => coach.qualification).forEach((coach) => {
-      const team = teamNameByPath.get(path) ?? profile.kicker;
-      const existing = qualifiedByName.get(coach.name);
-      if (existing) {
-        if (!existing.teams.includes(team)) existing.teams.push(team);
-        return;
-      }
-      qualifiedByName.set(coach.name, {
-        name: coach.name,
-        qualification: coach.qualification!,
-        teams: [team],
-        image: coach.image,
+    profile.coaches
+      .filter((coach) => coach.qualification && coach.name !== 'Migo Jentsch' && coach.name !== 'Michael Jentsch')
+      .forEach((coach) => {
+        const team = teamNameByPath.get(path) ?? profile.kicker;
+        const existing = qualifiedByName.get(coach.name);
+        if (existing) {
+          if (!existing.teams.includes(team)) existing.teams.push(team);
+          return;
+        }
+        qualifiedByName.set(coach.name, {
+          name: coach.name,
+          qualification: coach.name === 'Luca Gastaudo'
+            ? 'DFB-Basis-Coach'
+            : coach.qualification!,
+          teams: [team],
+          image: coach.image,
+        });
       });
-    });
   });
 
 const upcomingCoaches: QualifiedCoach[] = [
@@ -46,6 +51,7 @@ const upcomingCoaches: QualifiedCoach[] = [
     teams: ['U6 G-Junioren Spielgruppe'],
     image: '/images/verein/personen/mila-ernsberger.jpg',
     upcoming: true,
+    nextQualification: 'DFB-Basis-Coach',
   },
   {
     name: 'Marlia-Lena Bulander',
@@ -53,10 +59,29 @@ const upcomingCoaches: QualifiedCoach[] = [
     teams: ['U6 G-Junioren Spielgruppe'],
     image: '/images/verein/personen/marlia-burlander.jpg',
     upcoming: true,
+    nextQualification: 'DFB-Basis-Coach',
+  },
+  {
+    name: 'Sven Goldhagen',
+    qualification: 'DFB-Basis-Coach · C-Lizenz: Ausbildungsstart steht bevor',
+    teams: ['U17 B-Juniorinnen'],
+    image: '/images/verein/personen/sven-goldhagen.jpg',
+    upcoming: true,
+    nextQualification: 'C-Lizenz',
+  },
+  {
+    name: 'Luca Gastaudo',
+    qualification: 'DFB-Basis-Coach · C-Lizenz: Ausbildungsstart steht bevor',
+    teams: ['U7 G-Junioren Bambinis'],
+    image: '/images/verein/personen/luca-gastaudo.jpg',
+    upcoming: true,
+    nextQualification: 'C-Lizenz',
   },
 ];
 
+const upcomingNames = new Set(upcomingCoaches.map((coach) => coach.name));
 const qualifiedCoaches = [...qualifiedByName.values()]
+  .filter((coach) => !upcomingNames.has(coach.name))
   .sort((a, b) => a.name.localeCompare(b.name, 'de'));
 const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
 const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join('');
@@ -94,9 +119,9 @@ const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join
 
     <section class="upcoming-section">
       <div class="shell upcoming-grid">
-        <div class="upcoming-copy"><span>Nächster Schritt</span><h2>Zwei junge Trainerinnen.<br />Ein klares Ziel.</h2><p>Mila Ernsberger und Marlia-Lena Bulander stehen unmittelbar vor dem Beginn ihrer DFB-Basis-Coach-Ausbildung in einem Online-Lehrgang des SBFV. Beide engagieren sich bereits als Trainerinnen unserer U6-Spielgruppe.</p></div>
+        <div class="upcoming-copy"><span>Nächster Schritt</span><h2>Vier Trainer:innen.<br />Ein klares Ziel.</h2><p>Mila Ernsberger und Marlia-Lena Bulander stehen unmittelbar vor dem Beginn ihrer DFB-Basis-Coach-Ausbildung. Sven Goldhagen und Luca Gastaudo gehen den nächsten Schritt und starten bald mit der C-Lizenz-Ausbildung.</p></div>
         <div class="upcoming-names">
-          {upcomingCoaches.map((coach, index) => <article><small>0{index + 1}</small><strong>{coach.name}</strong><span>DFB-Basis-Coach</span><p>Ausbildungsstart steht bevor</p></article>)}
+          {upcomingCoaches.map((coach, index) => <article><small>0{index + 1}</small><strong>{coach.name}</strong><span>{coach.nextQualification}</span><p>Ausbildungsstart steht bevor</p></article>)}
         </div>
       </div>
     </section>
