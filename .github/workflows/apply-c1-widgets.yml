@@ -1,0 +1,40 @@
+name: Apply C1 widgets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-c1-widgets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add C1 fussball.de widget IDs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/data/teamPages.ts')
+          text = path.read_text(encoding='utf-8')
+          old = "{path:'jugend/u15-c1',kicker:'Leistungsfußball',headline:'Fordern.<br /><em>Gezielt fördern.</em>',letter:'C1',opening:"
+          new = "{path:'jugend/u15-c1',kicker:'Leistungsfußball',headline:'Fordern.<br /><em>Gezielt fördern.</em>',letter:'C1',fussballDeWidgetId:'d684d289-c114-4b76-bb2d-333d477416fc',fussballDeTableWidgetId:'795003f2-8f73-4b41-be68-52e59368b5db',opening:"
+          if old not in text:
+              raise SystemExit('C1-Konfiguration nicht gefunden oder bereits geändert')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/teamPages.ts
+          git commit -m "C1 fussball.de Widgets ergänzen"
+          git push origin main
