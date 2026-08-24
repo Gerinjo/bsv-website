@@ -197,13 +197,7 @@ const extractCoaches = (path: string): TeamCoach[] => {
     const image = card.match(/<img[^>]+src="([^"]+)"/i)?.[1];
     const phone = card.match(/href="tel:([^"]+)"/i)?.[1];
 
-    return [{
-      name,
-      role,
-      qualification,
-      image: image && image !== placeholderImage ? image : undefined,
-      phone,
-    }];
+    return [{ name, role, qualification, image: image && image !== placeholderImage ? image : undefined, phone }];
   });
 };
 
@@ -212,107 +206,31 @@ const extractSquad = (path: string): string[] | undefined => {
   const text = plainText(html);
   const end = text.search(/Trainingszeiten/i);
   if (end < 0) return undefined;
-
-  const lines = text.slice(0, end)
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line && !/^(Mannschaftsbild|Ausweichtrikotsatz)$/i.test(line));
+  const lines = text.slice(0, end).split('\n').map((line) => line.trim()).filter((line) => line && !/^(Mannschaftsbild|Ausweichtrikotsatz)$/i.test(line));
   const unique = [...new Set(lines)];
   return unique.length ? unique : undefined;
 };
 
 const bBoysGallery: TeamPhoto[] = [
-  ['6a9b4065d8-BSV2023-266.jpg', 'Gemeinsam am Ball'],
-  ['c9f5489f3b-BSV2023-292.jpg', 'Volle Konzentration'],
-  ['b79442c45d-BSV2023-293.jpg', 'Im Spiel'],
-  ['2c67ea8f2c-BSV2023-190.jpg', 'Teamgeist auf dem Platz'],
-  ['e548297925-BSV2023-15.jpg', 'Gemeinsam verteidigen'],
-  ['9e063b88ba-BSV2023-169.jpg', 'Mit Tempo nach vorne'],
-  ['51e37debe3-BSV2023-47.jpg', 'Fußball erleben'],
-  ['c8c9c40792-BSV2023-6.jpg', 'Als Mannschaft'],
-  ['427fa8ec30-BSV2023-96.jpg', 'Am Ball bleiben'],
-  ['8187b9655b-BSV2023-65.jpg', 'Gemeinsam besser werden'],
-  ['3f8b0ed073-BSV2023-320.jpg', 'Einsatz für das Team'],
-  ['ebd4e05546-BSV2023-197.jpg', 'Jeder Moment zählt'],
-  ['5da2dfbd32-BSV2023-43.jpg', 'Junge Sterne'],
-].map(([file, caption], index) => ({
-  src: `/images/jugend/teams/u17/2023/${file}`,
-  alt: `${caption} bei den U17 B-Junioren`,
-  caption,
-  size: index === 0 ? 'wide' : index === 1 ? 'tall' : '',
-}));
+  ['6a9b4065d8-BSV2023-266.jpg', 'Gemeinsam am Ball'], ['c9f5489f3b-BSV2023-292.jpg', 'Volle Konzentration'], ['b79442c45d-BSV2023-293.jpg', 'Im Spiel'], ['2c67ea8f2c-BSV2023-190.jpg', 'Teamgeist auf dem Platz'], ['e548297925-BSV2023-15.jpg', 'Gemeinsam verteidigen'], ['9e063b88ba-BSV2023-169.jpg', 'Mit Tempo nach vorne'], ['51e37debe3-BSV2023-47.jpg', 'Fußball erleben'], ['c8c9c40792-BSV2023-6.jpg', 'Als Mannschaft'], ['427fa8ec30-BSV2023-96.jpg', 'Am Ball bleiben'], ['8187b9655b-BSV2023-65.jpg', 'Gemeinsam besser werden'], ['3f8b0ed073-BSV2023-320.jpg', 'Einsatz für das Team'], ['ebd4e05546-BSV2023-197.jpg', 'Jeder Moment zählt'], ['5da2dfbd32-BSV2023-43.jpg', 'Junge Sterne'],
+].map(([file, caption], index) => ({ src: `/images/jugend/teams/u17/2023/${file}`, alt: `${caption} bei den U17 B-Junioren`, caption, size: index === 0 ? 'wide' : index === 1 ? 'tall' : '' }));
 
 const bGirlsGallery: TeamPhoto[] = [
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/111514b3f2-WhatsApp-Image-2025-06-29-at-17.50.32.jpeg', alt: 'Gemeinsamer Mannschaftsmoment der B-Juniorinnen', caption: 'Gemeinsam unterwegs', size: 'wide' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/fd4387b0f8-WhatsApp-Image-2025-06-29-at-17.50.33.jpeg', alt: 'Die B-Juniorinnen bei einer gemeinsamen Aktivität', caption: 'Als Team zusammen', size: 'tall' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/f6b7d3c5cb-WhatsApp-Image-2025-06-29-at-17.50.38.jpeg', alt: 'Teamtag der B-Juniorinnen', caption: 'Erlebnisse verbinden' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/c24d2dded5-WhatsApp-Image-2025-06-29-at-17.50.36.jpeg', alt: 'Spielerinnen der B-Juniorinnen beim Teamtag', caption: 'Zeit füreinander' },
-  { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/06ded97c94-WhatsApp-Image-2025-06-28-at-17.56.56.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
+  { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/06ded97c94-WhatsApp-Image-2025-06-29-at-17.50.31.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/6cbc4be7a5-WhatsApp-Image-2025-06-29-at-17.50.34.jpeg', alt: 'Gemeinsamer Abschluss der B-Juniorinnen', caption: 'Ein Tag zum Erinnern', size: 'tall' },
 ];
 
 const bGirlsCupFinal2026Gallery: TeamPhoto[] = [
-  ['0080', 'Auszeichnung für den Schiedsrichter'],
-  ['0078', 'Abschluss im Pokalfinale'],
-  ['0079', 'Jubel nach dem Treffer'],
-  ['0077', 'Intensiver Zweikampf'],
-  ['0075', 'Torchance im Pokalfinale'],
-  ['0076', 'Einsatz bis zum Boden'],
-  ['0073', 'Ballbehauptung im Mittelfeld'],
-  ['0070', 'Mit Tempo nach vorn'],
-  ['0072', 'Zweikampf um jeden Ball'],
-  ['0069', 'Duell auf dem Flügel'],
-  ['0068', 'Ballkontrolle im Lauf'],
-  ['0064', 'Gemeinsam im Angriff'],
-  ['0067', 'Sprintduell'],
-  ['0065', 'Enges Duell um den Ball'],
-  ['0066', 'Abschluss aus der Distanz'],
-  ['0063', 'Blick auf den zweiten Ball'],
-  ['0061', 'Offener Schlagabtausch'],
-  ['0059', 'Voller Einsatz im Zweikampf'],
-  ['0056', 'Grenzenloser Jubel'],
-  ['0060', 'Gemeinsam gegen den Ball'],
-  ['0058', 'Ball sicher abschirmen'],
-  ['0046', 'Zusammenspiel im Mittelfeld'],
-  ['0045', 'Tempodribbling'],
-  ['0044', 'Spielaufbau unter Druck'],
-  ['0039', 'Eins gegen eins'],
-  ['0038', 'Sicher gehalten'],
-  ['0037', 'Zweikampf mit Tempo'],
-  ['0035', 'Faire Unterbrechung'],
-  ['0033', 'Am Ball behaupten'],
-  ['0031', 'Gemeinsam verteidigen'],
-  ['0032', 'Dynamisches Duell'],
-  ['0047', 'Sicherer Spielaufbau'],
-  ['0025', 'Abschluss aus dem Rückraum'],
-  ['0019', 'Ballkontrolle unter Druck'],
-].map(([file, caption], index) => ({
-  src: `/images/jugend/juniorinnen/u17/2026-pokalfinale/IMG-20260515-WA${file}.jpg`,
-  alt: `${caption} beim Pokalfinale der B-Juniorinnen 2026`,
-  caption,
-  size: index === 0 ? 'wide' : index === 1 ? 'tall' : '',
-}));
+  ['0080','Auszeichnung für den Schiedsrichter'],['0078','Abschluss im Pokalfinale'],['0079','Jubel nach dem Treffer'],['0077','Intensiver Zweikampf'],['0075','Torchance im Pokalfinale'],['0076','Einsatz bis zum Boden'],['0073','Ballbehauptung im Mittelfeld'],['0070','Mit Tempo nach vorn'],['0072','Zweikampf um jeden Ball'],['0069','Duell auf dem Flügel'],['0068','Ballkontrolle im Lauf'],['0064','Gemeinsam im Angriff'],['0067','Sprintduell'],['0065','Enges Duell um den Ball'],['0066','Abschluss aus der Distanz'],['0063','Blick auf den zweiten Ball'],['0061','Offener Schlagabtausch'],['0059','Voller Einsatz im Zweikampf'],['0056','Grenzenloser Jubel'],['0060','Gemeinsam gegen den Ball'],['0058','Ball sicher abschirmen'],['0046','Zusammenspiel im Mittelfeld'],['0045','Tempodribbling'],['0044','Spielaufbau unter Druck'],['0039','Eins gegen eins'],['0038','Sicher gehalten'],['0037','Zweikampf mit Tempo'],['0035','Faire Unterbrechung'],['0033','Am Ball behaupten'],['0031','Gemeinsam verteidigen'],['0032','Dynamisches Duell'],['0047','Sicherer Spielaufbau'],['0025','Abschluss aus dem Rückraum'],['0019','Ballkontrolle unter Druck'],
+].map(([file, caption], index) => ({ src: `/images/jugend/juniorinnen/u17/2026-pokalfinale/IMG-20260515-WA${file}.jpg`, alt: `${caption} beim Pokalfinale der B-Juniorinnen 2026`, caption, size: index === 0 ? 'wide' : index === 1 ? 'tall' : '' }));
 
 const bGirlsSolarCupTrip2026Gallery: TeamPhoto[] = [
-  ['IMG_20260711_161336418', 'Gemeinsame Pause beim Solarcup'],
-  ['IMG_20260711_184034345_HDR', 'Teamaufgabe beim Solarcup'],
-  ['IMG_20260711_184053820_HDR', 'Bereit im Tor'],
-  ['IMG_20260711_184113695_HDR', 'Gemeinsam bei der Teamaufgabe'],
-  ['IMG_20260711_185908976_HDR', 'Als Mannschaft am Spielfeldrand'],
-  ['IMG_20260711_195443453_HDR', 'Teamzeit im Schatten'],
-  ['IMG_20260711_195518996_HDR', 'Stärkung nach dem Turnier'],
-  ['IMG_20260711_195751196_HDR', 'Gute Laune beim gemeinsamen Essen'],
-  ['IMG-20260712-WA0004', 'Kanus bereit für den Teamausflug'],
-  ['IMG-20260712-WA0005', 'Gemeinsam unterwegs im Kanu'],
-  ['IMG-20260712-WA0019', 'Startklar für die Kanutour'],
-  ['IMG-20260712-WA0021', 'Unterwegs auf dem Fluss'],
-  ['IMG-20260712-WA0023', 'Pause auf dem Wasser'],
-].map(([file, caption], index) => ({
-  src: `/images/jugend/juniorinnen/u17/2026-solarcup-teamausflug/${file}.webp`,
-  alt: `${caption} beim Solarcup-Teamausflug der B-Juniorinnen 2026`,
-  caption,
-  size: index === 0 ? 'wide' : index === 2 ? 'tall' : '',
-}));
+  ['IMG_20260711_161336418','Gemeinsame Pause beim Solarcup'],['IMG_20260711_184034345_HDR','Teamaufgabe beim Solarcup'],['IMG_20260711_184053820_HDR','Bereit im Tor'],['IMG_20260711_184113695_HDR','Gemeinsam bei der Teamaufgabe'],['IMG_20260711_185908976_HDR','Als Mannschaft am Spielfeldrand'],['IMG_20260711_195443453_HDR','Teamzeit im Schatten'],['IMG_20260711_195518996_HDR','Stärkung nach dem Turnier'],['IMG_20260711_195751196_HDR','Gute Laune beim gemeinsamen Essen'],['IMG-20260712-WA0004','Kanus bereit für den Teamausflug'],['IMG-20260712-WA0005','Gemeinsam unterwegs im Kanu'],['IMG-20260712-WA0019','Startklar für die Kanutour'],['IMG-20260712-WA0021','Unterwegs auf dem Fluss'],['IMG-20260712-WA0023','Pause auf dem Wasser'],
+].map(([file, caption], index) => ({ src: `/images/jugend/juniorinnen/u17/2026-solarcup-teamausflug/${file}.webp`, alt: `${caption} beim Solarcup-Teamausflug der B-Juniorinnen 2026`, caption, size: index === 0 ? 'wide' : index === 2 ? 'tall' : '' }));
 
 const dGirlsGallery: TeamPhoto[] = [
   { src: '/images/jugend/juniorinnen/u13/2025-saisonabschluss/003f2fe06e-WhatsApp-Image-2025-06-28-at-17.56.57.jpeg', alt: 'Die D-Juniorinnen bei einer gemeinsamen Veranstaltung', caption: 'Gemeinsam unterwegs', size: 'wide' },
@@ -326,232 +244,30 @@ const dGirlsGallery: TeamPhoto[] = [
 const configs: TeamConfig[] = [
   {
     path: 'fussball/herren/bezirksliga', sourcePath: 'fussball/herren/kreisliga-b', kicker: `${menFirstTeamName} · Kreisliga B Staffel 1`, headline: 'Leidenschaft.<br /><em>Für den Nordstern.</em>', letter: '1',
-    fussballDeUrl: 'https://www.fussball.de/mannschaft/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/011MICLVK0000000VTVG0001VTR8C1K7',
-    fussballDeWidgetId: 'af96d999-a7ba-432a-87c5-439ab401516d',
-    fussballDeTableWidgetId: '52d29828-708d-438f-be85-3c8b47a58b44',
-    opening: ['Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1 und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
-    trial: 'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image: '/images/aktive/teams/2526/herren-1.jpeg', showSquad: true,
-    gallery: [{ src: '/images/aktive/teams/2526/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg', alt: 'Die erste Herrenmannschaft im schwarzen Ausweichtrikot', caption: 'Unser Ausweichtrikotsatz', size: 'wide' }],
+    fussballDeUrl: 'https://www.fussball.de/mannschaft/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/011MICLVK0000000VTVG0001VTR8C1K7', fussballDeWidgetId: 'af96d999-a7ba-432a-87c5-439ab401516d', fussballDeTableWidgetId: '52d29828-708d-438f-be85-3c8b47a58b44',
+    opening: ['Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1 und verbindet sportlichen Ehrgeiz mit Zusammenhalt und echter Vereinsidentität.', 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.'], trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.', training: [{ day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'},{day:'Donnerstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'}], trial:'Lerne die Mannschaft und das Trainerteam bei einem unverbindlichen Probetraining kennen.', image:'/images/aktive/teams/2526/herren-1.jpeg', showSquad:true, gallery:[{src:'/images/aktive/teams/2526/9fc1c481e5-BSV-Herren-2526-Trikotsatz-schwarz.jpeg',alt:'Die erste Herrenmannschaft im schwarzen Ausweichtrikot',caption:'Unser Ausweichtrikotsatz',size:'wide'}],
   },
-  {
-    path: 'fussball/herren/kreisliga-2', sourcePath: 'fussball/herren/kreisliga-c', kicker: `${menSecondTeamName} · Kreisliga C Staffel 1`, headline: 'Gemeinsam.<br /><em>Stark verbunden.</em>', letter: '2',
-    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-markelfingen-bsv-n-radolfz-2-sv-markelfingen-suedbaden/-/saison/2627/team-id/011MIBT808000000VTVG0001VTR8C1K7',
-    fussballDeWidgetId: '48130047-3237-4579-8f2e-a581bbb98097',
-    fussballDeTableWidgetId: '9bc34c27-6f02-4e05-bd7d-7c5594256630',
-    opening: [`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga C Staffel 1.`, 'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }],
-    trial: 'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image: '/images/aktive/teams/2526/herren-2.jpg', showSquad: true,
-  },
-  {
-    path: 'fussball/frauen/bezirksliga', kicker: `${womenAssociationName} · Frauen Bezirksliga Bodensee`, headline: 'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter: 'F1',
-    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/01A2FGUHDO000000VV0AG80NVSEJ47CH',
-    fussballDeWidgetId: 'a7855cb2-0226-49a3-98ca-b106b3786afb',
-    fussballDeTableWidgetId: 'a71cf2af-c7c4-403d-9d0a-bad8f465dc18',
-    opening: [`Unsere erste Frauenmannschaft tritt als ${womenAssociationName} an.`, 'Sie spielt in der Bezirksliga und verbindet Spielerinnen aller drei Partnervereine in einer gemeinsamen Mannschaft.'],
-    partners: womenPartners,
-    trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
-    trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
-    image: '/images/aktive/teams/2526/frauen.jpg',
-    coaches: [
-      { name: 'Mathias Becht', role: 'Trainer', phone: '+49 1523 8252979' },
-      { name: 'Max Menzel', role: 'Co-Trainer', phone: '+49 170 4971707' },
-    ],
-  },
-  {
-    path: 'fussball/frauen/kreisliga', kicker: `${womenAssociationName} 2 · Frauen Kreisliga A`, headline: 'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter: 'F2',
-    fussballDeUrl: 'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-2-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/03163NI9R0000000VS5489BSVSCPI5U4',
-    fussballDeWidgetId: '48107d01-3242-45df-8f09-55a20a959688',
-    fussballDeTableWidgetId: '9f37d0e5-fcf0-44d1-8c49-56652f0eee7a',
-    opening: [`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} 2 an.`, 'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'],
-    partners: womenPartners,
-    trainingLead: 'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SC Bankholzen-Moos' }],
-    trial: 'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.',
-    image: '/images/aktive/teams/2526/frauen.jpg',
-    coaches: [
-      { name: 'Myriam Lipp', role: 'Chef-Trainerin', phone: '+49 1522 3307366' },
-      { name: 'Emel Bayram', role: 'Co-Trainerin', phone: '+49 173 1543544' },
-    ],
-  },
-  {
-    path: 'fussball/alte-herren', kicker: 'Ü35 Senioren', headline: 'Am Ball.<br /><em>Aus Freude.</em>', letter: 'AH',
-    opening: ['Für Fußballer ab 35, die das Kicken nicht sein lassen wollen, bieten wir unsere Alte-Herren-Mannschaft an.', 'Neben dem wöchentlichen Training nehmen wir an Turnieren teil und tragen Freundschaftsspiele aus. Aktiv sein hält jung – und gemeinsam macht es einfach mehr Spaß.'],
-    trainingLead: 'Ein fester Termin für Fußball, Freundschaft und gemeinsame Erlebnisse.',
-    training: [{ day: 'Mittwoch', time: '19:00 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trial: 'Wir freuen uns über jedes neue Gesicht. Komm direkt zum gemeinsamen Fußballspiel vorbei oder melde dich vorab.',
-    coaches: [{ name: 'Christian Stielow', role: 'Ansprechperson Alte Herren' }],
-  },
-  {
-    path: 'jugend/u11-e1', kicker: 'Kinderfußball', headline: 'Spielen.<br /><em>Mutig werden.</em>', letter: 'E1',
-    opening: ['Bei den E1-Junioren entwickeln Kinder Technik, Spielverständnis und Freude am gemeinsamen Fußball.', `Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`],
-    trainingLead: 'Zwei Einheiten pro Woche mit viel Ballzeit und altersgerechten Spielformen.',
-    training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
-    notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
-    trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u11-e2', kicker: 'Kinderfußball', headline: 'Lernen.<br /><em>Gemeinsam spielen.</em>', letter: 'E2',
-    opening: ['Bei den E2-Junioren stehen viele Ballkontakte, Spielfreude und das Lernen in der Gruppe im Mittelpunkt.', `Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche.',
-    training: [{ day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' }, { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' }],
-    notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
-    trial: `Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [{ name: 'Marcelino Rüth', role: 'Trainer', phone: '+491754003543' }, { name: 'Mohamad Mahmoudi', role: 'Trainer' }],
-  },
-  {
-    path: 'jugend/u11-e3', kicker: 'Kinderfußball', headline: 'Entdecken.<br /><em>Zusammen wachsen.</em>', letter: 'E3',
-    opening: [`In der E3 spielen Kinder der Jahrgänge ${youthYears.e} und sammeln gemeinsam wertvolle Fußballerfahrungen.`, 'Im Mittelpunkt stehen Freude, Bewegung und ein sicherer Einstieg in das Mannschaftsspiel.'],
-    trainingLead: 'Zwei Einheiten pro Woche mit viel Bewegung und altersgerechtem Fußball.',
-    training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
-    notice: 'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.',
-    trial: `Kinder der Jahrgänge ${youthYears.e} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [{ name: 'Stefan Sulger', role: 'Trainer', qualification: 'Kindertrainer-Zertifikat' }, { name: 'Michael Sick', role: 'Trainer' }],
-  },
-  {
-    path: 'jugend/u9-f', kicker: 'Kinderfußball', headline: 'Dribbeln.<br /><em>Freude teilen.</em>', letter: 'U9',
-    opening: [`Unsere U9 bietet Kindern der Jahrgänge ${youthYears.f} einen spielerischen Einstieg mit vielen Ballkontakten.`, 'Gemeinsames Entdecken und die Freude am Fußball stehen dabei immer an erster Stelle.'],
-    trainingLead: 'Sommertraining von Mitte März bis Mitte November.',
-    training: [{ day: 'Montag', time: '16:00 – 17:30 Uhr', place: 'BSV Nordstern' }, { day: 'Mittwoch', time: '16:00 – 17:30 Uhr', place: 'BSV Nordstern' }],
-    trial: `Jungs und Mädchen der Jahrgänge ${youthYears.f} sind herzlich willkommen. Bitte melde dich vorab beim Trainerteam.`,
-  },
-  {
-    path: 'jugend/u8-f', kicker: 'Kinderfußball · F2 & F3', headline: 'Loslegen.<br /><em>Am Ball bleiben.</em>', letter: 'F2+3',
-    opening: [`Unsere F2- und F3-Junioren richten sich an Kinder der Jahrgänge ${youthYears.f} und verbinden Fußballlernen mit jeder Menge Bewegung.`, 'In einer kindgerechten Umgebung dürfen alle ausprobieren, mutig sein und gemeinsam wachsen.'],
-    trainingLead: 'Beide Teams trainieren zeitgleich und nutzen jeweils eine Hälfte des Hauptplatzes.',
-    training: [{ day: 'Dienstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz' }, { day: 'Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz' }],
-    notice: 'Aktuell gibt es eine Warteliste. Bitte frage deshalb vor einem Probetraining beim Trainerteam an.',
-    trial: `Jungs und Mädchen der Jahrgänge ${youthYears.f} sind grundsätzlich herzlich willkommen.`,
-  },
-  {
-    path: 'jugend/u7-g', kicker: 'Bambinis', headline: 'Bewegen.<br /><em>Einfach spielen.</em>', letter: 'U7',
-    opening: [`Bei den Bambinis trainieren Kinder der Jahrgänge ${youthYears.g}.`, 'Spiel, Bewegung und erste Erfahrungen mit dem Ball sorgen für einen fröhlichen Einstieg in den Vereinsfußball.'],
-    trainingLead: 'Eine kompakte Einheit pro Woche für unsere jungen Fußballsterne.',
-    training: [{ day: 'Mittwoch', time: '16:30 – 17:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trial: `Kinder der Jahrgänge ${youthYears.g} können gerne schnuppern. Bitte melde dein Kind vorher beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u6-g', kicker: 'Spielgruppe', headline: 'Ankommen.<br /><em>Freude entdecken.</em>', letter: 'U6',
-    opening: [`In der G-Jugend-Spielgruppe trainieren Kinder der Jahrgänge ${youthYears.playgroup}.`, 'Mit altersgerechten Spielen entdecken Mädchen und Jungs Bewegung, Gemeinschaft und den Ball.'],
-    trainingLead: 'Der behutsame Einstieg in den Fußball – gemeinsam und ohne Leistungsdruck.',
-    training: [{ day: 'Mittwoch', time: '16:30 – 17:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trial: `Kinder der Jahrgänge ${youthYears.playgroup} können gerne schnuppern. Bitte melde dein Kind vorher beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u19', kicker: 'Leistungsfußball', headline: 'Ambition.<br /><em>Als Gemeinschaft.</em>', letter: 'A',
-    opening: ['Unsere A-Junioren spielen in einer Spielgemeinschaft mit dem SV Markelfingen, SV Güttingen und SV Liggeringen.', `Zum Team gehören Jugendliche der Jahrgänge ${youthYears.a}.`],
-    partners: youthAssociationPartners,
-    trainingLead: 'Bitte mindestens 15 Minuten vor Trainingsbeginn vor Ort sein.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell' }, { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen' }],
-    trial: `Neue Spieler der Jahrgänge ${youthYears.a} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u17', kicker: 'Leistungsfußball', headline: 'Entwicklung.<br /><em>Im Team.</em>', letter: 'B',
-    opening: ['Unsere B-Junioren spielen in einer Spielgemeinschaft mit dem SV Markelfingen, SV Güttingen und SV Liggeringen.', `Zum Team gehören Jugendliche der Jahrgänge ${youthYears.b}.`],
-    partners: youthAssociationPartners,
-    trainingLead: 'Zwei Trainingsorte, eine gemeinsame Mannschaft.',
-    training: [{ day: 'Dienstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen' }, { day: 'Donnerstag', time: '18:30 – 20:00 Uhr', place: 'BSV Nordstern Radolfzell' }],
-    trial: `Neue Spieler der Jahrgänge ${youthYears.b} sind willkommen. Bitte frage vorab beim Trainerteam an.`, gallery: bBoysGallery,
-  },
-  {
-    path: 'jugend/u15-c1', kicker: 'Leistungsfußball', headline: 'Fordern.<br /><em>Gezielt fördern.</em>', letter: 'C1',
-    opening: [`Im Leistungskader der C1 spielen Kinder und Jugendliche der Jahrgänge ${youthYears.c}.`, 'Das Team verbindet ambitioniertes Training mit persönlicher und spielerischer Entwicklung.'],
-    trainingLead: 'Zwei fokussierte Trainingseinheiten pro Woche beim BSV Nordstern.',
-    training: [{ day: 'Dienstag', time: '18:30 – 20:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '18:30 – 20:00 Uhr', place: 'BSV Nordstern' }],
-    trial: `Spieler der Jahrgänge ${youthYears.c} können ein Probetraining absolvieren. Bitte frage vorab beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u15-c2', kicker: 'Breitensport', headline: 'Fußball.<br /><em>Für jeden.</em>', letter: 'C2',
-    opening: [`In der C2 spielen Kinder und Jugendliche der Jahrgänge ${youthYears.c}.`, 'Freude am Fußball, individuelle Fortschritte und Verlässlichkeit in der Mannschaft stehen im Mittelpunkt.'],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.',
-    training: [{ day: 'Dienstag', time: '18:30 – 20:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '18:30 – 20:00 Uhr', place: 'BSV Nordstern' }],
-    trial: `Spieler der Jahrgänge ${youthYears.c} können ein Probetraining absolvieren. Bitte frage vorab beim Trainerteam an.`,
-  },
-  {
-    path: 'jugend/u13-d1', kicker: 'Leistungsfußball', headline: 'Fokus.<br /><em>Mit Spielfreude.</em>', letter: 'D1',
-    opening: [`Im Leistungskader der D1 spielen Kinder der Jahrgänge ${youthYears.d}.`, 'Leistungsorientiertes Lernen und die Freude am gemeinsamen Spiel gehören für uns zusammen.'],
-    trainingLead: 'Zwei Einheiten pro Woche für eine kontinuierliche Entwicklung.',
-    training: [{ day: 'Dienstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
-    trial: `Kinder der Jahrgänge ${youthYears.d} können ein Probetraining absolvieren. Bitte frage vorab beim Trainer an.`,
-  },
-  {
-    path: 'jugend/u13-d2', kicker: 'Leistungsfußball', headline: 'Lernen.<br /><em>Als Mannschaft.</em>', letter: 'D2',
-    opening: [`In der D2 spielen Kinder der Jahrgänge ${youthYears.d}.`, 'Altersgerechtes Training schafft die Grundlage für individuelle Entwicklung und gutes Zusammenspiel.'],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.',
-    training: [{ day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }, { day: 'Freitag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' }],
-    trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [
-      { name: 'Jörg Boreatti', role: 'Trainer', qualification: 'C-Lizenz (ab 2023)', phone: '+491726240593' },
-      { name: 'Marko Eisner', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach' },
-      { name: 'Patrick Müller', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach' },
-    ],
-  },
-  {
-    path: 'jugend/u13-d3', kicker: 'Leistungsfußball', headline: 'Wachsen.<br /><em>Schritt für Schritt.</em>', letter: 'D3',
-    opening: [`In der D3 spielen Kinder der Jahrgänge ${youthYears.d}.`, 'Das Team bietet Raum für Entwicklung, Freude am Ball und gemeinsames Lernen.'],
-    trainingLead: 'Zwei Einheiten pro Woche auf dem Gelände des BSV Nordstern.',
-    training: [{ day: 'Montag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern' }, { day: 'Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern' }],
-    trial: `Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`,
-    coaches: [
-      { name: 'Jérôme Ernsberger', role: 'Trainer', qualification: 'C-Lizenz' },
-      { name: 'Hieu Ho', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach' },
-    ],
-  },
-  {
-    path: 'jugend/juniorinnen/u17', kicker: 'B-Juniorinnen', headline: 'Entwicklung.<br /><em>Zusammenhalt.</em>', letter: 'B',
-    fussballDeWidgetId: 'f2a25edd-6dea-42fe-a4a5-13b9f10ae342',
-    fussballDeTableWidgetId: '7ad730f9-190d-4d8c-8f15-c2617eed44d0',
-    opening: ['Unsere B-Juniorinnen verbinden ambitionierten Fußball mit einer Mannschaft, in der Entwicklung, Verlässlichkeit und Freude am gemeinsamen Spiel zählen.', `Zum Team gehören Spielerinnen der Jahrgänge ${youthYears.b}.`],
-    trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
-    training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image: '/images/jugend/teams/2526/u17-b-juniorinnen.jpg',
-    galleryTabs: [
-      {
-        id: '2026-solarcup-teamausflug',
-        label: '2026 – Solarcup Teamausflug',
-        photos: bGirlsSolarCupTrip2026Gallery,
-      },
-      {
-        id: '2026-pokalfinale',
-        label: '2026 – Pokalfinale',
-        photos: bGirlsCupFinal2026Gallery,
-      },
-      {
-        id: '2025-sg-kirchen-hausen-sporttage',
-        label: '2025 – SG Kirchen/Hausen Sporttage',
-        photos: bGirlsGallery,
-      },
-    ],
-    coaches: [{ name: 'Sven Goldhagen', role: 'Cheftrainer', qualification: 'DFB-Basis-Coach', image: '/images/verein/personen/sven-goldhagen.jpg', phone: '+491727404080' }, { name: 'Sonja Thomen', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach' }],
-  },
-  {
-    path: 'jugend/juniorinnen/u15', kicker: 'C-Juniorinnen', headline: 'Lernen.<br /><em>Wachsen.</em>', letter: 'C',
-    opening: ['Bei unseren C-Juniorinnen stehen die fußballerische Entwicklung, mutiges Zusammenspiel und ein starker Teamgeist im Mittelpunkt.', `Zum Team gehören Spielerinnen der Jahrgänge ${youthYears.c}.`],
-    trainingLead: 'Zwei gemeinsame Trainingseinheiten pro Woche auf dem BSV-Nordstern-Sportplatz.',
-    training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trial: `Spielerinnen der Jahrgänge ${youthYears.c} können beim Trainer ein unverbindliches Probetraining vereinbaren.`,
-    coaches: [{ name: 'Alexander Kramer', role: 'Trainer', qualification: 'DFB-Basis-Coach', phone: '+491733276748' }],
-  },
-  {
-    path: 'jugend/juniorinnen/u13', kicker: 'D wie Durchstarten', headline: 'Am Ball.<br /><em>Als Team.</em>', letter: 'D',
-    opening: ['Bei unseren D-Juniorinnen stehen Freude am Fußball, persönliche Entwicklung und ein starker Zusammenhalt im Mittelpunkt.', `Neue Spielerinnen der Jahrgänge ${youthYears.d} sind herzlich willkommen.`],
-    trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
-    training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
-    trainingNote: 'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.',
-    trial: `Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image: '/images/jugend/teams/2526/u13-d-juniorinnen.jpg',
-    galleryTabs: [
-      {
-        id: '2025-saisonabschluss',
-        label: '2025 – Saisonabschluss',
-        photos: dGirlsGallery,
-      },
-    ],
-    coaches: [{ name: 'Dana Bulander', role: 'Trainerin', qualification: 'C-Lizenz', image: '/images/verein/personen/dana-bulander.jpg' }],
-  },
+  { path:'fussball/herren/kreisliga-2', sourcePath:'fussball/herren/kreisliga-c', kicker:`${menSecondTeamName} · Kreisliga C Staffel 1`, headline:'Gemeinsam.<br /><em>Stark verbunden.</em>', letter:'2', fussballDeUrl:'https://www.fussball.de/mannschaft/sg-markelfingen-bsv-n-radolfz-2-sv-markelfingen-suedbaden/-/saison/2627/team-id/011MIBT808000000VTVG0001VTR8C1K7', fussballDeWidgetId:'48130047-3237-4579-8f2e-a581bbb98097', fussballDeTableWidgetId:'9bc34c27-6f02-4e05-bd7d-7c5594256630', opening:[`Unsere zweite Herrenmannschaft spielt als ${menSecondTeamName} in der Kreisliga C Staffel 1.`,'Im Team zählen Verlässlichkeit, Freude am Fußball und der Zusammenhalt über Vereinsgrenzen hinweg.'], trainingLead:'Zwei gemeinsame Trainingseinheiten pro Woche.', training:[{day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'},{day:'Donnerstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'}], trial:'Neue Spieler sind zu den Trainingstagen herzlich willkommen.', image:'/images/aktive/teams/2526/herren-2.jpg', showSquad:true },
+  { path:'fussball/frauen/bezirksliga', kicker:`${womenAssociationName} · Frauen Bezirksliga Bodensee`, headline:'Drei Vereine.<br /><em>Eine Mannschaft.</em>', letter:'F1', fussballDeUrl:'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/01A2FGUHDO000000VV0AG80NVSEJ47CH', fussballDeWidgetId:'a7855cb2-0226-49a3-98ca-b106b3786afb', fussballDeTableWidgetId:'a71cf2af-c7c4-403d-9d0a-bad8f465dc18', opening:[`Unsere erste Frauenmannschaft tritt als ${womenAssociationName} an.`,'Sie spielt in der Bezirksliga und verbindet Spielerinnen aller drei Partnervereine in einer gemeinsamen Mannschaft.'], partners:womenPartners, trainingLead:'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.', training:[{day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'},{day:'Donnerstag',time:'19:00 – 20:30 Uhr',place:'SC Bankholzen-Moos'}], trial:'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.', image:'/images/aktive/teams/2526/frauen.jpg', coaches:[{name:'Mathias Becht',role:'Trainer',phone:'+49 1523 8252979'},{name:'Max Menzel',role:'Co-Trainer',phone:'+49 170 4971707'}] },
+  { path:'fussball/frauen/kreisliga', kicker:`${womenAssociationName} 2 · Frauen Kreisliga A`, headline:'Drei Vereine.<br /><em>Fußball gemeinsam.</em>', letter:'F2', fussballDeUrl:'https://www.fussball.de/mannschaft/sg-no-radolfz-oehning-gai-bankh-moos-2-bsv-nordstern-radolfzell-suedbaden/-/saison/2627/team-id/03163NI9R0000000VS5489BSVSCPI5U4', fussballDeWidgetId:'48107d01-3242-45df-8f09-55a20a959688', fussballDeTableWidgetId:'9f37d0e5-fcf0-44d1-8c49-56652f0eee7a', opening:[`Unsere zweite Frauenmannschaft tritt als ${womenAssociationName} 2 an.`,'Sie spielt in der Kreisliga und bietet Spielerinnen aller drei Partnervereine ein gemeinsames Team.'], partners:womenPartners, trainingLead:'Gemeinsames Training an zwei Standorten der Spielgemeinschaft.', training:[{day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'},{day:'Donnerstag',time:'19:00 – 20:30 Uhr',place:'SC Bankholzen-Moos'}], trial:'Komm vorbei, lerne die Mannschaft kennen und werde Teil unserer Spielgemeinschaft.', image:'/images/aktive/teams/2526/frauen.jpg', coaches:[{name:'Myriam Lipp',role:'Chef-Trainerin',phone:'+49 1522 3307366'},{name:'Emel Bayram',role:'Co-Trainerin',phone:'+49 173 1543544'}] },
+  { path:'fussball/alte-herren', kicker:'Ü35 Senioren', headline:'Am Ball.<br /><em>Aus Freude.</em>', letter:'AH', opening:['Für Fußballer ab 35, die das Kicken nicht sein lassen wollen, bieten wir unsere Alte-Herren-Mannschaft an.','Neben dem wöchentlichen Training nehmen wir an Turnieren teil und tragen Freundschaftsspiele aus. Aktiv sein hält jung – und gemeinsam macht es einfach mehr Spaß.'], trainingLead:'Ein fester Termin für Fußball, Freundschaft und gemeinsame Erlebnisse.', training:[{day:'Mittwoch',time:'19:00 Uhr',place:'BSV Nordstern Sportplatz'}], trial:'Wir freuen uns über jedes neue Gesicht. Komm direkt zum gemeinsamen Fußballspiel vorbei oder melde dich vorab.', coaches:[{name:'Christian Stielow',role:'Ansprechperson Alte Herren'}] },
+  { path:'jugend/u11-e1', kicker:'Kinderfußball', headline:'Spielen.<br /><em>Mutig werden.</em>', letter:'E1', opening:['Bei den E1-Junioren entwickeln Kinder Technik, Spielverständnis und Freude am gemeinsamen Fußball.',`Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`], trainingLead:'Zwei Einheiten pro Woche mit viel Ballzeit und altersgerechten Spielformen.', training:[{day:'Dienstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'}], notice:'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.', trial:`Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.` },
+  { path:'jugend/u11-e2', kicker:'Kinderfußball', headline:'Lernen.<br /><em>Gemeinsam spielen.</em>', letter:'E2', opening:['Bei den E2-Junioren stehen viele Ballkontakte, Spielfreude und das Lernen in der Gruppe im Mittelpunkt.',`Jungs und Mädchen der Jahrgänge ${youthYears.e} sind herzlich willkommen.`], trainingLead:'Zwei gemeinsame Trainingseinheiten pro Woche.', training:[{day:'Montag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern Hauptplatz'},{day:'Mittwoch',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern Hauptplatz'}], notice:'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.', trial:`Kinder der Jahrgänge ${youthYears.e} können gerne ein Probetraining vereinbaren. Bitte frage vorab beim Trainerteam an.`, coaches:[{name:'Marcelino Rüth',role:'Trainer',phone:'+491754003543'},{name:'Mohamad Mahmoudi',role:'Trainer'}] },
+  { path:'jugend/u11-e3', kicker:'Kinderfußball', headline:'Entdecken.<br /><em>Zusammen wachsen.</em>', letter:'E3', opening:[`In der E3 spielen Kinder der Jahrgänge ${youthYears.e} und sammeln gemeinsam wertvolle Fußballerfahrungen.`,'Im Mittelpunkt stehen Freude, Bewegung und ein sicherer Einstieg in das Mannschaftsspiel.'], trainingLead:'Zwei Einheiten pro Woche mit viel Bewegung und altersgerechtem Fußball.', training:[{day:'Dienstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'}], notice:'Für unsere E-Jugend suchen wir weitere zuverlässige Trainerinnen und Trainer, die Freude an der Arbeit mit Kindern haben.', trial:`Kinder der Jahrgänge ${youthYears.e} sind willkommen. Bitte frage vorab beim Trainerteam an.`, coaches:[{name:'Stefan Sulger',role:'Trainer',qualification:'Kindertrainer-Zertifikat'},{name:'Michael Sick',role:'Trainer'}] },
+  { path:'jugend/u9-f', kicker:'Kinderfußball', headline:'Dribbeln.<br /><em>Freude teilen.</em>', letter:'U9', opening:[`Unsere U9 bietet Kindern der Jahrgänge ${youthYears.f} einen spielerischen Einstieg mit vielen Ballkontakten.`,'Gemeinsames Entdecken und die Freude am Fußball stehen dabei immer an erster Stelle.'], trainingLead:'Sommertraining von Mitte März bis Mitte November.', training:[{day:'Montag',time:'16:00 – 17:30 Uhr',place:'BSV Nordstern'},{day:'Mittwoch',time:'16:00 – 17:30 Uhr',place:'BSV Nordstern'}], trial:`Jungs und Mädchen der Jahrgänge ${youthYears.f} sind herzlich willkommen. Bitte melde dich vorab beim Trainerteam.` },
+  { path:'jugend/u8-f', kicker:'Kinderfußball · F2 & F3', headline:'Loslegen.<br /><em>Am Ball bleiben.</em>', letter:'F2+3', opening:[`Unsere F2- und F3-Junioren richten sich an Kinder der Jahrgänge ${youthYears.f} und verbinden Fußballlernen mit jeder Menge Bewegung.`,'In einer kindgerechten Umgebung dürfen alle ausprobieren, mutig sein und gemeinsam wachsen.'], trainingLead:'Beide Teams trainieren zeitgleich und nutzen jeweils eine Hälfte des Hauptplatzes.', training:[{day:'Dienstag',time:'17:00 – 18:30 Uhr',place:'BSV Nordstern Hauptplatz'},{day:'Donnerstag',time:'17:00 – 18:30 Uhr',place:'BSV Nordstern Hauptplatz'}], notice:'Aktuell gibt es eine Warteliste. Bitte frage deshalb vor einem Probetraining beim Trainerteam an.', trial:`Jungs und Mädchen der Jahrgänge ${youthYears.f} sind grundsätzlich herzlich willkommen.` },
+  { path:'jugend/u7-g', kicker:'Bambinis', headline:'Bewegen.<br /><em>Einfach spielen.</em>', letter:'U7', opening:[`Bei den Bambinis trainieren Kinder der Jahrgänge ${youthYears.g}.`,'Spiel, Bewegung und erste Erfahrungen mit dem Ball sorgen für einen fröhlichen Einstieg in den Vereinsfußball.'], trainingLead:'Eine kompakte Einheit pro Woche für unsere jungen Fußballsterne.', training:[{day:'Mittwoch',time:'16:30 – 17:30 Uhr',place:'BSV Nordstern Sportplatz'}], trial:`Kinder der Jahrgänge ${youthYears.g} können gerne schnuppern. Bitte melde dein Kind vorher beim Trainerteam an.` },
+  { path:'jugend/u6-g', kicker:'Spielgruppe', headline:'Ankommen.<br /><em>Freude entdecken.</em>', letter:'U6', opening:[`In der G-Jugend-Spielgruppe trainieren Kinder der Jahrgänge ${youthYears.playgroup}.`,'Mit altersgerechten Spielen entdecken Mädchen und Jungs Bewegung, Gemeinschaft und den Ball.'], trainingLead:'Der behutsame Einstieg in den Fußball – gemeinsam und ohne Leistungsdruck.', training:[{day:'Mittwoch',time:'16:30 – 17:30 Uhr',place:'BSV Nordstern Sportplatz'}], trial:`Kinder der Jahrgänge ${youthYears.playgroup} können gerne schnuppern. Bitte melde dein Kind vorher beim Trainerteam an.` },
+  { path:'jugend/u19', kicker:'Leistungsfußball', headline:'Ambition.<br /><em>Als Gemeinschaft.</em>', letter:'A', opening:['Unsere A-Junioren spielen in einer Spielgemeinschaft mit dem SV Markelfingen, SV Güttingen und SV Liggeringen.',`Zum Team gehören Jugendliche der Jahrgänge ${youthYears.a}.`], partners:youthAssociationPartners, trainingLead:'Bitte mindestens 15 Minuten vor Trainingsbeginn vor Ort sein.', training:[{day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'BSV Nordstern Radolfzell'},{day:'Donnerstag',time:'19:00 – 20:30 Uhr',place:'SV Markelfingen'}], trial:`Neue Spieler der Jahrgänge ${youthYears.a} sind willkommen. Bitte frage vorab beim Trainerteam an.` },
+  { path:'jugend/u17', kicker:'Leistungsfußball', headline:'Entwicklung.<br /><em>Im Team.</em>', letter:'B', opening:['Unsere B-Junioren spielen in einer Spielgemeinschaft mit dem SV Markelfingen, SV Güttingen und SV Liggeringen.',`Zum Team gehören Jugendliche der Jahrgänge ${youthYears.b}.`], partners:youthAssociationPartners, trainingLead:'Zwei Trainingsorte, eine gemeinsame Mannschaft.', training:[{day:'Dienstag',time:'19:00 – 20:30 Uhr',place:'SV Markelfingen'},{day:'Donnerstag',time:'18:30 – 20:00 Uhr',place:'BSV Nordstern Radolfzell'}], trial:`Neue Spieler der Jahrgänge ${youthYears.b} sind willkommen. Bitte frage vorab beim Trainerteam an.`, gallery:bBoysGallery },
+  { path:'jugend/u15-c1', kicker:'Leistungsfußball', headline:'Fordern.<br /><em>Gezielt fördern.</em>', letter:'C1', opening:[`Im Leistungskader der C1 spielen Kinder und Jugendliche der Jahrgänge ${youthYears.c}.`,'Das Team verbindet ambitioniertes Training mit persönlicher und spielerischer Entwicklung.'], trainingLead:'Zwei fokussierte Trainingseinheiten pro Woche beim BSV Nordstern.', training:[{day:'Dienstag',time:'18:30 – 20:00 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'18:30 – 20:00 Uhr',place:'BSV Nordstern'}], trial:`Spieler der Jahrgänge ${youthYears.c} können ein Probetraining absolvieren. Bitte frage vorab beim Trainerteam an.` },
+  { path:'jugend/u15-c2', kicker:'Breitensport', headline:'Fußball.<br /><em>Für jeden.</em>', letter:'C2', opening:[`In der C2 spielen Kinder und Jugendliche der Jahrgänge ${youthYears.c}.`,'Freude am Fußball, individuelle Fortschritte und Verlässlichkeit in der Mannschaft stehen im Mittelpunkt.'], trainingLead:'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.', training:[{day:'Dienstag',time:'18:30 – 20:00 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'18:30 – 20:00 Uhr',place:'BSV Nordstern'}], trial:`Spieler der Jahrgänge ${youthYears.c} können ein Probetraining absolvieren. Bitte frage vorab beim Trainerteam an.` },
+  { path:'jugend/u13-d1', kicker:'Leistungsfußball', headline:'Fokus.<br /><em>Mit Spielfreude.</em>', letter:'D1', opening:[`Im Leistungskader der D1 spielen Kinder der Jahrgänge ${youthYears.d}.`,'Leistungsorientiertes Lernen und die Freude am gemeinsamen Spiel gehören für uns zusammen.'], trainingLead:'Zwei Einheiten pro Woche für eine kontinuierliche Entwicklung.', training:[{day:'Dienstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'}], trial:`Kinder der Jahrgänge ${youthYears.d} können ein Probetraining absolvieren. Bitte frage vorab beim Trainer an.` },
+  { path:'jugend/u13-d2', kicker:'Leistungsfußball', headline:'Lernen.<br /><em>Als Mannschaft.</em>', letter:'D2', opening:[`In der D2 spielen Kinder der Jahrgänge ${youthYears.d}.`,'Altersgerechtes Training schafft die Grundlage für individuelle Entwicklung und gutes Zusammenspiel.'], trainingLead:'Zwei gemeinsame Trainingseinheiten pro Woche beim BSV Nordstern.', training:[{day:'Mittwoch',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'},{day:'Freitag',time:'17:30 – 19:00 Uhr',place:'BSV Nordstern'}], trial:`Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`, coaches:[{name:'Jörg Boreatti',role:'Trainer',qualification:'C-Lizenz (ab 2023)',phone:'+491726240593'},{name:'Marko Eisner',role:'Co-Trainer',qualification:'DFB-Basis-Coach'},{name:'Patrick Müller',role:'Co-Trainer',qualification:'DFB-Basis-Coach'}] },
+  { path:'jugend/u13-d3', kicker:'Leistungsfußball', headline:'Wachsen.<br /><em>Schritt für Schritt.</em>', letter:'D3', opening:[`In der D3 spielen Kinder der Jahrgänge ${youthYears.d}.`,'Das Team bietet Raum für Entwicklung, Freude am Ball und gemeinsames Lernen.'], trainingLead:'Zwei Einheiten pro Woche auf dem Gelände des BSV Nordstern.', training:[{day:'Montag',time:'17:00 – 18:30 Uhr',place:'BSV Nordstern'},{day:'Donnerstag',time:'17:00 – 18:30 Uhr',place:'BSV Nordstern'}], trial:`Kinder der Jahrgänge ${youthYears.d} sind willkommen. Bitte frage vorab beim Trainerteam an.`, coaches:[{name:'Jérôme Ernsberger',role:'Trainer',qualification:'C-Lizenz'},{name:'Hieu Ho',role:'Co-Trainerin',qualification:'DFB-Basis-Coach'}] },
+  { path:'jugend/juniorinnen/u17', kicker:'B-Juniorinnen', headline:'Entwicklung.<br /><em>Zusammenhalt.</em>', letter:'B', fussballDeWidgetId:'f2a25edd-6dea-42fe-a4a5-13b9f10ae342', fussballDeTableWidgetId:'7ad730f9-190d-4d8c-8f15-c2617eed44d0', opening:['Unsere B-Juniorinnen verbinden ambitionierten Fußball mit einer Mannschaft, in der Entwicklung, Verlässlichkeit und Freude am gemeinsamen Spiel zählen.',`Zum Team gehören Spielerinnen der Jahrgänge ${youthYears.b}.`], trainingLead:'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.', training:[{day:'Montag',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'},{day:'Mittwoch',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'}], trainingNote:'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.', trial:`Neue Spielerinnen der Jahrgänge ${youthYears.b} sind herzlich willkommen. Lerne das Team bei einem Probetraining kennen.`, image:'/images/jugend/teams/2526/u17-b-juniorinnen.jpg', galleryTabs:[{id:'2026-solarcup-teamausflug',label:'2026 – Solarcup Teamausflug',photos:bGirlsSolarCupTrip2026Gallery},{id:'2026-pokalfinale',label:'2026 – Pokalfinale',photos:bGirlsCupFinal2026Gallery},{id:'2025-sg-kirchen-hausen-sporttage',label:'2025 – SG Kirchen/Hausen Sporttage',photos:bGirlsGallery}], coaches:[{name:'Sven Goldhagen',role:'Cheftrainer',qualification:'DFB-Basis-Coach',image:'/images/verein/personen/sven-goldhagen.jpg',phone:'+491727404080'},{name:'Sonja Thomen',role:'Co-Trainerin',qualification:'DFB-Basis-Coach'}] },
+  { path:'jugend/juniorinnen/u15', kicker:'C-Juniorinnen', headline:'Lernen.<br /><em>Wachsen.</em>', letter:'C', opening:['Bei unseren C-Juniorinnen stehen die fußballerische Entwicklung, mutiges Zusammenspiel und ein starker Teamgeist im Mittelpunkt.',`Zum Team gehören Spielerinnen der Jahrgänge ${youthYears.c}.`], trainingLead:'Zwei gemeinsame Trainingseinheiten pro Woche auf dem BSV-Nordstern-Sportplatz.', training:[{day:'Montag',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'},{day:'Mittwoch',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'}], trial:`Spielerinnen der Jahrgänge ${youthYears.c} können beim Trainer ein unverbindliches Probetraining vereinbaren.`, coaches:[{name:'Alexander Kramer',role:'Trainer',qualification:'DFB-Basis-Coach',phone:'+491733276748'}] },
+  { path:'jugend/juniorinnen/u13', kicker:'D wie Durchstarten', headline:'Am Ball.<br /><em>Als Team.</em>', letter:'D', opening:['Bei unseren D-Juniorinnen stehen Freude am Fußball, persönliche Entwicklung und ein starker Zusammenhalt im Mittelpunkt.',`Neue Spielerinnen der Jahrgänge ${youthYears.d} sind herzlich willkommen.`], trainingLead:'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.', training:[{day:'Montag',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'},{day:'Mittwoch',time:'18:00 – 19:30 Uhr',place:'BSV Nordstern Sportplatz'}], trainingNote:'Bitte jeweils zehn Minuten vor Trainingsbeginn umgezogen auf dem Platz sein.', trial:`Spielerinnen der Jahrgänge ${youthYears.d} können die Mannschaft und das Trainerteam bei einem Probetraining kennenlernen.`, image:'/images/jugend/teams/2526/u13-d-juniorinnen.jpg', galleryTabs:[{id:'2025-saisonabschluss',label:'2025 – Saisonabschluss',photos:dGirlsGallery}], coaches:[{name:'Dana Bulander',role:'Trainerin',qualification:'C-Lizenz',image:'/images/verein/personen/dana-bulander.jpg'}] },
 ];
 
 export const teamProfiles: Record<string, TeamProfile> = Object.fromEntries(configs.map((config) => {
@@ -559,29 +275,8 @@ export const teamProfiles: Record<string, TeamProfile> = Object.fromEntries(conf
   const legacyPath = sourcePath ?? config.path;
   const coaches = config.coaches ?? extractCoaches(legacyPath);
   const sponsorAudience = sponsorAudienceByTeamPath[config.path];
-  const sponsors = sponsorAudience
-    ? advertisingPartners
-        .filter((partner) => partner.teamAudienceSlugs.includes(sponsorAudience))
-        .map((partner) => ({
-          name: partner.name,
-          image: partner.logoSrc,
-          imageAlt: partner.logoAlt,
-          href: partner.website ?? undefined,
-        }))
-    : [];
-  return [config.path, {
-    ...profile,
-    sponsors: sponsors.length ? sponsors : undefined,
-    coaches: coaches.map((coach) => ({
-      ...coach,
-      name: coachDisplayNames[coach.name] ?? coach.name,
-      qualification: coachQualifications[coach.name] ?? coach.qualification,
-      image: personImageByName[coach.name] ?? coach.image,
-      club: associationTeamPaths.has(config.path) ? (coach.club ?? coachHomeClubs[coach.name]) : coach.club,
-    })),
-    gallery: config.gallery ?? [],
-    squad: showSquad ? extractSquad(legacyPath) : undefined,
-  } satisfies TeamProfile];
+  const sponsors = sponsorAudience ? advertisingPartners.filter((partner) => partner.teamAudienceSlugs.includes(sponsorAudience)).map((partner) => ({ name: partner.name, image: partner.logoSrc, imageAlt: partner.logoAlt, href: partner.website ?? undefined })) : [];
+  return [config.path, { ...profile, sponsors: sponsors.length ? sponsors : undefined, coaches: coaches.map((coach) => ({ ...coach, name: coachDisplayNames[coach.name] ?? coach.name, qualification: coachQualifications[coach.name] ?? coach.qualification, image: personImageByName[coach.name] ?? coach.image, club: associationTeamPaths.has(config.path) ? (coach.club ?? coachHomeClubs[coach.name]) : coach.club })), gallery: config.gallery ?? [], squad: showSquad ? extractSquad(legacyPath) : undefined } satisfies TeamProfile];
 }));
 
 export const teamPaths = Object.keys(teamProfiles);
