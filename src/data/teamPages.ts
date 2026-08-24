@@ -247,7 +247,7 @@ const bGirlsGallery: TeamPhoto[] = [
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/fd4387b0f8-WhatsApp-Image-2025-06-29-at-17.50.33.jpeg', alt: 'Die B-Juniorinnen bei einer gemeinsamen Aktivität', caption: 'Als Team zusammen', size: 'tall' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/f6b7d3c5cb-WhatsApp-Image-2025-06-29-at-17.50.38.jpeg', alt: 'Teamtag der B-Juniorinnen', caption: 'Erlebnisse verbinden' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/c24d2dded5-WhatsApp-Image-2025-06-29-at-17.50.36.jpeg', alt: 'Spielerinnen der B-Juniorinnen beim Teamtag', caption: 'Zeit füreinander' },
-  { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/06ded97c94-WhatsApp-Image-2025-06-29-at-17.50.31.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
+  { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/06ded97c94-WhatsApp-Image-2025-06-28-at-17.56.56.jpeg', alt: 'Die Mannschaft in gemeinsamer Runde', caption: 'Mannschaft erleben', size: 'wide' },
   { src: '/images/jugend/juniorinnen/u17/2025-sg-kirchen-hausen-sporttage/6cbc4be7a5-WhatsApp-Image-2025-06-29-at-17.50.34.jpeg', alt: 'Gemeinsamer Abschluss der B-Juniorinnen', caption: 'Ein Tag zum Erinnern', size: 'tall' },
 ];
 
@@ -502,6 +502,8 @@ const configs: TeamConfig[] = [
   },
   {
     path: 'jugend/juniorinnen/u17', kicker: 'B-Juniorinnen', headline: 'Entwicklung.<br /><em>Zusammenhalt.</em>', letter: 'B',
+    fussballDeWidgetId: 'f2a25edd-6dea-42fe-a4a5-13b9f10ae342',
+    fussballDeTableWidgetId: '7ad730f9-190d-4d8c-8f15-c2617eed44d0',
     opening: ['Unsere B-Juniorinnen verbinden ambitionierten Fußball mit einer Mannschaft, in der Entwicklung, Verlässlichkeit und Freude am gemeinsamen Spiel zählen.', `Zum Team gehören Spielerinnen der Jahrgänge ${youthYears.b}.`],
     trainingLead: 'Sommertraining von Mitte März bis Mitte November auf dem BSV-Nordstern-Sportplatz.',
     training: [{ day: 'Montag', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }, { day: 'Mittwoch', time: '18:00 – 19:30 Uhr', place: 'BSV Nordstern Sportplatz' }],
