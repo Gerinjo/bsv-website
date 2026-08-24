@@ -1,0 +1,40 @@
+name: Apply D1 widgets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-d1-widgets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add D1 fussball.de widget IDs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/data/teamPages.ts')
+          text = path.read_text(encoding='utf-8')
+          old = "{path:'jugend/u13-d1',kicker:'Leistungsfußball',headline:'Fokus.<br /><em>Mit Spielfreude.</em>',letter:'D1',opening:"
+          new = "{path:'jugend/u13-d1',kicker:'Leistungsfußball',headline:'Fokus.<br /><em>Mit Spielfreude.</em>',letter:'D1',fussballDeWidgetId:'52344c96-823b-47c2-9eb7-caa3630ef628',fussballDeTableWidgetId:'5b8a3f7e-eb88-4b7d-b4a3-72902c14daf6',opening:"
+          if old not in text:
+              raise SystemExit('D1-Konfiguration nicht gefunden oder bereits geändert')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/teamPages.ts
+          git commit -m "D1 fussball.de Widgets ergänzen"
+          git push origin main
