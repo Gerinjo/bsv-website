@@ -1,0 +1,38 @@
+name: Apply D-Juniorinnen widgets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-d-juniorinnen-widgets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add D-Juniorinnen fussball.de widget IDs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/data/teamPages.ts')
+          text = path.read_text(encoding='utf-8')
+          old = "{path:'jugend/juniorinnen/u13',kicker:'D wie Durchstarten',headline:'Am Ball.<br /><em>Als Team.</em>',letter:'D',opening:"
+          new = "{path:'jugend/juniorinnen/u13',kicker:'D wie Durchstarten',headline:'Am Ball.<br /><em>Als Team.</em>',letter:'D',fussballDeWidgetId:'5ba007c5-a744-478b-a885-9defb0561c8c',fussballDeTableWidgetId:'fae828f2-ad9b-4f43-a63e-85408b48c0a3',opening:"
+          if old not in text:
+              raise SystemExit('D-Juniorinnen-Konfiguration nicht gefunden oder bereits geändert')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/teamPages.ts
+          git commit -m "D-Juniorinnen fussball.de Widgets ergänzen"
+          git push origin main
