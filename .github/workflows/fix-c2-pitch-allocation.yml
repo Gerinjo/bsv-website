@@ -1,0 +1,33 @@
+name: Fix C2 pitch allocation
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-c2-pitch-allocation.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Put C2 on Hauptplatz in occupancy plan
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/pages/fussball/belegungsplan.astro')
+          s=p.read_text(encoding='utf-8')
+          old="'jugend/u15-c2': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' }"
+          new="'jugend/u15-c2': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' }"
+          if old not in s:
+              raise SystemExit('C2 allocation not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/fussball/belegungsplan.astro
+          git commit -m "C2 im Belegungsplan dem Hauptplatz zuordnen"
+          git push origin main
