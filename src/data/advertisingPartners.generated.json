@@ -48,5 +48,18 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
+  },
+  {
+    "sourceId": "4c3c857f-67f7-4921-abaa-f855b9aa1fe3",
+    "slug": "vulcano-restaurant-und-pizzeria",
+    "name": "Vulcano - Restaurant und Pizzeria",
+    "logoSrc": "/images/sponsors/synced/vulcano-restaurant-und-pizzeria.png",
+    "logoAlt": "Logo von Vulcano - Restaurant und Pizzeria",
+    "website": "https://restaurant-vulcano.de/",
+    "teamAudienceSlugs": [
+      "herren-1"
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-09-01T21:54:17.643979+00:00"
   }
 ]
