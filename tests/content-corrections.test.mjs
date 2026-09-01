@@ -15,6 +15,15 @@ const sportsPagesSource = readFileSync(new URL('../src/data/sportsPages.ts', imp
 const membershipSource = readFileSync(new URL('../src/pages/verein/mitglied-werden.astro', import.meta.url), 'utf8');
 const coachVacanciesSource = readFileSync(new URL('../src/pages/jugend/trainer-gesucht.astro', import.meta.url), 'utf8');
 
+function teamSection(path, nextPath) {
+  const start = teamPagesSource.search(new RegExp(`path:\\s*'${path.replaceAll('/', '\\/')}'`));
+  const tail = teamPagesSource.slice(start);
+  const relativeEnd = nextPath
+    ? tail.search(new RegExp(`path:\\s*'${nextPath.replaceAll('/', '\\/')}'`))
+    : -1;
+  return relativeEnd > 0 ? tail.slice(0, relativeEnd) : tail;
+}
+
 test('the board page includes Stefan Gastaudo as data protection officer', () => {
   assert.match(pageSource, /'Stefan Gastaudo',\s*'Datenschutzbeauftragter'/);
   assert.match(pageSource, /'\/images\/verein\/personen\/stefan-gastaudo\.jpg'/);
@@ -36,7 +45,7 @@ test('the URMEL page announces 2027 without the obsolete 2026 link', () => {
 });
 
 test('the old men team names Christian Stielow as contact instead of a coach', () => {
-  assert.match(teamPagesSource, /Christian Stielow', role: 'Ansprechperson Alte Herren'/);
+  assert.match(teamPagesSource, /Christian Stielow',\s*role:\s*'Ansprechperson Alte Herren'/);
   assert.doesNotMatch(teamPagesSource, /Torben Schmidt/);
   assert.match(pageSource, /isOldMenTeam \? 'Ansprechperson\.' : 'Das Trainerteam\.'/);
 });
@@ -46,17 +55,14 @@ test('Torben Altenburg remains co-coach of the first men team', () => {
 });
 
 test('Marcelino Rueth teams use the updated Monday and Wednesday training times', () => {
-  const e2Start = teamPagesSource.indexOf("path: 'jugend/u11-e2'");
-  const u9Start = teamPagesSource.indexOf("path: 'jugend/u9-f'");
-  const u8Start = teamPagesSource.indexOf("path: 'jugend/u8-f'");
-  const e2Section = teamPagesSource.slice(e2Start, u9Start);
-  const u9Section = teamPagesSource.slice(u9Start, u8Start);
+  const e2Section = teamSection('jugend/u11-e2', 'jugend/u11-e3');
+  const u9Section = teamSection('jugend/u9-f', 'jugend/u8-f');
 
-  assert.match(e2Section, /Montag', time: '17:30 – 19:00 Uhr'/);
-  assert.match(e2Section, /Mittwoch', time: '17:30 – 19:00 Uhr'/);
-  assert.equal((e2Section.match(/place: 'BSV Nordstern Hauptplatz'/g) ?? []).length, 2);
-  assert.match(u9Section, /Montag', time: '16:00 – 17:30 Uhr'/);
-  assert.match(u9Section, /Mittwoch', time: '16:00 – 17:30 Uhr'/);
+  assert.match(e2Section, /Montag',\s*time:\s*'17:30 – 19:00 Uhr'/);
+  assert.match(e2Section, /Mittwoch',\s*time:\s*'17:30 – 19:00 Uhr'/);
+  assert.equal((e2Section.match(/place:\s*'BSV Nordstern Hauptplatz'/g) ?? []).length, 2);
+  assert.match(u9Section, /Montag',\s*time:\s*'16:00 – 17:30 Uhr'/);
+  assert.match(u9Section, /Mittwoch',\s*time:\s*'16:00 – 17:30 Uhr'/);
   assert.doesNotMatch(e2Section, /Termin folgt/);
 });
 
@@ -66,39 +72,32 @@ test('E2 is always allocated to the main pitch', () => {
 });
 
 test('F2 and F3 use the training data from the 2026/27 allocation graphic', () => {
-  const u8Start = teamPagesSource.indexOf("path: 'jugend/u8-f'");
-  const u7Start = teamPagesSource.indexOf("path: 'jugend/u7-g'", u8Start);
-  const f2AndF3Section = teamPagesSource.slice(u8Start, u7Start);
+  const f2AndF3Section = teamSection('jugend/u8-f', 'jugend/u7-g');
 
-  assert.match(f2AndF3Section, /Dienstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz'/);
-  assert.match(f2AndF3Section, /Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz'/);
+  assert.match(f2AndF3Section, /Dienstag',\s*time:\s*'17:00 – 18:30 Uhr',\s*place:\s*'BSV Nordstern Hauptplatz'/);
+  assert.match(f2AndF3Section, /Donnerstag',\s*time:\s*'17:00 – 18:30 Uhr',\s*place:\s*'BSV Nordstern Hauptplatz'/);
   assert.match(trainingPlanSource, /'jugend\/u8-f': \{ pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz'/);
   assert.match(trainingPlanSource, /'jugend\/u8-f': 'F2 \+ F3-Junioren'/);
 });
 
 test('D2 and D3 show the updated coaching teams and qualifications', () => {
-  const d2Start = teamPagesSource.indexOf("path: 'jugend/u13-d2'");
-  const d3Start = teamPagesSource.indexOf("path: 'jugend/u13-d3'", d2Start);
-  const girlsStart = teamPagesSource.indexOf("path: 'jugend/juniorinnen/u17'", d3Start);
-  const d2Section = teamPagesSource.slice(d2Start, d3Start);
-  const d3Section = teamPagesSource.slice(d3Start, girlsStart);
+  const d2Section = teamSection('jugend/u13-d2', 'jugend/u13-d3');
+  const d3Section = teamSection('jugend/u13-d3', 'jugend/juniorinnen/u17');
 
-  assert.match(d2Section, /Jörg Boreatti', role: 'Trainer', qualification: 'C-Lizenz \(ab 2023\)'/);
-  assert.match(d2Section, /Marko Eisner', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach'/);
-  assert.match(d2Section, /Patrick Müller', role: 'Co-Trainer', qualification: 'DFB-Basis-Coach'/);
-  assert.match(d3Section, /Jérôme Ernsberger', role: 'Trainer', qualification: 'C-Lizenz'/);
-  assert.match(d3Section, /Hieu Ho', role: 'Co-Trainerin', qualification: 'DFB-Basis-Coach'/);
+  assert.match(d2Section, /Jörg Boreatti',\s*role:\s*'Trainer',\s*qualification:\s*'C-Lizenz \(ab 2023\)'/);
+  assert.match(d2Section, /Marko Eisner',\s*role:\s*'Co-Trainer',\s*qualification:\s*'DFB-Basis-Coach'/);
+  assert.match(d2Section, /Patrick Müller',\s*role:\s*'Co-Trainer',\s*qualification:\s*'DFB-Basis-Coach'/);
+  assert.match(d3Section, /Jérôme Ernsberger',\s*role:\s*'Trainer',\s*qualification:\s*'C-Lizenz'/);
+  assert.match(d3Section, /Hieu Ho',\s*role:\s*'Co-Trainerin',\s*qualification:\s*'DFB-Basis-Coach'/);
   assert.match(membershipSource, /J\. Ernsberger, H\. Ho/);
   assert.match(coachVacanciesSource, /D3-Junioren', role: 'Trainer:in'/);
 });
 
-test('D2 trains Wednesday and Friday at the same time', () => {
-  const d2Start = teamPagesSource.indexOf("path: 'jugend/u13-d2'");
-  const d3Start = teamPagesSource.indexOf("path: 'jugend/u13-d3'", d2Start);
-  const d2Section = teamPagesSource.slice(d2Start, d3Start);
+test('D2 trains Wednesday and Friday at the currently assigned times', () => {
+  const d2Section = teamSection('jugend/u13-d2', 'jugend/u13-d3');
 
-  assert.match(d2Section, /training: \[\{ day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' \}, \{ day: 'Freitag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' \}\]/);
-  assert.doesNotMatch(d2Section, /day: 'Montag'/);
+  assert.match(d2Section, /training:\s*\[\{\s*day:\s*'Mittwoch',\s*time:\s*'17:30 – 19:00 Uhr',\s*place:\s*'BSV Nordstern'\s*\},\s*\{\s*day:\s*'Freitag',\s*time:\s*'16:30 – 18:00 Uhr',\s*place:\s*'BSV Nordstern'\s*\}\]/);
+  assert.doesNotMatch(d2Section, /day:\s*'Montag'/);
 });
 
 test('DFBnet qualifications are applied to the respective youth coaches', () => {
@@ -115,9 +114,9 @@ test('DFBnet qualifications are applied to the respective youth coaches', () => 
     ['Stefan Sulger', 'Kindertrainer-Zertifikat'],
     ['Stephan Hellmann', 'DFB-Basis-Coach'],
   ]) {
-    assert.match(teamPagesSource, new RegExp(`'${name}': '${qualification}'`));
+    assert.match(teamPagesSource, new RegExp(`'${name}'\\s*:\\s*'${qualification}'`));
   }
-  assert.match(teamPagesSource, /'Pascel Dieterle': 'Pascal Dieterle'/);
+  assert.match(teamPagesSource, /'Pascel Dieterle'\s*:\s*'Pascal Dieterle'/);
 });
 
 test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
@@ -128,12 +127,10 @@ test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
 });
 
 test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {
-  const u19Start = teamPagesSource.indexOf("path: 'jugend/u19'");
-  const u17Start = teamPagesSource.indexOf("path: 'jugend/u17'", u19Start);
-  const u19Section = teamPagesSource.slice(u19Start, u17Start);
+  const u19Section = teamSection('jugend/u19', 'jugend/u17');
 
-  assert.match(u19Section, /Dienstag', time: '19:00 – 20:30 Uhr', place: 'BSV Nordstern Radolfzell'/);
-  assert.match(u19Section, /Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen'/);
+  assert.match(u19Section, /Dienstag',\s*time:\s*'19:00 – 20:30 Uhr',\s*place:\s*'BSV Nordstern Radolfzell'/);
+  assert.match(u19Section, /Donnerstag',\s*time:\s*'19:00 – 20:30 Uhr',\s*place:\s*'SV Markelfingen'/);
   assert.doesNotMatch(u19Section, /Montag|Mittwoch/);
 });
 

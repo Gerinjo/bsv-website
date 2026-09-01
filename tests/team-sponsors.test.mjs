@@ -17,7 +17,7 @@ test('synced sponsors include deduplicated team audience assignments', () => {
 });
 
 test('every assigned audience used by current sponsor data maps to a team page', () => {
-  const mappedAudiences = new Set([...teamPagesSource.matchAll(/'[^']+': '([^']+)'/g)].map((match) => match[1]));
+  const mappedAudiences = new Set([...teamPagesSource.matchAll(/'[^']+'\s*:\s*'([^']+)'/g)].map((match) => match[1]));
   for (const partner of partners) {
     for (const audience of partner.teamAudienceSlugs) {
       assert.ok(mappedAudiences.has(audience), `${partner.name}: keine Mannschaftsseite für ${audience}`);
