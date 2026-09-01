@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { contactTeams, fixedContactTopics } from '../data/contactTopics';
+import { contactTeams, fixedContactTopics, youthContactTopics } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 
 const configuredContactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
@@ -25,6 +25,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
             <input id="topic" name="topic" type="hidden" />
             <p id="topic-description" class="topic-description" aria-live="polite">Bitte wähle zunächst einen Eintrag aus der Liste.</p>
           </div>
+          <div id="youth-contact-field" class="field full conditional" hidden><label for="youth-contact-select">Wen möchtest du erreichen?</label><select id="youth-contact-select"><option value="">Bitte auswählen …</option>{youthContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}</select></div>
           <div id="team-field" class="field full conditional" hidden><label for="team-select">Welche Mannschaft?</label><select id="team-select"><option value="">Bitte Mannschaft auswählen …</option></select></div>
           <div id="request-field" class="field full conditional" hidden><label for="request-type">Was möchtest du anfragen?</label><select id="request-type"><option value="">Bitte auswählen …</option><option value="trial">Probetraining</option><option value="friendly">Freundschaftsspiel</option><option value="general">Allgemeines</option></select></div>
           <div id="friendly-fields" class="friendly-fields full conditional" hidden>
@@ -47,9 +48,11 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   <Footer />
 </Layout>
 
-<script define:vars={{ fixedTopics: fixedContactTopics, teams: contactTeams, contactEndpoint }}>
+<script define:vars={{ fixedTopics: fixedContactTopics, youthTopics: youthContactTopics, teams: contactTeams, contactEndpoint }}>
   const form = document.querySelector('#contact-form');
   const area = document.querySelector('#topic-area');
+  const youthContactField = document.querySelector('#youth-contact-field');
+  const youthContactSelect = document.querySelector('#youth-contact-select');
   const teamField = document.querySelector('#team-field');
   const teamSelect = document.querySelector('#team-select');
   const requestField = document.querySelector('#request-field');
@@ -63,6 +66,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   const button = form.querySelector('button[type="submit"]');
   const captchaToken = document.querySelector('#captcha-token');
   const fixedById = new Map(fixedTopics.map((topic) => [topic.id, topic]));
+  const youthById = new Map(youthTopics.map((topic) => [topic.id, topic]));
   let isSubmitting = false;
 
   const updateSubmitState = () => {
@@ -96,7 +100,10 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   };
   const updateTopic = () => {
     const isTeam = area.value === 'active-team' || area.value === 'youth-team';
+    const isYouthDepartment = area.value === 'youth';
     const fixed = fixedById.get(area.value);
+    youthContactField.hidden = !isYouthDepartment;
+    youthContactSelect.required = isYouthDepartment;
     teamField.hidden = !isTeam;
     requestField.hidden = !isTeam || !teamSelect.value;
     teamSelect.required = isTeam;
@@ -106,6 +113,13 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
     friendlyFields.hidden = !isFriendly;
     clubName.required = isFriendly;
     opponentTeam.required = isFriendly;
+    if (isYouthDepartment) {
+      const youthTopic = youthById.get(youthContactSelect.value);
+      topicInput.value = youthTopic?.id ?? '';
+      description.textContent = youthTopic?.description ?? fixed?.description ?? 'Bitte wähle eine Ansprechstelle aus.';
+      updateSubmitState();
+      return;
+    }
     if (!isTeam) {
       topicInput.value = fixed?.id ?? '';
       description.textContent = fixed?.description ?? 'Bitte wähle zunächst einen Eintrag aus der Liste.';
@@ -132,16 +146,21 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
         : `Nutze diese Auswahl für alle anderen Fragen zu ${team.name}. Beschreibe dein Anliegen bitte möglichst konkret. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`;
     updateSubmitState();
   };
-  area.addEventListener('change', () => { populateTeams(area.value); requestType.value = ''; updateTopic(); });
+  area.addEventListener('change', () => { populateTeams(area.value); youthContactSelect.value = ''; requestType.value = ''; updateTopic(); });
+  youthContactSelect.addEventListener('change', updateTopic);
   teamSelect.addEventListener('change', () => { requestType.value = ''; updateTopic(); });
   requestType.addEventListener('change', updateTopic);
 
   const requestedTopic = new URLSearchParams(window.location.search).get('thema');
   const requestedTeam = teams.find((team) => requestedTopic?.startsWith(`team--${team.key}--`));
+  const requestedYouthTopic = youthById.get(requestedTopic);
   if (requestedTeam) {
     area.value = requestedTeam.group;
     populateTeams(requestedTeam.group, requestedTeam.key);
     requestType.value = requestedTopic.split('--').at(-1) ?? '';
+  } else if (requestedYouthTopic) {
+    area.value = 'youth';
+    youthContactSelect.value = requestedYouthTopic.id;
   } else if (requestedTopic && fixedById.has(requestedTopic)) area.value = requestedTopic;
   updateTopic();
   createCaptcha();
@@ -178,6 +197,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
       if (!response.ok || !result.ok) throw new Error(result.message || 'Die Nachricht konnte nicht gesendet werden.');
       form.reset();
       topicInput.value = '';
+      youthContactField.hidden = true;
       teamField.hidden = true;
       requestField.hidden = true;
       friendlyFields.hidden = true;

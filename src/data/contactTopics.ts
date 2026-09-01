@@ -10,7 +10,7 @@ export type ContactTopic = {
 export const fixedContactTopics: ContactTopic[] = [
   { id: 'general', label: 'Allgemeine Themen (Vorstandschaft)', description: 'Nutze diese Auswahl für allgemeine Fragen zum Verein, die keiner Abteilung direkt zugeordnet werden können. Die Nachricht geht an die Vorstandschaft. Bei Fragen zu einer Mitgliedschaft oder einer Mannschaft wähle bitte den passenderen Eintrag aus.' },
   { id: 'membership', label: 'Mitgliederverwaltung', description: 'Hier bist du richtig bei Fragen zu Mitgliedsdaten, Beiträgen oder Änderungen deiner persönlichen Angaben. Auch Rückfragen zu einem bestehenden Mitgliedsantrag gehören hierher. Eine Kündigung muss weiterhin über den dafür vorgesehenen Weg eingereicht werden.' },
-  { id: 'youth', label: 'Jugendleitung', description: 'Wähle diesen Kontakt für übergreifende Themen rund um unsere Jugendabteilung. Dazu gehören organisatorische Fragen, Jugendkonzept und Anliegen, die nicht nur eine bestimmte Mannschaft betreffen. Probetrainings und Freundschaftsspiele fragst du bitte direkt beim jeweiligen Team an.' },
+  { id: 'youth', label: 'Jugendabteilung', description: 'Wähle im nächsten Schritt Jugendleitung, Elternvertretung oder Jugendkasse aus. Probetrainings und Freundschaftsspiele fragst du bitte direkt beim jeweiligen Team an.' },
   { id: 'sponsoring', label: 'Sponsoring', description: 'Diese Auswahl ist für Unternehmen und Unterstützer gedacht, die sich beim BSV Nordstern engagieren möchten. Wir informieren gerne über Partnerschaften, Werbemöglichkeiten und individuelle Sponsoringleistungen. Nenne uns am besten schon kurz deine Vorstellungen.' },
   { id: 'foerderverein', label: 'Förderverein', description: 'Nutze diese Auswahl für Fragen, Ideen oder Angebote zur Unterstützung des Fördervereins. Einen vollständigen Mitgliedsantrag kannst du direkt auf der Seite „Mitglied im Förderverein werden“ ausfüllen.' },
   { id: 'social', label: 'Social Media', description: 'Nutze diesen Kontakt für Beiträge, Bilder, Hinweise oder Kooperationen rund um unsere Social-Media-Kanäle. Bitte beschreibe kurz, worum es geht und für welchen Kanal der Inhalt gedacht ist. Sende keine sensiblen personenbezogenen Daten über das Formular.' },
@@ -18,6 +18,12 @@ export const fixedContactTopics: ContactTopic[] = [
   { id: 'archery', label: 'Bogensport', description: 'Nutze diesen Kontakt für Fragen zum Bogensport, zur Warteliste, zum Training oder zum Einstieg in die Abteilung.' },
   { id: 'gymnastics', label: 'Gymnastik', description: 'Nutze diesen Kontakt für Fragen zu Trainingszeiten, Teilnahme und Einstieg in unsere Gymnastikangebote.' },
   { id: 'hiking', label: 'Wandergruppe', description: 'Nutze diesen Kontakt für Fragen zu Terminen, Strecken, Treffpunkten und zur Teilnahme an den Wanderungen.' },
+];
+
+export const youthContactTopics: ContactTopic[] = [
+  { id: 'youth-leadership', label: 'Jugendleitung', description: 'Für organisatorische Fragen, das Jugendkonzept und Anliegen, die nicht nur eine bestimmte Mannschaft betreffen.' },
+  { id: 'youth-parents', label: 'Elternvertretung', description: 'Für Anliegen aus der Elternschaft und den Austausch zwischen Eltern und Jugendabteilung.' },
+  { id: 'youth-finance', label: 'Jugendkasse (Wiebke)', description: 'Für Fragen zu Zahlungen, Abrechnungen und finanziellen Themen der Jugendabteilung.' },
 ];
 
 const labelsByPath = new Map(
