@@ -41,7 +41,23 @@
     "logoAlt": "Logo von BGV",
     "website": "https://www.bgv.de/agenturen/carmenmartin.xhtml",
     "teamAudienceSlugs": [
-      "u15-c1-junioren"
+      "u11-e1-junioren",
+      "u11-e2-junioren",
+      "u11-e3-junioren",
+      "u13-d1-junioren",
+      "u13-d2-junioren",
+      "u13-d3-junioren",
+      "u13-juniorinnen",
+      "u15-c1-junioren",
+      "u15-c2-junioren",
+      "u15-juniorinnen",
+      "u17-junioren",
+      "u17-juniorinnen",
+      "u19-junioren",
+      "u6-spielgruppe",
+      "u7-bambinis",
+      "u8-f-junioren",
+      "u9-f-junioren"
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T16:04:52.96596+00:00"
