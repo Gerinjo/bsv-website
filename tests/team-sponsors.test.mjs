@@ -104,7 +104,7 @@ test('the partner overview has two filters and groups cards by sponsor type', ()
   assert.match(partnerPageSource, /right\.displayWeight - left\.displayWeight/);
   assert.match(partnerPageSource, /data-sponsor-weight/);
   assert.match(partnerPageSource, /weight-3/);
-  assert.match(partnerPageSource, /\.partner-grid\{display:grid;grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(partnerPageSource, /\.partner-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(partnerPageSource, /@media\(max-width:900px\).*\.partner-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/s);
   assert.match(partnerPageSource, /@media\(max-width:600px\).*\.partner-grid\{grid-template-columns:1fr\}/s);
 });
