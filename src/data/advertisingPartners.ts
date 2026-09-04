@@ -7,6 +7,14 @@ export type AdvertisingPartnerTeamAssignment = {
   description: string;
 };
 
+export type AdvertisingPartnerAudienceAssignment = {
+  audienceSlug: string;
+  audienceLabel: string;
+  audienceGroup: string;
+  sponsorType: { slug: string; label: string } | null;
+  description: string;
+};
+
 export type AdvertisingPartner = {
   sourceId: string;
   slug: string;
@@ -16,6 +24,7 @@ export type AdvertisingPartner = {
   website: string | null;
   teamAudienceSlugs: string[];
   teamAssignments?: AdvertisingPartnerTeamAssignment[];
+  audienceAssignments: AdvertisingPartnerAudienceAssignment[];
   sortOrder: number;
   sourceUpdatedAt: string;
 };

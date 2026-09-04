@@ -3,7 +3,42 @@ import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 import { advertisingPartners } from '../../data/advertisingPartners';
+import { sponsorAreaKeys, sponsorAreaOptions } from '../../data/sponsorAreas';
 import { withBase } from '../../utils/paths';
+
+type SponsorEntry = {
+  partner: (typeof advertisingPartners)[number];
+  typeSlug: string;
+  typeLabel: string;
+  areaKeys: string[];
+  audienceLabels: string[];
+};
+
+const entryMap = new Map<string, SponsorEntry>();
+for (const partner of advertisingPartners) {
+  if (partner.audienceAssignments.length === 0) {
+    entryMap.set(`${partner.slug}:weitere`, {
+      partner,
+      typeSlug: 'weitere',
+      typeLabel: 'Weitere Werbepartner',
+      areaKeys: ['all'],
+      audienceLabels: [],
+    });
+  }
+  for (const assignment of partner.audienceAssignments) {
+    const typeSlug = assignment.sponsorType?.slug ?? 'weitere';
+    const typeLabel = assignment.sponsorType?.label ?? 'Weitere Werbepartner';
+    const key = `${partner.slug}:${typeSlug}`;
+    const entry = entryMap.get(key) ?? { partner, typeSlug, typeLabel, areaKeys: [], audienceLabels: [] };
+    entry.areaKeys = [...new Set([...entry.areaKeys, ...sponsorAreaKeys(assignment)])];
+    entry.audienceLabels = [...new Set([...entry.audienceLabels, assignment.audienceLabel])];
+    entryMap.set(key, entry);
+  }
+}
+
+const sponsorGroups = [...Map.groupBy([...entryMap.values()], (entry) => entry.typeSlug)]
+  .map(([typeSlug, entries]) => ({ typeSlug, typeLabel: entries[0].typeLabel, entries }))
+  .sort((left, right) => left.typeSlug === 'weitere' ? 1 : right.typeSlug === 'weitere' ? -1 : left.typeLabel.localeCompare(right.typeLabel, 'de'));
 ---
 
 <Layout
@@ -33,23 +68,55 @@ import { withBase } from '../../utils/paths';
         <p>Alle hier aufgeführten Unternehmen werden gleichwertig dargestellt. Wenn ein Webauftritt hinterlegt ist, führt ein Klick auf das Logo direkt dorthin.</p>
       </div>
 
-      <div class="partner-grid">
-        {advertisingPartners.map((partner) => (
-          <a
-            class:list={['partner-card', { 'without-link': !partner.website }]}
-            href={partner.website || undefined}
-            target={partner.website ? '_blank' : undefined}
-            rel={partner.website ? 'noreferrer' : undefined}
-          >
-            <div class="logo-stage">
-              <img src={withBase(partner.logoSrc)} alt={partner.logoAlt} loading="lazy" decoding="async" />
+      <form class="partner-filters" data-partner-filters>
+        <div>
+          <span>01</span>
+          <label for="partner-area">Bereich</label>
+          <select id="partner-area" name="bereich">
+            {sponsorAreaOptions.map((area) => <option value={area.value}>{area.label}</option>)}
+          </select>
+        </div>
+        <div>
+          <span>02</span>
+          <label for="partner-type">Sponsorart</label>
+          <select id="partner-type" name="sponsorart">
+            <option value="all">Alle Sponsorarten</option>
+            {sponsorGroups.map((group) => <option value={group.typeSlug}>{group.typeLabel}</option>)}
+          </select>
+        </div>
+      </form>
+
+      <div class="partner-groups" data-partner-groups>
+        {sponsorGroups.map((group) => (
+          <section class="partner-group" data-partner-group={group.typeSlug} aria-labelledby={`partner-group-${group.typeSlug}`}>
+            <div class="partner-group-title">
+              <span>Sponsorart</span>
+              <h2 id={`partner-group-${group.typeSlug}`}>{group.typeLabel}</h2>
             </div>
-            <div class="partner-copy">
-              <div><small>Werbepartner</small><h2>{partner.name}</h2></div>
-              {partner.website && <span aria-hidden="true">↗</span>}
+            <div class="partner-grid">
+              {group.entries.map(({ partner, areaKeys, audienceLabels }) => (
+                <a
+                  class:list={['partner-card', { 'without-link': !partner.website }]}
+                  href={partner.website || undefined}
+                  target={partner.website ? '_blank' : undefined}
+                  rel={partner.website ? 'noreferrer' : undefined}
+                  data-partner-entry
+                  data-areas={areaKeys.join(' ')}
+                  data-sponsor-type={group.typeSlug}
+                >
+                  <div class="logo-stage">
+                    <img src={withBase(partner.logoSrc)} alt={partner.logoAlt} loading="lazy" decoding="async" />
+                  </div>
+                  <div class="partner-copy">
+                    <div><small>{group.typeLabel}</small><h3>{partner.name}</h3>{audienceLabels.length > 0 && <p>{audienceLabels.join(' · ')}</p>}</div>
+                    {partner.website && <span aria-hidden="true">↗</span>}
+                  </div>
+                </a>
+              ))}
             </div>
-          </a>
+          </section>
         ))}
+        <p class="partner-empty" data-partner-empty hidden>Für diese Filterauswahl sind aktuell keine Werbepartner hinterlegt.</p>
       </div>
     </section>
 
@@ -64,6 +131,54 @@ import { withBase } from '../../utils/paths';
   </main>
 
   <Footer />
+
+  <script>
+    const filters = document.querySelector<HTMLFormElement>('[data-partner-filters]');
+    const areaSelect = filters?.querySelector<HTMLSelectElement>('#partner-area');
+    const typeSelect = filters?.querySelector<HTMLSelectElement>('#partner-type');
+    const entries = [...document.querySelectorAll<HTMLElement>('[data-partner-entry]')];
+    const groups = [...document.querySelectorAll<HTMLElement>('[data-partner-group]')];
+    const emptyMessage = document.querySelector<HTMLElement>('[data-partner-empty]');
+
+    if (filters && areaSelect && typeSelect) {
+      const query = new URLSearchParams(window.location.search);
+      if ([...areaSelect.options].some((option) => option.value === query.get('bereich'))) areaSelect.value = query.get('bereich') ?? 'all';
+      if ([...typeSelect.options].some((option) => option.value === query.get('sponsorart'))) typeSelect.value = query.get('sponsorart') ?? 'all';
+
+      const update = (writeUrl = true) => {
+        const area = areaSelect.value;
+        const availableTypes = new Set(entries.filter((entry) => (entry.dataset.areas ?? '').split(' ').includes(area)).map((entry) => entry.dataset.sponsorType ?? 'weitere'));
+        [...typeSelect.options].forEach((option) => {
+          option.hidden = option.value !== 'all' && !availableTypes.has(option.value);
+          option.disabled = option.hidden;
+        });
+        if (typeSelect.selectedOptions[0]?.disabled) typeSelect.value = 'all';
+
+        let visibleCount = 0;
+        entries.forEach((entry) => {
+          const matchesArea = (entry.dataset.areas ?? '').split(' ').includes(area);
+          const matchesType = typeSelect.value === 'all' || entry.dataset.sponsorType === typeSelect.value;
+          entry.hidden = !(matchesArea && matchesType);
+          if (!entry.hidden) visibleCount += 1;
+        });
+        groups.forEach((group) => {
+          group.hidden = !group.querySelector('[data-partner-entry]:not([hidden])');
+        });
+        if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
+
+        if (writeUrl) {
+          const url = new URL(window.location.href);
+          area === 'all' ? url.searchParams.delete('bereich') : url.searchParams.set('bereich', area);
+          typeSelect.value === 'all' ? url.searchParams.delete('sponsorart') : url.searchParams.set('sponsorart', typeSelect.value);
+          history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+        }
+      };
+
+      filters.addEventListener('change', () => update());
+      filters.addEventListener('submit', (event) => event.preventDefault());
+      update(false);
+    }
+  </script>
 </Layout>
 
 <style>
@@ -85,6 +200,17 @@ import { withBase } from '../../utils/paths';
   .section-head span{color:var(--green)}
   .section-head h2{margin:12px 0 0;font-size:clamp(3rem,5vw,4.8rem);line-height:.92;letter-spacing:-.055em}
   .section-head>p{max-width:440px;margin:0;color:#617066;line-height:1.7}
+  .partner-filters{margin-bottom:65px;padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;background:#e8ede9;border:1px solid #d9e1db}
+  .partner-filters>div{position:relative;padding:15px 18px 18px 62px;background:white}
+  .partner-filters span{position:absolute;left:18px;top:19px;width:29px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:var(--yellow);color:var(--dark);font-size:.62rem;font-weight:950}
+  .partner-filters label{display:block;margin-bottom:8px;color:var(--green);font-size:.62rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .partner-filters select{width:100%;padding:4px 34px 4px 0;border:0;border-bottom:2px solid #cbd6ce;border-radius:0;background:white;color:var(--ink);font:inherit;font-size:1rem;font-weight:850;cursor:pointer}
+  .partner-filters select:focus-visible{outline:3px solid rgb(22 79 50 / 18%);outline-offset:4px}
+  .partner-groups{display:grid;gap:74px}
+  .partner-group[hidden],.partner-card[hidden],.partner-empty[hidden]{display:none}
+  .partner-group-title{margin-bottom:24px;padding-bottom:17px;border-bottom:1px solid #ccd7cf}
+  .partner-group-title span{color:var(--green);font-size:.62rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .partner-group-title h2{margin:7px 0 0;font-size:clamp(2rem,3.4vw,3.1rem);line-height:1;letter-spacing:-.045em}
   .partner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
   .partner-card{min-width:0;overflow:hidden;display:grid;grid-template-rows:260px auto;border-top:5px solid var(--green);background:white;color:inherit;text-decoration:none;box-shadow:0 16px 42px rgb(9 47 32 / 8%);transition:transform .2s ease,box-shadow .2s ease}
   .partner-card:hover,.partner-card:focus-visible{transform:translateY(-5px);box-shadow:0 24px 50px rgb(9 47 32 / 14%);outline:none}
@@ -93,8 +219,10 @@ import { withBase } from '../../utils/paths';
   .logo-stage img{display:block;width:auto;height:auto;max-width:min(82%,500px);max-height:150px;object-fit:contain}
   .partner-copy{padding:27px 30px;display:flex;align-items:center;justify-content:space-between;gap:24px}
   .partner-copy small{color:var(--green);font-size:.62rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
-  .partner-copy h2{margin:8px 0 0;font-size:1.35rem;line-height:1.2}
+  .partner-copy h3{margin:8px 0 0;font-size:1.35rem;line-height:1.2}
+  .partner-copy p{margin:8px 0 0;color:#6b786f;font-size:.7rem;line-height:1.45}
   .partner-copy>span{width:44px;aspect-ratio:1;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:var(--yellow);color:var(--dark);font-size:1.1rem;font-weight:950}
+  .partner-empty{margin:0;padding:36px;border-left:5px solid var(--yellow);background:white;color:#5e6e63;line-height:1.6;box-shadow:0 12px 35px rgb(9 47 32 / 7%)}
   .partner-cta{margin-bottom:110px;padding:62px 68px;display:grid;grid-template-columns:1fr auto;gap:65px;align-items:center;background:var(--yellow)}
   .partner-cta>div>span{color:var(--green)}
   .partner-cta h2{margin:12px 0 18px;font-size:clamp(2.8rem,5vw,4.7rem);line-height:.92;letter-spacing:-.06em}
@@ -102,5 +230,5 @@ import { withBase } from '../../utils/paths';
   .partner-cta>a{min-width:235px;padding:17px 19px;display:flex;justify-content:space-between;gap:28px;background:var(--dark);color:white;font-size:.8rem;font-weight:900;text-decoration:none}
   .partner-cta>a strong{color:var(--yellow)}
   @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-note{width:min(100%,600px)}.partner-grid{grid-template-columns:1fr}.partner-cta{grid-template-columns:1fr}.partner-cta>a{justify-self:start}}
-  @media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.partners-hero{padding:70px 0 80px}.hero-grid{gap:45px}.hero-note{box-sizing:border-box;width:auto;min-height:0;padding:24px;grid-template-columns:72px minmax(0,1fr);gap:20px;box-shadow:8px 8px 0 var(--yellow)}.hero-note>span{font-size:3.6rem}.hero-note strong{font-size:1.2rem}.partner-overview{padding:72px 0}.section-head{align-items:flex-start;flex-direction:column;gap:22px}.partner-card{grid-template-rows:205px auto}.logo-stage{padding:28px}.partner-copy{padding:23px 22px}.partner-cta{margin-bottom:75px;padding:42px 28px;gap:30px}.partner-cta>a{width:100%;min-width:0}}
+  @media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.partners-hero{padding:70px 0 80px}.hero-grid{gap:45px}.hero-note{box-sizing:border-box;width:auto;min-height:0;padding:24px;grid-template-columns:72px minmax(0,1fr);gap:20px;box-shadow:8px 8px 0 var(--yellow)}.hero-note>span{font-size:3.6rem}.hero-note strong{font-size:1.2rem}.partner-overview{padding:72px 0}.section-head{align-items:flex-start;flex-direction:column;gap:22px}.partner-filters{grid-template-columns:1fr;margin-bottom:48px;padding:14px}.partner-groups{gap:55px}.partner-card{grid-template-rows:205px auto}.logo-stage{padding:28px}.partner-copy{padding:23px 22px}.partner-cta{margin-bottom:75px;padding:42px 28px;gap:30px}.partner-cta>a{width:100%;min-width:0}}
 </style>

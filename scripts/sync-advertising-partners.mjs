@@ -75,6 +75,26 @@ for (const source of payload.partners) {
       return { audienceSlug, sourceAudienceSlug, sponsorType, description };
     }).sort((left, right) => left.audienceSlug.localeCompare(right.audienceSlug))
     : [];
+  const audienceAssignments = Array.isArray(source.audienceAssignments)
+    ? source.audienceAssignments.map((assignment) => {
+      const audienceSlug = String(assignment?.audienceSlug ?? '').trim();
+      const audienceLabel = String(assignment?.audienceLabel ?? '').trim();
+      const audienceGroup = String(assignment?.audienceGroup ?? '').trim();
+      const description = String(assignment?.description ?? '').trim();
+      const sponsorType = assignment?.sponsorType == null ? null : {
+        slug: String(assignment.sponsorType.slug ?? '').trim(),
+        label: String(assignment.sponsorType.label ?? '').trim(),
+      };
+      if (!slugPattern.test(audienceSlug) || !audienceLabel || audienceLabel.length > 120 || !audienceGroup) {
+        throw new Error(`Eine Website-Zuweisung für ${slug} ist ungültig.`);
+      }
+      if (description.length > 1600) throw new Error(`Ein Zuordnungstext für ${slug} ist zu lang.`);
+      if (sponsorType && (!slugPattern.test(sponsorType.slug) || !sponsorType.label || sponsorType.label.length > 80)) {
+        throw new Error(`Eine Sponsorart für ${slug} ist ungültig.`);
+      }
+      return { audienceSlug, audienceLabel, audienceGroup, sponsorType, description };
+    }).sort((left, right) => left.audienceSlug.localeCompare(right.audienceSlug))
+    : [];
   const sortOrder = Number(source.sortOrder);
   if (!uuidPattern.test(sourceId) || !slugPattern.test(slug) || !name || name.length > 120) {
     throw new Error('Ein Werbepartner im Feed enthält ungültige Stammdaten.');
@@ -90,6 +110,9 @@ for (const source of payload.partners) {
     teamAssignments.length !== teamAudienceSlugs.length
     || teamAssignments.some((assignment) => !teamAudienceSlugs.includes(assignment.audienceSlug))
   )) throw new Error(`Die Mannschaftszuweisungen für ${slug} sind widersprüchlich.`);
+  if (new Set(audienceAssignments.map((assignment) => assignment.audienceSlug)).size !== audienceAssignments.length) {
+    throw new Error(`Website-Zuweisungen für ${slug} sind doppelt vorhanden.`);
+  }
   ids.add(sourceId);
   slugs.add(slug);
   if (!Number.isInteger(sortOrder) || sortOrder < 0) throw new Error(`Sortierung für ${slug} ist ungültig.`);
@@ -124,6 +147,7 @@ for (const source of payload.partners) {
     website: profileUrl(source.websiteUrl, source.instagramHandle),
     teamAudienceSlugs,
     teamAssignments,
+    audienceAssignments,
     sortOrder,
     sourceUpdatedAt,
   });

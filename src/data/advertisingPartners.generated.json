@@ -6,50 +6,18 @@
     "logoSrc": "/images/sponsors/synced/sparkasse-hegau-bodensee.png",
     "logoAlt": "Logo von Sparkasse Hegau-Bodensee",
     "website": "https://www.sparkasse-hegau-bodensee.de/",
-    "teamAudienceSlugs": [
-      "herren-1",
-      "herren-2"
-    ],
+    "teamAudienceSlugs": ["herren-1", "herren-2"],
     "teamAssignments": [
-      {
-        "audienceSlug": "herren-1",
-        "sourceAudienceSlug": "herren-1",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "herren-2",
-        "sourceAudienceSlug": "herren-2",
-        "sponsorType": null,
-        "description": ""
-      }
+      { "audienceSlug": "herren-1", "sourceAudienceSlug": "herren-1", "sponsorType": null, "description": "" },
+      { "audienceSlug": "herren-2", "sourceAudienceSlug": "herren-2", "sponsorType": null, "description": "" }
+    ],
+    "audienceAssignments": [
+      { "audienceSlug": "gesamtverein", "audienceLabel": "Gesamtverein", "audienceGroup": "club", "sponsorType": null, "description": "" },
+      { "audienceSlug": "herren-1", "audienceLabel": "1. Herren", "audienceGroup": "mens_team", "sponsorType": null, "description": "" },
+      { "audienceSlug": "herren-2", "audienceLabel": "2. Herren", "audienceGroup": "mens_team", "sponsorType": null, "description": "" }
     ],
     "sortOrder": 10,
     "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
-  },
-  {
-    "sourceId": "04a2bb2f-222d-4c26-95a8-bc1a9bf9fc76",
-    "slug": "generali-rainer-hoier",
-    "name": "Allfinanz Deutsche Vermögensberatung - Rainer Hoier",
-    "logoSrc": "/images/sponsors/synced/generali-rainer-hoier.png",
-    "logoAlt": "Logo von Allfinanz Deutsche Vermögensberatung - Rainer Hoier",
-    "website": "https://www.allfinanz.ag/rainer.hoier",
-    "teamAudienceSlugs": [
-      "u13-juniorinnen"
-    ],
-    "teamAssignments": [
-      {
-        "audienceSlug": "u13-juniorinnen",
-        "sourceAudienceSlug": "u13-juniorinnen",
-        "sponsorType": {
-          "slug": "aufwaermshirt-sponsor",
-          "label": "Aufwärmshirt-Sponsor"
-        },
-        "description": ""
-      }
-    ],
-    "sortOrder": 100,
-    "sourceUpdatedAt": "2026-09-04T11:51:18.12734+00:00"
   },
   {
     "sourceId": "eb24aa2a-332a-4ca7-93ff-41ad61431902",
@@ -58,179 +26,13 @@
     "logoSrc": "/images/sponsors/synced/bgv.png",
     "logoAlt": "Logo von BGV",
     "website": "https://www.bgv.de/agenturen/carmenmartin.xhtml",
-    "teamAudienceSlugs": [
-      "u11-e1-junioren",
-      "u11-e2-junioren",
-      "u11-e3-junioren",
-      "u13-d1-junioren",
-      "u13-d2-junioren",
-      "u13-d3-junioren",
-      "u13-juniorinnen",
-      "u15-c1-junioren",
-      "u15-c2-junioren",
-      "u15-juniorinnen",
-      "u17-junioren",
-      "u17-juniorinnen",
-      "u19-junioren",
-      "u6-spielgruppe",
-      "u7-bambinis",
-      "u8-f-junioren",
-      "u9-f-junioren"
-    ],
+    "teamAudienceSlugs": ["u15-c1-junioren"],
     "teamAssignments": [
-      {
-        "audienceSlug": "u11-e1-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e3-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d1-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d3-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c1-junioren",
-        "sourceAudienceSlug": "u15-c1-junioren",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u19-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u6-spielgruppe",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u7-bambinis",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u8-f-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u9-f-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      }
+      { "audienceSlug": "u15-c1-junioren", "sourceAudienceSlug": "u15-c1-junioren", "sponsorType": { "slug": "trikotsponsor", "label": "Trikotsponsor" }, "description": "" }
+    ],
+    "audienceAssignments": [
+      { "audienceSlug": "jugendabteilung", "audienceLabel": "Jugendabteilung", "audienceGroup": "youth_department", "sponsorType": { "slug": "trikotsponsor", "label": "Trikotsponsor" }, "description": "" },
+      { "audienceSlug": "u15-c1-junioren", "audienceLabel": "U15 · C1-Junioren", "audienceGroup": "youth_team", "sponsorType": { "slug": "trikotsponsor", "label": "Trikotsponsor" }, "description": "" }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T16:04:52.96596+00:00"
@@ -242,23 +44,14 @@
     "logoSrc": "/images/sponsors/synced/bufee-radolfzell.png",
     "logoAlt": "Logo von Büfee Radolfzell",
     "website": "https://www.instagram.com/bufee.radolfzell/",
-    "teamAudienceSlugs": [
-      "herren-1",
-      "herren-2"
-    ],
+    "teamAudienceSlugs": ["herren-1", "herren-2"],
     "teamAssignments": [
-      {
-        "audienceSlug": "herren-1",
-        "sourceAudienceSlug": "herren-1",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "herren-2",
-        "sourceAudienceSlug": "herren-2",
-        "sponsorType": null,
-        "description": ""
-      }
+      { "audienceSlug": "herren-1", "sourceAudienceSlug": "herren-1", "sponsorType": null, "description": "" },
+      { "audienceSlug": "herren-2", "sourceAudienceSlug": "herren-2", "sponsorType": null, "description": "" }
+    ],
+    "audienceAssignments": [
+      { "audienceSlug": "herren-1", "audienceLabel": "1. Herren", "audienceGroup": "mens_team", "sponsorType": null, "description": "" },
+      { "audienceSlug": "herren-2", "audienceLabel": "2. Herren", "audienceGroup": "mens_team", "sponsorType": null, "description": "" }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:05:29.548437+00:00"
@@ -270,210 +63,17 @@
     "logoSrc": "/images/sponsors/synced/freibad-steisslinger-see.png",
     "logoAlt": "Logo von Freibad Steisslinger See",
     "website": null,
-    "teamAudienceSlugs": [
-      "frauen-1",
-      "frauen-2"
-    ],
+    "teamAudienceSlugs": ["frauen-1", "frauen-2"],
     "teamAssignments": [
-      {
-        "audienceSlug": "frauen-1",
-        "sourceAudienceSlug": "frauen-1",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "frauen-2",
-        "sourceAudienceSlug": "frauen-2",
-        "sponsorType": null,
-        "description": ""
-      }
+      { "audienceSlug": "frauen-1", "sourceAudienceSlug": "frauen-1", "sponsorType": null, "description": "" },
+      { "audienceSlug": "frauen-2", "sourceAudienceSlug": "frauen-2", "sponsorType": null, "description": "" }
+    ],
+    "audienceAssignments": [
+      { "audienceSlug": "frauen-1", "audienceLabel": "1. Frauen", "audienceGroup": "womens_team", "sponsorType": null, "description": "" },
+      { "audienceSlug": "frauen-2", "audienceLabel": "2. Frauen", "audienceGroup": "womens_team", "sponsorType": null, "description": "" }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
-  },
-  {
-    "sourceId": "c9b0f628-5b3c-49dc-b788-51945e5ab6b9",
-    "slug": "scaleauth",
-    "name": "ScaleAuth",
-    "logoSrc": "/images/sponsors/synced/scaleauth.png",
-    "logoAlt": "Logo von ScaleAuth",
-    "website": "https://www.scaleauth.com/",
-    "teamAudienceSlugs": [
-      "u11-e1-junioren",
-      "u11-e2-junioren",
-      "u11-e3-junioren",
-      "u13-d1-junioren",
-      "u13-d2-junioren",
-      "u13-d3-junioren",
-      "u13-juniorinnen",
-      "u15-c1-junioren",
-      "u15-c2-junioren",
-      "u15-juniorinnen",
-      "u17-junioren",
-      "u17-juniorinnen",
-      "u19-junioren",
-      "u6-spielgruppe",
-      "u7-bambinis",
-      "u8-f-junioren",
-      "u9-f-junioren"
-    ],
-    "teamAssignments": [
-      {
-        "audienceSlug": "u11-e1-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e3-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d1-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d3-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c1-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c2-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-junioren",
-        "sourceAudienceSlug": "u17-junioren",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-juniorinnen",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u19-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u6-spielgruppe",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u7-bambinis",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u8-f-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      },
-      {
-        "audienceSlug": "u9-f-junioren",
-        "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": {
-          "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
-        },
-        "description": ""
-      }
-    ],
-    "sortOrder": 100,
-    "sourceUpdatedAt": "2026-09-04T09:36:48.762215+00:00"
   },
   {
     "sourceId": "4c3c857f-67f7-4921-abaa-f855b9aa1fe3",
@@ -482,16 +82,12 @@
     "logoSrc": "/images/sponsors/synced/vulcano-restaurant-und-pizzeria.png",
     "logoAlt": "Logo von Vulcano - Restaurant und Pizzeria",
     "website": "https://restaurant-vulcano.de/",
-    "teamAudienceSlugs": [
-      "herren-1"
-    ],
+    "teamAudienceSlugs": ["herren-1"],
     "teamAssignments": [
-      {
-        "audienceSlug": "herren-1",
-        "sourceAudienceSlug": "herren-1",
-        "sponsorType": null,
-        "description": ""
-      }
+      { "audienceSlug": "herren-1", "sourceAudienceSlug": "herren-1", "sponsorType": null, "description": "" }
+    ],
+    "audienceAssignments": [
+      { "audienceSlug": "herren-1", "audienceLabel": "1. Herren", "audienceGroup": "mens_team", "sponsorType": null, "description": "" }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-01T21:54:17.643979+00:00"

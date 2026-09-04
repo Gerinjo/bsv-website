@@ -1,0 +1,73 @@
+---
+import { advertisingPartners } from '../data/advertisingPartners';
+import { isYouthSponsorAssignment } from '../data/sponsorAreas';
+import { withBase } from '../utils/paths';
+
+const youthSponsors = advertisingPartners.filter((partner) =>
+  partner.audienceAssignments.some(isYouthSponsorAssignment),
+);
+---
+
+{youthSponsors.length > 0 && (
+  <section class="youth-sponsors" aria-labelledby="youth-sponsors-title" data-youth-sponsors>
+    <div class="youth-sponsors-head">
+      <div>
+        <span>Partner unserer Jugend</span>
+        <h2 id="youth-sponsors-title">Rückhalt für<br /><em>junge Sterne.</em></h2>
+      </div>
+      <div>
+        <p>Hier zeigen wir bei jedem Besuch bis zu vier Partner, die unsere Jugendabteilung oder eine unserer Jugendmannschaften direkt unterstützen.</p>
+        <a href={withBase('/werbepartner?bereich=jugendabteilung')}>Alle Jugendsponsoren <b aria-hidden="true">↗</b></a>
+      </div>
+    </div>
+    <div class="youth-sponsor-grid" style={`--sponsor-columns:${Math.min(youthSponsors.length, 4)}`}>
+      {youthSponsors.map((partner, index) => {
+        const content = (
+          <>
+            <img src={withBase(partner.logoSrc)} alt={partner.logoAlt} loading="lazy" decoding="async" />
+            <strong>{partner.name}</strong>
+          </>
+        );
+        return partner.website ? (
+          <a data-youth-sponsor href={partner.website} target="_blank" rel="noreferrer" hidden={index >= 4} aria-label={`${partner.name} besuchen`}>{content}<span aria-hidden="true">↗</span></a>
+        ) : (
+          <article data-youth-sponsor hidden={index >= 4}>{content}</article>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-youth-sponsors]').forEach((showcase) => {
+    const sponsors = [...showcase.querySelectorAll<HTMLElement>('[data-youth-sponsor]')];
+    for (let index = sponsors.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [sponsors[index], sponsors[randomIndex]] = [sponsors[randomIndex], sponsors[index]];
+    }
+    sponsors.forEach((sponsor, index) => {
+      sponsor.hidden = index >= 4;
+      showcase.querySelector('.youth-sponsor-grid')?.append(sponsor);
+    });
+  });
+</script>
+
+<style>
+  .youth-sponsors{margin-top:85px;padding:58px;background:#092f20;color:white}
+  .youth-sponsors-head{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:end;margin-bottom:42px}
+  .youth-sponsors-head span{color:#f4d638;font-size:.67rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+  .youth-sponsors-head h2{margin:14px 0 0;color:white;font-size:clamp(2.8rem,5vw,4.6rem);line-height:.92;letter-spacing:-.055em}
+  .youth-sponsors-head h2 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}
+  .youth-sponsors-head p{margin:0;color:#bfd0c5;line-height:1.7}
+  .youth-sponsors-head a{width:max-content;margin-top:23px;padding:13px 15px;display:flex;align-items:center;gap:24px;background:#f4d638;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none}
+  .youth-sponsor-grid{display:grid;grid-template-columns:repeat(var(--sponsor-columns),minmax(0,1fr));gap:13px}
+  .youth-sponsor-grid>a,.youth-sponsor-grid>article{position:relative;min-width:0;min-height:180px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;border-top:4px solid #f4d638;background:white;color:#164f32;text-decoration:none}
+  .youth-sponsor-grid [hidden]{display:none}
+  .youth-sponsor-grid img{width:100%;max-width:270px;height:105px;margin:auto;object-fit:contain}
+  .youth-sponsor-grid strong{font-size:.76rem;line-height:1.35}
+  .youth-sponsor-grid>a>span{position:absolute;right:14px;bottom:13px;color:#092f20;font-weight:900}
+  .youth-sponsor-grid>a{transition:transform .2s ease,box-shadow .2s ease}
+  .youth-sponsor-grid>a:hover,.youth-sponsor-grid>a:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 15px 35px rgb(0 0 0 / 24%)}
+  @media(max-width:900px){.youth-sponsors-head{grid-template-columns:1fr;gap:28px}.youth-sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:560px){.youth-sponsors{margin-top:60px;padding:42px 25px}.youth-sponsor-grid{grid-template-columns:1fr}.youth-sponsor-grid>a,.youth-sponsor-grid>article{min-height:155px}.youth-sponsor-grid img{height:90px}}
+</style>
