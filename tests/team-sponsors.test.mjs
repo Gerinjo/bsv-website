@@ -8,6 +8,7 @@ const pageSource = readFileSync(new URL('../src/pages/[...slug].astro', import.m
 const syncSource = readFileSync(new URL('../scripts/sync-advertising-partners.mjs', import.meta.url), 'utf8');
 const homeSponsorsSource = readFileSync(new URL('../src/components/HomeSponsorShowcase.astro', import.meta.url), 'utf8');
 const youthSponsorsSource = readFileSync(new URL('../src/components/YouthSponsorShowcase.astro', import.meta.url), 'utf8');
+const youthLandingSource = readFileSync(new URL('../src/components/YouthLandingContent.astro', import.meta.url), 'utf8');
 const partnerPageSource = readFileSync(new URL('../src/pages/werbepartner/index.astro', import.meta.url), 'utf8');
 const headerSource = readFileSync(new URL('../src/components/Header.astro', import.meta.url), 'utf8');
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
@@ -67,6 +68,16 @@ test('the youth page shows up to four direct youth sponsors and links to the pre
   assert.match(youthSponsorsSource, /\/werbepartner\?bereich=jugendabteilung/);
   assert.match(youthSponsorsSource, /Alle Jugendsponsoren/);
   assert.match(headerSource, /item\.label === 'Junge Sterne' \? item\.href/);
+});
+
+test('the youth landing keeps leadership and stories above sponsors and three team groups below', () => {
+  assert.match(pageSource, /isYouthLanding && <YouthLandingContent \/>/);
+  assert.ok(youthLandingSource.indexOf('class="leadership-card"') < youthLandingSource.indexOf('<YouthSponsorShowcase />'));
+  assert.ok(youthLandingSource.indexOf('class="story-card"') < youthLandingSource.indexOf('<YouthSponsorShowcase />'));
+  assert.ok(youthLandingSource.indexOf('<YouthSponsorShowcase />') < youthLandingSource.indexOf('class="youth-teams"'));
+  assert.match(youthLandingSource, /\['Leistungssport', 'Breitensport', 'Juniorinnen'\]/);
+  assert.match(youthLandingSource, /departmentGroup\.links\.filter/);
+  assert.match(youthLandingSource, /teamProfiles\[link\.href\.replace/);
 });
 
 test('the partner overview has two filters and groups cards by sponsor type', () => {

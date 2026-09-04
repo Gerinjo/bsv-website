@@ -3,7 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DocumentPage from '../components/DocumentPage.astro';
 import CancellationPage from '../components/CancellationPage.astro';
-import YouthSponsorShowcase from '../components/YouthSponsorShowcase.astro';
+import YouthLandingContent from '../components/YouthLandingContent.astro';
 import Layout from '../layouts/Layout.astro';
 import { legacyContent } from '../data/legacyContent';
 import { sportsPages, sportsPaths } from '../data/sportsPages';
@@ -861,7 +861,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
         </aside>
       )}
       {!migratedBody && !isDepartmentPage && !isDocumentPage && !isCancellationPage && page.body && <div class="prose">{page.body.map((paragraph) => <p>{paragraph}</p>)}</div>}
-      {isYouthLanding && <YouthSponsorShowcase />}
+      {isYouthLanding && <YouthLandingContent />}
 
       {!migratedBody && page.kind === 'events' && <div class="event-list"><article><time><b>11</b> JUL</time><div><small>07:00 – 14:00 Uhr</small><h2>Gebrauchträdermarkt</h2><p>Mit Zweirad Mees und dem Förderverein BSV Nordstern.</p></div></article><article><time><b>11</b> JUL</time><div><small>08:00 – 16:00 Uhr</small><h2>Flohmarkt</h2><p>Auf dem Gelände des BSV Nordstern, Schlesierstraße 43.</p></div></article></div>}
 

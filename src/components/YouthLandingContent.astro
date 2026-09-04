@@ -1,0 +1,142 @@
+---
+import { menu } from '../data/navigation';
+import { teamProfiles } from '../data/teamPages';
+import { withBase } from '../utils/paths';
+import YouthSponsorShowcase from './YouthSponsorShowcase.astro';
+
+const youthMenu = menu.find((item) => item.label === 'Junge Sterne')!;
+const departmentGroup = youthMenu.groups.find((group) => group.title === 'Jugendabteilung')!;
+const storyGroup = youthMenu.groups.find((group) => group.title === 'Geschichten')!;
+const teamGroups = youthMenu.groups.filter((group) => ['Leistungssport', 'Breitensport', 'Juniorinnen'].includes(group.title));
+const leadershipLink = departmentGroup.links.find((link) => link.href === '/jugend/vorstandschaft')!;
+const departmentLinks = departmentGroup.links.filter((link) => link !== leadershipLink);
+const featuredStory = storyGroup.links[0];
+---
+
+<section class="youth-overview" aria-labelledby="youth-overview-title">
+  <div class="section-heading">
+    <div>
+      <span>Jugendabteilung</span>
+      <h2 id="youth-overview-title">Menschen, Haltung<br /><em>und Geschichten.</em></h2>
+    </div>
+    <p>Hier findest du die Jugendleitung, unser gemeinsames Jugendkonzept und Einblicke in die Entwicklung unserer jungen Sterne.</p>
+  </div>
+
+  <div class="overview-grid">
+    <article class="leadership-card">
+      <div class="card-number" aria-hidden="true">01</div>
+      <small>Jugendleitung</small>
+      <h3>Gemeinsam für<br />unsere Jugend.</h3>
+      <p>Die Jugendleitung und die Jugendvertretungen sind die zentralen Ansprechpersonen für Mannschaften, Familien und Trainer:innen.</p>
+      <a class="primary-link" href={withBase(leadershipLink.href)}>{leadershipLink.label} <span aria-hidden="true">↗</span></a>
+      <nav class="department-links" aria-label="Weitere Inhalte der Jugendabteilung">
+        {departmentLinks.map((link) => <a href={withBase(link.href)}>{link.label}<span aria-hidden="true">↗</span></a>)}
+      </nav>
+    </article>
+
+    {featuredStory && (
+      <a class="story-card" href={withBase(featuredStory.href)}>
+        <img src={withBase('/images/jugend/personen/mariam-oboladze.webp')} alt="Mariam Oboladze auf dem Vereinsgelände" width="900" height="1100" loading="lazy" />
+        <span class="story-shade" aria-hidden="true"></span>
+        <div class="story-copy">
+          <small>Geschichte</small>
+          <h3>Vom BSV ins<br />Nationaltrikot.</h3>
+          <p>Mariam Oboladzes Weg von den B-Juniorinnen des BSV bis in die georgische Nachwuchs-Nationalmannschaft.</p>
+          <strong>Geschichte lesen <b aria-hidden="true">↗</b></strong>
+        </div>
+      </a>
+    )}
+  </div>
+</section>
+
+<YouthSponsorShowcase />
+
+<section class="youth-teams" aria-labelledby="youth-teams-title">
+  <div class="section-heading teams-heading">
+    <div>
+      <span>Unsere Mannschaften</span>
+      <h2 id="youth-teams-title">Drei Bereiche.<br /><em>Ein Nachwuchs.</em></h2>
+    </div>
+    <p>Wähle den passenden Bereich und öffne direkt die Seite der gewünschten Mannschaft.</p>
+  </div>
+
+  <div class="team-groups">
+    {teamGroups.map((group, groupIndex) => (
+      <article class:list={['team-group', `group-${groupIndex + 1}`]}>
+        <header>
+          <span>0{groupIndex + 1}</span>
+          <div><small>Junge Sterne</small><h3>{group.title}</h3></div>
+          <b>{String(group.links.length).padStart(2, '0')}</b>
+        </header>
+        <ul>
+          {group.links.map((link) => {
+            const profile = teamProfiles[link.href.replace(/^\//, '')];
+            return (
+              <li>
+                <a href={withBase(link.href)}>
+                  <span class="team-mark" aria-hidden="true">{profile?.letter ?? '✦'}</span>
+                  <strong>{link.label}</strong>
+                  <b aria-hidden="true">↗</b>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .youth-overview { margin-top: 10px; }
+  .section-heading { display:grid; grid-template-columns:1fr .75fr; gap:70px; align-items:end; margin-bottom:45px; }
+  .section-heading span { color:#164f32; font-size:.67rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .section-heading h2 { margin:14px 0 0; color:#10251a; font-size:clamp(2.8rem,5vw,4.7rem); line-height:.92; letter-spacing:-.055em; }
+  .section-heading h2 em { color:#164f32; font-family:Georgia,serif; font-weight:400; }
+  .section-heading > p { max-width:430px; margin:0; color:#65746a; line-height:1.75; }
+  .overview-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; }
+  .leadership-card { position:relative; min-height:590px; padding:48px; overflow:hidden; background:#f4d638; color:#092f20; }
+  .leadership-card::after { position:absolute; right:-30px; top:-60px; color:rgb(255 255 255 / 42%); font-size:12rem; line-height:1; content:'✦'; }
+  .leadership-card > * { position:relative; z-index:1; }
+  .card-number { position:absolute; right:35px; top:27px; color:#164f32; font-size:.72rem; font-weight:950; }
+  .leadership-card > small,.story-copy > small { display:block; color:#164f32; font-size:.66rem; font-weight:950; letter-spacing:.15em; text-transform:uppercase; }
+  .leadership-card h3,.story-card h3 { margin:17px 0 22px; font-size:clamp(2.5rem,4vw,4rem); line-height:.93; letter-spacing:-.055em; }
+  .leadership-card > p { max-width:570px; color:#405144; line-height:1.7; }
+  .primary-link { width:max-content; margin-top:28px; padding:15px 17px; display:flex; align-items:center; gap:35px; background:#092f20; color:white; font-size:.75rem; font-weight:900; text-decoration:none; }
+  .department-links { margin-top:42px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid rgb(9 47 32 / 20%); }
+  .department-links a { min-width:0; padding:13px 8px 13px 0; display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid rgb(9 47 32 / 20%); color:#092f20; font-size:.68rem; font-weight:850; text-decoration:none; }
+  .department-links a:nth-child(odd) { margin-right:18px; }
+  .story-card { position:relative; min-height:590px; overflow:hidden; background:#092f20; color:white; text-decoration:none; }
+  .story-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 25%; transition:transform .45s ease; }
+  .story-shade { position:absolute; inset:18% 0 0; background:linear-gradient(transparent,rgb(5 27 18 / 95%)); }
+  .story-copy { position:absolute; z-index:1; inset:auto 42px 40px; }
+  .story-copy > small { color:#f4d638; }
+  .story-copy h3 { color:white; font-size:clamp(2.35rem,3.6vw,3.55rem); }
+  .story-copy p { max-width:470px; color:#c4d4ca; line-height:1.65; }
+  .story-copy strong { margin-top:24px; display:flex; justify-content:space-between; color:#f4d638; font-size:.75rem; }
+  .story-card:hover img,.story-card:focus-visible img { transform:scale(1.035); }
+  .story-card:focus-visible,.primary-link:focus-visible,.department-links a:focus-visible,.team-group a:focus-visible { outline:3px solid #164f32; outline-offset:3px; }
+  .youth-teams { margin-top:105px; }
+  .teams-heading { margin-bottom:48px; }
+  .team-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:start; }
+  .team-group { overflow:hidden; border-top:5px solid #164f32; background:#eef2ef; }
+  .team-group.group-2 { border-top-color:#f4d638; }
+  .team-group.group-3 { border-top-color:#092f20; }
+  .team-group header { min-height:105px; padding:22px 24px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:15px; background:white; border-bottom:1px solid #d4ddd6; }
+  .team-group header > span { color:#164f32; font-size:.65rem; font-weight:950; }
+  .team-group header small { display:block; color:#74837a; font-size:.55rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+  .team-group header h3 { margin:4px 0 0; color:#10251a; font-size:1.35rem; }
+  .team-group header > b { color:#a3aea7; font-size:1.4rem; }
+  .team-group ul { margin:0; padding:8px 18px 18px; list-style:none; }
+  .team-group li { border-bottom:1px solid #d4ddd6; }
+  .team-group li:last-child { border-bottom:0; }
+  .team-group a { min-height:62px; padding:8px 4px; display:grid; grid-template-columns:38px 1fr auto; align-items:center; gap:11px; color:#183024; text-decoration:none; }
+  .team-mark { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:#164f32; color:white; font-size:.61rem; font-weight:950; }
+  .group-2 .team-mark { background:#f4d638; color:#092f20; }
+  .group-3 .team-mark { background:#092f20; color:#f4d638; }
+  .team-group a strong { font-size:.72rem; line-height:1.3; }
+  .team-group a > b { color:#164f32; }
+  .team-group a:hover { color:#164f32; }
+  @media(max-width:900px){.section-heading,.overview-grid{grid-template-columns:1fr}.section-heading{gap:25px}.story-card{min-height:540px}.team-groups{grid-template-columns:1fr 1fr}.team-group:last-child{grid-column:1/-1}}
+  @media(max-width:600px){.leadership-card{min-height:0;padding:35px 25px}.department-links{grid-template-columns:1fr}.department-links a:nth-child(odd){margin-right:0}.story-card{min-height:500px}.story-copy{inset:auto 25px 28px}.team-groups{grid-template-columns:1fr}.team-group:last-child{grid-column:auto}.youth-teams{margin-top:75px}}
+</style>
