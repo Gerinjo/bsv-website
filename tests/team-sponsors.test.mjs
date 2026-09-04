@@ -79,6 +79,9 @@ test('the youth landing keeps leadership and stories above sponsors and three te
   assert.match(youthLandingSource, /\['Leistungssport', 'Breitensport', 'Juniorinnen'\]/);
   assert.match(youthLandingSource, /departmentGroup\.links\.filter/);
   assert.match(youthLandingSource, /teamProfiles\[link\.href\.replace/);
+  assert.match(youthLandingSource, /class="story-mobile-link"/);
+  assert.match(youthLandingSource, /@media\(max-width:600px\).*\.story-card>img,\.story-shade,\.story-copy\{display:none\}/s);
+  assert.match(youthLandingSource, /\.story-mobile-link\{min-height:78px/);
 });
 
 test('the youth mega menu shows three random youth partners below its team image', () => {

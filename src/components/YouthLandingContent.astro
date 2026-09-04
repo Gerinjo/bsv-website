@@ -44,6 +44,10 @@ const featuredStory = storyGroup.links[0];
           <p>Mariam Oboladzes Weg von den B-Juniorinnen des BSV bis in die georgische Nachwuchs-Nationalmannschaft.</p>
           <strong>Geschichte lesen <b aria-hidden="true">↗</b></strong>
         </div>
+        <span class="story-mobile-link">
+          <span><small>Geschichte</small><strong>Vom BSV ins Nationaltrikot</strong></span>
+          <b aria-hidden="true">↗</b>
+        </span>
       </a>
     )}
   </div>
@@ -114,6 +118,7 @@ const featuredStory = storyGroup.links[0];
   .story-copy h3 { color:white; font-size:clamp(2.35rem,3.6vw,3.55rem); }
   .story-copy p { max-width:470px; color:#c4d4ca; line-height:1.65; }
   .story-copy strong { margin-top:24px; display:flex; justify-content:space-between; color:#f4d638; font-size:.75rem; }
+  .story-mobile-link { display:none; }
   .story-card:hover img,.story-card:focus-visible img { transform:scale(1.035); }
   .story-card:focus-visible,.primary-link:focus-visible,.department-links a:focus-visible,.team-group a:focus-visible { outline:3px solid #164f32; outline-offset:3px; }
   .youth-teams { margin-top:105px; }
@@ -138,5 +143,5 @@ const featuredStory = storyGroup.links[0];
   .team-group a > b { color:#164f32; }
   .team-group a:hover { color:#164f32; }
   @media(max-width:900px){.section-heading,.overview-grid{grid-template-columns:1fr}.section-heading{gap:25px}.story-card{min-height:540px}.team-groups{grid-template-columns:1fr 1fr}.team-group:last-child{grid-column:1/-1}}
-  @media(max-width:600px){.leadership-card{min-height:0;padding:35px 25px}.department-links{grid-template-columns:1fr}.department-links a:nth-child(odd){margin-right:0}.story-card{min-height:500px}.story-copy{inset:auto 25px 28px}.team-groups{grid-template-columns:1fr}.team-group:last-child{grid-column:auto}.youth-teams{margin-top:75px}}
+  @media(max-width:600px){.leadership-card{min-height:0;padding:35px 25px}.department-links{grid-template-columns:1fr}.department-links a:nth-child(odd){margin-right:0}.story-card{min-height:0;background:#092f20}.story-card>img,.story-shade,.story-copy{display:none}.story-mobile-link{min-height:78px;padding:16px 18px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:18px}.story-mobile-link small,.story-mobile-link strong{display:block}.story-mobile-link small{margin-bottom:5px;color:#f4d638;font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.story-mobile-link strong{color:white;font-size:.9rem;line-height:1.25}.story-mobile-link>b{width:34px;aspect-ratio:1;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#f4d638;color:#092f20}.team-groups{grid-template-columns:1fr}.team-group:last-child{grid-column:auto}.youth-teams{margin-top:75px}}
 </style>
