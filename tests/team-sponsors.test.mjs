@@ -14,6 +14,9 @@ test('synced sponsors include deduplicated team audience assignments', () => {
     assert.equal(new Set(partner.teamAudienceSlugs).size, partner.teamAudienceSlugs.length, `${partner.name}: doppelte Mannschaftszuweisung`);
   }
   assert.match(syncSource, /teamAudienceSlugs/);
+  assert.match(syncSource, /teamAssignments/);
+  assert.match(syncSource, /sourceAudienceSlug/);
+  assert.match(syncSource, /sponsorType/);
 });
 
 test('every assigned audience used by current sponsor data maps to a team page', () => {
@@ -29,6 +32,8 @@ test('team pages render sponsor logos and an explicit thank-you', () => {
   assert.match(pageSource, /teamProfile\.sponsors/);
   assert.match(pageSource, /Danke für euren Rückhalt\./);
   assert.match(pageSource, /für die Unterstützung und das Vertrauen/);
+  assert.match(pageSource, /sponsor\.typeLabel/);
+  assert.match(pageSource, /sponsor\.description/);
 });
 
 test('the home sponsor showcase links to the complete partner overview', () => {

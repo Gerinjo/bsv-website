@@ -56,6 +56,25 @@ for (const source of payload.partners) {
   const teamAudienceSlugs = Array.isArray(source.teamAudienceSlugs)
     ? [...new Set(source.teamAudienceSlugs.map((value) => String(value).trim()))].sort()
     : [];
+  const teamAssignments = Array.isArray(source.teamAssignments)
+    ? source.teamAssignments.map((assignment) => {
+      const audienceSlug = String(assignment?.audienceSlug ?? '').trim();
+      const sourceAudienceSlug = String(assignment?.sourceAudienceSlug ?? '').trim();
+      const description = String(assignment?.description ?? '').trim();
+      const sponsorType = assignment?.sponsorType == null ? null : {
+        slug: String(assignment.sponsorType.slug ?? '').trim(),
+        label: String(assignment.sponsorType.label ?? '').trim(),
+      };
+      if (!slugPattern.test(audienceSlug) || !slugPattern.test(sourceAudienceSlug)) {
+        throw new Error(`Eine detaillierte Mannschaftszuweisung für ${slug} ist ungültig.`);
+      }
+      if (description.length > 1600) throw new Error(`Ein Zuordnungstext für ${slug} ist zu lang.`);
+      if (sponsorType && (!slugPattern.test(sponsorType.slug) || !sponsorType.label || sponsorType.label.length > 80)) {
+        throw new Error(`Eine Sponsorart für ${slug} ist ungültig.`);
+      }
+      return { audienceSlug, sourceAudienceSlug, sponsorType, description };
+    }).sort((left, right) => left.audienceSlug.localeCompare(right.audienceSlug))
+    : [];
   const sortOrder = Number(source.sortOrder);
   if (!uuidPattern.test(sourceId) || !slugPattern.test(slug) || !name || name.length > 120) {
     throw new Error('Ein Werbepartner im Feed enthält ungültige Stammdaten.');
@@ -64,6 +83,13 @@ for (const source of payload.partners) {
   if (teamAudienceSlugs.some((audienceSlug) => !slugPattern.test(audienceSlug))) {
     throw new Error(`Eine Mannschaftszuweisung für ${slug} ist ungültig.`);
   }
+  if (new Set(teamAssignments.map((assignment) => assignment.audienceSlug)).size !== teamAssignments.length) {
+    throw new Error(`Detaillierte Mannschaftszuweisungen für ${slug} sind doppelt vorhanden.`);
+  }
+  if (teamAssignments.length && (
+    teamAssignments.length !== teamAudienceSlugs.length
+    || teamAssignments.some((assignment) => !teamAudienceSlugs.includes(assignment.audienceSlug))
+  )) throw new Error(`Die Mannschaftszuweisungen für ${slug} sind widersprüchlich.`);
   ids.add(sourceId);
   slugs.add(slug);
   if (!Number.isInteger(sortOrder) || sortOrder < 0) throw new Error(`Sortierung für ${slug} ist ungültig.`);
@@ -97,6 +123,7 @@ for (const source of payload.partners) {
     logoAlt: `Logo von ${name}`,
     website: profileUrl(source.websiteUrl, source.instagramHandle),
     teamAudienceSlugs,
+    teamAssignments,
     sortOrder,
     sourceUpdatedAt,
   });
