@@ -7,48 +7,10 @@
     "logoAlt": "Logo von Sparkasse Hegau-Bodensee",
     "website": "https://www.sparkasse-hegau-bodensee.de/",
     "teamAudienceSlugs": [
-      "alte-herren",
-      "frauen-1",
-      "frauen-2",
       "herren-1",
-      "herren-2",
-      "u11-e1-junioren",
-      "u11-e2-junioren",
-      "u11-e3-junioren",
-      "u13-d1-junioren",
-      "u13-d2-junioren",
-      "u13-d3-junioren",
-      "u13-juniorinnen",
-      "u15-c1-junioren",
-      "u15-c2-junioren",
-      "u15-juniorinnen",
-      "u17-junioren",
-      "u17-juniorinnen",
-      "u19-junioren",
-      "u6-spielgruppe",
-      "u7-bambinis",
-      "u8-f-junioren",
-      "u9-f-junioren"
+      "herren-2"
     ],
     "teamAssignments": [
-      {
-        "audienceSlug": "alte-herren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "frauen-1",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "frauen-2",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
       {
         "audienceSlug": "herren-1",
         "sourceAudienceSlug": "herren-1",
@@ -58,108 +20,6 @@
       {
         "audienceSlug": "herren-2",
         "sourceAudienceSlug": "herren-2",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e1-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e2-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u11-e3-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d1-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d2-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-d3-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u13-juniorinnen",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c1-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-c2-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u15-juniorinnen",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u17-juniorinnen",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u19-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u6-spielgruppe",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u7-bambinis",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u8-f-junioren",
-        "sourceAudienceSlug": "gesamtverein",
-        "sponsorType": null,
-        "description": ""
-      },
-      {
-        "audienceSlug": "u9-f-junioren",
-        "sourceAudienceSlug": "gesamtverein",
         "sponsorType": null,
         "description": ""
       }
@@ -197,43 +57,64 @@
       {
         "audienceSlug": "u11-e1-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u11-e2-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u11-e3-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u13-d1-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u13-d2-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u13-d3-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u13-juniorinnen",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
@@ -248,55 +129,82 @@
       {
         "audienceSlug": "u15-c2-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u15-juniorinnen",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u17-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u17-juniorinnen",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u19-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u6-spielgruppe",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u7-bambinis",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u8-f-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       },
       {
         "audienceSlug": "u9-f-junioren",
         "sourceAudienceSlug": "jugendabteilung",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
         "description": ""
       }
     ],
