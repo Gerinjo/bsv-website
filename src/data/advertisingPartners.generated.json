@@ -28,6 +28,30 @@
     "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
   },
   {
+    "sourceId": "04a2bb2f-222d-4c26-95a8-bc1a9bf9fc76",
+    "slug": "generali-rainer-hoier",
+    "name": "Allfinanz Deutsche Vermögensberatung - Rainer Hoier",
+    "logoSrc": "/images/sponsors/synced/generali-rainer-hoier.png",
+    "logoAlt": "Logo von Allfinanz Deutsche Vermögensberatung - Rainer Hoier",
+    "website": "https://www.allfinanz.ag/rainer.hoier",
+    "teamAudienceSlugs": [
+      "u13-juniorinnen"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "u13-juniorinnen",
+        "sourceAudienceSlug": "u13-juniorinnen",
+        "sponsorType": {
+          "slug": "aufwaermshirt-sponsor",
+          "label": "Aufwärmshirt-Sponsor"
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-09-04T10:07:34.045444+00:00"
+  },
+  {
     "sourceId": "eb24aa2a-332a-4ca7-93ff-41ad61431902",
     "slug": "bgv",
     "name": "BGV",
