@@ -14,13 +14,23 @@
       {
         "audienceSlug": "herren-1",
         "sourceAudienceSlug": "herren-1",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
         "description": ""
       },
       {
         "audienceSlug": "herren-2",
         "sourceAudienceSlug": "herren-2",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
         "description": ""
       }
     ],
@@ -29,14 +39,24 @@
         "audienceSlug": "herren-1",
         "audienceLabel": "1. Herren",
         "audienceGroup": "mens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
         "description": ""
       },
       {
         "audienceSlug": "herren-2",
         "audienceLabel": "2. Herren",
         "audienceGroup": "mens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
         "description": ""
       }
     ],
@@ -264,9 +284,36 @@
     "logoSrc": "/images/sponsors/synced/bkk-linde.png",
     "logoAlt": "Logo von BKK Linde",
     "website": "https://bkk-linde.de/",
-    "teamAudienceSlugs": [],
-    "teamAssignments": [],
-    "audienceAssignments": [],
+    "teamAudienceSlugs": [
+      "u19-junioren"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "u19-junioren",
+        "sourceAudienceSlug": "u19-junioren",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      }
+    ],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "u19-junioren",
+        "audienceLabel": "U19 · A-Junioren",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      }
+    ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-04T13:12:22.247826+00:00"
   },
@@ -285,13 +332,23 @@
       {
         "audienceSlug": "herren-1",
         "sourceAudienceSlug": "herren-1",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       },
       {
         "audienceSlug": "herren-2",
         "sourceAudienceSlug": "herren-2",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       }
     ],
@@ -300,14 +357,24 @@
         "audienceSlug": "herren-1",
         "audienceLabel": "1. Herren",
         "audienceGroup": "mens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       },
       {
         "audienceSlug": "herren-2",
         "audienceLabel": "2. Herren",
         "audienceGroup": "mens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       }
     ],
@@ -355,13 +422,23 @@
       {
         "audienceSlug": "frauen-1",
         "sourceAudienceSlug": "frauen-1",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       },
       {
         "audienceSlug": "frauen-2",
         "sourceAudienceSlug": "frauen-2",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       }
     ],
@@ -370,14 +447,24 @@
         "audienceSlug": "frauen-1",
         "audienceLabel": "1. Frauen",
         "audienceGroup": "womens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       },
       {
         "audienceSlug": "frauen-2",
         "audienceLabel": "2. Frauen",
         "audienceGroup": "womens_team",
-        "sponsorType": null,
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
         "description": ""
       }
     ],
