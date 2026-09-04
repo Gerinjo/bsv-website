@@ -88,6 +88,7 @@ test('the youth mega menu shows three random youth partners below its team image
   assert.match(youthMenuSponsorsSource, /hidden=\{index >= 3\}/);
   assert.match(youthMenuSponsorsSource, /Math\.floor\(Math\.random\(\) \* \(index \+ 1\)\)/);
   assert.match(youthMenuSponsorsSource, /\/werbepartner\?bereich=jugendabteilung/);
+  assert.match(youthMenuSponsorsSource, /\.youth-menu-sponsor-grid \{ display:grid; grid-template-columns:1fr;/);
 });
 
 test('the partner overview has two filters and groups cards by sponsor type', () => {
