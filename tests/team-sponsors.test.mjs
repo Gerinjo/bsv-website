@@ -78,11 +78,15 @@ test('the youth landing keeps leadership and stories above sponsors and four tea
   assert.ok(youthLandingSource.indexOf('<YouthSponsorShowcase />') < youthLandingSource.indexOf('class="youth-teams"'));
   assert.match(youthLandingSource, /\['Leistungsbereich', 'Entwicklungsbereich', 'Kinderfußball', 'Juniorinnen'\]/);
   assert.match(youthLandingSource, /Vier Bereiche/);
+  assert.match(youthLandingSource, /teamGroupColumns = \[teamGroups\.slice\(0, 2\), teamGroups\.slice\(2, 3\), teamGroups\.slice\(3, 4\)\]/);
+  assert.match(youthLandingSource, /\.team-groups \{ display:grid; grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(navigationSource, /title: 'Leistungsbereich',[\s\S]*?'U13 D2-Junioren'[\s\S]*?title: 'Entwicklungsbereich'/);
   assert.match(navigationSource, /title: 'Entwicklungsbereich',[\s\S]*?'U15 C2-Junioren'[\s\S]*?'U13 D3-Junioren'[\s\S]*?title: 'Kinderfußball'/);
   assert.match(navigationSource, /title: 'Kinderfußball',[\s\S]*?'U11 E1-Junioren'[\s\S]*?'U6 G-Junioren Spielgruppe'[\s\S]*?title: 'Juniorinnen'/);
   assert.match(teamPagesSource, /path:'jugend\/u15-c2',kicker:'Entwicklungsbereich'/);
   assert.match(teamPagesSource, /path:'jugend\/u13-d3',kicker:'Entwicklungsbereich'/);
+  assert.match(navigationSource, /title: 'Geschichten',[\s\S]*?title: 'Unterstützung gesucht',[\s\S]*?'Trainer:innen gesucht'/);
+  assert.match(youthLandingSource, /supportGroup\.links/);
   assert.match(youthLandingSource, /departmentGroup\.links\.filter/);
   assert.match(youthLandingSource, /teamProfiles\[link\.href\.replace/);
   assert.match(youthLandingSource, /class="story-mobile-link"/);

@@ -72,10 +72,12 @@ export const menu: MenuItem[] = [
         { label: 'Auszeichnungen', href: '/jugend/auszeichnungen' },
         { label: 'Schiedsrichter & Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
         { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
-        { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
       ]},
       { title: 'Geschichten', links: [
         { label: 'Vom BSV ins Nationaltrikot · Mariam Oboladze', href: '/jugend/geschichten/mariam-oboladze' },
+      ]},
+      { title: 'Unterstützung gesucht', links: [
+        { label: 'Trainer:innen gesucht', href: '/jugend/trainer-gesucht' },
       ]},
       { title: 'Leistungsbereich', links: [
         { label: 'U19 A-Junioren', href: '/jugend/u19' },
