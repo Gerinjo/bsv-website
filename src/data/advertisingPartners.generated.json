@@ -268,6 +268,190 @@
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
   },
   {
+    "sourceId": "c9b0f628-5b3c-49dc-b788-51945e5ab6b9",
+    "slug": "scaleauth",
+    "name": "ScaleAuth",
+    "logoSrc": "/images/sponsors/synced/scaleauth.png",
+    "logoAlt": "Logo von ScaleAuth",
+    "website": "https://www.scaleauth.com/",
+    "teamAudienceSlugs": [
+      "u11-e1-junioren",
+      "u11-e2-junioren",
+      "u11-e3-junioren",
+      "u13-d1-junioren",
+      "u13-d2-junioren",
+      "u13-d3-junioren",
+      "u13-juniorinnen",
+      "u15-c1-junioren",
+      "u15-c2-junioren",
+      "u15-juniorinnen",
+      "u17-junioren",
+      "u17-juniorinnen",
+      "u19-junioren",
+      "u6-spielgruppe",
+      "u7-bambinis",
+      "u8-f-junioren",
+      "u9-f-junioren"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "u11-e1-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e3-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d1-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d3-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c1-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-junioren",
+        "sourceAudienceSlug": "u17-junioren",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u19-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u6-spielgruppe",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u7-bambinis",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u8-f-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u9-f-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-09-04T09:36:48.762215+00:00"
+  },
+  {
     "sourceId": "4c3c857f-67f7-4921-abaa-f855b9aa1fe3",
     "slug": "vulcano-restaurant-und-pizzeria",
     "name": "Vulcano - Restaurant und Pizzeria",
