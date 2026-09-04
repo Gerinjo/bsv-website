@@ -77,16 +77,18 @@ export const menu: MenuItem[] = [
       { title: 'Geschichten', links: [
         { label: 'Vom BSV ins Nationaltrikot · Mariam Oboladze', href: '/jugend/geschichten/mariam-oboladze' },
       ]},
-      { title: 'Leistungssport', links: [
+      { title: 'Leistungsbereich', links: [
         { label: 'U19 A-Junioren', href: '/jugend/u19' },
         { label: 'U17 B-Junioren', href: '/jugend/u17' },
         { label: 'U15 C1-Junioren', href: '/jugend/u15-c1' },
         { label: 'U13 D1-Junioren', href: '/jugend/u13-d1' },
         { label: 'U13 D2-Junioren', href: '/jugend/u13-d2' },
+      ]},
+      { title: 'Entwicklungsbereich', links: [
+        { label: 'U15 C2-Junioren', href: '/jugend/u15-c2' },
         { label: 'U13 D3-Junioren', href: '/jugend/u13-d3' },
       ]},
-      { title: 'Breitensport', links: [
-        { label: 'U15 C2-Junioren', href: '/jugend/u15-c2' },
+      { title: 'Kinderfußball', links: [
         { label: 'U11 E1-Junioren', href: '/jugend/u11-e1' },
         { label: 'U11 E2-Junioren', href: '/jugend/u11-e2' },
         { label: 'U11 E3-Junioren', href: '/jugend/u11-e3' },
