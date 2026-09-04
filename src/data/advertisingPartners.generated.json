@@ -30,6 +30,140 @@
       "u8-f-junioren",
       "u9-f-junioren"
     ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "alte-herren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "frauen-1",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "frauen-2",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "herren-1",
+        "sourceAudienceSlug": "herren-1",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "herren-2",
+        "sourceAudienceSlug": "herren-2",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e1-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e2-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e3-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d1-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d2-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d3-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-juniorinnen",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c1-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c2-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-juniorinnen",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-juniorinnen",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u19-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u6-spielgruppe",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u7-bambinis",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u8-f-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u9-f-junioren",
+        "sourceAudienceSlug": "gesamtverein",
+        "sponsorType": null,
+        "description": ""
+      }
+    ],
     "sortOrder": 10,
     "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
   },
@@ -59,6 +193,113 @@
       "u8-f-junioren",
       "u9-f-junioren"
     ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "u11-e1-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u11-e3-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d1-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-d3-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u13-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c1-junioren",
+        "sourceAudienceSlug": "u15-c1-junioren",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor"
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c2-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-juniorinnen",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u19-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u6-spielgruppe",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u7-bambinis",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u8-f-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "u9-f-junioren",
+        "sourceAudienceSlug": "jugendabteilung",
+        "sponsorType": null,
+        "description": ""
+      }
+    ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T16:04:52.96596+00:00"
   },
@@ -72,6 +313,20 @@
     "teamAudienceSlugs": [
       "herren-1",
       "herren-2"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "herren-1",
+        "sourceAudienceSlug": "herren-1",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "herren-2",
+        "sourceAudienceSlug": "herren-2",
+        "sponsorType": null,
+        "description": ""
+      }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:05:29.548437+00:00"
@@ -87,6 +342,20 @@
       "frauen-1",
       "frauen-2"
     ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "frauen-1",
+        "sourceAudienceSlug": "frauen-1",
+        "sponsorType": null,
+        "description": ""
+      },
+      {
+        "audienceSlug": "frauen-2",
+        "sourceAudienceSlug": "frauen-2",
+        "sponsorType": null,
+        "description": ""
+      }
+    ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
   },
@@ -99,6 +368,14 @@
     "website": "https://restaurant-vulcano.de/",
     "teamAudienceSlugs": [
       "herren-1"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "herren-1",
+        "sourceAudienceSlug": "herren-1",
+        "sponsorType": null,
+        "description": ""
+      }
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-01T21:54:17.643979+00:00"
