@@ -472,6 +472,46 @@
     "sourceUpdatedAt": "2026-08-15T17:17:24.818431+00:00"
   },
   {
+    "sourceId": "956f9db0-c5e7-41f0-9265-bd32a4df5b85",
+    "slug": "kinder-und-jugendfussball-akademie-des-sc-freiburg",
+    "name": "Kinder- und Jugendfussball Akademie des SC Freiburg",
+    "logoSrc": "/images/sponsors/synced/kinder-und-jugendfussball-akademie-des-sc-freiburg.png",
+    "logoAlt": "Logo von Kinder- und Jugendfussball Akademie des SC Freiburg",
+    "website": "https://www.scfreiburg.com/fussballschule/",
+    "teamAudienceSlugs": [
+      "u13-d2-junioren"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "u13-d2-junioren",
+        "sourceAudienceSlug": "u13-d2-junioren",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      }
+    ],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "u13-d2-junioren",
+        "audienceLabel": "U13 · D2-Junioren",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-09-04T22:17:47.581657+00:00"
+  },
+  {
     "sourceId": "7ece112b-9eda-44d5-985e-ebd60498f5a5",
     "slug": "oki",
     "name": "OKI",
