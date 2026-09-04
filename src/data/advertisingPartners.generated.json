@@ -41,7 +41,7 @@
       }
     ],
     "sortOrder": 10,
-    "sourceUpdatedAt": "2026-08-15T16:04:16.028329+00:00"
+    "sourceUpdatedAt": "2026-09-04T12:55:02.971483+00:00"
   },
   {
     "sourceId": "04a2bb2f-222d-4c26-95a8-bc1a9bf9fc76",
@@ -59,7 +59,9 @@
         "sourceAudienceSlug": "u13-juniorinnen",
         "sponsorType": {
           "slug": "aufwaermshirt-sponsor",
-          "label": "Aufwärmshirt-Sponsor"
+          "label": "Aufwärmshirt-Sponsor",
+          "sortOrder": 20,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -71,7 +73,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "aufwaermshirt-sponsor",
-          "label": "Aufwärmshirt-Sponsor"
+          "label": "Aufwärmshirt-Sponsor",
+          "sortOrder": 20,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -99,7 +103,9 @@
         "sourceAudienceSlug": "u11-e2-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -108,7 +114,9 @@
         "sourceAudienceSlug": "u11-e3-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -117,7 +125,9 @@
         "sourceAudienceSlug": "u15-c1-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -126,7 +136,9 @@
         "sourceAudienceSlug": "u6-spielgruppe",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -135,7 +147,9 @@
         "sourceAudienceSlug": "u7-bambinis",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -147,7 +161,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -157,7 +173,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -167,7 +185,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -177,7 +197,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -187,7 +209,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -300,7 +324,9 @@
         "sourceAudienceSlug": "u13-d3-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -309,7 +335,9 @@
         "sourceAudienceSlug": "u15-c2-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -321,7 +349,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -331,7 +361,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -359,7 +391,9 @@
         "sourceAudienceSlug": "u17-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -368,7 +402,9 @@
         "sourceAudienceSlug": "u6-spielgruppe",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -377,7 +413,9 @@
         "sourceAudienceSlug": "u7-bambinis",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -386,7 +424,9 @@
         "sourceAudienceSlug": "u8-f-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -395,7 +435,9 @@
         "sourceAudienceSlug": "u9-f-junioren",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
@@ -407,7 +449,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -417,7 +461,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -427,7 +473,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -437,7 +485,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       },
@@ -447,7 +497,9 @@
         "audienceGroup": "youth_team",
         "sponsorType": {
           "slug": "trikotsponsor",
-          "label": "Trikotsponsor"
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 1
         },
         "description": ""
       }
