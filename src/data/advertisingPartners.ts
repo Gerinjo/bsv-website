@@ -1,9 +1,16 @@
 import generatedPartners from './advertisingPartners.generated.json';
 
+export type AdvertisingPartnerSponsorType = {
+  slug: string;
+  label: string;
+  sortOrder?: number;
+  displayWeight?: number;
+};
+
 export type AdvertisingPartnerTeamAssignment = {
   audienceSlug: string;
   sourceAudienceSlug: string;
-  sponsorType: { slug: string; label: string } | null;
+  sponsorType: AdvertisingPartnerSponsorType | null;
   description: string;
 };
 
@@ -11,7 +18,7 @@ export type AdvertisingPartnerAudienceAssignment = {
   audienceSlug: string;
   audienceLabel: string;
   audienceGroup: string;
-  sponsorType: { slug: string; label: string } | null;
+  sponsorType: AdvertisingPartnerSponsorType | null;
   description: string;
 };
 
@@ -31,6 +38,6 @@ export type AdvertisingPartner = {
 
 /**
  * Automatisch aus der freigegebenen Werbepartner-Verwaltung synchronisiert.
- * Die Sortierung steuert nur die Reihenfolge; alle Karten sind gleichwertig.
+ * Sponsorart-Gewichtung und Sortierung steuern Reihenfolge und visuelle Präsenz der Karten.
  */
 export const advertisingPartners = generatedPartners satisfies AdvertisingPartner[];

@@ -121,8 +121,9 @@ export const menu: MenuItem[] = [
     ],
   },
   {
-    label: 'Sponsoring', href: '/sponsoring', groups: [
+    label: 'Sponsoring', href: '/werbepartner', groups: [
       { title: 'Sponsoring-Level', links: [
+        { label: 'Alle Sponsoring-Pakete', href: '/sponsoring' },
         { label: 'Kids-Sponsor', href: '/sponsoring#kids' },
         { label: 'Bronze-Sponsor', href: '/sponsoring#bronze' },
         { label: 'Silber-Sponsor', href: '/sponsoring#silver' },

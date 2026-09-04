@@ -10,6 +10,7 @@ const homeSponsorsSource = readFileSync(new URL('../src/components/HomeSponsorSh
 const youthSponsorsSource = readFileSync(new URL('../src/components/YouthSponsorShowcase.astro', import.meta.url), 'utf8');
 const partnerPageSource = readFileSync(new URL('../src/pages/werbepartner/index.astro', import.meta.url), 'utf8');
 const headerSource = readFileSync(new URL('../src/components/Header.astro', import.meta.url), 'utf8');
+const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
 
 test('synced sponsors include deduplicated direct website assignments', () => {
   for (const partner of partners) {
@@ -26,10 +27,14 @@ test('synced sponsors include deduplicated direct website assignments', () => {
   assert.match(syncSource, /sponsorType/);
 });
 
-test('department assignments are not inherited by individual team pages', () => {
-  const bgv = partners.find((partner) => partner.slug === 'bgv');
-  assert.ok(bgv.audienceAssignments.some((assignment) => assignment.audienceSlug === 'jugendabteilung'));
-  assert.deepEqual(bgv.teamAudienceSlugs, ['u15-c1-junioren']);
+test('only direct team assignments are rendered on individual team pages', () => {
+  for (const partner of partners) {
+    const directTeamAssignments = partner.audienceAssignments
+      .filter((assignment) => ['mens_team', 'womens_team', 'youth_team'].includes(assignment.audienceGroup))
+      .map((assignment) => assignment.audienceSlug)
+      .sort();
+    assert.deepEqual(partner.teamAudienceSlugs, directTeamAssignments, `${partner.name}: Mannschaftszuweisungen sind nicht direkt`);
+  }
   assert.match(teamPagesSource, /partner\.audienceAssignments\.find\(item=>item\.audienceSlug===sponsorAudience\)/);
 });
 
@@ -68,4 +73,14 @@ test('the partner overview has two filters and groups cards by sponsor type', ()
   assert.match(partnerPageSource, /id="partner-type"/);
   assert.match(partnerPageSource, /data-partner-group/);
   assert.match(partnerPageSource, /sponsorAreaOptions/);
+  assert.match(syncSource, /displayWeight/);
+  assert.match(syncSource, /sortOrder/);
+  assert.match(partnerPageSource, /right\.displayWeight - left\.displayWeight/);
+  assert.match(partnerPageSource, /data-sponsor-weight/);
+  assert.match(partnerPageSource, /weight-3/);
+});
+
+test('Sponsoring opens the partner overview and packages remain explicitly selectable', () => {
+  assert.match(navigationSource, /label: 'Sponsoring', href: '\/werbepartner'/);
+  assert.match(navigationSource, /label: 'Alle Sponsoring-Pakete', href: '\/sponsoring'/);
 });

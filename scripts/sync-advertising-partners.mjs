@@ -47,6 +47,26 @@ const profileUrl = (websiteUrl, instagramHandle) => {
   return url.toString();
 };
 
+const sponsorType = (value, partnerSlug) => {
+  if (value == null) return null;
+  const normalized = {
+    slug: String(value.slug ?? '').trim(),
+    label: String(value.label ?? '').trim(),
+    sortOrder: Number(value.sortOrder ?? 100),
+    displayWeight: Number(value.displayWeight ?? 1),
+  };
+  if (!slugPattern.test(normalized.slug) || !normalized.label || normalized.label.length > 80) {
+    throw new Error(`Eine Sponsorart für ${partnerSlug} ist ungültig.`);
+  }
+  if (!Number.isInteger(normalized.sortOrder) || normalized.sortOrder < 0 || normalized.sortOrder > 32767) {
+    throw new Error(`Die Sortierung einer Sponsorart für ${partnerSlug} ist ungültig.`);
+  }
+  if (!Number.isInteger(normalized.displayWeight) || normalized.displayWeight < 1 || normalized.displayWeight > 3) {
+    throw new Error(`Die Gewichtung einer Sponsorart für ${partnerSlug} ist ungültig.`);
+  }
+  return normalized;
+};
+
 for (const source of payload.partners) {
   const sourceId = String(source.id ?? '').trim();
   const slug = String(source.slug ?? '').trim();
@@ -61,18 +81,12 @@ for (const source of payload.partners) {
       const audienceSlug = String(assignment?.audienceSlug ?? '').trim();
       const sourceAudienceSlug = String(assignment?.sourceAudienceSlug ?? '').trim();
       const description = String(assignment?.description ?? '').trim();
-      const sponsorType = assignment?.sponsorType == null ? null : {
-        slug: String(assignment.sponsorType.slug ?? '').trim(),
-        label: String(assignment.sponsorType.label ?? '').trim(),
-      };
+      const normalizedSponsorType = sponsorType(assignment?.sponsorType, slug);
       if (!slugPattern.test(audienceSlug) || !slugPattern.test(sourceAudienceSlug)) {
         throw new Error(`Eine detaillierte Mannschaftszuweisung für ${slug} ist ungültig.`);
       }
       if (description.length > 1600) throw new Error(`Ein Zuordnungstext für ${slug} ist zu lang.`);
-      if (sponsorType && (!slugPattern.test(sponsorType.slug) || !sponsorType.label || sponsorType.label.length > 80)) {
-        throw new Error(`Eine Sponsorart für ${slug} ist ungültig.`);
-      }
-      return { audienceSlug, sourceAudienceSlug, sponsorType, description };
+      return { audienceSlug, sourceAudienceSlug, sponsorType: normalizedSponsorType, description };
     }).sort((left, right) => left.audienceSlug.localeCompare(right.audienceSlug))
     : [];
   const audienceAssignments = Array.isArray(source.audienceAssignments)
@@ -81,18 +95,12 @@ for (const source of payload.partners) {
       const audienceLabel = String(assignment?.audienceLabel ?? '').trim();
       const audienceGroup = String(assignment?.audienceGroup ?? '').trim();
       const description = String(assignment?.description ?? '').trim();
-      const sponsorType = assignment?.sponsorType == null ? null : {
-        slug: String(assignment.sponsorType.slug ?? '').trim(),
-        label: String(assignment.sponsorType.label ?? '').trim(),
-      };
+      const normalizedSponsorType = sponsorType(assignment?.sponsorType, slug);
       if (!slugPattern.test(audienceSlug) || !audienceLabel || audienceLabel.length > 120 || !audienceGroup) {
         throw new Error(`Eine Website-Zuweisung für ${slug} ist ungültig.`);
       }
       if (description.length > 1600) throw new Error(`Ein Zuordnungstext für ${slug} ist zu lang.`);
-      if (sponsorType && (!slugPattern.test(sponsorType.slug) || !sponsorType.label || sponsorType.label.length > 80)) {
-        throw new Error(`Eine Sponsorart für ${slug} ist ungültig.`);
-      }
-      return { audienceSlug, audienceLabel, audienceGroup, sponsorType, description };
+      return { audienceSlug, audienceLabel, audienceGroup, sponsorType: normalizedSponsorType, description };
     }).sort((left, right) => left.audienceSlug.localeCompare(right.audienceSlug))
     : [];
   const sortOrder = Number(source.sortOrder);
