@@ -103,9 +103,9 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                         <span>{item.label === 'Verein' ? 'Verein entdecken' : 'Teams & Bereiche'}</span>
                         <a href={withBase(allContentPaths[item.label] ?? item.href)}>Alle Inhalte <b aria-hidden="true">↗</b></a>
                       </div>
-                      <div class="mega-groups">
+                      <div class:list={["mega-groups", { "youth-mega-groups": item.label === 'Junge Sterne' }]}>
                         {item.groups.map((group) => (
-                          <section class="mega-group">
+                          <section class="mega-group" data-mega-group={group.title}>
                             <h2>{group.title}</h2>
                             <ul>{group.links.map((link) => (
                               <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
@@ -261,6 +261,14 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .mega-directory-head > a b { display:grid; place-items:center; width:25px; aspect-ratio:1; border-radius:50%; background:#f4d638; transition:.18s ease; }
   .mega-directory-head > a:hover b { transform:translate(2px,-2px); }
   .mega-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:21px 26px; }
+  .youth-mega-groups { grid-template-areas:'department stories' 'department support' 'performance development' 'children girls'; grid-template-rows:repeat(2,minmax(0,1fr)) auto auto; }
+  .youth-mega-groups [data-mega-group='Jugendabteilung'] { grid-area:department; }
+  .youth-mega-groups [data-mega-group='Geschichten'] { grid-area:stories; }
+  .youth-mega-groups [data-mega-group='Unterstützung gesucht'] { grid-area:support; }
+  .youth-mega-groups [data-mega-group='Leistungsbereich'] { grid-area:performance; }
+  .youth-mega-groups [data-mega-group='Entwicklungsbereich'] { grid-area:development; }
+  .youth-mega-groups [data-mega-group='Kinderfußball'] { grid-area:children; }
+  .youth-mega-groups [data-mega-group='Juniorinnen'] { grid-area:girls; }
   .mega-group { min-width:0; padding-top:9px; border-top:3px solid #164f32; }
   .mega-group h2 { display:flex; align-items:center; min-height:18px; margin-bottom:5px; color:#164f32; font-size:.69rem; }
   .mega-group li { border-bottom:1px solid #e5eae6; }

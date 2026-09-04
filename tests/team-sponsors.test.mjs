@@ -104,6 +104,16 @@ test('the youth mega menu shows three random youth partners below its team image
   assert.match(youthMenuSponsorsSource, /\.youth-menu-sponsor-grid \{ display:grid; grid-template-columns:1fr;/);
 });
 
+test('the youth mega menu stacks support directly below stories', () => {
+  assert.match(headerSource, /"youth-mega-groups": item\.label === 'Junge Sterne'/);
+  assert.match(headerSource, /data-mega-group=\{group\.title\}/);
+  assert.match(headerSource, /grid-template-areas:'department stories' 'department support' 'performance development' 'children girls'/);
+  assert.match(headerSource, /\[data-mega-group='Jugendabteilung'\] \{ grid-area:department; \}/);
+  assert.match(headerSource, /\[data-mega-group='Geschichten'\] \{ grid-area:stories; \}/);
+  assert.match(headerSource, /\[data-mega-group='Unterstützung gesucht'\] \{ grid-area:support; \}/);
+  assert.match(headerSource, /grid-template-rows:repeat\(2,minmax\(0,1fr\)\) auto auto/);
+});
+
 test('the partner overview has two filters and groups cards by sponsor type', () => {
   assert.match(partnerPageSource, /id="partner-area"/);
   assert.match(partnerPageSource, /id="partner-type"/);
