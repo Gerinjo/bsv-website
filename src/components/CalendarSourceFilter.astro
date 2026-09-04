@@ -1,0 +1,100 @@
+---
+type SourceOption = {
+  id: string;
+  label: string;
+  color: string;
+  softColor: string;
+  eventCount: number;
+};
+
+interface Props {
+  sources: SourceOption[];
+  total: number;
+}
+
+const { sources, total } = Astro.props;
+---
+
+<div class="calendar-filter" data-calendar-filter>
+  <div class="filter-copy">
+    <span>Kalenderfilter</span>
+    <strong>Termine gezielt anzeigen</strong>
+    <p data-calendar-filter-status aria-live="polite">Alle Kalender · {total} Termine</p>
+  </div>
+  <div class="filter-buttons" role="group" aria-label="Kalender auswählen">
+    <button type="button" class="is-active" data-calendar-filter-button="all" data-calendar-filter-label="Alle Kalender" aria-pressed="true">
+      <i aria-hidden="true"></i><span>Alle</span><b>{total}</b>
+    </button>
+    {sources.map((source) => (
+      <button
+        type="button"
+        data-calendar-filter-button={source.id}
+        data-calendar-filter-label={source.label}
+        aria-pressed="false"
+        style={`--source-color:${source.color};--source-soft:${source.softColor}`}
+      >
+        <i aria-hidden="true"></i><span>{source.label}</span><b>{source.eventCount}</b>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const filter = document.querySelector<HTMLElement>('[data-calendar-filter]');
+
+  if (filter) {
+    const buttons = [...filter.querySelectorAll<HTMLButtonElement>('[data-calendar-filter-button]')];
+    const events = [...document.querySelectorAll<HTMLElement>('[data-calendar-event]')];
+    const monthGroups = [...document.querySelectorAll<HTMLElement>('[data-calendar-month]')];
+    const status = filter.querySelector<HTMLElement>('[data-calendar-filter-status]');
+    const empty = document.querySelector<HTMLElement>('[data-calendar-filter-empty]');
+
+    const applyFilter = (sourceId: string, label: string) => {
+      buttons.forEach((button) => {
+        const active = button.dataset.calendarFilterButton === sourceId;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      events.forEach((event) => {
+        event.hidden = sourceId !== 'all' && event.dataset.calendarSource !== sourceId;
+      });
+
+      let firstVisibleMonthFound = false;
+      monthGroups.forEach((group) => {
+        const hasVisibleEvent = [...group.querySelectorAll<HTMLElement>('[data-calendar-event]')].some((event) => !event.hidden);
+        group.hidden = !hasVisibleEvent;
+        group.classList.toggle('is-first-visible', hasVisibleEvent && !firstVisibleMonthFound);
+        if (hasVisibleEvent) firstVisibleMonthFound = true;
+      });
+
+      const visibleCount = events.filter((event) => !event.hidden).length;
+      if (status) status.textContent = `${label} · ${visibleCount} ${visibleCount === 1 ? 'Termin' : 'Termine'}`;
+      if (empty) empty.hidden = visibleCount > 0;
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => applyFilter(
+        button.dataset.calendarFilterButton ?? 'all',
+        button.dataset.calendarFilterLabel ?? button.textContent?.trim() ?? 'Alle Kalender',
+      ));
+    });
+  }
+</script>
+
+<style is:inline>
+  .calendar-filter{display:grid;grid-template-columns:205px 1fr;gap:20px;align-items:center;margin-bottom:32px;padding:21px 23px;border:1px solid #d9e2da;background:white;box-shadow:0 10px 28px rgb(9 47 32 / 6%)}
+  .filter-copy>span{display:block;color:#164f32;font-size:.64rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .filter-copy>strong{display:block;margin-top:3px;color:#082f20;font-family:Georgia,serif;font-size:1.22rem}
+  .filter-copy p{margin:5px 0 0;color:#6b776f;font-size:.75rem}
+  .filter-buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .filter-buttons button{--source-color:#164f32;--source-soft:#edf3ee;display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 9px;border:1px solid #cbd7cd;border-radius:3px;background:#f3f7f4;color:#082f20;font:inherit;font-size:.74rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease}
+  .filter-buttons button:hover,.filter-buttons button:focus-visible{border-color:var(--source-color);transform:translateY(-1px)}
+  .filter-buttons button i{width:9px;height:9px;border-radius:50%;background:var(--source-color)}
+  .filter-buttons button b{display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--source-soft);color:var(--source-color);font-size:.68rem}
+  .filter-buttons button.is-active{border-color:var(--source-color);background:var(--source-color);color:white;box-shadow:0 4px 0 var(--source-soft)}
+  .filter-buttons button.is-active i{background:var(--source-soft)}
+  .calendar-content [hidden],.month-group[hidden]{display:none}.month-group.is-first-visible{margin-top:0}
+  @media(max-width:900px){.calendar-filter{grid-template-columns:1fr;gap:18px}.filter-buttons{justify-content:flex-start}}
+  @media(max-width:600px){.calendar-filter{padding:18px 16px}.filter-buttons{display:grid;grid-template-columns:1fr}.filter-buttons button{justify-content:flex-start}.filter-buttons button b{margin-left:auto}}
+</style>
