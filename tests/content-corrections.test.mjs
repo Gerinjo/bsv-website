@@ -80,16 +80,20 @@ test('F2 and F3 use the training data from the 2026/27 allocation graphic', () =
   assert.match(trainingPlanSource, /'jugend\/u8-f': 'F2 \+ F3-Junioren'/);
 });
 
-test('D2 and D3 show the updated coaching teams and qualifications', () => {
+test('D1, D2 and D3 show the updated coaching teams and qualifications', () => {
+  const d1Section = teamSection('jugend/u13-d1', 'jugend/u13-d2');
   const d2Section = teamSection('jugend/u13-d2', 'jugend/u13-d3');
   const d3Section = teamSection('jugend/u13-d3', 'jugend/juniorinnen/u17');
 
+  assert.match(d1Section, /Stephan Hellmann',\s*role:\s*'Trainer',\s*qualification:\s*'DFB-Basis-Coach'/);
+  assert.match(d1Section, /Hieu Ho',\s*role:\s*'Co-Trainerin',\s*qualification:\s*'DFB-Basis-Coach'/);
   assert.match(d2Section, /Jörg Boreatti',\s*role:\s*'Trainer',\s*qualification:\s*'C-Lizenz \(ab 2023\)'/);
   assert.match(d2Section, /Marko Eisner',\s*role:\s*'Co-Trainer',\s*qualification:\s*'DFB-Basis-Coach'/);
   assert.match(d2Section, /Patrick Müller',\s*role:\s*'Co-Trainer',\s*qualification:\s*'DFB-Basis-Coach'/);
   assert.match(d3Section, /Jérôme Ernsberger',\s*role:\s*'Trainer',\s*qualification:\s*'C-Lizenz'/);
-  assert.match(d3Section, /Hieu Ho',\s*role:\s*'Co-Trainerin',\s*qualification:\s*'DFB-Basis-Coach'/);
-  assert.match(membershipSource, /J\. Ernsberger, H\. Ho/);
+  assert.doesNotMatch(d3Section, /Hieu Ho/);
+  assert.match(membershipSource, /D1-Junioren', trainers: 'S\. Hellmann, H\. Ho'/);
+  assert.match(membershipSource, /D3-Junioren', trainers: 'J\. Ernsberger'/);
   assert.match(coachVacanciesSource, /D3-Junioren', role: 'Trainer:in'/);
 });
 
