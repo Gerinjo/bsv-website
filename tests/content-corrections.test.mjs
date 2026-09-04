@@ -94,7 +94,10 @@ test('D1, D2 and D3 show the updated coaching teams and qualifications', () => {
   assert.doesNotMatch(d3Section, /Hieu Ho/);
   assert.match(membershipSource, /D1-Junioren', trainers: 'S\. Hellmann, H\. Ho'/);
   assert.match(membershipSource, /D3-Junioren', trainers: 'J\. Ernsberger'/);
-  assert.match(coachVacanciesSource, /D3-Junioren', role: 'Trainer:in'/);
+  assert.doesNotMatch(coachVacanciesSource, /D1-Junioren.*gesucht|team: 'D1-Junioren'/);
+  assert.doesNotMatch(coachVacanciesSource, /D3-Junioren.*gesucht|team: 'D3-Junioren'/);
+  assert.match(coachVacanciesSource, /card-head.*<strong>03<\/strong>/s);
+  assert.match(coachVacanciesSource, /Drei Teams\./);
 });
 
 test('D2 trains Wednesday and Friday at the currently assigned times', () => {

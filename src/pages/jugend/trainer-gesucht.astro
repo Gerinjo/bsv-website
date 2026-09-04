@@ -5,9 +5,7 @@ import Layout from '../../layouts/Layout.astro';
 import { withBase } from '../../utils/paths';
 
 const vacancies = [
-  { team: 'D3-Junioren', role: 'Trainer:in', kind: 'Verantwortung übernehmen', featured: true },
-  { team: 'D1-Junioren', role: 'Co-Trainer:in', kind: 'Team verstärken' },
-  { team: 'C2-Junioren', role: 'Co-Trainer:in', kind: 'Team verstärken' },
+  { team: 'C2-Junioren', role: 'Co-Trainer:in', kind: 'Team verstärken', featured: true },
   { team: 'D-Juniorinnen', role: 'Co-Trainer:in', kind: 'Team verstärken' },
   { team: 'C-Juniorinnen', role: 'Co-Trainer:in', kind: 'Team verstärken' },
 ];
@@ -37,12 +35,12 @@ const contactPath = withBase('/kontakt?thema=youth');
         </div>
 
         <aside class="tactics-card" aria-label="Übersicht der offenen Trainerstellen">
-          <div class="card-head"><span>Jugend · Saisonstart</span><strong>05</strong></div>
+          <div class="card-head"><span>Jugend · Saisonstart</span><strong>03</strong></div>
           <div class="formation" aria-hidden="true">
             <span class="goal"></span>
             <span class="line center"></span>
             <span class="circle"></span>
-            <i class="player p1">D3</i><i class="player p2">D1</i><i class="player p3">C2</i><i class="player p4">DJ</i><i class="player p5">CJ</i>
+            <i class="player p1">C2</i><i class="player p3">DJ</i><i class="player p5">CJ</i>
           </div>
           <div class="card-foot"><span>Teams suchen Unterstützung</span><b>#aufgehtsgrün</b></div>
         </aside>
@@ -51,7 +49,7 @@ const contactPath = withBase('/kontakt?thema=youth');
 
     <section class="vacancies shell" id="offene-positionen" aria-labelledby="vacancies-title">
       <div class="section-head">
-        <div><p class="eyebrow dark"><i></i> Wo du gebraucht wirst</p><h2 id="vacancies-title">Fünf Teams.<br /><em>Viele Möglichkeiten.</em></h2></div>
+        <div><p class="eyebrow dark"><i></i> Wo du gebraucht wirst</p><h2 id="vacancies-title">Drei Teams.<br /><em>Viele Möglichkeiten.</em></h2></div>
         <p>In einigen Mannschaften brauchen wir zusätzliche Unterstützung, damit Training und Spielbetrieb zuverlässig, gut organisiert und mit einer guten Betreuung stattfinden können.</p>
       </div>
 
