@@ -1,7 +1,10 @@
 ---
 import { sponsorshipLevels } from '../data/sponsoring';
+import { advertisingPartners } from '../data/advertisingPartners';
 import { withBase } from '../utils/paths';
 import HomePromoEnhancer from './HomePromoEnhancer.astro';
+
+const menuPartners = advertisingPartners.slice(0, 8);
 ---
 
 <HomePromoEnhancer />
@@ -9,29 +12,52 @@ import HomePromoEnhancer from './HomePromoEnhancer.astro';
 <template id="sponsoring-mega-template">
   <div class="sponsor-mega-intro">
     <span>Partnerschaft mit Wirkung</span>
-    <h2>Sichtbar werden.<br /><em>Zukunft ermöglichen.</em></h2>
-    <p>Klare Sponsoring-Stufen für Unternehmen, Selbstständige und Förderer, die Sport, Jugend und Gemeinschaft beim BSV Nordstern stärken möchten.</p>
+    <h2>Gemeinsam mehr<br /><em>möglich machen.</em></h2>
+    <p>Unsere Partner stärken Sport, Jugend und Gemeinschaft beim BSV Nordstern. Entdecke zuerst die Unternehmen an unserer Seite.</p>
     <div class="sponsor-mega-actions">
       <a class="concept-link" href={withBase('/werbepartner')}>Unsere Werbepartner <b aria-hidden="true">↗</b></a>
-      <a class="contact-link" href={withBase('/sponsoring')}>Sponsoring-Pakete ansehen</a>
+      <a class="contact-link" href={withBase('/kontakt?thema=sponsoring')}>Partner werden</a>
     </div>
   </div>
 
-  <div class="sponsor-mega-levels">
-    {sponsorshipLevels.map((level, index) => (
-      <a class:list={["sponsor-level", `is-${level.id}`]} href={withBase(`/sponsoring#${level.id}`)} style={`--level-accent:${level.accent}`}>
-        <span class="level-number">0{index + 1}</span>
-        <small>{level.tagline}</small>
-        <strong>{level.name}</strong>
-        <p>{level.price}<span> pro Saison</span></p>
-        <b aria-hidden="true">↗</b>
-      </a>
-    ))}
-  </div>
+  <div class="sponsor-mega-content">
+    <div class="sponsor-mega-tabs" role="tablist" aria-label="Sponsoring auswählen">
+      <button id="sponsor-partners-tab" class="sponsor-mega-tab active" type="button" role="tab" aria-selected="true" aria-controls="sponsor-partners-pane" data-sponsor-pane-target="partners">Partner</button>
+      <button id="sponsor-packages-tab" class="sponsor-mega-tab" type="button" role="tab" aria-selected="false" aria-controls="sponsor-packages-pane" data-sponsor-pane-target="packages">Pakete</button>
+    </div>
 
-  <div class="sponsor-mega-bottom">
-    <a href={withBase('/sponsoring#bausteine')}><span>＋</span> Einzelbausteine</a>
-    <a href={withBase('/sponsoring#vergleich')}><span>◎</span> Pakete vergleichen</a>
+    <section id="sponsor-partners-pane" class="sponsor-mega-pane" role="tabpanel" aria-labelledby="sponsor-partners-tab" data-sponsor-pane="partners">
+      <div class="sponsor-mega-partners">
+        {menuPartners.map((partner) => (
+          <a href={partner.website || withBase('/werbepartner')} target={partner.website ? '_blank' : undefined} rel={partner.website ? 'noreferrer' : undefined}>
+            <img src={withBase(partner.logoSrc)} alt={partner.logoAlt} loading="lazy" decoding="async" />
+            <span>{partner.name}</span>
+          </a>
+        ))}
+      </div>
+      <div class="sponsor-mega-bottom">
+        <a href={withBase('/werbepartner')}><span>◎</span> Alle Werbepartner anzeigen</a>
+      </div>
+    </section>
+
+    <section id="sponsor-packages-pane" class="sponsor-mega-pane" role="tabpanel" aria-labelledby="sponsor-packages-tab" data-sponsor-pane="packages" hidden>
+      <div class="sponsor-mega-levels">
+        {sponsorshipLevels.map((level, index) => (
+          <a class:list={["sponsor-level", `is-${level.id}`]} href={withBase(`/sponsoring#${level.id}`)} style={`--level-accent:${level.accent}`}>
+            <span class="level-number">0{index + 1}</span>
+            <small>{level.tagline}</small>
+            <strong>{level.name}</strong>
+            <p>{level.price}<span> pro Saison</span></p>
+            <b aria-hidden="true">↗</b>
+          </a>
+        ))}
+      </div>
+      <div class="sponsor-mega-bottom">
+        <a href={withBase('/sponsoring')}><span>↗</span> Alle Pakete</a>
+        <a href={withBase('/sponsoring#bausteine')}><span>＋</span> Einzelbausteine</a>
+        <a href={withBase('/sponsoring#vergleich')}><span>◎</span> Pakete vergleichen</a>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -51,6 +77,19 @@ import HomePromoEnhancer from './HomePromoEnhancer.astro';
     megaInner.dataset.sponsoringEnhanced = 'true';
     megaInner.classList.add('sponsoring-mega');
     megaInner.replaceChildren(template.content.cloneNode(true));
+
+    const tabs = [...megaInner.querySelectorAll<HTMLButtonElement>('[data-sponsor-pane-target]')];
+    const panes = [...megaInner.querySelectorAll<HTMLElement>('[data-sponsor-pane]')];
+    const selectPane = (target: string) => {
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.sponsorPaneTarget === target;
+        tab.classList.toggle('active', selected);
+        tab.setAttribute('aria-selected', String(selected));
+      });
+      panes.forEach((pane) => { pane.hidden = pane.dataset.sponsorPane !== target; });
+    };
+    tabs.forEach((tab) => tab.addEventListener('click', () => selectPane(tab.dataset.sponsorPaneTarget ?? 'partners')));
+    selectPane('partners');
   };
 
   if (document.readyState === 'loading') {
@@ -61,5 +100,19 @@ import HomePromoEnhancer from './HomePromoEnhancer.astro';
 </script>
 
 <style>
-  :global(.mega-inner.sponsoring-mega){position:relative;grid-template-columns:320px minmax(0,1fr);gap:0;padding:0;overflow:hidden;border-top-color:#f4d638;background:#071f16;color:white}.sponsor-mega-intro{position:relative;overflow:hidden;padding:34px 32px;background:linear-gradient(145deg,#092f20,#164f32)}.sponsor-mega-intro::after{content:'✦';position:absolute;right:-15px;top:-35px;color:rgb(244 214 56 / 13%);font-size:9rem}.sponsor-mega-intro>span{position:relative;z-index:1;color:#f4d638;font-size:.63rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.sponsor-mega-intro h2{position:relative;z-index:1;margin:13px 0 17px;color:white;font-family:Georgia,serif;font-size:2.15rem;line-height:.94;letter-spacing:-.04em;text-transform:none}.sponsor-mega-intro h2 em{color:#f4d638;font-weight:400}.sponsor-mega-intro p{position:relative;z-index:1;margin:0;color:#bfd0c5;font-size:.78rem;line-height:1.65}.sponsor-mega-actions{position:relative;z-index:1;margin-top:24px;display:grid;gap:9px}.sponsor-mega-actions a{min-height:40px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:.7rem;font-weight:900;text-decoration:none}.concept-link{background:#f4d638;color:#071f16}.concept-link b{font-size:.9rem}.contact-link{border:1px solid rgb(255 255 255 / 22%);color:white}.sponsor-mega-levels{padding:25px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;background:#f4f7f4}.sponsor-level{position:relative;min-height:132px;padding:20px 21px;display:flex;flex-direction:column;border-top:4px solid var(--level-accent);background:white;color:#17251b;text-decoration:none;box-shadow:0 9px 24px rgb(9 47 32 / 7%);transition:transform .18s ease,box-shadow .18s ease}.sponsor-level:hover,.sponsor-level:focus{outline:none;transform:translateY(-3px);box-shadow:0 14px 32px rgb(9 47 32 / 13%)}.sponsor-level .level-number{position:absolute;right:17px;top:15px;color:#a6b1aa;font-size:.61rem;font-weight:900}.sponsor-level small{padding-right:28px;color:var(--level-accent);font-size:.56rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.sponsor-level strong{margin:9px 0 13px;font-size:1.12rem}.sponsor-level p{margin:auto 0 0;color:#26372c;font-size:1.18rem;font-weight:950}.sponsor-level p span{color:#7b887f;font-size:.55rem;font-weight:700}.sponsor-level>b{position:absolute;right:17px;bottom:17px;width:25px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:#092f20;color:#f4d638;font-size:.68rem}.sponsor-level.is-silver{background:#092f20;color:white}.sponsor-level.is-silver p{color:white}.sponsor-level.is-silver p span{color:#a9bcb0}.sponsor-level.is-silver>b{background:#f4d638;color:#092f20}.sponsor-mega-bottom{grid-column:1/-1;min-height:47px;padding:0 25px;display:flex;align-items:center;justify-content:flex-end;gap:20px;border-top:1px solid #dce3dd;background:white}.sponsor-mega-bottom a{display:flex;align-items:center;gap:7px;color:#164f32;font-size:.65rem;font-weight:900;text-decoration:none}.sponsor-mega-bottom a span{color:#b39400;font-size:.85rem}@media(max-width:980px){:global(.mega-inner.sponsoring-mega){display:grid;grid-template-columns:1fr;padding:0!important}.sponsor-mega-intro{padding:28px 24px}.sponsor-mega-intro h2{font-size:1.8rem}.sponsor-mega-levels{padding:18px}.sponsor-mega-bottom{padding:12px 18px;justify-content:flex-start;flex-wrap:wrap}}@media(max-width:620px){.sponsor-mega-levels{grid-template-columns:1fr}.sponsor-mega-bottom{display:grid;gap:10px}}
+  :global(.mega-inner.sponsoring-mega){position:relative;grid-template-columns:320px minmax(0,1fr);gap:0;padding:0;overflow:hidden;border-top-color:#f4d638;background:#071f16;color:white}
+  .sponsor-mega-intro{position:relative;overflow:hidden;padding:34px 32px;background:linear-gradient(145deg,#092f20,#164f32)}
+  .sponsor-mega-intro::after{content:'✦';position:absolute;right:-15px;top:-35px;color:rgb(244 214 56 / 13%);font-size:9rem}
+  .sponsor-mega-intro>span{position:relative;z-index:1;color:#f4d638;font-size:.63rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+  .sponsor-mega-intro h2{position:relative;z-index:1;margin:13px 0 17px;color:white;font-family:Georgia,serif;font-size:2.15rem;line-height:.94;letter-spacing:-.04em;text-transform:none}
+  .sponsor-mega-intro h2 em{color:#f4d638;font-weight:400}.sponsor-mega-intro p{position:relative;z-index:1;margin:0;color:#bfd0c5;font-size:.78rem;line-height:1.65}
+  .sponsor-mega-actions{position:relative;z-index:1;margin-top:24px;display:grid;gap:9px}.sponsor-mega-actions a{min-height:40px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:.7rem;font-weight:900;text-decoration:none}
+  .concept-link{background:#f4d638;color:#071f16}.concept-link b{font-size:.9rem}.contact-link{border:1px solid rgb(255 255 255 / 22%);color:white}
+  .sponsor-mega-content{min-width:0;background:#f4f7f4;color:#17251b}.sponsor-mega-tabs{height:56px;padding:9px 25px 0;display:flex;gap:8px;border-bottom:1px solid #dce3dd;background:white}
+  .sponsor-mega-tab{min-width:120px;padding:10px 20px;border:0;border-radius:0;background:#e8ede9;color:#526158;font-size:.72rem;font-weight:950;cursor:pointer}.sponsor-mega-tab.active{background:#f4d638;color:#071f16}.sponsor-mega-tab:focus-visible{outline:3px solid #164f32;outline-offset:2px}
+  .sponsor-mega-pane[hidden]{display:none}.sponsor-mega-partners{padding:20px 25px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.sponsor-mega-partners>a{min-width:0;min-height:106px;padding:12px 10px;display:grid;grid-template-rows:56px auto;place-items:center;gap:8px;border-top:3px solid #164f32;background:white;color:#17251b;text-decoration:none;box-shadow:0 7px 18px rgb(9 47 32 / 7%)}.sponsor-mega-partners img{display:block;max-width:100%;max-height:54px;object-fit:contain}.sponsor-mega-partners span{max-width:100%;overflow:hidden;color:#526158;font-size:.56rem;font-weight:850;line-height:1.2;text-align:center;text-overflow:ellipsis;white-space:nowrap}
+  .sponsor-mega-levels{padding:20px 25px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sponsor-level{position:relative;min-height:132px;padding:20px 21px;display:flex;flex-direction:column;border-top:4px solid var(--level-accent);background:white;color:#17251b;text-decoration:none;box-shadow:0 9px 24px rgb(9 47 32 / 7%);transition:transform .18s ease,box-shadow .18s ease}.sponsor-level:hover,.sponsor-level:focus{outline:none;transform:translateY(-3px);box-shadow:0 14px 32px rgb(9 47 32 / 13%)}.sponsor-level .level-number{position:absolute;right:17px;top:15px;color:#a6b1aa;font-size:.61rem;font-weight:900}.sponsor-level small{padding-right:28px;color:var(--level-accent);font-size:.56rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.sponsor-level strong{margin:9px 0 13px;font-size:1.12rem}.sponsor-level p{margin:auto 0 0;color:#26372c;font-size:1.18rem;font-weight:950}.sponsor-level p span{color:#7b887f;font-size:.55rem;font-weight:700}.sponsor-level>b{position:absolute;right:17px;bottom:17px;width:25px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:#092f20;color:#f4d638;font-size:.68rem}.sponsor-level.is-silver{background:#092f20;color:white}.sponsor-level.is-silver p{color:white}.sponsor-level.is-silver p span{color:#a9bcb0}.sponsor-level.is-silver>b{background:#f4d638;color:#092f20}
+  .sponsor-mega-bottom{min-height:47px;padding:0 25px;display:flex;align-items:center;justify-content:flex-end;gap:20px;border-top:1px solid #dce3dd;background:white}.sponsor-mega-bottom a{display:flex;align-items:center;gap:7px;color:#164f32;font-size:.65rem;font-weight:900;text-decoration:none}.sponsor-mega-bottom a span{color:#b39400;font-size:.85rem}
+  @media(max-width:980px){:global(.mega-inner.sponsoring-mega){display:grid;grid-template-columns:1fr;padding:0!important}.sponsor-mega-intro{padding:28px 24px}.sponsor-mega-intro h2{font-size:1.8rem}.sponsor-mega-tabs{padding-inline:18px}.sponsor-mega-partners{grid-template-columns:repeat(2,minmax(0,1fr));padding:18px}.sponsor-mega-levels{padding:18px}.sponsor-mega-bottom{padding:12px 18px;justify-content:flex-start;flex-wrap:wrap}}
+  @media(max-width:620px){.sponsor-mega-levels{grid-template-columns:1fr}.sponsor-mega-tabs{display:grid;grid-template-columns:1fr 1fr}.sponsor-mega-tab{min-width:0}.sponsor-mega-bottom{display:grid;gap:10px}}
 </style>

@@ -11,6 +11,7 @@ const youthSponsorsSource = readFileSync(new URL('../src/components/YouthSponsor
 const partnerPageSource = readFileSync(new URL('../src/pages/werbepartner/index.astro', import.meta.url), 'utf8');
 const headerSource = readFileSync(new URL('../src/components/Header.astro', import.meta.url), 'utf8');
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
+const sponsoringMenuSource = readFileSync(new URL('../src/components/SponsoringMegaEnhancer.astro', import.meta.url), 'utf8');
 
 test('synced sponsors include deduplicated direct website assignments', () => {
   for (const partner of partners) {
@@ -83,4 +84,10 @@ test('the partner overview has two filters and groups cards by sponsor type', ()
 test('Sponsoring opens the partner overview and packages remain explicitly selectable', () => {
   assert.match(navigationSource, /label: 'Sponsoring', href: '\/werbepartner'/);
   assert.match(navigationSource, /label: 'Alle Sponsoring-Pakete', href: '\/sponsoring'/);
+  assert.match(sponsoringMenuSource, /data-sponsor-pane-target="partners"/);
+  assert.match(sponsoringMenuSource, /class="sponsor-mega-tab active"/);
+  assert.match(sponsoringMenuSource, /data-sponsor-pane="packages" hidden/);
+  assert.match(sponsoringMenuSource, /selectPane\('partners'\)/);
+  assert.match(sponsoringMenuSource, /pane\.hidden = pane\.dataset\.sponsorPane !== target/);
+  assert.match(sponsoringMenuSource, /sponsor-mega-tab\.active\{background:#f4d638/);
 });
