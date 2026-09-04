@@ -96,6 +96,9 @@ test('the partner overview has two filters and groups cards by sponsor type', ()
   assert.match(partnerPageSource, /id="partner-type"/);
   assert.match(partnerPageSource, /data-partner-group/);
   assert.match(partnerPageSource, /sponsorAreaOptions/);
+  assert.match(partnerPageSource, /const availableAreaKeys = new Set/);
+  assert.match(partnerPageSource, /area\.value === 'all' \|\| availableAreaKeys\.has\(area\.value\)/);
+  assert.match(partnerPageSource, /availableSponsorAreaOptions\.map/);
   assert.match(syncSource, /displayWeight/);
   assert.match(syncSource, /sortOrder/);
   assert.match(partnerPageSource, /right\.displayWeight - left\.displayWeight/);

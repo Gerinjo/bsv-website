@@ -51,6 +51,11 @@ const sponsorGroups = [...Map.groupBy([...entryMap.values()], (entry) => entry.t
     entries: entries.sort((left, right) => left.partner.sortOrder - right.partner.sortOrder || left.partner.name.localeCompare(right.partner.name, 'de')),
   }))
   .sort((left, right) => left.typeSlug === 'weitere' ? 1 : right.typeSlug === 'weitere' ? -1 : right.displayWeight - left.displayWeight || left.typeSortOrder - right.typeSortOrder || left.typeLabel.localeCompare(right.typeLabel, 'de'));
+
+const availableAreaKeys = new Set([...entryMap.values()].flatMap((entry) => entry.areaKeys));
+const availableSponsorAreaOptions = sponsorAreaOptions.filter((area) =>
+  area.value === 'all' || availableAreaKeys.has(area.value),
+);
 ---
 
 <Layout
@@ -85,7 +90,7 @@ const sponsorGroups = [...Map.groupBy([...entryMap.values()], (entry) => entry.t
           <span>01</span>
           <label for="partner-area">Bereich</label>
           <select id="partner-area" name="bereich">
-            {sponsorAreaOptions.map((area) => <option value={area.value}>{area.label}</option>)}
+            {availableSponsorAreaOptions.map((area) => <option value={area.value}>{area.label}</option>)}
           </select>
         </div>
         <div>
