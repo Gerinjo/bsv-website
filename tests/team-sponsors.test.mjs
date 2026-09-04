@@ -9,6 +9,7 @@ const syncSource = readFileSync(new URL('../scripts/sync-advertising-partners.mj
 const homeSponsorsSource = readFileSync(new URL('../src/components/HomeSponsorShowcase.astro', import.meta.url), 'utf8');
 const youthSponsorsSource = readFileSync(new URL('../src/components/YouthSponsorShowcase.astro', import.meta.url), 'utf8');
 const youthLandingSource = readFileSync(new URL('../src/components/YouthLandingContent.astro', import.meta.url), 'utf8');
+const youthMenuSponsorsSource = readFileSync(new URL('../src/components/YouthMenuSponsors.astro', import.meta.url), 'utf8');
 const partnerPageSource = readFileSync(new URL('../src/pages/werbepartner/index.astro', import.meta.url), 'utf8');
 const headerSource = readFileSync(new URL('../src/components/Header.astro', import.meta.url), 'utf8');
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
@@ -78,6 +79,15 @@ test('the youth landing keeps leadership and stories above sponsors and three te
   assert.match(youthLandingSource, /\['Leistungssport', 'Breitensport', 'Juniorinnen'\]/);
   assert.match(youthLandingSource, /departmentGroup\.links\.filter/);
   assert.match(youthLandingSource, /teamProfiles\[link\.href\.replace/);
+});
+
+test('the youth mega menu shows three random youth partners below its team image', () => {
+  assert.match(headerSource, /item\.label === 'Junge Sterne' && <YouthMenuSponsors \/>/);
+  assert.ok(headerSource.indexOf('class="club-preview"') < headerSource.indexOf('<YouthMenuSponsors />'));
+  assert.match(youthMenuSponsorsSource, /partner\.audienceAssignments\.some\(isYouthSponsorAssignment\)/);
+  assert.match(youthMenuSponsorsSource, /hidden=\{index >= 3\}/);
+  assert.match(youthMenuSponsorsSource, /Math\.floor\(Math\.random\(\) \* \(index \+ 1\)\)/);
+  assert.match(youthMenuSponsorsSource, /\/werbepartner\?bereich=jugendabteilung/);
 });
 
 test('the partner overview has two filters and groups cards by sponsor type', () => {

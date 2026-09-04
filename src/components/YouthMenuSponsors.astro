@@ -1,0 +1,57 @@
+---
+import { advertisingPartners } from '../data/advertisingPartners';
+import { isYouthSponsorAssignment } from '../data/sponsorAreas';
+import { withBase } from '../utils/paths';
+
+const youthSponsors = advertisingPartners.filter((partner) =>
+  partner.audienceAssignments.some(isYouthSponsorAssignment),
+);
+---
+
+{youthSponsors.length > 0 && (
+  <section class="youth-menu-sponsors" aria-label="Werbepartner unserer Jugend" data-youth-menu-sponsors>
+    <div class="youth-menu-sponsors-head">
+      <span>Partner unserer Jugend</span>
+      <a href={withBase('/werbepartner?bereich=jugendabteilung')}>Alle Jugendsponsoren <b aria-hidden="true">↗</b></a>
+    </div>
+    <div class="youth-menu-sponsor-grid">
+      {youthSponsors.map((partner, index) => {
+        const logo = <img src={withBase(partner.logoSrc)} alt={partner.logoAlt} width="150" height="80" loading="lazy" decoding="async" />;
+        return partner.website ? (
+          <a data-youth-menu-sponsor href={partner.website} target="_blank" rel="noreferrer" hidden={index >= 3} aria-label={`${partner.name} besuchen`}>{logo}</a>
+        ) : (
+          <article data-youth-menu-sponsor hidden={index >= 3}>{logo}</article>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-youth-menu-sponsors]').forEach((showcase) => {
+    const sponsors = [...showcase.querySelectorAll<HTMLElement>('[data-youth-menu-sponsor]')];
+    for (let index = sponsors.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [sponsors[index], sponsors[randomIndex]] = [sponsors[randomIndex], sponsors[index]];
+    }
+    sponsors.forEach((sponsor, index) => {
+      sponsor.hidden = index >= 3;
+      showcase.querySelector('.youth-menu-sponsor-grid')?.append(sponsor);
+    });
+  });
+</script>
+
+<style>
+  .youth-menu-sponsors { margin-top:24px; padding:18px; background:#f2f5f2; border-top:3px solid #164f32; }
+  .youth-menu-sponsors-head { margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .youth-menu-sponsors-head > span { color:#164f32; font-size:.61rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+  .youth-menu-sponsors-head > a { display:flex; align-items:center; gap:7px; color:#164f32; font-size:.61rem; font-weight:850; text-decoration:none; white-space:nowrap; }
+  .youth-menu-sponsors-head > a b { display:grid; place-items:center; width:20px; aspect-ratio:1; border-radius:50%; background:#f4d638; transition:transform .18s ease; }
+  .youth-menu-sponsors-head > a:hover b,.youth-menu-sponsors-head > a:focus-visible b { transform:translate(2px,-2px); }
+  .youth-menu-sponsor-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+  .youth-menu-sponsor-grid > a,.youth-menu-sponsor-grid > article { min-width:0; height:76px; padding:8px; box-sizing:border-box; display:grid; place-items:center; background:white; border-bottom:3px solid #f4d638; }
+  .youth-menu-sponsor-grid > [hidden] { display:none; }
+  .youth-menu-sponsor-grid img { display:block; width:100%; height:100%; object-fit:contain; }
+  .youth-menu-sponsor-grid > a { transition:transform .18s ease,box-shadow .18s ease; }
+  .youth-menu-sponsor-grid > a:hover,.youth-menu-sponsor-grid > a:focus-visible { outline:none; transform:translateY(-2px); box-shadow:0 7px 16px rgb(15 35 19 / 14%); }
+</style>
