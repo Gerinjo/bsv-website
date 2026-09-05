@@ -72,7 +72,7 @@ export const menu: MenuItem[] = [
         { label: 'Auszeichnungen', href: '/jugend/auszeichnungen' },
         { label: 'Schiedsrichter & Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
         { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
-        { label: 'Termine', href: '/verein/termine' },
+        { label: 'Termine', href: '/verein/termine?kalender=jugendevents' },
       ]},
       { title: 'Geschichten', links: [
         { label: 'Vom BSV ins Nationaltrikot · Mariam Oboladze', href: '/jugend/geschichten/mariam-oboladze' },

@@ -92,5 +92,5 @@ test('the youth mega menu promotes the next youth event and its filtered overvie
   assert.match(youthMenuSponsors, /\/verein\/termine\?kalender=jugendevents/);
   assert.match(youthMenuSponsors, /Nächstes Jugendevent/);
   assert.match(youthMenuSponsors, /Alle Jugendevents/);
-  assert.match(navigation, /'Torwarttraining'[\s\S]*?\{ label: 'Termine', href: '\/verein\/termine' \}/);
+  assert.match(navigation, /'Torwarttraining'[\s\S]*?\{ label: 'Termine', href: '\/verein\/termine\?kalender=jugendevents' \}/);
 });
