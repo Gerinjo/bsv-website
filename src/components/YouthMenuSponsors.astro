@@ -1,11 +1,26 @@
 ---
 import { advertisingPartners } from '../data/advertisingPartners';
 import { isYouthSponsorAssignment } from '../data/sponsorAreas';
+import { loadClubCalendarCached } from '../utils/calendar';
 import { withBase } from '../utils/paths';
 
 const youthSponsors = advertisingPartners.filter((partner) =>
   partner.audienceAssignments.some(isYouthSponsorAssignment),
 );
+const { events } = await loadClubCalendarCached();
+const nextYouthEvent = events.find((event) => event.source.id === 'youth-events');
+const youthEventsHref = withBase('/verein/termine?kalender=jugendevents');
+const eventDate = new Intl.DateTimeFormat('de-DE', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'Europe/Berlin',
+});
+const eventTime = new Intl.DateTimeFormat('de-DE', {
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Europe/Berlin',
+});
 ---
 
 {youthSponsors.length > 0 && (
@@ -26,6 +41,23 @@ const youthSponsors = advertisingPartners.filter((partner) =>
     </div>
   </section>
 )}
+
+<section class="youth-menu-event" aria-label="Nächstes Jugendevent">
+  <span>Nächstes Jugendevent</span>
+  {nextYouthEvent ? (
+    <a class="youth-menu-event-card" href={youthEventsHref}>
+      <time datetime={nextYouthEvent.start.toISOString()}>
+        {eventDate.format(nextYouthEvent.start)}
+        {!nextYouthEvent.allDay && ` · ${eventTime.format(nextYouthEvent.start)} Uhr`}
+      </time>
+      <strong>{nextYouthEvent.title}</strong>
+      <b aria-hidden="true">↗</b>
+    </a>
+  ) : (
+    <p>Neue Termine folgen.</p>
+  )}
+  <a class="youth-menu-events-link" href={youthEventsHref}>Alle Jugendevents <b aria-hidden="true">↗</b></a>
+</section>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-youth-menu-sponsors]').forEach((showcase) => {
@@ -54,4 +86,15 @@ const youthSponsors = advertisingPartners.filter((partner) =>
   .youth-menu-sponsor-grid img { display:block; width:100%; max-width:230px; height:52px; min-width:0; object-fit:contain; }
   .youth-menu-sponsor-grid > a { transition:transform .18s ease,box-shadow .18s ease; }
   .youth-menu-sponsor-grid > a:hover,.youth-menu-sponsor-grid > a:focus-visible { outline:none; transform:translateY(-2px); box-shadow:0 7px 16px rgb(15 35 19 / 14%); }
+  .youth-menu-event { margin-top:10px; padding:15px 17px 14px; border-top:3px solid #8e3e78; background:#faf4f8; }
+  .youth-menu-event > span { display:block; margin-bottom:9px; color:#8e3e78; font-size:.6rem; font-weight:950; letter-spacing:.12em; text-transform:uppercase; }
+  .youth-menu-event-card { position:relative; min-height:68px; padding:12px 42px 12px 13px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; border-left:4px solid #8e3e78; background:white; color:#17251b; text-decoration:none; transition:transform .18s ease,box-shadow .18s ease; }
+  .youth-menu-event-card time { margin-bottom:5px; color:#8e3e78; font-size:.59rem; font-weight:900; text-transform:uppercase; }
+  .youth-menu-event-card strong { font-size:.8rem; line-height:1.25; }
+  .youth-menu-event-card > b { position:absolute; right:13px; top:50%; display:grid; place-items:center; width:24px; aspect-ratio:1; border-radius:50%; background:#f3d8eb; color:#8e3e78; transform:translateY(-50%); }
+  .youth-menu-event-card:hover,.youth-menu-event-card:focus-visible { outline:none; transform:translateY(-2px); box-shadow:0 7px 16px rgb(15 35 19 / 11%); }
+  .youth-menu-event > p { margin:0; padding:12px 13px; border-left:4px solid #c8b4c0; background:white; color:#68766d; font-size:.72rem; }
+  .youth-menu-events-link { margin-top:11px; display:flex; align-items:center; justify-content:flex-end; gap:8px; color:#164f32; font-size:.64rem; font-weight:900; text-decoration:none; }
+  .youth-menu-events-link b { display:grid; place-items:center; width:21px; aspect-ratio:1; border-radius:50%; background:#f4d638; transition:transform .18s ease; }
+  .youth-menu-events-link:hover b,.youth-menu-events-link:focus-visible b { transform:translate(2px,-2px); }
 </style>

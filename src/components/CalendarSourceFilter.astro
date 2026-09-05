@@ -29,6 +29,7 @@ const { sources, total } = Astro.props;
       <button
         type="button"
         data-calendar-filter-button={source.id}
+        data-calendar-filter-value={source.id === 'youth-events' ? 'jugendevents' : source.id}
         data-calendar-filter-label={source.label}
         aria-pressed="false"
         style={`--source-color:${source.color};--source-soft:${source.softColor}`}
@@ -49,7 +50,7 @@ const { sources, total } = Astro.props;
     const status = filter.querySelector<HTMLElement>('[data-calendar-filter-status]');
     const empty = document.querySelector<HTMLElement>('[data-calendar-filter-empty]');
 
-    const applyFilter = (sourceId: string, label: string) => {
+    const applyFilter = (sourceId: string, label: string, updateUrl = false) => {
       buttons.forEach((button) => {
         const active = button.dataset.calendarFilterButton === sourceId;
         button.classList.toggle('is-active', active);
@@ -71,14 +72,33 @@ const { sources, total } = Astro.props;
       const visibleCount = events.filter((event) => !event.hidden).length;
       if (status) status.textContent = `${label} · ${visibleCount} ${visibleCount === 1 ? 'Termin' : 'Termine'}`;
       if (empty) empty.hidden = visibleCount > 0;
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        const button = buttons.find((item) => item.dataset.calendarFilterButton === sourceId);
+        const value = button?.dataset.calendarFilterValue;
+        if (sourceId === 'all' || !value) url.searchParams.delete('kalender');
+        else url.searchParams.set('kalender', value);
+        window.history.replaceState({}, '', url);
+      }
     };
 
     buttons.forEach((button) => {
       button.addEventListener('click', () => applyFilter(
         button.dataset.calendarFilterButton ?? 'all',
         button.dataset.calendarFilterLabel ?? button.textContent?.trim() ?? 'Alle Kalender',
+        true,
       ));
     });
+
+    const requestedFilter = new URLSearchParams(window.location.search).get('kalender');
+    const requestedButton = buttons.find((button) => button.dataset.calendarFilterValue === requestedFilter);
+    if (requestedButton) {
+      applyFilter(
+        requestedButton.dataset.calendarFilterButton ?? 'all',
+        requestedButton.dataset.calendarFilterLabel ?? requestedButton.textContent?.trim() ?? 'Alle Kalender',
+      );
+    }
   }
 </script>
 

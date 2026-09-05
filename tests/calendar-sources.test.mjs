@@ -11,6 +11,8 @@ import {
 
 const calendarPage = readFileSync(new URL('../src/pages/verein/termine.astro', import.meta.url), 'utf8');
 const calendarFilter = readFileSync(new URL('../src/components/CalendarSourceFilter.astro', import.meta.url), 'utf8');
+const youthMenuSponsors = readFileSync(new URL('../src/components/YouthMenuSponsors.astro', import.meta.url), 'utf8');
+const navigation = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
 const homePage = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 
 const icsEvent = ({ uid, start, end, title }) => [
@@ -79,5 +81,16 @@ test('calendar page filters and colors events by source', () => {
   assert.match(calendarFilter, /data-calendar-filter-button="all"/);
   assert.match(calendarFilter, /event\.dataset\.calendarSource !== sourceId/);
   assert.match(calendarFilter, /group\.hidden = !/);
+  assert.match(calendarFilter, /URLSearchParams\(window\.location\.search\)\.get\('kalender'\)/);
+  assert.match(calendarFilter, /data-calendar-filter-value=\{source\.id === 'youth-events' \? 'jugendevents'/);
   assert.match(homePage, /data-calendar-source=\{event\.source\.id\}/);
+});
+
+test('the youth mega menu promotes the next youth event and its filtered overview', () => {
+  assert.match(youthMenuSponsors, /loadClubCalendarCached/);
+  assert.match(youthMenuSponsors, /events\.find\(\(event\) => event\.source\.id === 'youth-events'\)/);
+  assert.match(youthMenuSponsors, /\/verein\/termine\?kalender=jugendevents/);
+  assert.match(youthMenuSponsors, /Nächstes Jugendevent/);
+  assert.match(youthMenuSponsors, /Alle Jugendevents/);
+  assert.match(navigation, /'Torwarttraining'[\s\S]*?\{ label: 'Termine', href: '\/verein\/termine' \}/);
 });

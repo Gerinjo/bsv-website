@@ -179,3 +179,10 @@ export const loadClubCalendar = async () => {
     })),
   };
 };
+
+let cachedClubCalendar: ReturnType<typeof loadClubCalendar> | undefined;
+
+export const loadClubCalendarCached = () => {
+  cachedClubCalendar ??= loadClubCalendar();
+  return cachedClubCalendar;
+};
