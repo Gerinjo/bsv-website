@@ -150,6 +150,14 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header) {
+    const updateHeaderHeight = () => {
+      document.documentElement.style.setProperty('--site-header-height', `${header.getBoundingClientRect().height}px`);
+    };
+    new ResizeObserver(updateHeaderHeight).observe(header);
+    updateHeaderHeight();
+  }
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   const navigation = document.querySelector<HTMLElement>('#main-navigation');
   toggle?.addEventListener('click', () => {
@@ -298,9 +306,11 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 
   @media (max-width: 980px) {
+    .site-header { position:sticky; top:0; z-index:100; }
+    :global(html) { scroll-padding-top:calc(var(--site-header-height, 134px) + 12px); }
     .top-location { display:none !important; }
     .menu-toggle { display: block; cursor: pointer; }
-    nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: calc(100vh - 90px); overflow-y: auto; background: #fff; box-shadow: 0 20px 30px rgb(15 35 19 / 14%); }
+    nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height:calc(100vh - var(--site-header-height, 134px)); max-height:calc(100dvh - var(--site-header-height, 134px)); overflow-y:auto; overscroll-behavior:contain; background: #fff; box-shadow: 0 20px 30px rgb(15 35 19 / 14%); }
     nav.is-open { display: block; }
     .menu { height: auto; display: block; padding: 14px 20px 26px; }
     .mobile-partners-entry { display:block; margin:2px 0 13px; }
