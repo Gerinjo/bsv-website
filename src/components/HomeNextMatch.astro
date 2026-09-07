@@ -1,0 +1,82 @@
+---
+import { teamProfiles } from '../data/teamPages';
+import { loadNextMatches } from '../utils/nextMatch';
+
+const teams = await Promise.all([
+  { path: 'fussball/herren/bezirksliga', label: 'Herren 1' },
+  { path: 'fussball/frauen/bezirksliga', label: 'Frauen 1' },
+].map(async ({ path, label }) => {
+  const team = teamProfiles[path];
+  const teamId = team.fussballDeUrl?.match(/\/team-id\/([A-Z0-9]+)/)?.[1];
+  const matches = (await loadNextMatches(team.fussballDeWidgetId!)).map((match) => ({
+    ...match,
+    home: teamId && match.homeTeamId === teamId ? 'BSV' : match.home,
+    away: teamId && match.awayTeamId === teamId ? 'BSV' : match.away,
+  }));
+  return { label, url: team.fussballDeUrl, matches };
+}));
+---
+
+<section class="next-matches" aria-labelledby="next-matches-title">
+  <h2 id="next-matches-title">Die nächsten Spiele</h2>
+  {teams.map((team) => (
+    <div class="next-match" aria-label={`Nächstes Spiel · ${team.label}`}>
+      <h3>{team.label}</h3>
+      {team.matches.map((match, index) => (
+        <div class="match-details" data-kickoff={match.dateTime} hidden={index !== 0}>
+          <div class="match-copy">
+            <p class="match-teams">{match.home} <span>–</span> {match.away}</p>
+            <time datetime={match.dateTime}>{match.dateLabel} <span>·</span> {match.time} Uhr</time>
+          </div>
+          <a href={match.url} target="_blank" rel="noopener noreferrer" aria-label={`${team.label}: ${match.home} gegen ${match.away} auf fussball.de`} title="Spiel auf fussball.de öffnen">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
+          </a>
+        </div>
+      ))}
+      <div class="match-fallback" hidden={team.matches.length > 0}>
+        <p>Aktueller Spieltermin auf fussball.de</p>
+        <a href={team.url} target="_blank" rel="noopener noreferrer" aria-label={`Spielplan ${team.label} auf fussball.de`} title="Spielplan auf fussball.de öffnen">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
+        </a>
+      </div>
+    </div>
+  ))}
+</section>
+
+<script>
+  import { berlinNow } from '../utils/nextMatch';
+  const refreshMatches = () => {
+    const now = berlinNow();
+    document.querySelectorAll<HTMLElement>('.next-match').forEach((team) => {
+      const cards = [...team.querySelectorAll<HTMLElement>('[data-kickoff]')];
+      const next = cards.find((card) => card.dataset.kickoff! > now);
+      cards.forEach((card) => { card.hidden = card !== next; });
+      const fallback = team.querySelector<HTMLElement>('.match-fallback');
+      if (fallback) fallback.hidden = Boolean(next);
+    });
+  };
+  refreshMatches();
+  window.setInterval(refreshMatches, 60000);
+  document.addEventListener('visibilitychange', refreshMatches);
+</script>
+
+<style>
+  .next-matches { margin-top:28px; color:white; }
+  h2 { margin:0 0 10px; color:#f4d638; font-size:.68rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+  .next-match { padding:12px 0; border-top:1px solid rgb(255 255 255 / 22%); }
+  h3 { margin:0 0 4px; color:#d2e3d8; font-size:.68rem; font-weight:650; }
+  .match-details,.match-fallback { display:flex; align-items:center; gap:12px; }
+  .match-copy { flex:1; min-width:0; }
+  .match-teams { margin:0 0 5px; font-size:.88rem; line-height:1.4; font-weight:750; overflow-wrap:anywhere; }
+  .match-teams span { color:#f4d638; }
+  time { color:#d2e3d8; font-size:.76rem; } time span { margin:0 5px; }
+  a { width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; color:#f4d638; border-radius:4px; text-decoration:none; }
+  a:hover { background:rgb(255 255 255 / 10%); } a:focus-visible { outline:2px solid #f4d638; outline-offset:2px; }
+  .match-fallback p { flex:1; margin:0; color:#d2e3d8; font-size:.8rem; }
+  [hidden] { display:none; }
+  @media(max-width:650px) {
+    .next-matches { margin-top:20px; }
+    .next-match { padding:10px 0; }
+    .match-teams { font-size:.82rem; }
+  }
+</style>

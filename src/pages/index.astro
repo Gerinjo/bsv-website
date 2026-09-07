@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import HomeSponsorShowcase from '../components/HomeSponsorShowcase.astro';
+import HomeNextMatch from '../components/HomeNextMatch.astro';
 import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
@@ -44,6 +45,7 @@ const getEventType = (title: string) => {
             <a class="button button-shop" href="https://shop.bsvnordstern.de/" target="_blank" rel="noopener noreferrer">Zum BSV Shop <span>↗</span></a>
             <a class="text-link" href={withBase('/verein/geschichte')}>Den BSV entdecken <span>→</span></a>
           </div>
+          <HomeNextMatch />
         </div>
 
         <div class="hero-art" aria-label="Illustration eines Fußballfeldes">
@@ -239,4 +241,13 @@ const getEventType = (title: string) => {
   .join-section { background: #fff; }.join-card { position: relative; overflow: hidden; min-height: 330px; padding: 65px 70px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 70px; background: var(--yellow); border-radius: 8px; }.join-card::after { content: ''; position: absolute; right: -80px; top: -160px; width: 380px; aspect-ratio: 1; border: 1px solid rgb(9 47 32 / 18%); border-radius: 50%; box-shadow: 0 0 0 50px rgb(9 47 32 / 5%), 0 0 0 100px rgb(9 47 32 / 4%); }.join-star { position: absolute; right: 35px; top: 25px; color: white; font-size: 3rem; }.join-card h2 em { color: var(--green); }.join-copy { position: relative; z-index: 1; }.join-copy p { margin-bottom: 28px; color: #3b4c3f; line-height: 1.6; }.button-dark { background: var(--green-dark); color: white; }
   @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 330px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
   @media (max-width: 650px) { .shell { width: calc(100% - 30px); max-width: 1160px; }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 250px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
+  @media (max-width: 650px) {
+    .hero-grid { padding-top:28px; }
+    .hero-copy .kicker { margin-bottom:16px; font-size:.64rem; }
+    .hero-copy h1 { font-size:clamp(2.2rem, 10.5vw, 4rem); line-height:.95; margin-bottom:18px; }
+    .hero-copy .intro { margin-bottom:20px; font-size:.95rem; line-height:1.5; }
+    .hero-actions { gap:16px 10px; }
+    .hero-actions .button { flex:1; min-width:0; min-height:44px; padding:0 10px; gap:8px; font-size:.72rem; }
+    .hero-actions .text-link { flex-basis:100%; margin-top:4px; }
+  }
 </style>

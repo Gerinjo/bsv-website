@@ -14,7 +14,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.1.6"
+    "astro": "^7.1.6",
+    "fontkitten": "^1.0.3"
   },
   "devDependencies": {
     "supabase": "^2.111.0"
