@@ -26,7 +26,10 @@ const teams = await Promise.all([
         <div class="match-details" data-kickoff={match.dateTime} hidden={index !== 0}>
           <div class="match-copy">
             <p class="match-teams">{match.home} <span>–</span> {match.away}</p>
-            <time datetime={match.dateTime}>{match.dateLabel} <span>·</span> {match.time} Uhr</time>
+            <p class="match-meta">
+              <time datetime={match.dateTime}>{match.dateLabel} <span class="separator">·</span> {match.time} Uhr</time>
+              {match.competition && <><span class="separator">·</span><span>{match.competition}</span></>}
+            </p>
           </div>
           <a href={match.url} target="_blank" rel="noopener noreferrer" aria-label={`${team.label}: ${match.home} gegen ${match.away} auf fussball.de`} title="Spiel auf fussball.de öffnen">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
@@ -69,7 +72,8 @@ const teams = await Promise.all([
   .match-copy { flex:1; min-width:0; }
   .match-teams { margin:0 0 5px; font-size:.88rem; line-height:1.4; font-weight:750; overflow-wrap:anywhere; }
   .match-teams span { color:#f4d638; }
-  time { color:#d2e3d8; font-size:.76rem; } time span { margin:0 5px; }
+  .match-meta { margin:0; color:#d2e3d8; font-size:.76rem; line-height:1.5; overflow-wrap:anywhere; }
+  .separator { margin:0 5px; }
   a { width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; color:#f4d638; border-radius:4px; text-decoration:none; }
   a:hover { background:rgb(255 255 255 / 10%); } a:focus-visible { outline:2px solid #f4d638; outline-offset:2px; }
   .match-fallback p { flex:1; margin:0; color:#d2e3d8; font-size:.8rem; }

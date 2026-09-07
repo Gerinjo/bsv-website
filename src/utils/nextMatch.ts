@@ -6,6 +6,7 @@ export type NextMatch = {
   dateTime: string;
   dateLabel: string;
   time: string;
+  competition?: string;
   url: string;
 };
 
@@ -21,6 +22,8 @@ export function parseMatchPage(html: string, id: string, widgetTime?: string): N
   if (!/^[A-Z0-9]{32}$/.test(id)) throw new Error('Invalid match ID');
   const teams = [...html.matchAll(/<div\s+class="team-name">\s*<a\b[^>]*>([^<]+)<\/a>/g)]
     .map((match) => decodeText(match[1]));
+  const competitionHtml = html.match(/<a\b[^>]*\bclass="competition"[^>]*>([\s\S]*?)<\/a>/)?.[1];
+  const competition = competitionHtml ? decodeText(competitionHtml.replace(/<[^>]*>/g, '')) : undefined;
   const dateInTitle = html.match(/<title>[^<]* - (\d{2}\.\d{2}\.\d{4})<\/title>/)?.[1];
   const kickoff = html.match(/name="subject"[^>]*\bvalue="[^"]* am (\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})"/)
     ?? (dateInTitle && widgetTime ? `${dateInTitle} ${widgetTime}`.match(/^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/) : null);
@@ -31,7 +34,7 @@ export function parseMatchPage(html: string, id: string, widgetTime?: string): N
   return {
     home: teams[0], away: teams[1], dateTime: `${year}-${month}-${day}T${hour}:${minute}`,
     dateLabel: new Intl.DateTimeFormat('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Berlin' }).format(date),
-    time: `${hour}:${minute}`, url: `https://www.fussball.de/spiel/-/spiel/${id}`,
+    time: `${hour}:${minute}`, competition, url: `https://www.fussball.de/spiel/-/spiel/${id}`,
   };
 }
 

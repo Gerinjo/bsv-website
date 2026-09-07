@@ -23,6 +23,14 @@ test('rejects incomplete details and impossible kickoffs', () => {
   assert.throws(() => parseMatchPage(page(), '../bad'));
 });
 
+test('reads the actual competition of each match, including cup matches', () => {
+  for (const competition of ['Kreisliga B - Staffel 1', 'Bezirkspokal Bodensee', 'Frauen Bezirksliga']) {
+    const html = `<a href="/spieltag/" class="competition">${competition}<span class="icon-link-arrow-circle"></span></a>${page()}`;
+    assert.equal(parseMatchPage(html, id).competition, competition);
+  }
+  assert.equal(parseMatchPage(page(), id).competition, undefined);
+});
+
 test('uses the widget time for women’s match pages without a result-report form', () => {
   const html = '<title>FSG - SG Ergebnis: Frauen Bezirkspokal - Frauen - 16.09.2099</title>'
     + page().replace(/<input[^>]+>/, '');
