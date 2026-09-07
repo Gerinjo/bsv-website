@@ -110,10 +110,15 @@ const groups = await Promise.all([
 <style>
   .next-matches { margin-top:28px; color:white; }
   h2 { margin:0 0 10px; color:#f4d638; font-size:.68rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
-  .match-tabs { display:flex; gap:8px; margin-bottom:12px; }
-  .match-tabs button { min-height:44px; padding:0 20px; border:1px solid rgb(255 255 255 / 25%); border-radius:4px; background:transparent; color:#d2e3d8; font:inherit; font-size:.78rem; font-weight:750; cursor:pointer; }
-  .match-tabs button[aria-selected="true"] { border-color:#f4d638; background:#f4d638; color:#092f20; }
-  .match-tabs button:hover { border-color:#f4d638; }
+  .match-tabs { display:flex; gap:0; margin-bottom:0; }
+  .match-tabs button { position:relative; min-height:32px; padding:0 20px; border:0; border-radius:0; background:transparent; color:#d2e3d8; font:inherit; font-size:.76rem; font-weight:750; cursor:pointer; }
+  .match-tabs button:first-child { padding-left:0; }
+  .match-tabs button::after { content:''; position:absolute; right:0; top:7px; bottom:7px; width:1px; background:rgb(255 255 255 / 35%); transform:skewX(-18deg); pointer-events:none; }
+  .match-tabs button::before { content:''; position:absolute; right:10px; bottom:-1px; left:10px; height:2px; background:transparent; transform:skewX(-18deg); pointer-events:none; }
+  .match-tabs button:first-child::before { left:0; }
+  .match-tabs button[aria-selected="true"] { color:#f4d638; }
+  .match-tabs button[aria-selected="true"]::before { background:#f4d638; }
+  .match-tabs button:hover { color:#f4d638; }
   .match-tabs button:focus-visible,.match-panel:focus-visible { outline:2px solid #f4d638; outline-offset:3px; }
   .next-match { padding:12px 0; border-top:1px solid rgb(255 255 255 / 22%); }
   h3 { margin:0 0 4px; color:#d2e3d8; font-size:.68rem; font-weight:650; }
