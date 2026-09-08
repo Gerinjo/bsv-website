@@ -920,14 +920,14 @@ if ($isFootball) {
             '</p>' .
             $linkButton('BSV-Teamshop öffnen', $teamShopUrl) .
             ($isMinor ? $linkButton('Jugend-Sets ansehen', $youthSetsUrl) : '') .
-            ($isMinor
-                ? '<div style="margin-top:14px;padding:16px;background:#f8faf8;border:1px solid #dfe7df;border-radius:6px;">' .
-                    '<p style="margin:0 0 12px;line-height:1.6;color:#3f5146;"><strong>Empfohlenes BSV-Jugend-Set</strong><br>Trikot, Polyesterjacke, Polyesterhose, Allwetterjacke, Rucksack und Stutzen.</p>' .
-                    '<a href="' . $htmlEscape($youthSetsUrl) . '" style="text-decoration:none;">' .
-                        '<img src="' . $htmlEscape($youthSetImageUrl) . '" alt="BSV-Jugend-Set" width="560" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:5px;">' .
-                    '</a>' .
-                '</div>'
-                : '') .
+            '<div style="margin-top:14px;padding:16px;background:#f8faf8;border:1px solid #dfe7df;border-radius:6px;">' .
+                '<p style="margin:0 0 12px;line-height:1.6;color:#3f5146;"><strong>' .
+                    ($isMinor ? 'Empfohlenes BSV-Jugend-Set' : 'Unsere BSV-Vereinskollektion') .
+                '</strong><br>Trikot, Polyesterjacke, Polyesterhose, Allwetterjacke, Rucksack und Stutzen.</p>' .
+                '<a href="' . $htmlEscape($isMinor ? $youthSetsUrl : $teamShopUrl) . '" style="text-decoration:none;">' .
+                    '<img src="' . $htmlEscape($youthSetImageUrl) . '" alt="BSV-Vereinskleidung: Trikot, Jacken, Hose, Rucksack und Stutzen" width="560" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:5px;">' .
+                '</a>' .
+            '</div>' .
         '</td></tr>' .
         '<tr><td style="padding:28px 36px;background:#f3f6f3;">' .
             '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">WhatsApp-Community</h2>' .
