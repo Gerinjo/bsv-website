@@ -842,6 +842,90 @@ $textLink = function ($label, $url) {
     return $label . ': ' . $url . "\n";
 };
 
+// The feed contains only the same approved public partners shown on the website.
+// Keep sponsor availability independent of the application and email delivery.
+$loadSponsorRecords = function () use ($siteBase) {
+    if (!function_exists('curl_init')) return array();
+    $feedUrl = $siteBase . '/mitgliedschaft-sponsoren.json';
+    $cachePath = __DIR__ . '/membership-sponsors-cache.json';
+    $decodeFeed = function ($raw) {
+        $data = is_string($raw) ? json_decode($raw, true) : null;
+        return is_array($data) && isset($data['version'], $data['sponsors'])
+            && $data['version'] === 1 && is_array($data['sponsors']) ? $data['sponsors'] : null;
+    };
+    $cached = is_file($cachePath) ? $decodeFeed(@file_get_contents($cachePath)) : null;
+    $cacheAge = is_file($cachePath) ? time() - (int)@filemtime($cachePath) : PHP_INT_MAX;
+    if ($cached !== null && $cacheAge < 3600) return $cached;
+    $request = curl_init($feedUrl);
+    curl_setopt_array($request, array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 2,
+        CURLOPT_TIMEOUT => 4,
+        CURLOPT_HTTPHEADER => array('Accept: application/json'),
+    ));
+    $raw = curl_exec($request);
+    $status = (int)curl_getinfo($request, CURLINFO_HTTP_CODE);
+    curl_close($request);
+    $records = $status === 200 ? $decodeFeed($raw) : null;
+    if ($records !== null) {
+        @file_put_contents($cachePath, $raw, LOCK_EX);
+        return $records;
+    }
+    return $cached !== null && $cacheAge < 86400 ? $cached : array();
+};
+
+$buildSponsorFooter = function ($records, $forYouth) use ($siteBase, $htmlEscape) {
+    $partnersUrl = $siteBase . '/werbepartner';
+    $eligible = array();
+    foreach ($records as $record) {
+        if (!is_array($record) || !isset($record['id'], $record['name'], $record['website'], $record['logo'], $record['width'], $record['height'])) continue;
+        if ($forYouth && (!isset($record['youth']) || $record['youth'] !== true)) continue;
+        if (!is_string($record['id']) || !is_string($record['name']) || trim($record['name']) === '') continue;
+        if (!is_string($record['website']) || !filter_var($record['website'], FILTER_VALIDATE_URL)
+            || !in_array(strtolower((string)parse_url($record['website'], PHP_URL_SCHEME)), array('http', 'https'), true)) continue;
+        if (!is_string($record['logo']) || strpos($record['logo'], $siteBase . '/images/sponsors/') !== 0
+            || !filter_var($record['logo'], FILTER_VALIDATE_URL)) continue;
+        if (!is_int($record['width']) || !is_int($record['height'])
+            || $record['width'] < 1 || $record['width'] > 112 || $record['height'] < 1 || $record['height'] > 64) continue;
+        $eligible[$record['id']] = $record;
+    }
+    $selected = array_values($eligible);
+    shuffle($selected);
+    $selected = array_slice($selected, 0, 4);
+    $thanks = $forYouth
+        ? 'Danke an unsere Jugendsponsoren! Sie unterstützen Training, Teamgeist und die Entwicklung unserer jungen Spielerinnen und Spieler.'
+        : 'Danke an unsere Sponsoren! Ihre Unterstützung macht Sport und Gemeinschaft beim BSV Nordstern möglich.';
+    $html = '<tr><td style="padding:24px;background:#f8faf8;border-top:3px solid #f4d638;text-align:center;">' .
+        '<h2 style="margin:0 0 10px;color:#164f32;font-size:18px;">Gemeinsam für den BSV</h2>' .
+        '<p style="margin:0 0 16px;color:#3f5146;font-size:13px;line-height:1.6;">' . $htmlEscape($thanks) . '</p>';
+    $text = "\nUNSERE SPONSOREN\n" . $thanks . "\n";
+    if (count($selected) > 0) {
+        // Two fluid tables: four logos across on desktop, two per row on mobile.
+        // Explicit proportional dimensions also work in classic Outlook.
+        $html .= '<div style="font-size:0;text-align:center;">';
+        foreach (array_chunk($selected, 2) as $pair) {
+            $html .= '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="display:inline-table;width:100%;max-width:280px;vertical-align:middle;table-layout:fixed;"><tr>';
+            foreach ($pair as $sponsor) {
+                $html .= '<td width="50%" height="84" align="center" valign="middle" style="padding:8px;background:#ffffff;">' .
+                    '<a href="' . $htmlEscape($sponsor['website']) . '" style="display:block;text-decoration:none;color:#164f32;">' .
+                    '<img src="' . $htmlEscape($sponsor['logo']) . '" alt="' . $htmlEscape($sponsor['name']) .
+                    '" width="' . $sponsor['width'] . '" height="' . $sponsor['height'] .
+                    '" style="display:block;width:100%;max-width:' . $sponsor['width'] . 'px;height:auto;border:0;margin:0 auto;">' .
+                    '</a></td>';
+                $text .= $sponsor['name'] . ': ' . $sponsor['website'] . "\n";
+            }
+            if (count($pair) === 1) $html .= '<td width="50%"></td>';
+            $html .= '</tr></table>';
+        }
+        $html .= '</div>';
+    }
+    $html .= '<p style="margin:16px 0 0;font-size:13px;line-height:1.5;"><a href="' . $htmlEscape($partnersUrl) .
+        '" style="color:#164f32;font-weight:700;text-decoration:underline;">Alle Sponsoren auf unserer Website ansehen &#8594;</a></p></td></tr>';
+    $text .= 'Alle Sponsoren auf unserer Website: ' . $partnersUrl . "\n";
+    return array('html' => $html, 'text' => $text);
+};
+$sponsorFooter = $buildSponsorFooter($loadSponsorRecords(), $isYouthFootball);
+
 $applicantSubject = 'Willkommen beim BSV – Antrag von ' . $memberName . ' eingegangen';
 $applicantText = $greeting . "\n\n" .
     "herzlich willkommen beim BSV Nordstern e.V. Radolfzell!\n\n" .
@@ -904,7 +988,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     "Sportliche Grüße\n" .
     "BSV Nordstern e.V. Radolfzell\n" .
     "Schlesierstraße 43, 78315 Radolfzell\n" .
-    "info@bsvnordstern.de · +49 7732 910080\n";
+    "info@bsvnordstern.de · +49 7732 910080\n" . $sponsorFooter['text'];
 
 $footballHtml = '';
 if ($isFootball) {
@@ -1007,6 +1091,7 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '<p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#164f32;">Jetzt aber auf den Platz – wir freuen uns auf dich!</p>' .
 '<p style="margin:0;line-height:1.7;color:#3f5146;">Sportliche Grüße<br><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:#164f32;">info@bsvnordstern.de</a> · <a href="tel:+497732910080" style="color:#164f32;">+49 7732 910080</a></p>' .
 '</td></tr>' .
+$sponsorFooter['html'] .
 '</table></td></tr></table></body></html>';
 
 $applicantSent = $sendMail(

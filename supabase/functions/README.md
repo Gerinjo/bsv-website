@@ -108,6 +108,28 @@ hochladen. Sie gehört weder ins Git-Repository noch ins lokale Astro-Verzeichni
 Direkte HTTP-Aufrufe der PHP-Konfiguration erhalten eine leere 404-Antwort.
 Ohne Schlüssel wird keine Mail versendet. Die Umgebungsvariable hat Vorrang.
 
+### Sponsoren in der Willkommensmail
+
+Der Website-Build veröffentlicht unter `/mitgliedschaft-sponsoren.json` die
+freigegebenen Sponsoren mit Logo, Website und Jugendzuordnung aus derselben
+Datenquelle wie die Sponsorenübersicht. Das PHP-Formular wählt pro
+Willkommensmail zufällig bis zu vier verschiedene Partner: bei der Abteilung
+Jugendfußball ausschließlich Jugendsponsoren, sonst aus allen freigegebenen
+Partnern. Die Auswahl richtet sich nach der Abteilung, nicht nach dem Alter.
+
+Der Dank am Mailende enthält verlinkte Logos und einen Link auf `/werbepartner`.
+Die Textversion nennt dieselben ausgewählten Partner mit ihren Webadressen.
+PHP hält die öffentlichen Feed-Daten eine Stunde in
+`/api/membership-sponsors-cache.json` vor. Bei einem Abruffehler kann ein bis zu
+24 Stunden alter Cache verwendet werden; ohne gültige Daten bleiben Dank und
+Übersichtslink erhalten. Ein Fehler des Sponsorenfeeds verhindert den Versand
+des Mitgliedsantrags nicht.
+
+Für die erste Bereitstellung zuerst die Website mit dem neuen JSON-Endpunkt
+veröffentlichen und anschließend die aktualisierte `membership-v3.php` auf den
+PHP-Webspace hochladen. Spätere Sponsorenänderungen kommen automatisch über die
+bestehende tägliche Synchronisierung und den Website-Build in die Mailauswahl.
+
 ### Versandfehler untersuchen
 
 Der PHP-Endpunkt läuft auf `api.bsvnordstern.de`. Änderungen an
