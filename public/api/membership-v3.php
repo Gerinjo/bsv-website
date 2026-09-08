@@ -977,6 +977,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     $textLink('BSV-Homepage', $siteBase . '/') .
     ($isYouthFootball ? $textLink('Kontakt Jugendleitung', $siteBase . '/kontakt/?thema=youth') : '') .
     $textLink('Allgemeiner Kontakt', $siteBase . '/kontakt/?thema=general') . "\n" .
+    $sponsorFooter['text'] . "\n" .
     "FÖRDERVEREIN\n" .
     "Der Förderverein unterstützt unter anderem Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.\n" .
     $textLink('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
@@ -988,7 +989,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     "Sportliche Grüße\n" .
     "BSV Nordstern e.V. Radolfzell\n" .
     "Schlesierstraße 43, 78315 Radolfzell\n" .
-    "info@bsvnordstern.de · +49 7732 910080\n" . $sponsorFooter['text'];
+    "info@bsvnordstern.de · +49 7732 910080\n";
 
 $footballHtml = '';
 if ($isFootball) {
@@ -1075,6 +1076,7 @@ $footballHtml .
 '<p style="margin:0 0 16px;line-height:1.65;color:#3f5146;">Hier findest du die wichtigsten Bereiche und Ansprechpartner:</p>' .
 $linkButtonsHtml .
 '</td></tr>' .
+$sponsorFooter['html'] .
 '<tr><td style="padding:28px 36px;background:#092f20;color:#ffffff;">' .
 '<h2 style="margin:0 0 12px;color:#f4d638;font-size:21px;">Förderverein</h2>' .
 '<p style="margin:0 0 16px;line-height:1.65;color:#d3dfd7;">Der Förderverein unterstützt Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.</p>' .
@@ -1091,7 +1093,6 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '<p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#164f32;">Jetzt aber auf den Platz – wir freuen uns auf dich!</p>' .
 '<p style="margin:0;line-height:1.7;color:#3f5146;">Sportliche Grüße<br><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:#164f32;">info@bsvnordstern.de</a> · <a href="tel:+497732910080" style="color:#164f32;">+49 7732 910080</a></p>' .
 '</td></tr>' .
-$sponsorFooter['html'] .
 '</table></td></tr></table></body></html>';
 
 $applicantSent = $sendMail(

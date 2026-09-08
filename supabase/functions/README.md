@@ -117,7 +117,7 @@ Willkommensmail zufällig bis zu vier verschiedene Partner: bei der Abteilung
 Jugendfußball ausschließlich Jugendsponsoren, sonst aus allen freigegebenen
 Partnern. Die Auswahl richtet sich nach der Abteilung, nicht nach dem Alter.
 
-Der Dank am Mailende enthält verlinkte Logos und einen Link auf `/werbepartner`.
+Der Dank direkt vor dem Förderverein enthält verlinkte Logos und einen Link auf `/werbepartner`.
 Die Textversion nennt dieselben ausgewählten Partner mit ihren Webadressen.
 PHP hält die öffentlichen Feed-Daten eine Stunde in
 `/api/membership-sponsors-cache.json` vor. Bei einem Abruffehler kann ein bis zu
