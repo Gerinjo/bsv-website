@@ -136,7 +136,7 @@ test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
 test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {
   const u19Section = teamSection('jugend/u19', 'jugend/u17');
 
-  assert.match(u19Section, /Dienstag',\s*time:\s*'19:00 – 20:30 Uhr',\s*place:\s*'BSV Nordstern Radolfzell'/);
+  assert.match(u19Section, /Dienstag',\s*time:\s*'19:30 – 21:00 Uhr',\s*place:\s*'BSV Nordstern Radolfzell'/);
   assert.match(u19Section, /Donnerstag',\s*time:\s*'19:00 – 20:30 Uhr',\s*place:\s*'SV Markelfingen'/);
   assert.doesNotMatch(u19Section, /Montag|Mittwoch/);
 });
