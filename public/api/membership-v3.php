@@ -138,9 +138,9 @@ $youthTeamOptions = array(
     'e1-junioren' => array('label' => 'U11 E1-Junioren', 'trainers' => 'N. Pourheidari, C. Pabst', 'routingKey' => 'team--jugend--u11-e1'),
     'e2-junioren' => array('label' => 'U11 E2-Junioren', 'trainers' => 'M. Rüth, M. Mahmoudi', 'routingKey' => 'team--jugend--u11-e2'),
     'e3-junioren' => array('label' => 'U11 E3-Junioren', 'trainers' => 'S. Sulger, M. Sick', 'routingKey' => 'team--jugend--u11-e3'),
-    'd1-junioren' => array('label' => 'U13 D1-Junioren', 'trainers' => 'S. Hellmann', 'routingKey' => 'team--jugend--u13-d1'),
+    'd1-junioren' => array('label' => 'U13 D1-Junioren', 'trainers' => 'S. Hellmann, H. Ho', 'routingKey' => 'team--jugend--u13-d1'),
     'd2-junioren' => array('label' => 'U13 D2-Junioren', 'trainers' => 'J. Boreatti, M. Eisner', 'routingKey' => 'team--jugend--u13-d2'),
-    'd3-junioren' => array('label' => 'U13 D3-Junioren', 'trainers' => 'H. Ho', 'routingKey' => 'team--jugend--u13-d3'),
+    'd3-junioren' => array('label' => 'U13 D3-Junioren', 'trainers' => 'J. Ernsberger', 'routingKey' => 'team--jugend--u13-d3'),
     'c1-junioren' => array('label' => 'U15 C1-Junioren', 'trainers' => 'A. Schäuble, S. Bühler, T. Parthenschlager', 'routingKey' => 'team--jugend--u15-c1'),
     'c2-junioren' => array('label' => 'U15 C2-Junioren', 'trainers' => 'S. Bäuerle', 'routingKey' => 'team--jugend--u15-c2'),
     'b-junioren' => array('label' => 'U17 B-Junioren', 'trainers' => 'M. Geismann, A. Basile', 'routingKey' => 'team--jugend--u17'),
@@ -637,9 +637,42 @@ $allAttachments = array_merge(array($pdfAttachment, $signatureAttachment), $atta
 $htmlEscape = function ($text) { return htmlspecialchars((string)$text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); };
 $mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
 if (!$mailBridgeEndpoint) $mailBridgeEndpoint = 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/membership-email';
-$mailBridgeSecret = (string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET');
-$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape) {
-    if ($mailBridgeSecret === '' || !function_exists('curl_init')) return false;
+$mailBridgeSecret = trim((string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET'));
+// Shared hosting may not provide custom environment variables to PHP.
+// Keep its private configuration separate from deployable application code.
+if ($mailBridgeSecret === '' && is_file(__DIR__ . '/membership-config.php')) {
+    define('BSV_MEMBERSHIP_CONFIG_LOADER', true);
+    $membershipConfig = require __DIR__ . '/membership-config.php';
+    if (is_array($membershipConfig) && isset($membershipConfig['email_secret']) && is_string($membershipConfig['email_secret'])) {
+        $mailBridgeSecret = trim($membershipConfig['email_secret']);
+    }
+    unset($membershipConfig);
+}
+$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape, $applicationNumber) {
+    $deliveryFailed = function ($reason, $httpStatus = 0, $curlCode = 0) use ($messageType, $applicationNumber) {
+        // Never log request/response bodies: they can contain membership data,
+        // bank details, signatures, attachments, addresses or authentication keys.
+        $logEntry = '[membership-mail] ' . json_encode(array(
+            'reference' => $applicationNumber,
+            'message_type' => $messageType,
+            'reason' => $reason,
+            'http_status' => $httpStatus,
+            'curl_code' => $curlCode,
+        ), JSON_UNESCAPED_SLASHES);
+        error_log($logEntry);
+        // Make the sanitized diagnostic accessible through SFTP on shared hosting.
+        // Every appended record starts with an execution guard, so the PHP file
+        // returns an empty 404 response when requested over HTTP.
+        $written = @file_put_contents(
+            __DIR__ . '/membership-mail-errors.php',
+            "<?php http_response_code(404); exit; ?>\n" . $logEntry . "\n",
+            FILE_APPEND | LOCK_EX
+        );
+        if ($written === false) error_log('[membership-mail] diagnostic_file_unwritable');
+        return false;
+    };
+    if ($mailBridgeSecret === '') return $deliveryFailed('missing_bridge_secret');
+    if (!function_exists('curl_init')) return $deliveryFailed('curl_unavailable');
     $encodedFiles = array();
     foreach ($files as $file) {
         $encodedFiles[] = array(
@@ -660,7 +693,7 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
         'routingKey' => (string)$routingKey,
         'attachments' => $encodedFiles,
     ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    if ($payload === false) return false;
+    if ($payload === false) return $deliveryFailed('invalid_message_encoding');
 
     $request = curl_init($mailBridgeEndpoint);
     curl_setopt_array($request, array(
@@ -677,10 +710,23 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
     ));
     $responseBody = curl_exec($request);
     $responseCode = (int)curl_getinfo($request, CURLINFO_HTTP_CODE);
+    $curlCode = curl_errno($request);
     curl_close($request);
-    if ($responseBody === false || $responseCode < 200 || $responseCode >= 300) return false;
+    if ($responseBody === false) return $deliveryFailed('bridge_connection_failed', $responseCode, $curlCode);
     $result = json_decode($responseBody, true);
-    return is_array($result) && isset($result['ok']) && $result['ok'] === true;
+    if ($responseCode < 200 || $responseCode >= 300) {
+        $knownErrors = array('mail_bridge_not_configured', 'unauthorized', 'request_too_large',
+            'invalid_json', 'invalid_routing', 'recipient_lookup_not_configured',
+            'recipient_lookup_failed', 'recipient_not_configured', 'invalid_recipient_configuration',
+            'invalid_message', 'invalid_reply_to', 'invalid_attachment', 'attachments_too_large', 'email_failed');
+        $reason = is_array($result) && isset($result['error']) && in_array($result['error'], $knownErrors, true)
+            ? $result['error'] : 'bridge_http_error';
+        return $deliveryFailed($reason, $responseCode);
+    }
+    if (!is_array($result) || !isset($result['ok']) || $result['ok'] !== true) {
+        return $deliveryFailed('invalid_bridge_response', $responseCode);
+    }
+    return true;
 };
 
 $emailConsentSummary =
@@ -725,7 +771,7 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     "Das PDF, die Unterschrift und alle hochgeladenen Unterlagen sind beigefügt.\n";
 
 if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
-    $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Bitte versuche es später erneut.'));
+    $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Deine Eingaben bleiben im Formular erhalten. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
 }
 
 $trainerNotificationSent = null;

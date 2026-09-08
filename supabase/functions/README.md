@@ -89,7 +89,58 @@ supabase secrets set MEMBERSHIP_EMAIL_SECRET=...
 ```
 
 Auf dem PHP-Webspace wird derselbe geheime Wert als
-`BSV_MEMBERSHIP_EMAIL_SECRET` gesetzt. Ohne ihn wird keine Mail versendet.
+`BSV_MEMBERSHIP_EMAIL_SECRET` gesetzt. Alternativ liest der PHP-Endpunkt bei
+fehlender Umgebungsvariable `/api/membership-config.php`:
+
+```php
+<?php
+if (!defined('BSV_MEMBERSHIP_CONFIG_LOADER')) {
+    http_response_code(404);
+    exit;
+}
+return array('email_secret' => 'HIER_DEN_GEMEINSAMEN_SCHLUESSEL_EINTRAGEN');
+```
+
+Die echte Datei mit Schlüssel ausschließlich im privaten Upload-Verzeichnis
+außerhalb des Projekts aufbewahren und per SFTP neben `membership-v3.php`
+hochladen. Sie gehört weder ins Git-Repository noch ins lokale Astro-Verzeichnis
+`public`, dessen Dateien der Entwicklungsserver unverarbeitet ausliefert.
+Direkte HTTP-Aufrufe der PHP-Konfiguration erhalten eine leere 404-Antwort.
+Ohne Schlüssel wird keine Mail versendet. Die Umgebungsvariable hat Vorrang.
+
+### Versandfehler untersuchen
+
+Der PHP-Endpunkt läuft auf `api.bsvnordstern.de`. Änderungen an
+`public/api/membership-v3.php` müssen dort separat bereitgestellt werden:
+Der GitHub-Pages-Build entfernt PHP-Dateien und aktualisiert diesen Server nicht.
+
+Bei einem fehlgeschlagenen Versand protokolliert PHP unter `[membership-mail]`
+die Antragsreferenz, den Nachrichtentyp, einen Fehlercode sowie HTTP- und
+cURL-Status. Die Referenz erscheint auch im Formular. Antragsdaten, Anlagen,
+Adressen, Antwortinhalte und geheime Schlüssel werden dabei nicht protokolliert.
+
+Zusätzlich wird derselbe bereinigte Eintrag in
+`/api/membership-mail-errors.php` auf dem PHP-Webspace angehängt. Die Datei
+entsteht beim nächsten Versandfehler, sofern das Verzeichnis für PHP schreibbar
+ist. Sie kann per SFTP heruntergeladen und als Text geöffnet werden; ein
+HTTP-Aufruf endet durch einen PHP-Schutz mit Status 404 und leerem Inhalt.
+Nach Abschluss der Fehlersuche kann die Datei auf dem Webspace gelöscht werden.
+
+- `missing_bridge_secret`: `BSV_MEMBERSHIP_EMAIL_SECRET` fehlt in der
+  Laufzeitumgebung des PHP-Webservers.
+- `curl_unavailable`: Die PHP-Erweiterung cURL fehlt.
+- `bridge_connection_failed`: DNS, TLS oder die ausgehende Verbindung prüfen;
+  der cURL-Code grenzt den Fehler ein.
+- `unauthorized`: PHP-Secret und Supabase-Secret `MEMBERSHIP_EMAIL_SECRET`
+  müssen übereinstimmen. Die Werte nicht in Logs oder Tickets kopieren.
+- `recipient_*` / `invalid_recipient_configuration`: Die geschützte
+  Empfängerzuordnung in `contact_empfaenger` prüfen.
+- `email_failed`: Die Logs der Edge Function `membership-email` und den
+  Maildienst prüfen.
+- `request_too_large` / `attachments_too_large`: Die Größe der Anlagen prüfen.
+
+Die Erreichbarkeit des Spamschutzes allein bestätigt keinen funktionierenden
+E-Mail-Versand. Für eine Versandprobe keine echten Mitgliedsdaten verwenden.
 
 Die internen Empfänger werden nicht mehr über ein Edge Secret gepflegt,
 sondern serverseitig aus `public.contact_empfaenger` geladen:

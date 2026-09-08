@@ -12,6 +12,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+public/api/membership-mail-errors.php
+public/api/membership-config.php
 
 # environment variables
 .env
