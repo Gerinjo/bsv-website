@@ -2,7 +2,7 @@
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
-import { advertisingPartners } from '../../data/advertisingPartners';
+import { advertisingPartners, stadiumMagazineSponsorType } from '../../data/advertisingPartners';
 import { sponsorAreaKeys, sponsorAreaOptions } from '../../data/sponsorAreas';
 import { withBase } from '../../utils/paths';
 
@@ -105,7 +105,7 @@ const availableSponsorAreaOptions = sponsorAreaOptions.filter((area) =>
 
       <div class="partner-groups" data-partner-groups>
         {sponsorGroups.map((group) => (
-          <section class:list={['partner-group', `weight-${group.displayWeight}`]} data-partner-group={group.typeSlug} data-sponsor-weight={group.displayWeight} aria-labelledby={`partner-group-${group.typeSlug}`}>
+          <section class:list={['partner-group', `weight-${group.displayWeight}`, { 'is-stadium-magazine': group.typeSlug === stadiumMagazineSponsorType }]} data-partner-group={group.typeSlug} data-sponsor-weight={group.displayWeight} aria-labelledby={`partner-group-${group.typeSlug}`}>
             <div class="partner-group-title">
               <span>Sponsorart</span>
               <h2 id={`partner-group-${group.typeSlug}`}>{group.typeLabel}</h2>
@@ -251,4 +251,13 @@ const availableSponsorAreaOptions = sponsorAreaOptions.filter((area) =>
   .partner-cta>a strong{color:var(--yellow)}
   @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-note{width:min(100%,600px)}.partner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.partner-cta{grid-template-columns:1fr}.partner-cta>a{justify-self:start}}
   @media(max-width:600px){.shell{width:min(100% - 30px,1160px)}.partners-hero{padding:70px 0 80px}.hero-grid{gap:45px}.hero-note{box-sizing:border-box;width:auto;min-height:0;padding:24px;grid-template-columns:72px minmax(0,1fr);gap:20px;box-shadow:8px 8px 0 var(--yellow)}.hero-note>span{font-size:3.6rem}.hero-note strong{font-size:1.2rem}.partner-overview{padding:72px 0}.section-head{align-items:flex-start;flex-direction:column;gap:22px}.partner-filters{grid-template-columns:1fr;margin-bottom:48px;padding:14px}.partner-groups{gap:55px}.partner-grid{grid-template-columns:1fr}.partner-card,.partner-group.weight-3 .partner-card,.partner-group.weight-2 .partner-card,.partner-group.weight-1 .partner-card{grid-template-rows:205px auto}.logo-stage,.partner-group.weight-1 .logo-stage{padding:28px}.partner-copy,.partner-group.weight-1 .partner-copy{padding:23px 22px}.partner-cta{margin-bottom:75px;padding:42px 28px;gap:30px}.partner-cta>a{width:100%;min-width:0}}
+  .partner-group.is-stadium-magazine .partner-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+  .partner-group.is-stadium-magazine .partner-card{position:relative;grid-template-rows:155px auto;border-top-width:3px;box-shadow:0 8px 24px rgb(9 47 32 / 6%)}
+  .partner-group.is-stadium-magazine .logo-stage{padding:24px}
+  .partner-group.is-stadium-magazine .logo-stage img{max-width:100%;max-height:95px}
+  .partner-group.is-stadium-magazine .partner-copy{display:block;padding:18px}
+  .partner-group.is-stadium-magazine .partner-copy h3{font-size:1rem;overflow-wrap:anywhere}
+  .partner-group.is-stadium-magazine .partner-copy>span{position:absolute;right:10px;top:10px;width:32px;font-size:.9rem}
+  @media(max-width:900px){.partner-group.is-stadium-magazine .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:600px){.partner-group.is-stadium-magazine .partner-card{grid-template-rows:125px auto}.partner-group.is-stadium-magazine .logo-stage{padding:16px}.partner-group.is-stadium-magazine .logo-stage img{max-height:75px}.partner-group.is-stadium-magazine .partner-copy{padding:14px;gap:8px}.partner-group.is-stadium-magazine .partner-copy>span{width:26px}}
 </style>

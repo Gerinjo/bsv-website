@@ -1,13 +1,19 @@
 ---
-import { advertisingPartners } from '../data/advertisingPartners';
+import { advertisingPartners, stadiumMagazineSponsorType } from '../data/advertisingPartners';
 import { withBase } from '../utils/paths';
 
 // Diese Liste wird ausschließlich aus aktiven, freigegebenen Sponsoren mit
 // hinterlegtem Transparent-Logo in bsv-socialmedia synchronisiert.
-const approvedSponsors = advertisingPartners;
+const approvedSponsors = advertisingPartners.filter((partner) =>
+  partner.audienceAssignments.length === 0 ||
+  partner.audienceAssignments.some((assignment) => assignment.sponsorType?.slug !== stadiumMagazineSponsorType),
+);
+const stadiumMagazineSponsors = advertisingPartners.filter((partner) =>
+  partner.audienceAssignments.some((assignment) => assignment.sponsorType?.slug === stadiumMagazineSponsorType),
+);
 ---
 
-{approvedSponsors.length > 0 && (
+{(approvedSponsors.length > 0 || stadiumMagazineSponsors.length > 0) && (
   <section class="home-sponsors" id="home-sponsors" aria-labelledby="home-sponsors-title">
     <div class="home-sponsors-copy">
       <div>
@@ -17,7 +23,7 @@ const approvedSponsors = advertisingPartners;
       <p>Wir bedanken uns herzlich bei unseren Sponsoren für ihre Unterstützung und dafür, dass sie Sport, Jugend und Gemeinschaft beim BSV Nordstern möglich machen.</p>
     </div>
 
-    <div class="home-sponsor-grid" data-home-sponsor-grid>
+    {approvedSponsors.length > 0 && <div class="home-sponsor-grid" data-home-sponsor-grid>
       {approvedSponsors.map((sponsor) => sponsor.website ? (
         <a class="home-sponsor-logo" href={sponsor.website} target="_blank" rel="noopener noreferrer" aria-label={`${sponsor.name} besuchen`}>
           <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
@@ -27,7 +33,27 @@ const approvedSponsors = advertisingPartners;
           <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
         </article>
       ))}
-    </div>
+    </div>}
+
+    {stadiumMagazineSponsors.length > 0 && (
+      <section class="stadium-sponsors" aria-labelledby="stadium-sponsors-title">
+        <div class="stadium-sponsors-head">
+          <h3 id="stadium-sponsors-title">Stadionheft</h3>
+          <a href={withBase(`/werbepartner?sponsorart=${stadiumMagazineSponsorType}`)}>Alle Stadionheft-Partner <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="stadium-sponsor-grid" data-home-sponsor-grid>
+          {stadiumMagazineSponsors.map((sponsor) => sponsor.website ? (
+            <a class="stadium-sponsor-logo" href={sponsor.website} target="_blank" rel="noopener noreferrer" aria-label={`${sponsor.name} besuchen`}>
+              <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
+            </a>
+          ) : (
+            <article class="stadium-sponsor-logo" aria-label={sponsor.name}>
+              <img src={withBase(sponsor.logoSrc)} alt={sponsor.logoAlt} loading="lazy" decoding="async" />
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
 
     <a class="home-sponsors-link" href={withBase('/werbepartner')}>
       Alle Werbepartner ansehen <span aria-hidden="true">→</span>
@@ -37,17 +63,18 @@ const approvedSponsors = advertisingPartners;
 
 <script>
   const randomizeHomeSponsors = () => {
-    const grid = document.querySelector<HTMLElement>('[data-home-sponsor-grid]');
-    if (!grid || grid.dataset.randomized === 'true') return;
+    document.querySelectorAll<HTMLElement>('[data-home-sponsor-grid]').forEach((grid) => {
+      if (grid.dataset.randomized === 'true') return;
 
-    const sponsors = [...grid.children];
-    for (let index = sponsors.length - 1; index > 0; index -= 1) {
-      const target = Math.floor(Math.random() * (index + 1));
-      [sponsors[index], sponsors[target]] = [sponsors[target], sponsors[index]];
-    }
+      const sponsors = [...grid.children];
+      for (let index = sponsors.length - 1; index > 0; index -= 1) {
+        const target = Math.floor(Math.random() * (index + 1));
+        [sponsors[index], sponsors[target]] = [sponsors[target], sponsors[index]];
+      }
 
-    grid.replaceChildren(...sponsors);
-    grid.dataset.randomized = 'true';
+      grid.replaceChildren(...sponsors);
+      grid.dataset.randomized = 'true';
+    });
   };
 
   if (document.readyState === 'loading') {
@@ -68,6 +95,17 @@ const approvedSponsors = advertisingPartners;
   .home-sponsor-logo:nth-child(n+4){display:none}
   .home-sponsor-logo img{display:block;width:100%;height:82px;object-fit:contain}
   a.home-sponsor-logo:hover,a.home-sponsor-logo:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 12px 28px rgb(9 47 32 / 10%)}
+  .stadium-sponsors{margin-top:26px;padding-top:20px;border-top:1px solid #d7dfd9}
+  .stadium-sponsors-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+  .stadium-sponsors-head h3{margin:0;color:#164f32;font-size:1.05rem}
+  .stadium-sponsors-head a{color:#164f32;font-size:.7rem;font-weight:800;text-decoration:none}
+  .stadium-sponsors-head a:hover{text-decoration:underline}
+  .stadium-sponsor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .stadium-sponsor-logo{min-width:0;height:100px;padding:20px;box-sizing:border-box;display:grid;place-items:center;border:1px solid #d7dfd9;background:#fff;transition:transform .18s ease,box-shadow .18s ease}
+  .stadium-sponsor-logo:nth-child(n+5){display:none}
+  .stadium-sponsor-logo img{display:block;width:100%;height:58px;object-fit:contain}
+  a.stadium-sponsor-logo:hover,a.stadium-sponsor-logo:focus-visible{outline:2px solid #164f32;outline-offset:2px;transform:translateY(-2px)}
   .home-sponsors-link{width:max-content;margin:22px 0 0 auto;padding:10px 0 4px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #f4d638;color:#164f32;font-size:.76rem;font-weight:950;letter-spacing:.04em;text-decoration:none;text-transform:uppercase}.home-sponsors-link span{font-size:1rem;transition:transform .18s ease}.home-sponsors-link:hover span,.home-sponsors-link:focus-visible span{transform:translateX(4px)}
   @media(max-width:760px){.home-sponsors-copy{grid-template-columns:1fr;gap:16px}.home-sponsor-grid{grid-template-columns:1fr}.home-sponsor-logo{height:118px}.home-sponsor-logo img{height:72px}.home-sponsors-link{margin-left:0}}
+  @media(max-width:760px){.stadium-sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stadium-sponsor-logo{height:90px;padding:16px}.stadium-sponsor-logo img{height:54px}.stadium-sponsors-head{align-items:flex-start;flex-wrap:wrap;gap:8px}}
 </style>

@@ -41,3 +41,5 @@ export type AdvertisingPartner = {
  * Sponsorart-Gewichtung und Sortierung steuern Reihenfolge und visuelle Präsenz der Karten.
  */
 export const advertisingPartners = generatedPartners satisfies AdvertisingPartner[];
+
+export const stadiumMagazineSponsorType = 'stadionheft';
