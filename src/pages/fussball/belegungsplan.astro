@@ -73,13 +73,19 @@ const timeValue = (time: string) => {
 };
 const isAtBsv = (place: string) => /BSV Nordstern/i.test(place);
 
+const allocationByTeamAndDay: Record<string, Partial<Allocation>> = {
+  'fussball/herren/kreisliga-2|Donnerstag': { pitch: 'Nebenplatz' },
+};
+
 const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
   profile.training.map((slot) => ({
     path,
     team: teamNames[path] ?? profile.letter,
     filterKey: trainingFilterKeyByTeam[path],
     ...slot,
-    allocation: allocationByTeam[path],
+    allocation: allocationByTeam[path]
+      ? { ...allocationByTeam[path], ...allocationByTeamAndDay[`${path}|${slot.day}`] }
+      : undefined,
   })),
 );
 const bsvSessions = allTraining
