@@ -75,6 +75,7 @@ const isAtBsv = (place: string) => /BSV Nordstern/i.test(place);
 
 const allocationByTeamAndDay: Record<string, Partial<Allocation>> = {
   'fussball/herren/kreisliga-2|Donnerstag': { pitch: 'Nebenplatz' },
+  'jugend/u9-f|Mittwoch': { pitch: 'Nebenplatz' },
 };
 
 const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>

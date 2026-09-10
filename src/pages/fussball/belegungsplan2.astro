@@ -66,6 +66,7 @@ const allocationByTeam: Record<string, Allocation> = {
 
 const changes: Record<string, ProposalChange> = {
   'fussball/alte-herren|Mittwoch': { time: '19:00 – 20:30 Uhr', allocation: { pitch: 'Hauptplatz' } },
+  'jugend/u9-f|Mittwoch': { allocation: { pitch: 'Nebenplatz' } },
   'jugend/u19|Dienstag': { day: 'Montag', time: '19:30 – 21:00 Uhr', allocation: { pitch: 'Nebenplatz' } },
   'jugend/u15-c2|Dienstag': { day: 'Freitag', time: '19:00 – 20:30 Uhr' },
   'jugend/u15-c2|Donnerstag': { day: 'Montag', time: '19:00 – 20:30 Uhr' },
@@ -80,7 +81,7 @@ const changes: Record<string, ProposalChange> = {
 const actionItems = [
   {
     team: 'Alte Herren',
-    original: 'Mittwoch ab 19:00 Uhr auf dem Nebenplatz; keine Endzeit angegeben.',
+    original: 'Mittwoch 19:00–20:30 Uhr auf dem Hauptplatz.',
     proposal: 'Mittwoch 19:00–20:30 Uhr auf dem Hauptplatz.',
   },
   {
