@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { withBase } from '../utils/paths';
+---
+
+<Layout title="Die BSV-App – Dein Verein immer dabei" description="Installiere die BSV-App auf deinem iPhone oder Android-Handy. Teams, Spielplan und Vereinsnews direkt über das BSV-Wappen öffnen.">
+  <Header />
+  <main>
+    <section class="app-hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Dein Verein. Dein Startbildschirm.</p>
+          <h1>Der Nordstern.<br /><em>Immer dabei.</em></h1>
+          <p class="lead">Ein Tipp aufs Wappen – und du bist beim BSV. Hol dir Teams, Spielplan und Vereinsnews direkt auf dein Handy.</p>
+          <div class="app-actions">
+            <button type="button" class="primary-action" data-pwa-install hidden>BSV-App installieren <span aria-hidden="true">↓</span></button>
+            <a class="guide-action" href="#installation">So geht’s auf deinem Handy <span aria-hidden="true">↘</span></a>
+          </div>
+          <p class="install-status" data-pwa-status role="status" aria-live="polite">Kostenlos. Ohne App-Store. Mit deinem BSV-Wappen.</p>
+        </div>
+        <div class="app-preview" aria-label="Vorschau des BSV-App-Symbols auf dem Startbildschirm">
+          <span class="preview-star" aria-hidden="true">✦</span>
+          <img src={withBase('/icons/app-512.png')} alt="BSV Nordstern Vereinswappen" width="160" height="160" />
+          <strong>BSV Nordstern</strong>
+          <span>Dein Verein ist nur einen Tipp entfernt.</span>
+          <div class="preview-links" aria-hidden="true"><span>Spielplan</span><span>Teams</span><span>Kontakt</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell installation" id="installation" data-pwa-instructions aria-labelledby="installation-title">
+      <p class="eyebrow">In wenigen Schritten bereit</p>
+      <h2 id="installation-title">So kommt der BSV<br />auf dein Handy.</h2>
+      <p class="section-intro">Öffne diese Seite direkt in deinem Browser. In Instagram, WhatsApp oder anderen Apps wählst du dafür zuerst „Im Browser öffnen“.</p>
+      <div class="installation-grid">
+        <article class="device-card">
+          <p class="device-label">Apple</p><h3>iPhone & iPad</h3>
+          <ol>
+            <li><span>Öffne <strong>bsvnordstern.de/app</strong> in <strong>Safari</strong>.</span></li>
+            <li><span>Tippe auf <strong>Teilen</strong> – das Quadrat mit dem Pfeil nach oben, je nach Ansicht im Browser-Menü.</span></li>
+            <li><span>Wähle <strong>„Zum Home-Bildschirm“</strong>. Aktiviere <strong>„Als Web-App öffnen“</strong>, falls diese Option erscheint.</span></li>
+            <li><span>Bestätige mit <strong>„Hinzufügen“</strong>. Fertig!</span></li>
+          </ol>
+        </article>
+        <article class="device-card">
+          <p class="device-label">Google & weitere Hersteller</p><h3>Android</h3>
+          <ol>
+            <li><span>Öffne <strong>bsvnordstern.de/app</strong> in <strong>Chrome</strong>.</span></li>
+            <li><span>Tippe oben auf dieser Seite auf <strong>„BSV-App installieren“</strong>, sobald der Button erscheint.</span></li>
+            <li><span>Alternativ: Öffne das <strong>Drei-Punkte-Menü</strong> und wähle <strong>„App installieren“</strong> oder <strong>„Zum Startbildschirm hinzufügen“</strong>.</span></li>
+            <li><span>Bestätige die Installation und öffne die App über das <strong>BSV-Wappen</strong>.</span></li>
+          </ol>
+        </article>
+      </div>
+      <p class="browser-note">Die Bezeichnungen können je nach Gerät und Browser etwas abweichen. Am Computer bieten beispielsweise Chrome und Edge die Installation über das Symbol in der Adressleiste oder ihr Menü an.</p>
+    </section>
+
+    <section class="shell app-details" aria-label="Gut zu wissen">
+      <article><span aria-hidden="true">↻</span><h2>Immer aktuell.</h2><p>Die App öffnet unsere Website im eigenen Fenster. Neue Vereinsinhalte sind beim nächsten Laden da – ohne separates App-Update.</p></article>
+      <article><span aria-hidden="true">↗</span><h2>Alles an einem Ort.</h2><p>Deine gewohnte BSV-Website mit Teams, Spielplänen und Kontaktmöglichkeiten. Externe Angebote öffnen sich je nach Gerät im Browser.</p></article>
+      <article><span aria-hidden="true">⌁</span><h2>Online am Ball.</h2><p>Für Inhalte und Formulare brauchst du Internet. Wenn die Verbindung fehlt, hilft dir ein Offline-Hinweis beim erneuten Öffnen.</p></article>
+    </section>
+    <div class="shell back-link"><a href={withBase('/')}>Zur BSV-Startseite <span aria-hidden="true">↗</span></a></div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  [hidden] { display:none !important; }
+  .shell { width:min(1120px, calc(100% - 40px)); margin-inline:auto; }
+  .app-hero { padding:85px 0; background:#092f20; color:white; }
+  .hero-grid { display:grid; grid-template-columns:minmax(0, 1.4fr) minmax(0, 1fr); gap:70px; align-items:center; }
+  .eyebrow { margin:0 0 20px; color:#17613a; font-size:.7rem; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
+  .app-hero .eyebrow { color:#f4d638; }
+  h1 { margin:0; font-size:clamp(3rem, 6vw, 5.3rem); line-height:1.02; letter-spacing:-.05em; }
+  h1 em { color:#f4d638; font-family:Georgia, serif; font-weight:400; }
+  .lead { max-width:540px; margin:28px 0; color:#c4d8cb; font-size:1.08rem; line-height:1.75; }
+  .app-actions { display:flex; flex-wrap:wrap; align-items:center; gap:20px; }
+  .primary-action, .guide-action { display:inline-flex; align-items:center; justify-content:space-between; gap:24px; min-height:48px; font:inherit; font-size:.86rem; font-weight:850; text-decoration:none; }
+  .primary-action { padding:15px 20px; border:0; border-radius:6px; background:#f4d638; color:#092f20; cursor:pointer; }
+  .primary-action:disabled { opacity:.65; cursor:wait; }
+  .guide-action { color:#f4d638; }
+  .install-status { margin:18px 0 0; color:#c4d8cb; font-size:.8rem; line-height:1.6; }
+  .app-preview { position:relative; min-height:390px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:50px 24px; border:1px solid rgb(255 255 255 / 18%); border-radius:30px; background:linear-gradient(145deg,#1d6543,#0c3525); text-align:center; box-shadow:16px 20px 0 rgb(0 0 0 / 12%); }
+  .preview-star { position:absolute; top:20px; right:24px; color:#f4d638; font-size:1.5rem; }
+  .app-preview img { width:128px; height:128px; border-radius:28px; box-shadow:0 12px 30px rgb(0 0 0 / 20%); }
+  .app-preview > strong { margin:18px 0 8px; font-size:1.12rem; }
+  .app-preview > span:not(.preview-star) { max-width:230px; color:#c4d8cb; font-size:.8rem; line-height:1.5; }
+  .preview-links { display:flex; gap:7px; margin-top:30px; }
+  .preview-links span { padding:9px 12px; border:1px solid rgb(255 255 255 / 15%); border-radius:5px; color:#e5eee8; font-size:.7rem; }
+  .installation { padding-block:75px 35px; scroll-margin-top:30px; }
+  .installation > h2 { margin:0 0 24px; font-size:clamp(2.1rem, 4vw, 3.5rem); line-height:1.08; letter-spacing:-.04em; }
+  .section-intro, .browser-note { max-width:760px; color:#52665a; line-height:1.75; }
+  .installation-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:35px 0 24px; }
+  .device-card { padding:32px; border:1px solid #dce5de; border-top:4px solid #f4d638; border-radius:8px; background:white; }
+  .device-label { margin:0 0 10px; color:#17613a; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.1em; }
+  .device-card h3 { margin:0 0 26px; color:#092f20; font-size:1.7rem; }
+  .device-card ol { display:grid; gap:22px; padding:0; margin:0; list-style:none; counter-reset:step; }
+  .device-card li { display:flex; align-items:flex-start; gap:14px; color:#52665a; font-size:.92rem; line-height:1.65; counter-increment:step; }
+  .device-card li::before { content:counter(step); display:grid; place-items:center; width:28px; height:28px; flex:0 0 auto; border-radius:50%; background:#edf4ee; color:#17613a; font-size:.75rem; font-weight:850; }
+  .device-card strong { color:#173e2a; overflow-wrap:anywhere; }
+  .browser-note { font-size:.82rem; }
+  .app-details { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; padding-block:30px 45px; }
+  .app-details article { padding-top:25px; border-top:1px solid #d5dfd7; }
+  .app-details article > span { color:#17613a; font-size:1.5rem; }
+  .app-details h2 { margin:16px 0 12px; font-size:1.25rem; }
+  .app-details p { color:#52665a; font-size:.9rem; line-height:1.75; }
+  .back-link { padding-bottom:75px; }
+  .back-link a { display:inline-flex; gap:28px; color:#164f32; font-weight:850; text-decoration:none; }
+  a:focus-visible, button:focus-visible { outline:3px solid #f4d638; outline-offset:5px; }
+  @media(max-width:800px) { .hero-grid { gap:35px; } .app-preview { min-height:350px; padding-inline:16px; } .installation-grid { grid-template-columns:1fr; } .app-details { grid-template-columns:1fr; gap:12px; } }
+  @media(max-width:600px) { .shell { width:calc(100% - 32px); } .app-hero { padding:55px 0; } .hero-grid { grid-template-columns:1fr; gap:40px; } .app-preview { min-height:320px; max-width:340px; width:100%; margin-inline:auto; box-shadow:8px 10px 0 rgb(0 0 0 / 12%); } .device-card { padding:25px 20px; } .installation { padding-top:55px; } }
+</style>

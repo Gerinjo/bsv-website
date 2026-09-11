@@ -13,6 +13,7 @@ const year = new Date().getFullYear();
       </a>
       <p>Gemeinschaft, Bewegung und echte Vereinsliebe – zuhause an der Schlesierstraße.</p>
       <strong class="footer-claim">Auf geht’s grün.</strong>
+      <a class="footer-app" href={withBase('/app')}>BSV-App installieren <span aria-hidden="true">↗</span></a>
     </div>
 
     <div class="footer-contact" id="kontakt">
@@ -53,6 +54,8 @@ const year = new Date().getFullYear();
   .footer-brand strong,.footer-brand small { display:block; }.footer-brand strong { font-size:1.08rem; }.footer-brand small { margin-top:4px; color:#7f9989; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; }
   .footer-intro > p { max-width:330px; margin:28px 0 18px; line-height:1.7; }.footer-claim { color:#f4d638; font-family:Georgia,serif; font-size:1.35rem; font-style:italic; font-weight:400; }
   .footer-label { margin:0 0 20px; color:#f4d638; font-size:.66rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .footer-app { display:flex; align-items:center; justify-content:space-between; gap:24px; width:fit-content; margin-top:26px; padding:13px 17px; border:1px solid #f4d638; border-radius:6px; color:#f4d638; font-size:.8rem; font-weight:800; text-decoration:none; }
+  .footer-app:hover { background:#f4d638; color:#092f20; }
   .footer-contact { display:grid; gap:14px; }.footer-contact .footer-label { margin-bottom:5px; }.footer-contact > a { display:flex; align-items:center; gap:13px; color:inherit; text-decoration:none; }.footer-contact > a:hover { color:white; }.footer-contact small,.footer-contact strong { display:block; }.footer-contact small { margin-bottom:2px; color:#718b7b; font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }.footer-contact strong { font-size:.83rem; }
   .footer-icon { display:grid; place-items:center; width:38px; aspect-ratio:1; flex:0 0 auto; border:1px solid rgb(255 255 255 / 13%); border-radius:50%; color:#f4d638; background:rgb(255 255 255 / 4%); }.footer-icon svg { width:17px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
   .footer-nav { display:grid; grid-template-columns:1fr 1fr; gap:35px; }.footer-nav > div { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }.footer-nav .footer-label { margin-bottom:8px; }.footer-nav a { color:#9bb0a3; font-size:.8rem; text-decoration:none; }.footer-nav a:hover { color:white; }

@@ -3,7 +3,7 @@ import LegalPage from '../components/LegalPage.astro';
 import { umami } from '../utils/umami';
 ---
 
-<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated={umami.enabled ? '18. August 2026' : '17. August 2026'}>
+<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated="11. September 2026">
   <section>
     <h2>Verantwortliche Stelle</h2>
     <div class="legal-card">
@@ -59,6 +59,8 @@ import { umami } from '../utils/umami';
 
   <section>
     <h2>Cookies, Analyse & externe Inhalte</h2>
+    <h3>Installierbare BSV-App</h3>
+    <p>Unsere Website kann als Web-App auf dem Startbildschirm installiert werden. Beim Aufruf der Installationsseite oder beim Start der installierten App richten wir eine Offline-Hilfe ein. Dafür speichert ein Service Worker ausschließlich eine allgemeine Offline-Hinweisseite lokal im Browser. Inhalte der Vereinsseiten, Formulareingaben und API-Antworten werden von diesem Service Worker nicht zwischengespeichert. Der lokale Speicher bleibt bis zur Ersetzung durch eine neue Version oder bis zur Löschung der Website-Daten im Browser bestehen. Diese Funktion verwendet keine zusätzlichen Cookies und dient nicht der Wiedererkennung oder Reichweitenmessung.</p>
     {umami.enabled ? (
       <>
         <div class="legal-card"><strong>Datensparsame Reichweitenmessung:</strong> Wir nutzen Umami ausschließlich, um anonyme Seitenaufrufe auszuwerten. Umami setzt keine Cookies und erstellt keine personenbezogenen Nutzerprofile.</div>

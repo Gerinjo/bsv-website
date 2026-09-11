@@ -1,0 +1,81 @@
+---
+import { withBase } from '../utils/paths';
+---
+
+<link rel="manifest" href={withBase('/manifest.webmanifest')} />
+<link rel="apple-touch-icon" sizes="180x180" href={withBase('/icons/apple-touch-icon.png')} />
+<meta name="theme-color" content="#092f20" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="BSV Nordstern" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<script>
+  import { withBase } from '../utils/paths';
+
+  interface InstallPrompt extends Event {
+    prompt(): Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  }
+
+  const standalone = window.matchMedia('(display-mode: standalone)');
+  const isApp = () => standalone.matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  const button = document.querySelector<HTMLButtonElement>('[data-pwa-install]');
+  const status = document.querySelector<HTMLElement>('[data-pwa-status]');
+  const instructions = document.querySelector<HTMLElement>('[data-pwa-instructions]');
+  let installPrompt: InstallPrompt | null = null;
+
+  const update = () => {
+    if (button) button.hidden = isApp() || !installPrompt;
+    if (instructions) instructions.hidden = isApp();
+    if (status && isApp()) status.textContent = 'Du nutzt die BSV-App bereits. Schön, dass du dabei bist!';
+  };
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    // Elsewhere on the website the browser can offer its own installation UI.
+    if (!button || isApp()) return;
+    event.preventDefault();
+    installPrompt = event as InstallPrompt;
+    update();
+  });
+
+  button?.addEventListener('click', async () => {
+    const prompt = installPrompt;
+    if (!prompt) return;
+    button.disabled = true;
+    try {
+      await prompt.prompt();
+      const { outcome } = await prompt.userChoice;
+      if (status) status.textContent = outcome === 'accepted'
+        ? 'Die Installation wurde gestartet. Du findest die BSV-App anschließend auf deinem Startbildschirm oder in deiner App-Liste.'
+        : 'Du kannst die BSV-App jederzeit über das Browser-Menü installieren.';
+    } catch {
+      if (status) status.textContent = 'Nutze bitte die Anleitung für dein Gerät weiter unten.';
+    } finally {
+      installPrompt = null;
+      button.disabled = false;
+      update();
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installPrompt = null;
+    update();
+    if (status) status.textContent = 'Die BSV-App ist installiert. Öffne sie über das Vereinswappen auf deinem Startbildschirm oder in deiner App-Liste.';
+  });
+  standalone.addEventListener('change', update);
+  update();
+
+  // Prepare offline help on the installation page and whenever the installed app starts.
+  // Development deliberately does not install a persistent service worker.
+  if (import.meta.env.PROD && 'serviceWorker' in navigator
+    && (isApp() || location.pathname.replace(/\/$/, '') === withBase('/app'))) {
+    const register = () => {
+      navigator.serviceWorker.register(withBase('/sw.js'), {
+        scope: withBase('/'), updateViaCache: 'none',
+      }).catch((error) => console.warn('Die Offline-Hilfe konnte nicht vorbereitet werden.', error));
+    };
+    if (document.readyState === 'complete') register();
+    else window.addEventListener('load', register, { once: true });
+  }
+</script>

@@ -5,6 +5,7 @@ import HomeShopEnhancer from '../components/HomeShopEnhancer.astro';
 import SponsoringMegaEnhancer from '../components/SponsoringMegaEnhancer.astro';
 import TagDesMaedchenfussballMenuEnhancer from '../components/TagDesMaedchenfussballMenuEnhancer.astro';
 import UmamiAnalytics from '../components/UmamiAnalytics.astro';
+import PwaSupport from '../components/PwaSupport.astro';
 import { withBase } from '../utils/paths';
 
 interface Props { title?: string; description?: string; noindex?: boolean }
@@ -37,6 +38,7 @@ const friendlyMatchTeamPaths = [
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+		<PwaSupport />
 		<link rel="icon" type="image/png" href={withBase('/images/verein/wappen/bsv-nordstern.png')} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
