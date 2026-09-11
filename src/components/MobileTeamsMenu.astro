@@ -50,7 +50,7 @@ const rows = [
   Teams
 </button>
 
-<dialog id="mobile-teams" class="teams-dialog" aria-labelledby="teams-title">
+<dialog id="mobile-teams" class="teams-dialog" aria-labelledby="teams-title" style={`--teams-background: url(${withBase('/images/fussball/teams-schuss.webp')})`}>
   <div class="teams-heading">
     <div><p>BSV Nordstern</p><h2 id="teams-title">Unsere Teams</h2></div>
     <button class="teams-close" type="button" aria-label="Teamauswahl schließen" autofocus>
@@ -108,6 +108,8 @@ const rows = [
   :global(html.teams-menu-open), :global(html.teams-menu-open body) { overflow:hidden; }
   .teams-dialog { position:fixed; inset:0; box-sizing:border-box; width:100%; max-width:none; height:100vh; height:100dvh; max-height:none; margin:0; padding:0; border:0; background:#092f20; color:white; font-family:inherit; letter-spacing:normal; overflow:hidden; }
   .teams-dialog[open] { display:flex; flex-direction:column; }
+  .teams-dialog[open]::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgb(9 47 32 / 50%), transparent 25%, rgb(9 47 32 / 15%)), var(--teams-background) center / cover no-repeat; opacity:.48; pointer-events:none; }
+  .teams-heading, .teams-grid { position:relative; z-index:1; }
   .teams-dialog::backdrop { background:#092f20; }
   .teams-heading { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); border-bottom:1px solid rgb(255 255 255 / 15%); }
   .teams-heading p { margin:0 0 5px; color:#f4d638; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.14em; }
@@ -117,7 +119,7 @@ const rows = [
   .teams-close:hover { background:#f4d638; color:#092f20; }
   .teams-grid { flex:1; min-height:0; display:grid; grid-template-rows:repeat(9, minmax(52px, 1fr)); gap:8px; overflow-y:auto; overscroll-behavior:contain; padding:16px max(12px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
   .teams-row { display:grid; grid-template-columns:repeat(var(--columns), minmax(0, 1fr)); gap:8px; }
-  .teams-dialog .team-card { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:3px; min-width:0; padding:8px 3px; border:1px solid rgb(255 255 255 / 18%); border-radius:8px; background:#164f32; color:white; text-align:center; text-decoration:none; }
+  .teams-dialog .team-card { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:3px; min-width:0; padding:8px 3px; border:1px solid rgb(255 255 255 / 18%); border-radius:8px; background:rgb(22 79 50 / 55%); color:white; text-align:center; text-decoration:none; }
   .team-card strong { color:inherit; font-size:clamp(.95rem, 4vw, 1.35rem); font-weight:850; line-height:1.15; }
   .teams-dialog .team-card span { color:#d7e5dc; font-size:clamp(.6rem, 2.6vw, .8rem); line-height:1.2; }
   .teams-dialog .team-card:hover, .teams-dialog .team-card:active { border-color:#f4d638; background:#f4d638; color:#092f20; }
