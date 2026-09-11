@@ -3,6 +3,7 @@ import { allContentPaths, menu } from '../data/navigation';
 import { teamProfiles } from '../data/teamPages';
 import { withBase } from '../utils/paths';
 import YouthMenuSponsors from './YouthMenuSponsors.astro';
+import MobileTeamsMenu from './MobileTeamsMenu.astro';
 
 const teamMenuImages = Object.fromEntries(Object.values(teamProfiles)
   .filter((team) => team.image)
@@ -65,6 +66,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
           </span>
           Spielplan
         </a>
+        <MobileTeamsMenu />
         <a href={withBase('/kontakt')}>
           <span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v13H3zM4 7l8 6 8-6" /></svg></span>
           Kontakt

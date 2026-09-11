@@ -1,0 +1,128 @@
+---
+import { withBase } from '../utils/paths';
+
+const rows = [
+  [
+    { label: 'Herren 1', href: '/fussball/herren/bezirksliga' },
+    { label: 'Herren 2', href: '/fussball/herren/kreisliga-2' },
+  ],
+  [
+    { label: 'Frauen 1', href: '/fussball/frauen/bezirksliga' },
+    { label: 'Frauen 2', href: '/fussball/frauen/kreisliga' },
+  ],
+  [{ label: 'A-Junioren', href: '/jugend/u19' }],
+  [
+    { label: 'B-Junioren', href: '/jugend/u17' },
+    { label: 'B-Juniorinnen', href: '/jugend/juniorinnen/u17' },
+  ],
+  [
+    { label: 'C-Junioren', href: '/jugend/u15-c1' },
+    { label: 'C2-Junioren', href: '/jugend/u15-c2' },
+    { label: 'C-Juniorinnen', href: '/jugend/juniorinnen/u15' },
+  ],
+  [
+    { label: 'D1', href: '/jugend/u13-d1' },
+    { label: 'D2', href: '/jugend/u13-d2' },
+    { label: 'D3', href: '/jugend/u13-d3' },
+    { label: 'D-Juniorinnen', href: '/jugend/juniorinnen/u13' },
+  ],
+  [
+    { label: 'E1', href: '/jugend/u11-e1' },
+    { label: 'E2', href: '/jugend/u11-e2' },
+    { label: 'E3', href: '/jugend/u11-e3' },
+  ],
+  [
+    { label: 'F1', href: '/jugend/u9-f' },
+    { label: 'F2', href: '/jugend/u8-f' },
+    { label: 'F3', href: '/jugend/u8-f' },
+  ],
+  [
+    { label: 'G1', href: '/jugend/u7-g' },
+    { label: 'G2', href: '/jugend/u6-g' },
+  ],
+];
+---
+
+<button class="teams-toggle" type="button" aria-haspopup="dialog" aria-controls="mobile-teams" aria-expanded="false">
+  <span class="teams-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3" /><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6M18 13a5 5 0 0 1 3 5v3" /></svg>
+  </span>
+  Teams
+</button>
+
+<dialog id="mobile-teams" class="teams-dialog" aria-labelledby="teams-title">
+  <div class="teams-heading">
+    <div><p>BSV Nordstern</p><h2 id="teams-title">Unsere Teams</h2></div>
+    <button class="teams-close" type="button" aria-label="Teamauswahl schließen" autofocus>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+    </button>
+  </div>
+  <div class="teams-grid" role="navigation" aria-label="Mannschaften">
+    {rows.map((row) => (
+      <div class="teams-row" style={`--columns: ${row.length}`}>
+        {row.map((team) => (
+          <a class="team-card" href={withBase(team.href)} aria-label={team.label}>
+            <strong>{team.label.split('-')[0]}</strong>
+            {team.label.includes('-') && <span>{team.label.split('-')[1]}</span>}
+          </a>
+        ))}
+      </div>
+    ))}
+  </div>
+</dialog>
+
+<script>
+  const trigger = document.querySelector<HTMLButtonElement>('.teams-toggle');
+  const dialog = document.querySelector<HTMLDialogElement>('#mobile-teams');
+  const close = dialog?.querySelector<HTMLButtonElement>('.teams-close');
+  const mobile = window.matchMedia('(max-width: 980px)');
+
+  trigger?.addEventListener('click', () => {
+    if (!dialog || dialog.open || !mobile.matches) return;
+    document.querySelector('.menu-toggle')?.setAttribute('aria-expanded', 'false');
+    document.querySelector('#main-navigation')?.classList.remove('is-open');
+    dialog.showModal();
+    trigger.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('teams-menu-open');
+  });
+
+  close?.addEventListener('click', () => dialog?.close());
+  dialog?.addEventListener('close', () => {
+    trigger?.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('teams-menu-open');
+  });
+  // Close before navigation so returning with the browser's Back button restores the page.
+  dialog?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => dialog.close());
+  });
+  mobile.addEventListener('change', () => {
+    if (!mobile.matches) dialog?.close();
+  });
+</script>
+
+<style>
+  .teams-toggle { display:none; align-items:center; gap:5px; padding:0; border:0; background:none; color:#a9beb1; font:inherit; font-size:.66rem; font-weight:750; cursor:pointer; }
+  .teams-toggle:hover { color:white; }
+  .teams-icon { display:grid; place-items:center; width:24px; aspect-ratio:1; flex:0 0 auto; border:1px solid rgb(255 255 255 / 16%); border-radius:50%; background:rgb(255 255 255 / 5%); color:#f4d638; }
+  .teams-icon svg { width:13px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
+  :global(html.teams-menu-open), :global(html.teams-menu-open body) { overflow:hidden; }
+  .teams-dialog { position:fixed; inset:0; box-sizing:border-box; width:100%; max-width:none; height:100vh; height:100dvh; max-height:none; margin:0; padding:0; border:0; background:#092f20; color:white; font-family:inherit; letter-spacing:normal; overflow:hidden; }
+  .teams-dialog[open] { display:flex; flex-direction:column; }
+  .teams-dialog::backdrop { background:#092f20; }
+  .teams-heading { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); border-bottom:1px solid rgb(255 255 255 / 15%); }
+  .teams-heading p { margin:0 0 5px; color:#f4d638; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.14em; }
+  .teams-heading h2 { margin:0; color:white; font-size:clamp(1.6rem, 6vw, 2.3rem); line-height:1.1; }
+  .teams-close { width:44px; height:44px; flex:0 0 auto; display:grid; place-items:center; padding:10px; border:1px solid rgb(255 255 255 / 30%); border-radius:50%; background:transparent; color:white; cursor:pointer; }
+  .teams-close svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .teams-close:hover { background:#f4d638; color:#092f20; }
+  .teams-grid { flex:1; min-height:0; display:grid; grid-template-rows:repeat(9, minmax(52px, 1fr)); gap:8px; overflow-y:auto; overscroll-behavior:contain; padding:16px max(12px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+  .teams-row { display:grid; grid-template-columns:repeat(var(--columns), minmax(0, 1fr)); gap:8px; }
+  .teams-dialog .team-card { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:3px; min-width:0; padding:8px 3px; border:1px solid rgb(255 255 255 / 18%); border-radius:8px; background:#164f32; color:white; text-align:center; text-decoration:none; }
+  .team-card strong { color:inherit; font-size:clamp(.95rem, 4vw, 1.35rem); font-weight:850; line-height:1.15; }
+  .teams-dialog .team-card span { color:#d7e5dc; font-size:clamp(.6rem, 2.6vw, .8rem); line-height:1.2; }
+  .teams-dialog .team-card:hover, .teams-dialog .team-card:active { border-color:#f4d638; background:#f4d638; color:#092f20; }
+  .teams-dialog .team-card:hover span, .teams-dialog .team-card:active span { color:#092f20; }
+  .teams-toggle:focus-visible, .teams-close:focus-visible, .team-card:focus-visible { outline:3px solid #f4d638; outline-offset:3px; }
+  @media (max-width:980px) { .teams-toggle { display:flex; } }
+  @media (max-width:620px) { .teams-toggle { gap:7px; color:#d7e5dc; font-size:.68rem; } .teams-icon { width:28px; } }
+</style>
