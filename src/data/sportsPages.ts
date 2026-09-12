@@ -7,7 +7,7 @@ const juniorsImage = '/images/jugend/teams/2526/u13-d-juniorinnen.jpg';
 
 export const sportsPages = [
   { path: 'fussball', eyebrow: 'Auf geht’s grün', title: 'Fußball', intro: 'Von den Aktiven bis zu den Alten Herren – Leidenschaft, Teamgeist und Heimat auf jedem Platz.', image: footballImage, body: ['Der Fußball prägt den BSV Nordstern seit seiner Gründung. Heute bieten wir Mannschaften und Spielgemeinschaften für unterschiedliche Alters- und Leistungsklassen.', 'Hier findest du unsere Teams, Trainingszeiten, Ansprechpersonen und Informationen zu den Sportstätten.'] },
-  { path: 'fussball/sportplaetze', eyebrow: 'Unsere Heimat', title: 'Sportplätze', intro: 'Trainieren und spielen an der Schlesierstraße in Radolfzell.', image: footballImage },
+  { path: 'fussball/sportplaetze', eyebrow: 'Unsere Heimat', title: 'Sportplätze', intro: 'Unsere Sportplätze und Trainingsorte in Radolfzell – auch der Käfig am Friedrich-Hecker-Gymnasium.', image: footballImage },
   { path: 'fussball/belegungsplan', eyebrow: 'Plätze & Zeiten', title: 'Belegungsplan', intro: 'Die aktuelle Übersicht zur Nutzung unserer Sportstätten.', image: footballImage },
   { path: 'fussball/herren/bezirksliga', eyebrow: 'Herren · Kreisliga B Staffel 1', title: menFirstTeamName, intro: 'Unsere erste Herrenmannschaft spielt in der Kreisliga B Staffel 1.', image: footballImage },
   { path: 'fussball/herren/kreisliga-2', eyebrow: 'Herren · Kreisliga C Staffel 1', title: 'SG Herren 2', intro: 'Die Spielgemeinschaft des SV Markelfingen und des BSV Nordstern Radolfzell.', image: reserveImage },

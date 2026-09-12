@@ -45,12 +45,21 @@ const facilities = [
     image: '/images/fussball/sportplaetze/c62b8efa11-Kunstrasen.png',
     navigation: 'https://www.google.com/maps/dir/?api=1&destination=Strandbadstra%C3%9Fe+39%2C+78315+Radolfzell',
   },
+  {
+    id: 'kaefig-friedrich-hecker-gymnasium',
+    name: 'Käfig',
+    area: 'Friedrich-Hecker-Gymnasium Radolfzell',
+    address: 'Friedrich-Hecker-Gymnasium, Markelfinger Straße 15, 78315 Radolfzell',
+    image: undefined,
+    navigation: 'https://www.google.com/maps/dir/?api=1&destination=Friedrich-Hecker-Gymnasium%2C+Markelfinger+Stra%C3%9Fe+15%2C+78315+Radolfzell',
+    training: 'E1-Junioren · Donnerstag · 17:00 – 19:00 Uhr',
+  },
 ];
 ---
 
 <Layout
   title="Sportstätten & Anfahrt | BSV Nordstern Radolfzell"
-  description="Alle Sportstätten des BSV Nordstern Radolfzell mit Bildern, Adressen und direkter Navigation."
+  description="Sportstätten des BSV Nordstern Radolfzell mit Adressen und Navigation, jetzt auch der Käfig am Friedrich-Hecker-Gymnasium."
 >
   <Header />
   <main>
@@ -60,7 +69,7 @@ const facilities = [
       <div class="shell hero-inner">
         <span>Fußball · Sportstätten</span>
         <h1>Hier rollt<br /><em>der Ball.</em></h1>
-        <p>Alle Plätze und Trainingsorte des BSV Nordstern auf einen Blick – mit Adresse, Bild und direkter Routenplanung.</p>
+        <p>Alle Plätze und Trainingsorte des BSV Nordstern auf einen Blick – mit Adresse und direkter Routenplanung.</p>
         <a href="#sportstaetten">Sportstätten ansehen <b aria-hidden="true">↓</b></a>
       </div>
     </header>
@@ -68,7 +77,7 @@ const facilities = [
     <nav class="facility-nav" aria-label="Direkt zu einer Sportstätte">
       <div class="shell">
         {facilities.map((facility) => (
-          <a href={`#${facility.id}`}>{facility.name}</a>
+          <a href={`#${facility.id}`}>{facility.id === 'kaefig-friedrich-hecker-gymnasium' ? 'Käfig am FHG' : facility.name}</a>
         ))}
       </div>
     </nav>
@@ -76,20 +85,21 @@ const facilities = [
     <section id="sportstaetten" class="facilities-section">
       <div class="shell intro">
         <span>Plätze & Trainingsorte</span>
-        <h2>Fünf Orte.<br />Ein Verein.</h2>
-        <p>Der Hauptplatz, der Nebenplatz und das Gleisdreieck liegen direkt am BSV-Vereinsheim in der Schlesierstraße. Zusätzlich nutzt der Verein den Käfig am Untersee-Stadion und den Kunstrasenplatz auf der Mettnau.</p>
+        <h2>Sechs Orte.<br />Ein Verein.</h2>
+        <p>Der Hauptplatz, der Nebenplatz und das Gleisdreieck liegen direkt am BSV-Vereinsheim in der Schlesierstraße. Zusätzlich nutzt der Verein den Käfig am Untersee-Stadion, den Kunstrasenplatz auf der Mettnau und den Käfig am Friedrich-Hecker-Gymnasium Radolfzell.</p>
       </div>
 
       <div class="shell facility-list">
         {facilities.map((facility, index) => (
-          <article id={facility.id} class:list={["facility-card", { reverse: index % 2 === 1 }]}>
-            <div class="facility-image">
+          <article id={facility.id} class:list={["facility-card", { reverse: index % 2 === 1 && facility.image, 'without-image': !facility.image }]}>
+            {facility.image && <div class="facility-image">
               <img src={withBase(facility.image)} alt={facility.name} width="1200" height="760" loading={index === 0 ? 'eager' : 'lazy'} />
               <span>{String(index + 1).padStart(2, '0')}</span>
-            </div>
+            </div>}
             <div class="facility-copy">
               <span>{facility.area}</span>
               <h3>{facility.name}</h3>
+              {facility.training && <p class="facility-training"><a href={withBase('/jugend/u11-e1')}>{facility.training}</a></p>}
               <div class="address">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" /><circle cx="12" cy="10" r="2.2" /></svg>
                 <p>{facility.address}</p>
@@ -118,6 +128,11 @@ const facilities = [
 </Layout>
 
 <style>
+  .facility-card.without-image{grid-template-columns:minmax(0,1fr);min-height:0}
+  .without-image .facility-copy{max-width:760px;min-width:0}
+  .without-image .facility-copy>span,.without-image .address p{overflow-wrap:anywhere;letter-spacing:0}
+  .facility-training{margin:0 0 24px;line-height:1.6}
+  .facility-training a{color:var(--green);font-weight:800}
   :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
   html{scroll-behavior:smooth}
   .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}

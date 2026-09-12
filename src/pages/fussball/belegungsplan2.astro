@@ -8,7 +8,7 @@ import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
 import { findTrainingConflicts } from '../../utils/trainingConflicts.mjs';
 
-type Pitch = 'Hauptplatz' | 'Nebenplatz';
+type Pitch = 'Hauptplatz' | 'Nebenplatz' | 'Käfig';
 type Tone = 'active' | 'girls' | 'youth' | 'kids';
 type Allocation = { pitch: Pitch; share: number; shareLabel: string; tone: Tone };
 type ProposalChange = { day?: string; time?: string; place?: string; allocation?: Partial<Allocation> };
@@ -65,6 +65,7 @@ const allocationByTeam: Record<string, Allocation> = {
 };
 
 const changes: Record<string, ProposalChange> = {
+  'jugend/u11-e1|Donnerstag': { allocation: { pitch: 'Käfig', share: 1, shareLabel: 'Käfig belegt' } },
   'fussball/alte-herren|Mittwoch': { time: '19:00 – 20:30 Uhr', allocation: { pitch: 'Hauptplatz' } },
   'jugend/u9-f|Mittwoch': { allocation: { pitch: 'Nebenplatz' } },
   'jugend/u19|Dienstag': { day: 'Montag', time: '19:30 – 21:00 Uhr', allocation: { pitch: 'Nebenplatz' } },
@@ -125,7 +126,7 @@ const timeValue = (time: string) => {
   const match = time.match(/(\d{1,2}):(\d{2})/);
   return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
 };
-const isAtBsv = (place: string) => /BSV Nordstern/i.test(place);
+const isOnTrainingPlan = (place: string) => /BSV Nordstern|Käfig am Friedrich-Hecker-Gymnasium/i.test(place);
 
 const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
   profile.training.map((slot) => {
@@ -144,10 +145,10 @@ const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
   }),
 );
 const bsvSessions = allTraining
-  .filter((session) => isAtBsv(session.place) && dayOrder.includes(session.day) && session.allocation)
+  .filter((session) => isOnTrainingPlan(session.place) && dayOrder.includes(session.day) && session.allocation)
   .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time) || left.team.localeCompare(right.team, 'de'));
 const offsiteSessions = allTraining
-  .filter((session) => !isAtBsv(session.place) && dayOrder.includes(session.day))
+  .filter((session) => !isOnTrainingPlan(session.place) && dayOrder.includes(session.day))
   .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time));
 const openSessions = allTraining.filter((session) => !dayOrder.includes(session.day));
 const sessionsFor = (day: string, pitch: Pitch) => bsvSessions.filter((session) => session.day === day && session.allocation?.pitch === pitch);
@@ -207,20 +208,20 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
     </section>
 
     <section id="wochenplan" class="schedule-section">
-      <div class="shell section-head"><div><span>Montag bis Freitag</span><h2>Der vorgeschlagene Wochenplan.</h2></div><p>Hauptplatz und Nebenplatz werden getrennt dargestellt. Die farbigen Balken zeigen den jeweils vorgesehenen Platzanteil.</p></div>
+      <div class="shell section-head"><div><span>Montag bis Freitag</span><h2>Der vorgeschlagene Wochenplan.</h2></div><p>Die E1 trainiert auch in diesem Plan donnerstags von 17:00 bis 19:00 Uhr im Käfig am Friedrich-Hecker-Gymnasium Radolfzell.</p></div>
       <div class="shell"><TrainingPlanFilter /></div>
       <div class="shell schedule-list" data-schedule-list>
         {dayOrder.map((day) => (
           <article class="day-card" data-schedule-day>
             <header><span>{day.slice(0, 2).toUpperCase()}</span><h3>{day}</h3></header>
             <div class="pitch-grid">
-              {(['Hauptplatz', 'Nebenplatz'] as Pitch[]).map((pitch) => {
+              {(['Hauptplatz', 'Nebenplatz', 'Käfig'] as Pitch[]).filter((pitch) => pitch !== 'Käfig' || sessionsFor(day, pitch).length > 0).map((pitch, index) => {
                 const sessions = sessionsFor(day, pitch);
                 const conflicts = conflictsFor(day, pitch);
                 const hasArchery = day === 'Freitag' && pitch === 'Nebenplatz';
                 return (
-                  <section class="pitch-card" data-pitch-card>
-                    <div class="pitch-title"><span>{pitch === 'Hauptplatz' ? '01' : '02'}</span><div><small>BSV-Sportgelände</small><h4>{pitch}</h4></div></div>
+                  <section class:list={['pitch-card', { 'is-kaefig': pitch === 'Käfig' }]} data-pitch-card>
+                    <div class="pitch-title"><span>{String(index + 1).padStart(2, '0')}</span><div><small>{pitch === 'Käfig' ? 'Friedrich-Hecker-Gymnasium Radolfzell' : 'BSV-Sportgelände'}</small><h4>{pitch}</h4></div></div>
                     <div class="booking-list">
                       {hasArchery && <a class="booking is-other" data-team-filter="other" href={withBase('/abteilungen/bogensport')}><span class="booking-time">17:30 – 19:00 Uhr</span><strong>Bogensport</strong><span class="share"><i style="--share:100%"></i><b>Nebenplatz belegt</b></span></a>}
                       {sessions.map((session) => (
@@ -267,6 +268,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
 </Layout>
 
 <style>
+  .pitch-card.is-kaefig{grid-column:1/-1;border-left:0;border-top:1px solid #dbe3dc}
   :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
   html{scroll-behavior:smooth}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
   .hero{position:relative;min-height:570px;display:flex;align-items:flex-end;overflow:hidden;background:var(--dark);color:white}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(5 34 22 / 96%) 0%,rgb(5 34 22 / 80%) 48%,rgb(5 34 22 / 20%) 84%),linear-gradient(0deg,rgb(5 34 22 / 82%),transparent 58%)}.hero-inner{position:relative;z-index:1;padding:95px 0 72px}.hero-inner>span,.actions-heading>span,.allocation-card span,.section-head span,.detail-card>span{color:var(--yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.4rem,7vw,6.6rem);line-height:.88;letter-spacing:-.055em}.hero h1 em{color:var(--yellow);font-weight:400}.hero p{max-width:730px;margin:0;color:#cfddd4;font-size:1.05rem;line-height:1.72}.hero a{display:inline-flex;align-items:center;gap:22px;margin-top:29px;padding:15px 19px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none}
