@@ -123,3 +123,25 @@ test('verified E2 snapshot contains all six four-team dates and sourced venues',
   }
   assert.match(data.days[0].venues[0].name, /Nebenpl. bei Nordst/);
 });
+
+for (const [label, teamId, dates] of [
+  ['E1', '011MIF3MCC000000VTVG0001VTR8C1K7', ['2026-09-19', '2026-09-26', '2026-10-03', '2026-10-10', '2026-10-17', '2026-10-24']],
+  ['E3', '0276SUOJAS000000VS5489B2VVRTHQ8E', ['2026-09-19', '2026-10-03', '2026-10-10', '2026-10-24', '2026-10-31']],
+]) {
+  test(`verified ${label} snapshot has all four-team dates, venues and correct team identity`, () => {
+    const data = JSON.parse(readFileSync(new URL(`../src/data/${label.toLowerCase()}TournamentSchedule.json`, import.meta.url)));
+    assert.equal(data.teamId, teamId);
+    assert.equal(data.season, '2026-2027');
+    assert.deepEqual(data.days.map(({ date }) => date), dates);
+    for (const day of data.days) {
+      assert.equal(day.teams.length, 4);
+      assert.equal(new Set(day.teams.map(({ id }) => id)).size, 4);
+      assert.equal(day.teams.filter(({ id }) => id === teamId).length, 1);
+      assert.ok(day.teams.every(({ id }) => id !== '02PPN4UQA0000000VS5489B1VU7RM1AE'));
+      assert.match(day.firstTeamKickoff, /^\d{2}:\d{2}$/);
+      assert.ok(day.venues.length > 0);
+      assert.ok(day.venues.every(({ name, matchUrl }) => name && matchUrl.startsWith('https://www.fussball.de/spiel/')));
+      assert.ok(day.url.includes(`/spieldatum/${day.date}/staffel/`));
+    }
+  });
+}

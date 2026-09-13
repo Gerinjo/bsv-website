@@ -1,0 +1,167 @@
+{
+  "teamId": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+  "season": "2026-2027",
+  "checkedAt": "2026-09-13T21:25:17.861Z",
+  "days": [
+    {
+      "date": "2026-09-19",
+      "firstTeamKickoff": "15:00",
+      "title": "Herbstrunde Staffel 8 Spieltag 1",
+      "url": "https://www.fussball.de/spieltag/spieltag-1-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-19/staffel/031T6OVM68000000VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "01VTS5U7L0000000VS548985VV08G435",
+          "name": "VfR Stockach 2"
+        },
+        {
+          "id": "02EOPABP7K000000VS5489B2VVP292BR",
+          "name": "SG Liptingen 2"
+        },
+        {
+          "id": "02PQP6R508000000VS5489B1VVQNIHJA",
+          "name": "SG Heud./Raithasl./Rorgenw. 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Osterholz-Stadion Stockach, Winterspürer Str., 78333 Stockach",
+          "matchUrl": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-3-vfr-stockach-2/-/spiel/031TQ7Q23S000000VS5489BTVT7QHFUC"
+        }
+      ],
+      "cancelled": false
+    },
+    {
+      "date": "2026-10-03",
+      "firstTeamKickoff": "10:00",
+      "title": "Herbstrunde Staffel 8 Spieltag 3",
+      "url": "https://www.fussball.de/spieltag/spieltag-3-gruppe-1-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-03/staffel/031T6P87TO000000VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "031A8G6ECC000000VS5489BSVU0ORN69",
+          "name": "SG Liggeringen 2"
+        },
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "011MIE6C94000000VTVG0001VTR8C1K7",
+          "name": "SV Mühlhausen"
+        },
+        {
+          "id": "02M49VF3T8000000VS5489B2VTKNAG5C",
+          "name": "FC Böhringen 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Buchenseesportpl. Güttingen, Zum Seebühl, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/sg-liggeringen-2-bsv-nordstern-radolfzell-3/-/spiel/031TQ93GAK000000VS5489BTVT7QHFUC"
+        }
+      ],
+      "cancelled": false
+    },
+    {
+      "date": "2026-10-10",
+      "firstTeamKickoff": "12:00",
+      "title": "Herbstrunde Staffel 8 Spieltag 4",
+      "url": "https://www.fussball.de/spieltag/spieltag-4-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-10/staffel/031T6PB6CG000004VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "02PQP6R508000000VS5489B1VVQNIHJA",
+          "name": "SG Heud./Raithasl./Rorgenw. 2"
+        },
+        {
+          "id": "031A8G6ECC000000VS5489BSVU0ORN69",
+          "name": "SG Liggeringen 2"
+        },
+        {
+          "id": "011MIE6C48000000VTVG0001VTR8C1K7",
+          "name": "FC Böhringen"
+        },
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/fc-boehringen-bsv-nordstern-radolfzell-3/-/spiel/031TQ9N4RK000000VS5489BTVT7QHFUC"
+        }
+      ],
+      "cancelled": false
+    },
+    {
+      "date": "2026-10-24",
+      "firstTeamKickoff": "10:00",
+      "title": "Herbstrunde Staffel 8 Spieltag 6",
+      "url": "https://www.fussball.de/spieltag/spieltag-6-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-24/staffel/031T6PHPHG000000VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "01DL856L70000000VV0AG80NVV5JST0E",
+          "name": "FC Schwandorf-Wornd.-Neuh."
+        },
+        {
+          "id": "011MIE6C94000000VTVG0001VTR8C1K7",
+          "name": "SV Mühlhausen"
+        },
+        {
+          "id": "02EOPABP7K000000VS5489B2VVP292BR",
+          "name": "SG Liptingen 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Sportgel. Kiesgrüble Ehingen N, Zum Kiesgrüble 22, 78259 Mühlhausen-Ehingen",
+          "matchUrl": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-3-fc-schwandorf-wornd-neuh/-/spiel/031TQAMVGG000000VS5489BTVT7QHFUC"
+        }
+      ],
+      "cancelled": false
+    },
+    {
+      "date": "2026-10-31",
+      "firstTeamKickoff": "14:00",
+      "title": "Herbstrunde Staffel 8 Spieltag 7",
+      "url": "https://www.fussball.de/spieltag/spieltag-7-gruppe-1-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-31/staffel/031T6PL6L4000000VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "0318K9U9F8000000VS5489BSVU0ORN69",
+          "name": "SG Winterspüren"
+        },
+        {
+          "id": "01VTS5U7L0000000VS548985VV08G435",
+          "name": "VfR Stockach 2"
+        },
+        {
+          "id": "02M49VF3T8000000VS5489B2VTKNAG5C",
+          "name": "FC Böhringen 2"
+        },
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/fc-boehringen-2-bsv-nordstern-radolfzell-3/-/spiel/031TQB0EQG000000VS5489BTVT7QHFUC"
+        }
+      ],
+      "cancelled": false
+    }
+  ]
+}
