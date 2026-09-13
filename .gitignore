@@ -15,6 +15,9 @@ pnpm-debug.log*
 public/api/membership-mail-errors.php
 public/api/membership-sponsors-cache.json
 public/api/membership-config.php
+public/api/vendor/tfpdf/font/unifont/*.mtx.php
+public/api/vendor/tfpdf/font/unifont/*.cw.dat
+public/api/vendor/tfpdf/font/unifont/*.cw127.php
 
 # environment variables
 .env

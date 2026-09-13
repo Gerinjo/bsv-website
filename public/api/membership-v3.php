@@ -64,6 +64,19 @@ $fail = function ($message) use ($respond) {
 $length = function ($text) {
     return function_exists('mb_strlen') ? mb_strlen((string)$text, 'UTF-8') : strlen((string)$text);
 };
+
+// Match the form limits before rendering user input into documents and emails.
+$fieldLimits = array(
+    'lastName' => 100, 'firstName' => 100, 'birthPlace' => 120, 'nationality' => 120,
+    'street' => 180, 'postalCode' => 10, 'city' => 120, 'phone' => 40, 'email' => 180,
+    'guardianLastName' => 100, 'guardianFirstName' => 100, 'guardianRelation' => 80,
+    'guardianPhone' => 40, 'supportIdeas' => 2000, 'bankName' => 120, 'bic' => 20,
+    'iban' => 34, 'accountHolder' => 180, 'previousClub' => 180, 'suspensionPeriod' => 100,
+    'lastForeignResidence' => 180, 'parentsNames' => 250, 'signingPlace' => 120,
+);
+foreach ($fieldLimits as $field => $maximum) {
+    if ($length($value($field)) > $maximum) $fail('Eine Eingabe ist zu lang. Bitte prüfe die Angaben im Formular.');
+}
 $substring = function ($text, $start, $length = null) {
     if (function_exists('mb_substr')) {
         return $length === null ? mb_substr((string)$text, $start, null, 'UTF-8') : mb_substr((string)$text, $start, $length, 'UTF-8');
@@ -318,6 +331,7 @@ $readUploads = function ($field, $label, $required, $multiple = false) use (
         $suffix = $multiple ? '-' . $number : '';
         $attachments[] = array(
             'name' => $cleanFilename($label . $suffix . '.' . $allowedMimes[$mime]),
+            'originalName' => $file['name'],
             'mime' => $mime,
             'data' => $data,
             'label' => $label,
@@ -350,35 +364,6 @@ $pdfEscape = function ($text) {
     $encoded = function_exists('iconv') ? iconv('UTF-8', 'Windows-1252//TRANSLIT', (string)$text) : (string)$text;
     if ($encoded === false) $encoded = preg_replace('/[^\x20-\x7E]/', '?', (string)$text);
     return str_replace(array('\\', '(', ')'), array('\\\\', '\\(', '\\)'), $encoded);
-};
-
-$buildSimplePdf = function ($lines) use ($pdfEscape) {
-    $wrapped = array();
-    foreach ($lines as $line) {
-        if ($line === '') { $wrapped[] = ''; continue; }
-        foreach (explode("\n", wordwrap($line, 88, "\n", true)) as $part) $wrapped[] = $part;
-    }
-    $pages = array_chunk($wrapped, 48);
-    if (count($pages) === 0) $pages = array(array(''));
-    $objects = array(1 => '<< /Type /Catalog /Pages 2 0 R >>', 3 => '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
-    $pageIds = array();
-    foreach ($pages as $index => $pageLines) {
-        $contentId = 4 + ($index * 2); $pageId = 5 + ($index * 2); $pageIds[] = $pageId . ' 0 R';
-        $stream = "BT\n/F1 10 Tf\n48 790 Td\n14 TL\n";
-        foreach ($pageLines as $line) $stream .= '(' . $pdfEscape($line) . ") Tj\nT*\n";
-        $stream .= "ET";
-        $objects[$contentId] = '<< /Length ' . strlen($stream) . " >>\nstream\n" . $stream . "\nendstream";
-        $objects[$pageId] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ' . $contentId . ' 0 R >>';
-    }
-    $objects[2] = '<< /Type /Pages /Kids [' . implode(' ', $pageIds) . '] /Count ' . count($pageIds) . ' >>';
-    ksort($objects);
-    $pdf = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"; $offsets = array(0 => 0);
-    foreach ($objects as $id => $object) { $offsets[$id] = strlen($pdf); $pdf .= $id . " 0 obj\n" . $object . "\nendobj\n"; }
-    $xrefOffset = strlen($pdf); $maxId = max(array_keys($objects));
-    $pdf .= "xref\n0 " . ($maxId + 1) . "\n0000000000 65535 f \n";
-    for ($id = 1; $id <= $maxId; $id++) $pdf .= sprintf('%010d 00000 n ', isset($offsets[$id]) ? $offsets[$id] : 0) . "\n";
-    $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\nstartxref\n" . $xrefOffset . "\n%%EOF";
-    return $pdf;
 };
 
 $buildSpielgenehmigungsPdf = function ($data, $signaturePng) use ($pdfEscape, $length, $substring) {
@@ -578,6 +563,41 @@ $registrationLabels = array(
     're-registration' => 'Wiederanmeldung',
 );
 
+$applicationData = array();
+foreach (array_keys($fieldLimits) as $field) $applicationData[$field] = $value($field);
+foreach (array('sepaAccepted', 'contributionAccepted', 'statutesAccepted', 'privacyAccepted',
+    'emailGeneralInfoAccepted', 'emailNewsletterAccepted', 'playerDataAccepted', 'marketingAccepted') as $field) {
+    $applicationData[$field] = $accepted($field);
+}
+$applicationData = array_merge($applicationData, array(
+    'applicationNumber' => $applicationNumber,
+    'receivedAt' => (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))->format('d.m.Y H:i:s T'),
+    'birthDate' => $birthDate, 'gender' => $gender, 'email' => (string)$email,
+    'department' => $department, 'departmentLabel' => $departments[$department],
+    'isFootball' => $isFootball, 'isYouthFootball' => $isYouthFootball,
+    'teamQuestionApplies' => $teamQuestionApplies, 'teamKnown' => $teamKnown,
+    'teamSelection' => $teamSelection, 'teamLabel' => $selectedTeamLabel, 'teamTrainers' => $selectedTeamTrainers,
+    'supportWilling' => $value('supportWilling') === 'yes',
+    'iban' => $iban, 'bic' => $bic,
+    'identityProofType' => $identityProofType, 'registrationType' => $registrationType,
+    'currentlySuspended' => $currentlySuspended, 'needsInternationalDocuments' => $needsInternationalDocuments,
+    'signingPlace' => $signingPlace, 'signingDate' => $signingDate,
+    'uploads' => array_map(function ($file) {
+        return array('label' => $file['label'], 'originalName' => $file['originalName']);
+    }, $attachments),
+));
+try {
+    require_once __DIR__ . '/membership-pdf.php';
+    $membershipPdfBinary = bsvBuildMembershipPdf($applicationData, $signatureBinary);
+} catch (Throwable $exception) {
+    error_log('[membership-pdf] generation_failed reference=' . $applicationNumber);
+    $respond(500, array('ok' => false, 'message' => 'Der vollständige Mitgliedsantrag konnte nicht als PDF erstellt werden. Deine Eingaben bleiben erhalten. Fehlerreferenz: ' . $applicationNumber));
+}
+$applicationAttachments = array(array(
+    'name' => 'BSV-Mitgliedsantrag-' . $applicationNumber . '.pdf',
+    'mime' => 'application/pdf', 'data' => $membershipPdfBinary, 'label' => 'Vollständiger Mitgliedsantrag PDF',
+));
+
 if ($isFootball) {
     $pdfFilename = 'SBFV-Spielgenehmigungsantrag-' . $applicationNumber . '.pdf';
     try {
@@ -609,30 +629,16 @@ if ($isFootball) {
         $respond(500, array('ok' => false, 'message' => 'Der Spielgenehmigungsantrag konnte nicht erzeugt werden: ' . $exception->getMessage()));
     }
     $pdfLabel = 'Spielgenehmigungsantrag PDF';
-} else {
-    $pdfFilename = 'BSV-Mitgliedsantrag-' . $applicationNumber . '.pdf';
-    $pdfLines = array(
-        'BSV NORDSTERN E.V. RADOLFZELL', 'Online-Mitgliedsantrag', 'Antragsnummer: ' . $applicationNumber, 'Eingang: ' . date('d.m.Y H:i:s'), '',
-        'PERSOENLICHE DATEN', 'Name: ' . $firstName . ' ' . $lastName, 'Geschlecht: ' . $gender, 'Geburtsdatum: ' . $displayDate($birthDate),
-        'Geburtsort: ' . $birthPlace, 'Nationalitaet: ' . $nationality, 'Anschrift: ' . $street . ', ' . $postalCode . ' ' . $city,
-        'Telefon: ' . $phone, 'E-Mail: ' . $email, '',
-        'E-MAIL-INFORMATIONEN',
-        'Allgemeine Vereinsinformationen per E-Mail: ' . $yesNo($emailGeneralInfoAccepted),
-        'Newsletter und digitale Vereinszeitschrift per E-Mail: ' . $yesNo($emailNewsletterAccepted), '',
-        'MITGLIEDSCHAFT', 'Abteilung: ' . $departments[$department],
-        'Unterstuetzungsbereitschaft: ' . $yesNo($value('supportWilling') === 'yes'),
-        'Moegliche Unterstuetzung: ' . ($value('supportIdeas') !== '' ? $value('supportIdeas') : 'keine Angabe'), '',
-        'BANKVERBINDUNG / SEPA', 'Kreditinstitut: ' . $bankName, 'BIC: ' . $bic, 'IBAN: ' . $iban, 'Kontoinhaber:in: ' . $accountHolder,
-        'SEPA-Lastschriftmandat bestaetigt: Ja', '', 'BESTAETIGUNGEN', 'Beitragsordnung akzeptiert: Ja', 'Vereinssatzung akzeptiert: Ja',
-        'Datenschutz akzeptiert: Ja', '', 'ABSCHLUSS', 'Ort: ' . $signingPlace, 'Datum: ' . $displayDate($signingDate), '',
-        'Dieser Antrag wurde elektronisch ueber das Onlineformular des BSV Nordstern e.V. Radolfzell uebermittelt.',
-    );
-    $pdfBinary = $buildSimplePdf($pdfLines); $pdfLabel = 'Mitgliedsantrag PDF';
+    $applicationAttachments[] = array('name' => $pdfFilename, 'mime' => 'application/pdf', 'data' => $pdfBinary, 'label' => $pdfLabel);
 }
 
-$pdfAttachment = array('name' => $pdfFilename, 'mime' => 'application/pdf', 'data' => $pdfBinary, 'label' => $pdfLabel);
 $signatureAttachment = array('name' => 'Unterschrift-' . $applicationNumber . '.png', 'mime' => 'image/png', 'data' => $signatureBinary, 'label' => 'Unterschrift');
-$allAttachments = array_merge(array($pdfAttachment, $signatureAttachment), $attachments);
+$applicationAttachments[] = $signatureAttachment;
+$allAttachments = array_merge($applicationAttachments, $attachments);
+// The mail bridge accepts at most twelve attachments and twelve MiB in total.
+if (count($allAttachments) > 12 || array_sum(array_map(function ($file) { return strlen($file['data']); }, $allAttachments)) > 12 * 1024 * 1024) {
+    $fail('Mit den erzeugten Anträgen sind es zu viele oder zu große Anlagen. Bitte fasse Unterlagen zusammen oder reduziere die Dateigröße.');
+}
 
 $htmlEscape = function ($text) { return htmlspecialchars((string)$text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); };
 $mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
@@ -768,7 +774,9 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     ($isYouthFootball ? "Kontaktperson: {$guardianFirstName} {$guardianLastName}\nTelefon Kontaktperson: " . ($guardianPhone !== '' ? $guardianPhone : 'nicht angegeben') . "\n\n" : '') .
     "Bank: {$bankName}\nBIC: {$bic}\nIBAN: {$iban}\nKontoinhaber: {$accountHolder}\n\n" .
     ($isFootball ? "Spielgenehmigung: {$registrationLabels[$registrationType]}\nIdentitätsnachweis: {$proofLabels[$identityProofType]}\n\n" : '') .
-    "Das PDF, die Unterschrift und alle hochgeladenen Unterlagen sind beigefügt.\n";
+    "Der vollständige Mitgliedsantrag mit allen Angaben, Einwilligungen und eingebetteter Unterschrift ist als PDF beigefügt.\n" .
+    ($isFootball ? "Zusätzlich beigefügt: Spielgenehmigungsantrag.\n" : '') .
+    "Die Unterschrift als Bild und alle hochgeladenen Unterlagen sind ebenfalls beigefügt.\n";
 
 if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
     $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Deine Eingaben bleiben im Formular erhalten. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
@@ -932,9 +940,8 @@ $applicantText = $greeting . "\n\n" .
     "Dein Online-Mitgliedsantrag ist erfolgreich bei uns eingegangen.\n" .
     "Antragsnummer: {$applicationNumber}\n" .
     "Abteilung: {$departmentName}\n\n" .
-    ($isFootball
-        ? "Im Anhang findest du den ausgefüllten Spielgenehmigungsantrag und die erfasste Unterschrift.\n"
-        : "Im Anhang findest du den erzeugten Mitgliedsantrag und die erfasste Unterschrift.\n") .
+    "Im Anhang findest du deinen vollständigen Mitgliedsantrag als PDF mit allen Angaben, Einwilligungen und deiner Unterschrift. Die Mitgliederverwaltung erhält dasselbe Dokument.\n" .
+    ($isFootball ? "Zusätzlich erhältst du den ausgefüllten Spielgenehmigungsantrag.\n" : '') .
     "Wir prüfen den Antrag nun. Falls Angaben oder Unterlagen fehlen, melden wir uns über die angegebenen Kontaktdaten. Die endgültige Aufnahme und beim Fußball die Spielberechtigung erfolgen nach Abschluss der Prüfung.\n\n" .
     "WILLKOMMEN IN DER BSV-FAMILIE\n" .
     "Der BSV Nordstern ist ein Sportverein mit starkem Familien- und Gemeinschaftsgedanken. Bei uns geht es nicht nur um Training, Spiele und Ergebnisse. Kinder, Jugendliche, Erwachsene und Familien sollen sich wohlfühlen und das Vereinsleben gemeinsam gestalten.\n\n" .
@@ -1053,7 +1060,8 @@ $applicantHtml = '<!doctype html><html lang="de"><head><meta charset="utf-8"><me
 '<strong>Abteilung:</strong> ' . $escapedDepartment .
 '</td></tr></table>' .
 '<p style="margin:0 0 12px;line-height:1.7;color:#3f5146;">' .
-($isFootball ? 'Im Anhang findest du den ausgefüllten Spielgenehmigungsantrag und die erfasste Unterschrift.' : 'Im Anhang findest du den erzeugten Mitgliedsantrag und die erfasste Unterschrift.') .
+'Im Anhang findest du deinen vollständigen Mitgliedsantrag als PDF mit allen Angaben, Einwilligungen und deiner Unterschrift. Die Mitgliederverwaltung erhält dasselbe Dokument.' .
+($isFootball ? ' Zusätzlich erhältst du den ausgefüllten Spielgenehmigungsantrag.' : '') .
 '</p>' .
 '<p style="margin:0;line-height:1.7;color:#3f5146;">Wir prüfen den Antrag nun. Falls Angaben oder Unterlagen fehlen, melden wir uns. Die endgültige Aufnahme und beim Fußball die Spielberechtigung erfolgen nach Abschluss der Prüfung.</p>' .
 '</td></tr>' .
@@ -1100,7 +1108,7 @@ $applicantSent = $sendMail(
     (string)$email,
     $applicantSubject,
     $applicantText,
-    array($pdfAttachment, $signatureAttachment),
+    $applicationAttachments,
     'info@bsvnordstern.de',
     $applicantHtml
 );
