@@ -5,6 +5,8 @@ import DocumentPage from '../components/DocumentPage.astro';
 import CancellationPage from '../components/CancellationPage.astro';
 import YouthLandingContent from '../components/YouthLandingContent.astro';
 import Layout from '../layouts/Layout.astro';
+import TeamTournamentDays from '../components/TeamTournamentDays.astro';
+import e2TournamentSchedule from '../data/e2TournamentSchedule.json';
 import { legacyContent } from '../data/legacyContent';
 import { sportsPages, sportsPaths } from '../data/sportsPages';
 import { teamProfiles } from '../data/teamPages';
@@ -720,6 +722,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
               {teamProfile.trainingNote && <p class="training-note"><span aria-hidden="true">◎</span> {teamProfile.trainingNote}</p>}
             </div>
           </section>
+
+          {page.path === 'jugend/u11-e2' && <TeamTournamentDays fallback={e2TournamentSchedule} teamLabel="E2" />}
 
           {teamProfile.fussballDeWidgetId && (
             <section class="team-matches-widget" aria-label={`Spiele von ${page.title}`}>

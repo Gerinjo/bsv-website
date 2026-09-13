@@ -1,0 +1,193 @@
+{
+  "teamId": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+  "season": "2026-2027",
+  "checkedAt": "2026-09-13T21:10:12.791Z",
+  "days": [
+    {
+      "date": "2026-09-19",
+      "firstTeamKickoff": "14:00",
+      "title": "Herbstrunde Staffel 5 Spieltag 1",
+      "url": "https://www.fussball.de/spieltag/spieltag-1-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-19/staffel/031T6JUML8000000VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "02M4CFOAB8000000VS5489B1VVVHS1D7",
+          "name": "FC Öhningen-Gaienhofen"
+        },
+        {
+          "id": "011MID8TAS000000VTVG0001VTR8C1K7",
+          "name": "SV Bohlingen"
+        },
+        {
+          "id": "02M4JUIQ1C000000VS5489B1VVVHS1D7",
+          "name": "FC 03 Radolfzell 2"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/fc-03-radolfzell-2-bsv-nordstern-radolfzell-2/-/spiel/031TP8CA14000000VS5489BTVT7QHFUC"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-26",
+      "firstTeamKickoff": "13:00",
+      "title": "Herbstrunde Staffel 5 Spieltag 2",
+      "url": "https://www.fussball.de/spieltag/spieltag-2-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-26/staffel/031T6K3JBG000006VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "011MID8TAS000000VTVG0001VTR8C1K7",
+          "name": "SV Bohlingen"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "02KL1QFRE8000000VS5489B2VS1ERVGO",
+          "name": "ESV Südstern Singen 2"
+        },
+        {
+          "id": "02IFI56HUG000000VS5489B2VU2I8R4H",
+          "name": "SC Bankholzen-Moos"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Aachtalsportplatz Bohlingen, Ledergasse 54, 78224 Singen (Hohentwiel)",
+          "matchUrl": "https://www.fussball.de/spiel/sv-bohlingen-bsv-nordstern-radolfzell-2/-/spiel/031TP93TF8000000VS5489BTVT7QHFUC"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "firstTeamKickoff": "13:30",
+      "title": "Herbstrunde Staffel 5 Spieltag 3",
+      "url": "https://www.fussball.de/spieltag/spieltag-3-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-03/staffel/031T6K7DI4000006VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "031632FGVO000000VS5489BSVSCPI5U4",
+          "name": "FC 03 Radolfzell 3"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "011MID8TAS000000VTVG0001VTR8C1K7",
+          "name": "SV Bohlingen"
+        },
+        {
+          "id": "011MIF3MCC000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Kunstrasenplatz, Kunstrasenplatz 2 (neu), Strandbadstr. 39, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/fc-03-radolfzell-3-bsv-nordstern-radolfzell-2/-/spiel/031TPA6ENK000000VS5489BTVT7QHFUC"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "firstTeamKickoff": "10:00",
+      "title": "Herbstrunde Staffel 5 Spieltag 4",
+      "url": "https://www.fussball.de/spieltag/spieltag-4-gruppe-3-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-10/staffel/031T6KC2T8000006VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "027CHJ21PO000000VS5489B1VU8ROJMK",
+          "name": "SG Liggeringen"
+        },
+        {
+          "id": "02M4L2FMVS000000VS5489B2VTKNAG5C",
+          "name": "SG Stahringen"
+        },
+        {
+          "id": "02GUUCBKS8000000VS5489B1VUD17SPI",
+          "name": "ESV Südstern Singen"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Buchenseesportpl. Güttingen, Zum Seebühl, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/esv-suedstern-singen-bsv-nordstern-radolfzell-2/-/spiel/031TPC73V8000000VS5489BTVT7QHFUC"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "firstTeamKickoff": "10:00",
+      "title": "Herbstrunde Staffel 5 Spieltag 5",
+      "url": "https://www.fussball.de/spieltag/spieltag-5-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-17/staffel/031T6KF9U0000006VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "011MICBP20000000VTVG0001VTR8C1K7",
+          "name": "FC Steißlingen"
+        },
+        {
+          "id": "02GUUCBKS8000000VS5489B1VUD17SPI",
+          "name": "ESV Südstern Singen"
+        },
+        {
+          "id": "02M4CFOAB8000000VS5489B1VVVHS1D7",
+          "name": "FC Öhningen-Gaienhofen"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Hardt-Stadion Singen, Bohlinger Str. 75, 78224 Singen (Hohentwiel)",
+          "matchUrl": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-fc-steisslingen/-/spiel/031TPI90AK000000VS5489BTVT7QHFUC"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "firstTeamKickoff": "10:00",
+      "title": "Herbstrunde Staffel 5 Spieltag 6",
+      "url": "https://www.fussball.de/spieltag/spieltag-6-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-24/staffel/031T6KJ4VK000006VS5489BUVSORQI22-G",
+      "teams": [
+        {
+          "id": "031AJ3TSCG000000VS5489BSVU0ORN69",
+          "name": "SG Gallmannsweil"
+        },
+        {
+          "id": "011MIC6CFS000000VTVG0001VTR8C1K7",
+          "name": "FC 03 Radolfzell"
+        },
+        {
+          "id": "011MIF3MCC000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        }
+      ],
+      "preliminary": true,
+      "venues": [
+        {
+          "name": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+          "matchUrl": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-bsv-nordstern-radolfzell-2/-/spiel/031TPK08N0000000VS5489BTVT7QHFUC"
+        }
+      ]
+    }
+  ]
+}

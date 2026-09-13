@@ -3,7 +3,7 @@ name: Deploy Astro site to Pages
 on:
   push:
     branches: [main]
-  # Refresh calendars and the next Herren 1/2 and Frauen 1/2 matches from FUSSBALL.DE
+  # Refresh calendars, E2 tournament days and the next senior matches from FUSSBALL.DE
   # during the Astro build, then publish the updated homepage every morning.
   # 04:17 UTC = 06:17 Europe/Berlin in summer, 05:17 in winter.
   schedule:

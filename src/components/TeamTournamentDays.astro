@@ -1,0 +1,88 @@
+---
+import type { TournamentSchedule } from '../utils/tournamentDays';
+import { splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
+
+interface Props { fallback: TournamentSchedule; teamLabel: string }
+const { fallback, teamLabel } = Astro.props;
+const { schedule, stale } = await tournamentScheduleWithFallback(fallback);
+const { upcoming, past } = splitTournamentDays(schedule.days);
+const date = (value: string) => new Date(`${value}T12:00:00Z`);
+const format = (value: string, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', ...options }).format(date(value));
+const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt));
+const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', days: [...past].reverse() }];
+---
+
+<section class="tournament-days" id="spieltage" aria-labelledby="tournament-title">
+  <header class="tournament-heading">
+    <div><span class="eyebrow">{teamLabel} · Saison {schedule.season.replace('-', '/')}</span><h2 id="tournament-title">Spieltage</h2></div>
+    <p class="source-status">FUSSBALL.DE · Stand {checkedAt} Uhr</p>
+  </header>
+  {stale && <p class="schedule-notice">FUSSBALL.DE ist derzeit nicht abrufbar. Angezeigt wird der zuletzt gespeicherte Datenstand.</p>}
+  {upcoming.some((day) => day.preliminary) && <p class="schedule-notice">Vorläufiger Spielplan: Die Freigabe durch die Staffelleitung steht für einzelne Spiele noch aus.</p>}
+  {upcoming.length === 0 && <p class="empty-schedule">Derzeit sind keine weiteren Spieltage angesetzt.</p>}
+  {groups.filter((group) => group.days.length).map((group) => (
+    <div class:list={["tournament-group", { "is-past": !!group.title }]}>
+      {group.title && <h3 class="past-title">{group.title}</h3>}
+      {group.days.map((day) => (
+        <article class="tournament-day" aria-label={`${day.title}, ${format(day.date, { dateStyle: 'long' })}`}>
+          <div class="tournament-date">
+            <time datetime={day.date}><span>{format(day.date, { weekday: 'long' })}</span><strong>{format(day.date, { day: '2-digit', month: '2-digit' })}</strong><span>{format(day.date, { year: 'numeric' })}</span></time>
+            {day.cancelled ? <p class="cancelled"><b>Abgesagt</b></p> : <p><b>{day.firstTeamKickoff} Uhr</b><small>Erstes {teamLabel}-Spiel</small></p>}
+          </div>
+          <div class="tournament-location">
+            <h3>{day.title.replace(/^Herbstrunde Staffel \d+ /, '')}</h3>
+            <span class="field-label">Austragungsort</span>
+            {day.venues.length ? day.venues.map((venue) => <p>{venue.name}</p>) : <p>Noch nicht angegeben</p>}
+            <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="tournament-teams">
+            <span class="field-label">{day.teams.length} Mannschaften</span>
+            <ul>{[...day.teams].sort((a, b) => Number(b.id === schedule.teamId) - Number(a.id === schedule.teamId)).map((team) => <li class:list={{ "own-team": team.id === schedule.teamId }}>{team.name}</li>)}</ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  ))}
+</section>
+
+<style>
+  .tournament-days { padding:46px 0; border-top:1px solid #dce4de; color:var(--green); }
+  .tournament-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:24px; }
+  .eyebrow,.field-label { display:block; font-size:12px; font-weight:800; letter-spacing:0; }
+  .eyebrow { margin-bottom:8px; }
+  .tournament-heading h2 { margin:0; font-size:32px; line-height:1.15; letter-spacing:0; }
+  .source-status { margin:0; color:#5c6c61; font-size:12px; line-height:1.6; }
+  .schedule-notice { margin:0 0 16px; padding:12px 16px; border-left:3px solid var(--yellow); background:#f5f7f5; font-size:13px; line-height:1.6; }
+  .tournament-day { display:grid; grid-template-columns:125px minmax(0,1fr) minmax(0,1fr); gap:30px; padding:28px 0; border-bottom:1px solid #dce4de; }
+  .tournament-date { padding-left:16px; border-left:3px solid var(--yellow); }
+  .tournament-date time span,.tournament-date small { display:block; font-size:12px; line-height:1.5; }
+  .tournament-date time strong { display:block; margin:5px 0 0; font-size:32px; line-height:1.2; letter-spacing:0; }
+  .tournament-date p { margin:15px 0 0; }
+  .tournament-date b { font-size:16px; }
+  .tournament-date .cancelled { color:#9a2929; }
+  .tournament-date small { margin-top:3px; color:#5c6c61; }
+  .tournament-location h3 { margin:0 0 16px; font-size:20px; line-height:1.25; letter-spacing:0; }
+  .field-label { margin:0 0 8px; color:#5c6c61; }
+  .tournament-location p { margin:0 0 12px; font-size:14px; line-height:1.65; overflow-wrap:anywhere; }
+  .tournament-location a { display:inline-block; margin-top:8px; font-size:12px; font-weight:800; color:var(--green); text-underline-offset:4px; line-height:1.7; }
+  .tournament-location a span { margin-left:4px; }
+  .tournament-location a:hover { text-decoration-thickness:2px; }
+  .tournament-location a:focus-visible { outline:2px solid var(--green); outline-offset:5px; }
+  .tournament-teams ul { list-style:none; padding:0; margin:0; }
+  .tournament-teams li { padding:8px 0; border-bottom:1px solid #eef1ee; font-size:14px; line-height:1.4; overflow-wrap:anywhere; }
+  .tournament-teams li:last-child { border-bottom:0; }
+  .tournament-teams .own-team { font-weight:800; }
+  .past-title { margin:32px 0 0; font-size:20px; letter-spacing:0; }
+  .empty-schedule { font-size:14px; }
+  @media(max-width:760px) {
+    .tournament-heading { display:block; }
+    .source-status { margin-top:12px; }
+    .tournament-day { grid-template-columns:105px minmax(0,1fr); gap:20px; }
+    .tournament-teams { grid-column:2; }
+  }
+  @media(max-width:420px) {
+    .tournament-day { grid-template-columns:105px minmax(0,1fr); gap:16px; }
+    .tournament-date { padding-left:10px; }
+    .tournament-location h3 { font-size:18px; }
+  }
+</style>
