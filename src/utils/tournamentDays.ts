@@ -12,6 +12,14 @@ export type TournamentSchedule = { teamId: string; season: string; checkedAt: st
 const origin = 'https://www.fussball.de';
 const clean = (text: string) => text.replace(/\u200b/g, '').replace(/\s+/g, ' ').trim();
 
+export function isBsvHomeTournament(day: Pick<TournamentDay, 'venues'>): boolean {
+  return day.venues.some(({ name }) => {
+    const venue = clean(name).toLowerCase().replace(/ß/g, 'ss');
+    return /\bnordst(?:ern|\.)?\s+radolfz(?:ell|\.)?(?=\W|$)/.test(venue)
+      || (/\bschlesierstr(?:asse)?\.?\s*43(?=\s|,|$)/.test(venue) && /\b78315\s+radolfzell\b/.test(venue));
+  });
+}
+
 function sourceUrl(value: string | undefined, kind: 'spiel' | 'spieltag') {
   const url = new URL(value ?? '', origin);
   if (url.origin !== origin || !url.pathname.startsWith(`/${kind}/`)) throw new Error('Unexpected source URL');

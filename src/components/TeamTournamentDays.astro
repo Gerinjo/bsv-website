@@ -1,6 +1,6 @@
 ---
 import type { TournamentSchedule } from '../utils/tournamentDays';
-import { splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
+import { isBsvHomeTournament, splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
 
 interface Props { fallback: TournamentSchedule; teamLabel: string }
 const { fallback, teamLabel } = Astro.props;
@@ -30,7 +30,10 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
             {day.cancelled ? <p class="cancelled"><b>Abgesagt</b></p> : <p><b>{day.firstTeamKickoff} Uhr</b><small>Erstes {teamLabel}-Spiel</small></p>}
           </div>
           <div class="tournament-location">
-            <h3>{day.title.replace(/^Herbstrunde Staffel \d+ /, '')}</h3>
+            <h3>
+              <span>{day.title.replace(/^Herbstrunde Staffel \d+ /, '')}</span>
+              {isBsvHomeTournament(day) && <span class="home-tournament">Heimspieltag</span>}
+            </h3>
             <span class="field-label">Austragungsort</span>
             {day.venues.length ? day.venues.map((venue) => <p>{venue.name}</p>) : <p>Noch nicht angegeben</p>}
             <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>
@@ -61,7 +64,8 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
   .tournament-date b { font-size:16px; }
   .tournament-date .cancelled { color:#9a2929; }
   .tournament-date small { margin-top:3px; color:#5c6c61; }
-  .tournament-location h3 { margin:0 0 16px; font-size:20px; line-height:1.25; letter-spacing:0; }
+  .tournament-location h3 { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 0 16px; font-size:20px; line-height:1.25; letter-spacing:0; }
+  .home-tournament { display:inline-block; padding:5px 8px; border-radius:3px; background:var(--yellow); color:var(--green); font-size:13px; font-weight:800; line-height:1.4; }
   .field-label { margin:0 0 8px; color:#5c6c61; }
   .tournament-location p { margin:0 0 12px; font-size:14px; line-height:1.65; overflow-wrap:anywhere; }
   .tournament-location a { display:inline-block; margin-top:8px; font-size:12px; font-weight:800; color:var(--green); text-underline-offset:4px; line-height:1.7; }

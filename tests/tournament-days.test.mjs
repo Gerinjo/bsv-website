@@ -1,9 +1,42 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
-import { parseTournamentPlan, parseTournamentMatch, parseTournamentParticipants, loadTournamentSchedule, tournamentScheduleWithFallback, splitTournamentDays } from '../src/utils/tournamentDays.ts';
+import { isBsvHomeTournament, parseTournamentPlan, parseTournamentMatch, parseTournamentParticipants, loadTournamentSchedule, tournamentScheduleWithFallback, splitTournamentDays } from '../src/utils/tournamentDays.ts';
 
 const own = '01DN9LCDA0000000VV0AG80NVSQ3PCMQ';
+
+test('home tournament marker uses the actual BSV venue, not the participating teams', () => {
+  const at = (name) => ({ venues: [{ name, matchUrl: '' }], teams: [{ id: own, name: 'BSV Nordstern Radolfzell 2' }] });
+  for (const name of [
+    'Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee',
+    'Rasenplatz, Nebenpl. bei Nordst. Radolfz.',
+    'BSV Nordstern Radolfzell Hauptplatz',
+    'Rasenplatz, Schlesierstraße 43, 78315 Radolfzell am Bodensee',
+    'Rasenplatz, SCHLESIERSTR. 43, 78315 RADOLFZELL',
+  ]) assert.equal(isBsvHomeTournament(at(name)), true, name);
+  for (const name of [
+    '',
+    'Kunstrasenplatz 2 (neu), Strandbadstr. 39, 78315 Radolfzell am Bodensee',
+    'Buchenseesportpl. Güttingen, Zum Seebühl, 78315 Radolfzell am Bodensee',
+    'Sportplatz Nordstern, andere Stadt',
+    'Schlesierstr. 430, 78315 Radolfzell',
+    'Schlesierstr. 43a, 78315 Radolfzell',
+    'Schlesierstr. 43, 78224 Singen',
+  ]) assert.equal(isBsvHomeTournament(at(name)), false, name);
+  assert.equal(isBsvHomeTournament({ venues: [] }), false);
+});
+
+test('E1, E2 and E3 snapshots mark precisely the dates played at BSV', () => {
+  for (const [team, dates] of [
+    ['e1', ['2026-09-26', '2026-10-17', '2026-10-24']],
+    ['e2', ['2026-09-19', '2026-10-24']],
+    ['e3', ['2026-10-10', '2026-10-31']],
+  ]) {
+    const data = JSON.parse(readFileSync(new URL(`../src/data/${team}TournamentSchedule.json`, import.meta.url)));
+    assert.deepEqual(data.days.filter(isBsvHomeTournament).map(({ date }) => date), dates, team);
+  }
+});
+
 const other = '011MID8TAS000000VTVG0001VTR8C1K7';
 const third = '02M4CFOAB8000000VS5489B1VVVHS1D7';
 const fourth = '011MIF3MCC000000VTVG0001VTR8C1K7';
