@@ -1,4 +1,4 @@
-export const INTERNAL_MEMBERSHIP_ROUTING_KEYS = ['membership', 'passwesen'];
+export const INTERNAL_MEMBERSHIP_ROUTING_KEYS = ['membership', 'passwesen', 'membership-registration-copy'];
 
 const teamRoutingKeyPattern = /^team--[a-z0-9-]+(?:--[a-z0-9-]+)+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

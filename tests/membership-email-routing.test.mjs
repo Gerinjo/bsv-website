@@ -8,8 +8,8 @@ import {
 
 const membershipSource = readFileSync(new URL('../public/api/membership-v3.php', import.meta.url), 'utf8');
 
-test('full membership application routes to membership administration and pass office', () => {
-  assert.deepEqual(getMembershipRoutingKeys('internal'), ['membership', 'passwesen']);
+test('full membership application routes to administration, pass office and the registration copy recipient', () => {
+  assert.deepEqual(getMembershipRoutingKeys('internal'), ['membership', 'passwesen', 'membership-registration-copy']);
 });
 
 test('team notifications accept only protected team routing keys', () => {
@@ -18,6 +18,7 @@ test('team notifications accept only protected team routing keys', () => {
     ['team--jugend--u13-d2'],
   );
   assert.equal(getMembershipRoutingKeys('team', 'membership'), null);
+  assert.equal(getMembershipRoutingKeys('team', 'membership-registration-copy'), null);
   assert.equal(getMembershipRoutingKeys('team', 'team--'), null);
   assert.equal(getMembershipRoutingKeys('unknown', 'team--jugend--u13-d2'), null);
 });

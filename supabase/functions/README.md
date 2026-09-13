@@ -167,7 +167,8 @@ E-Mail-Versand. Für eine Versandprobe keine echten Mitgliedsdaten verwenden.
 Die internen Empfänger werden nicht mehr über ein Edge Secret gepflegt,
 sondern serverseitig aus `public.contact_empfaenger` geladen:
 
-- `membership` und `passwesen` erhalten den vollständigen Antrag samt Anlagen.
+- `membership`, `passwesen` und `membership-registration-copy` erhalten den vollständigen Antrag samt Anlagen.
+- `membership-registration-copy` geht an `jerome.ernsberger@bsvnordstern.de` und wird ausschließlich bei Neuanmeldungen verwendet.
 - Bei bekannter Mannschaft erhält der passende `team--...`-Eintrag eine
   getrennte Information mit den erforderlichen Mitglieds- und Kontaktdaten,
   aber ohne Bankdaten, Unterschrift, PDF oder weitere Uploads.
