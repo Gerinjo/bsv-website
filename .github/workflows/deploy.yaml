@@ -3,7 +3,7 @@ name: Deploy Astro site to Pages
 on:
   push:
     branches: [main]
-  # Refresh calendars, E1/E2/E3 tournament days and the next senior matches from FUSSBALL.DE
+  # Refresh calendars, tournament days, matchday pitch occupancy and senior matches.
   # during the Astro build, then publish the updated homepage every morning.
   # 04:17 UTC = 06:17 Europe/Berlin in summer, 05:17 in winter.
   schedule:
@@ -44,6 +44,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore last complete matchday schedule
+        uses: actions/cache/restore@v4
+        with:
+          path: .astro/matchday-plan.json
+          key: matchday-plan-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            matchday-plan-v1-
+
       - name: Refresh calendars and next matches, then build with Astro
         env:
           PUBLIC_GST2027_API_URL: ${{ vars.PUBLIC_GST2027_API_URL }}
@@ -61,6 +69,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+
+      - name: Preserve last complete matchday schedule
+        uses: actions/cache/save@v4
+        with:
+          path: .astro/matchday-plan.json
+          key: matchday-plan-v1-${{ github.run_id }}-${{ github.run_attempt }}
+
 
   deploy:
     name: Deploy

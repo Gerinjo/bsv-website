@@ -1,0 +1,1492 @@
+{
+  "version": 1,
+  "checkedAt": "2026-09-14T13:42:23.187Z",
+  "from": "2026-09-14",
+  "through": "2026-11-08",
+  "bookings": [
+    {
+      "id": "031BDRG3D4000000VS5489BTVUS470OH",
+      "date": "2026-09-16",
+      "kickoff": "19:00",
+      "start": 1110,
+      "end": 1260,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 2",
+      "teams": [
+        {
+          "id": "03163NI9R0000000VS5489BSVSCPI5U4",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos 2"
+        },
+        {
+          "id": "011MIF61DG000000VTVG0001VTR8C1K7",
+          "name": "SG Sauldorf/Meßkirch"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-2-sg-sauldorf-messkirch/-/spiel/031BDRG3D4000000VS5489BTVUS470OH",
+      "preliminary": true,
+      "notes": [
+        "Pokal/Entscheidung: mögliche Verlängerung und besondere Spielform zusätzlich prüfen."
+      ]
+    },
+    {
+      "id": "031NRBVV2O000000VS5489BTVV1LNS7C",
+      "date": "2026-09-19",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 690,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D1",
+      "teams": [
+        {
+          "id": "011MICT8J8000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "027EPSOPT8000000VS5489B2VVB7EFSC",
+          "name": "Hegauer FV (CM)"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-hegauer-fv-cm/-/spiel/031NRBVV2O000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N3U9108000000VS5489BTVV1LNS7C",
+      "date": "2026-09-19",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 830,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "B-Juniorinnen",
+      "teams": [
+        {
+          "id": "02EK6R3IFK000000VS5489B2VVOABD77",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "0318M4SI14000000VS5489BSVU0ORN69",
+          "name": "SG Litzelstetten (7er)"
+        }
+      ],
+      "category": "B-Juniorinnen",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-sg-litzelstetten-7er/-/spiel/031N3U9108000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-1-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-19/staffel/031T6JUML8000000VS5489BUVSORQI22-G|Nebenplatz",
+      "date": "2026-09-19",
+      "kickoff": "14:00",
+      "start": 810,
+      "end": 975,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E2 · Spieltag",
+      "teams": [
+        {
+          "id": "02M4CFOAB8000000VS5489B1VVVHS1D7",
+          "name": "FC Öhningen-Gaienhofen"
+        },
+        {
+          "id": "011MID8TAS000000VTVG0001VTR8C1K7",
+          "name": "SV Bohlingen"
+        },
+        {
+          "id": "02M4JUIQ1C000000VS5489B1VVVHS1D7",
+          "name": "FC 03 Radolfzell 2"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-1-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-19/staffel/031T6JUML8000000VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MQKCBB0000000VS5489BTVV1LNS7C",
+      "date": "2026-09-20",
+      "kickoff": "12:30",
+      "start": 720,
+      "end": 850,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C2",
+      "teams": [
+        {
+          "id": "031AUPODRC000000VS5489BRVVNAT1LG",
+          "name": "BSV Nordstern Radolfzell 2 (9er)"
+        },
+        {
+          "id": "02PQLOKRLG000000VS5489B2VSE05932",
+          "name": "DJK Konstanz (9er)"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-9er-djk-konstanz-9er/-/spiel/031MQKCBB0000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031KQTQ158000000VS5489BUVVKNMR0J",
+      "date": "2026-09-20",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "A-Junioren",
+      "teams": [
+        {
+          "id": "02ENGA3D98000000VS5489B1VU24SJ9U",
+          "name": "SG Markelfingen"
+        },
+        {
+          "id": "023PJ83GNS000000VS548984VVIKHNJO",
+          "name": "SG Denkingen"
+        }
+      ],
+      "category": "A-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-sg-denkingen/-/spiel/031KQTQ158000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031O2FS3M4000000VS5489BUVT2M8LCU",
+      "date": "2026-09-24",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1180,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C1",
+      "teams": [
+        {
+          "id": "0276T1CNK8000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "011MIE33M0000000VTVG0001VTR8C1K7",
+          "name": "SC Markdorf"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sc-markdorf/-/spiel/031O2FS3M4000000VS5489BUVT2M8LCU",
+      "preliminary": true,
+      "notes": [
+        "Pokal/Entscheidung: mögliche Verlängerung und besondere Spielform zusätzlich prüfen."
+      ]
+    },
+    {
+      "id": "031N46AL70000000VS5489BTVV1LNS7C",
+      "date": "2026-09-25",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1170,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D-Juniorinnen",
+      "teams": [
+        {
+          "id": "01SE05SKMO000000VS548985VTSAFDL4",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "01ONNPNFOO000000VV0AG80NVV5I14SD",
+          "name": "FC Rot-Weiß Salem"
+        }
+      ],
+      "category": "D-Juniorinnen",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-fc-rot-weiss-salem/-/spiel/031N46AL70000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P2BT9HO000000VS5489BUVSV0FPBG",
+      "date": "2026-09-25",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1170,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D3",
+      "teams": [
+        {
+          "id": "02PPN4UQA0000000VS5489B1VU7RM1AE",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "02LUIJDKT4000000VS5489B2VTKNAG5C",
+          "name": "SV Volkertshausen 2"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-3-sv-volkertshausen-2/-/spiel/031P2BT9HO000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P25NKVC000000VS5489BUVSV0FPBG",
+      "date": "2026-09-26",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 690,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D2",
+      "teams": [
+        {
+          "id": "027LQ5OTKO000000VS5489B1VTUKARPV",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "01DO18GSDG000000VV0AG811VTPFGC7P",
+          "name": "SC Konstanz-Wollmatingen 3"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-sc-konstanz-wollmatingen-3/-/spiel/031P25NKVC000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-2-gruppe-3-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-26/staffel/031T6K3JGK000006VS5489BUVSORQI22-G|Hauptplatz",
+      "date": "2026-09-26",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 735,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E1 · Spieltag",
+      "teams": [
+        {
+          "id": "011MIF3MCC000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "02GUUCBKS8000000VS5489B1VUD17SPI",
+          "name": "ESV Südstern Singen"
+        },
+        {
+          "id": "011MIC6CFS000000VTVG0001VTR8C1K7",
+          "name": "FC 03 Radolfzell"
+        },
+        {
+          "id": "02M4JUIQ1C000000VS5489B1VVVHS1D7",
+          "name": "FC 03 Radolfzell 2"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-2-gruppe-3-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-09-26/staffel/031T6K3JGK000006VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H2NCPLS000000VS5489BTVVG7L386",
+      "date": "2026-09-26",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 900,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 2",
+      "teams": [
+        {
+          "id": "011MIBT808000000VTVG0001VTR8C1K7",
+          "name": "SG Markelfingen/BSV N. Radolfz. 2"
+        },
+        {
+          "id": "029AV140QS000000VS5489B2VV86THRA",
+          "name": "SV Litzelstetten 2"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-bsv-n-radolfz-2-sv-litzelstetten-2/-/spiel/031H2NCPLS000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H21VMTK000000VS5489BTVVG7L386",
+      "date": "2026-09-26",
+      "kickoff": "16:00",
+      "start": 930,
+      "end": 1080,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 1",
+      "teams": [
+        {
+          "id": "011MICLVK0000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "02PO6TTTC0000000VS5489B2VUGLP840",
+          "name": "FC Anadolu Radolfzell"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-fc-anadolu-radolfzell/-/spiel/031H21VMTK000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MI9VATK000000VS5489BTVSRD0UH9",
+      "date": "2026-09-27",
+      "kickoff": "11:15",
+      "start": 645,
+      "end": 775,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C1",
+      "teams": [
+        {
+          "id": "0276T1CNK8000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "016CPEOMS4000000VV0AG811VT38I3NS",
+          "name": "SV Litzelstetten"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sv-litzelstetten/-/spiel/031MI9VATK000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N42RMSC000000VS5489BTVV1LNS7C",
+      "date": "2026-09-27",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 880,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C-Juniorinnen",
+      "teams": [
+        {
+          "id": "0314RN90R8000000VS5489BRVVV10ESU",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "02PQR9P0DG000000VS5489B1VVQNIHJA",
+          "name": "FC Rot-Weiß Salem (9er)"
+        }
+      ],
+      "category": "C-Juniorinnen",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-fc-rot-weiss-salem-9er/-/spiel/031N42RMSC000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6LTGDG000000VS5489BUVVKNMR0J",
+      "date": "2026-09-27",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 1",
+      "teams": [
+        {
+          "id": "01A2FGUHDO000000VV0AG80NVSEJ47CH",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos"
+        },
+        {
+          "id": "023OUODECK000000VS548985VTNSAQK7",
+          "name": "FC Überlingen"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-fc-ueberlingen/-/spiel/031K6LTGDG000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6SQ3NC000000VS5489BUVVKNMR0J",
+      "date": "2026-09-27",
+      "kickoff": "17:00",
+      "start": 990,
+      "end": 1140,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 2",
+      "teams": [
+        {
+          "id": "03163NI9R0000000VS5489BSVSCPI5U4",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos 2"
+        },
+        {
+          "id": "02M9PIG93G000000VS5489B1VV4JLPLE",
+          "name": "FV Singen"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-2-fv-singen/-/spiel/031K6SQ3NC000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031NRBVV7O000000VS5489BTVV1LNS7C",
+      "date": "2026-10-03",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 690,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D1",
+      "teams": [
+        {
+          "id": "011MICT8J8000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "027D1VOI4S000000VS5489B1VU8ROJMK",
+          "name": "VfR Stockach"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-vfr-stockach/-/spiel/031NRBVV7O000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N3U9154000000VS5489BTVV1LNS7C",
+      "date": "2026-10-03",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 830,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "B-Juniorinnen",
+      "teams": [
+        {
+          "id": "02EK6R3IFK000000VS5489B2VVOABD77",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "0315QH6FAO000000VS5489BRVVV10ESU",
+          "name": "FV Singen (9er)"
+        }
+      ],
+      "category": "B-Juniorinnen",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-fv-singen-9er/-/spiel/031N3U9154000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MQKCBEC000000VS5489BTVV1LNS7C",
+      "date": "2026-10-04",
+      "kickoff": "12:30",
+      "start": 720,
+      "end": 850,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C2",
+      "teams": [
+        {
+          "id": "031AUPODRC000000VS5489BRVVNAT1LG",
+          "name": "BSV Nordstern Radolfzell 2 (9er)"
+        },
+        {
+          "id": "02TJRFCNGC000000VS5489BRVUSIJ66A",
+          "name": "SG Liggeringen"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-9er-sg-liggeringen/-/spiel/031MQKCBEC000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031KQTQ1IC000000VS5489BUVVKNMR0J",
+      "date": "2026-10-04",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "A-Junioren",
+      "teams": [
+        {
+          "id": "02ENGA3D98000000VS5489B1VU24SJ9U",
+          "name": "SG Markelfingen"
+        },
+        {
+          "id": "0319V9KJVC000000VS5489BRVVNAT1LG",
+          "name": "SG Böhringen"
+        }
+      ],
+      "category": "A-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-sg-boehringen/-/spiel/031KQTQ1IC000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N46ALC4000000VS5489BTVV1LNS7C",
+      "date": "2026-10-09",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1170,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D-Juniorinnen",
+      "teams": [
+        {
+          "id": "01SE05SKMO000000VS548985VTSAFDL4",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "02M34GHNAC000000VS5489B2VTKNAG5C",
+          "name": "SG Denkingen"
+        }
+      ],
+      "category": "D-Juniorinnen",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sg-denkingen/-/spiel/031N46ALC4000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P2BT9NG000000VS5489BUVSV0FPBG",
+      "date": "2026-10-09",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1170,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D3",
+      "teams": [
+        {
+          "id": "02PPN4UQA0000000VS5489B1VU7RM1AE",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "025SSC1QPO000000VS548984VT1JDP07",
+          "name": "JFV Singen 5"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-3-jfv-singen-5/-/spiel/031P2BT9NG000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P25NL40000000VS5489BUVSV0FPBG",
+      "date": "2026-10-10",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 690,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D2",
+      "teams": [
+        {
+          "id": "027LQ5OTKO000000VS5489B1VTUKARPV",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "031AJM2K4O000000VS5489BSVU0ORN69",
+          "name": "FC Öhningen-Gaienhofen 2"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-fc-oehningen-gaienhofen-2/-/spiel/031P25NL40000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-4-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-10/staffel/031T6PB6CG000004VS5489BUVSORQI22-G|Nebenplatz",
+      "date": "2026-10-10",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 855,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E3 · Spieltag",
+      "teams": [
+        {
+          "id": "02PQP6R508000000VS5489B1VVQNIHJA",
+          "name": "SG Heud./Raithasl./Rorgenw. 2"
+        },
+        {
+          "id": "031A8G6ECC000000VS5489BSVU0ORN69",
+          "name": "SG Liggeringen 2"
+        },
+        {
+          "id": "011MIE6C48000000VTVG0001VTR8C1K7",
+          "name": "FC Böhringen"
+        },
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-4-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-10/staffel/031T6PB6CG000004VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MI9VB70000000VS5489BTVSRD0UH9",
+      "date": "2026-10-10",
+      "kickoff": "14:00",
+      "start": 810,
+      "end": 940,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C1",
+      "teams": [
+        {
+          "id": "0276T1CNK8000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "02PNKQ8L7G000000VS5489B2VT4FEOV2",
+          "name": "SG Steißlingen"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sg-steisslingen/-/spiel/031MI9VB70000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H21VNF8000000VS5489BTVVG7L386",
+      "date": "2026-10-10",
+      "kickoff": "16:00",
+      "start": 930,
+      "end": 1080,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 1",
+      "teams": [
+        {
+          "id": "011MICLVK0000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "011MIEFQF8000000VTVG0001VTR8C1K7",
+          "name": "SV Allensbach 2"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sv-allensbach-2/-/spiel/031H21VNF8000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MQKCBG8000000VS5489BTVV1LNS7C",
+      "date": "2026-10-11",
+      "kickoff": "12:30",
+      "start": 720,
+      "end": 850,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C2",
+      "teams": [
+        {
+          "id": "031AUPODRC000000VS5489BRVVNAT1LG",
+          "name": "BSV Nordstern Radolfzell 2 (9er)"
+        },
+        {
+          "id": "01SE7NM534000000VS548985VTSAFDL4",
+          "name": "FC 03 Radolfzell 3 (9er)"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-9er-fc-03-radolfzell-3-9er/-/spiel/031MQKCBG8000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N42RN38000000VS5489BTVV1LNS7C",
+      "date": "2026-10-11",
+      "kickoff": "14:30",
+      "start": 840,
+      "end": 970,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C-Juniorinnen",
+      "teams": [
+        {
+          "id": "0314RN90R8000000VS5489BRVVV10ESU",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "031A8BNPM4000000VS5489BSVU0ORN69",
+          "name": "SG Kluftern 2 (7er)"
+        }
+      ],
+      "category": "C-Juniorinnen",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-sg-kluftern-2-7er/-/spiel/031N42RN38000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6LTGJ8000000VS5489BUVVKNMR0J",
+      "date": "2026-10-11",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 1",
+      "teams": [
+        {
+          "id": "01A2FGUHDO000000VV0AG80NVSEJ47CH",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos"
+        },
+        {
+          "id": "01KVF6SGUS000000VV0AG811VUP4Q6U8",
+          "name": "SG Aach-Linz/Denkingen 2"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-sg-aach-linz-denkingen-2/-/spiel/031K6LTGJ8000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6SQ41C000000VS5489BUVVKNMR0J",
+      "date": "2026-10-11",
+      "kickoff": "17:00",
+      "start": 990,
+      "end": 1140,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 2",
+      "teams": [
+        {
+          "id": "03163NI9R0000000VS5489BSVSCPI5U4",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos 2"
+        },
+        {
+          "id": "02M4DK10EO000000VS5489B2VTKNAG5C",
+          "name": "SV Mühlhausen"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-2-sv-muehlhausen/-/spiel/031K6SQ41C000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031NRBVVDC000000VS5489BTVV1LNS7C",
+      "date": "2026-10-17",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 690,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D1",
+      "teams": [
+        {
+          "id": "011MICT8J8000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "01SEIOC1R4000000VS548984VVB63HJG",
+          "name": "JFV Singen"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-jfv-singen/-/spiel/031NRBVVDC000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-5-gruppe-3-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-17/staffel/031T6KFA34000005VS5489BUVSORQI22-G|Hauptplatz",
+      "date": "2026-10-17",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 735,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E1 · Spieltag",
+      "teams": [
+        {
+          "id": "031AJ3TSCG000000VS5489BSVU0ORN69",
+          "name": "SG Gallmannsweil"
+        },
+        {
+          "id": "011MIF3MCC000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "02IFI56HUG000000VS5489B2VU2I8R4H",
+          "name": "SC Bankholzen-Moos"
+        },
+        {
+          "id": "031632FGVO000000VS5489BSVSCPI5U4",
+          "name": "FC 03 Radolfzell 3"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-5-gruppe-3-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-17/staffel/031T6KFA34000005VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H2NCPUG000000VS5489BTVVG7L386",
+      "date": "2026-10-17",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 900,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 2",
+      "teams": [
+        {
+          "id": "011MIBT808000000VTVG0001VTR8C1K7",
+          "name": "SG Markelfingen/BSV N. Radolfz. 2"
+        },
+        {
+          "id": "01OMPRIUE8000000VV0AG80NVU3UBVOU",
+          "name": "SV Bohlingen 2"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-bsv-n-radolfz-2-sv-bohlingen-2/-/spiel/031H2NCPUG000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031LSKFRVK000000VS5489BTVSRD0UH9",
+      "date": "2026-10-18",
+      "kickoff": "11:00",
+      "start": 630,
+      "end": 770,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "B-Junioren",
+      "teams": [
+        {
+          "id": "02BBS8A0MK000000VS5489B1VU20GQ5T",
+          "name": "SG BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "031AGD7BAC000000VS5489BRVVNAT1LG",
+          "name": "DJK Konstanz"
+        }
+      ],
+      "category": "B-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-bsv-nordstern-radolfzell-djk-konstanz/-/spiel/031LSKFRVK000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031KQTQ1U8000000VS5489BUVVKNMR0J",
+      "date": "2026-10-18",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "A-Junioren",
+      "teams": [
+        {
+          "id": "02ENGA3D98000000VS5489B1VU24SJ9U",
+          "name": "SG Markelfingen"
+        },
+        {
+          "id": "02TG951MT0000000VS5489BSVTA87VEB",
+          "name": "SG Deggenhausertal"
+        }
+      ],
+      "category": "A-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-sg-deggenhausertal/-/spiel/031KQTQ1U8000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N46ALKG000000VS5489BTVV1LNS7C",
+      "date": "2026-10-23",
+      "kickoff": "18:00",
+      "start": 1050,
+      "end": 1170,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D-Juniorinnen",
+      "teams": [
+        {
+          "id": "01SE05SKMO000000VS548985VTSAFDL4",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "01DO2ET9R0000000VV0AG811VTPFGC7P",
+          "name": "SC Konstanz-Wollmatingen"
+        }
+      ],
+      "category": "D-Juniorinnen",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-sc-konstanz-wollmatingen/-/spiel/031N46ALKG000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-6-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-24/staffel/031T6KJ4VK000006VS5489BUVSORQI22-G|Nebenplatz",
+      "date": "2026-10-24",
+      "kickoff": "10:00",
+      "start": 570,
+      "end": 735,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E1 + E2 · Spieltag",
+      "teams": [
+        {
+          "id": "031AJ3TSCG000000VS5489BSVU0ORN69",
+          "name": "SG Gallmannsweil"
+        },
+        {
+          "id": "011MIC6CFS000000VTVG0001VTR8C1K7",
+          "name": "FC 03 Radolfzell"
+        },
+        {
+          "id": "011MIF3MCC000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "01DN9LCDA0000000VV0AG80NVSQ3PCMQ",
+          "name": "BSV Nordstern Radolfzell 2"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-6-gruppe-2-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-24/staffel/031T6KJ4VK000006VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N3U91CS000000VS5489BTVV1LNS7C",
+      "date": "2026-10-24",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 830,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "B-Juniorinnen",
+      "teams": [
+        {
+          "id": "02EK6R3IFK000000VS5489B2VVOABD77",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "02TLDG456G000000VS5489BRVTFKGF73",
+          "name": "FC Rot-Weiß Salem (9er)"
+        }
+      ],
+      "category": "B-Juniorinnen",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-fc-rot-weiss-salem-9er/-/spiel/031N3U91CS000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MI9VBHG000000VS5489BTVSRD0UH9",
+      "date": "2026-10-24",
+      "kickoff": "14:00",
+      "start": 810,
+      "end": 940,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C1",
+      "teams": [
+        {
+          "id": "0276T1CNK8000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "027EOIBP8S000000VS5489B1VU8ROJMK",
+          "name": "JFV Singen 3"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-jfv-singen-3/-/spiel/031MI9VBHG000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H21VO1C000000VS5489BTVVG7L386",
+      "date": "2026-10-24",
+      "kickoff": "16:00",
+      "start": 930,
+      "end": 1080,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 1",
+      "teams": [
+        {
+          "id": "011MICLVK0000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "011MIA3PDC000000VTVG0001VTR8C1K7",
+          "name": "TSV Überlingen/Ried 2"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-tsv-ueberlingen-ried-2/-/spiel/031H21VO1C000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031KQTQ26G000000VS5489BUVVKNMR0J",
+      "date": "2026-10-25",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 840,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "A-Junioren",
+      "teams": [
+        {
+          "id": "02ENGA3D98000000VS5489B1VU24SJ9U",
+          "name": "SG Markelfingen"
+        },
+        {
+          "id": "02TKR1TH4O000000VS5489BSVSKABKDB",
+          "name": "SC Markdorf"
+        }
+      ],
+      "category": "A-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-sc-markdorf/-/spiel/031KQTQ26G000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N42RNB8000000VS5489BTVV1LNS7C",
+      "date": "2026-10-25",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 880,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C-Juniorinnen",
+      "teams": [
+        {
+          "id": "0314RN90R8000000VS5489BRVVV10ESU",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "02TFLAFCHK000000VS5489BRVU522QNF",
+          "name": "Spfr Owingen/Billafingen (9er)"
+        }
+      ],
+      "category": "C-Juniorinnen",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-spfr-owingen-billafingen-9er/-/spiel/031N42RNB8000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6LTGPK000000VS5489BUVVKNMR0J",
+      "date": "2026-10-25",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 1",
+      "teams": [
+        {
+          "id": "01A2FGUHDO000000VV0AG80NVSEJ47CH",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos"
+        },
+        {
+          "id": "01OMT5NND0000000VV0AG80NVSBAO4I6",
+          "name": "SV Deggenhausertal 2"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-sv-deggenhausertal-2/-/spiel/031K6LTGPK000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031K6SQ4CS000000VS5489BUVVKNMR0J",
+      "date": "2026-10-25",
+      "kickoff": "17:00",
+      "start": 990,
+      "end": 1140,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Frauen 2",
+      "teams": [
+        {
+          "id": "03163NI9R0000000VS5489BSVSCPI5U4",
+          "name": "SG No. Radolfz./Öhning.-Gai./Bankh.-Moos 2"
+        },
+        {
+          "id": "02IFD3HSDK000000VS5489B2VU2I8R4H",
+          "name": "SpFr Ittendorf-Ahausen"
+        }
+      ],
+      "category": "Frauen",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-no-radolfz-oehning-gai-bankh-moos-2-spfr-ittendorf-ahausen/-/spiel/031K6SQ4CS000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P25NLB8000000VS5489BUVSV0FPBG",
+      "date": "2026-10-31",
+      "kickoff": "10:30",
+      "start": 600,
+      "end": 720,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D2",
+      "teams": [
+        {
+          "id": "027LQ5OTKO000000VS5489B1VTUKARPV",
+          "name": "BSV Nordstern Radolfzell 2"
+        },
+        {
+          "id": "02TG50LKCG000000VS5489BSVTA87VEB",
+          "name": "SG Markelfingen"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-sg-markelfingen/-/spiel/031P25NLB8000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031NRBVVJK000000VS5489BTVV1LNS7C",
+      "date": "2026-10-31",
+      "kickoff": "12:00",
+      "start": 690,
+      "end": 810,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D1",
+      "teams": [
+        {
+          "id": "011MICT8J8000000VTVG0001VTR8C1K7",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "011MIB3QG8000000VTVG0001VTR8C1K7",
+          "name": "Hegauer FV"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-hegauer-fv/-/spiel/031NRBVVJK000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "https://www.fussball.de/spieltag/spieltag-7-gruppe-1-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-31/staffel/031T6PL6L4000000VS5489BUVSORQI22-G|Nebenplatz",
+      "date": "2026-10-31",
+      "kickoff": "14:00",
+      "start": 810,
+      "end": 975,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "E3 · Spieltag",
+      "teams": [
+        {
+          "id": "0318K9U9F8000000VS5489BSVU0ORN69",
+          "name": "SG Winterspüren"
+        },
+        {
+          "id": "01VTS5U7L0000000VS548985VV08G435",
+          "name": "VfR Stockach 2"
+        },
+        {
+          "id": "02M49VF3T8000000VS5489B2VTKNAG5C",
+          "name": "FC Böhringen 2"
+        },
+        {
+          "id": "0276SUOJAS000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell 3"
+        }
+      ],
+      "category": "E-Junioren",
+      "format": "4er-Spieltag",
+      "halves": 1,
+      "url": "https://www.fussball.de/spieltag/spieltag-7-gruppe-1-bezirk-bodensee-e-junioren-bezirksturnier-e-junioren-saison2627-suedbaden/-/spieldatum/2026-10-31/staffel/031T6PL6L4000000VS5489BUVSORQI22-G",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031P2BTA0C000000VS5489BUVSV0FPBG",
+      "date": "2026-10-31",
+      "kickoff": "16:00",
+      "start": 930,
+      "end": 1050,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "D3",
+      "teams": [
+        {
+          "id": "02PPN4UQA0000000VS5489B1VU7RM1AE",
+          "name": "BSV Nordstern Radolfzell 3"
+        },
+        {
+          "id": "031AKVH0MO000000VS5489BRVVNAT1LG",
+          "name": "SG Reichenau 2"
+        }
+      ],
+      "category": "D-Junioren",
+      "format": "7er",
+      "halves": 1,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-3-sg-reichenau-2/-/spiel/031P2BTA0C000000VS5489BUVSV0FPBG",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031LSKFSDC000000VS5489BTVSRD0UH9",
+      "date": "2026-11-01",
+      "kickoff": "11:00",
+      "start": 630,
+      "end": 770,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "B-Junioren",
+      "teams": [
+        {
+          "id": "02BBS8A0MK000000VS5489B1VU20GQ5T",
+          "name": "SG BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "011MIASN9S000000VTVG0001VTR8C1K7",
+          "name": "SG Gottmadingen-Biet."
+        }
+      ],
+      "category": "B-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-bsv-nordstern-radolfzell-sg-gottmadingen-biet/-/spiel/031LSKFSDC000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MQKCBMO000000VS5489BTVV1LNS7C",
+      "date": "2026-11-01",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 880,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C2",
+      "teams": [
+        {
+          "id": "031AUPODRC000000VS5489BRVVNAT1LG",
+          "name": "BSV Nordstern Radolfzell 2 (9er)"
+        },
+        {
+          "id": "0316F8DT8C000000VS5489BRVVV10ESU",
+          "name": "SG Höri 2 (9er)"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-2-9er-sg-hoeri-2-9er/-/spiel/031MQKCBMO000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031H2NCQ74000000VS5489BTVVG7L386",
+      "date": "2026-11-07",
+      "kickoff": "11:30",
+      "start": 660,
+      "end": 810,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "Herren 2",
+      "teams": [
+        {
+          "id": "011MIBT808000000VTVG0001VTR8C1K7",
+          "name": "SG Markelfingen/BSV N. Radolfz. 2"
+        },
+        {
+          "id": "02IE5QG600000000VS5489B2VU2I8R4H",
+          "name": "SG Reichenau/R.-Waldsiedl. 3"
+        }
+      ],
+      "category": "Herren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-bsv-n-radolfz-2-sg-reichenau-r-waldsiedl-3/-/spiel/031H2NCQ74000000VS5489BTVVG7L386",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031MI9VBT0000000VS5489BTVSRD0UH9",
+      "date": "2026-11-07",
+      "kickoff": "14:00",
+      "start": 810,
+      "end": 940,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C1",
+      "teams": [
+        {
+          "id": "0276T1CNK8000000VS5489B2VVRTHQ8E",
+          "name": "BSV Nordstern Radolfzell"
+        },
+        {
+          "id": "031AU3B6H0000000VS5489BRVVNAT1LG",
+          "name": "SpVgg. Allmannsdorf"
+        }
+      ],
+      "category": "C-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-spvgg-allmannsdorf/-/spiel/031MI9VBT0000000VS5489BTVSRD0UH9",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031N42RNJG000000VS5489BTVV1LNS7C",
+      "date": "2026-11-08",
+      "kickoff": "13:00",
+      "start": 750,
+      "end": 880,
+      "pitch": "Nebenplatz",
+      "venue": "Rasenplatz, Nebenpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "C-Juniorinnen",
+      "teams": [
+        {
+          "id": "0314RN90R8000000VS5489BRVVV10ESU",
+          "name": "BSV Nordstern Radolfzell (9er)"
+        },
+        {
+          "id": "01DO2D6U9O000000VV0AG811VTPFGC7P",
+          "name": "SC Konstanz-Wollmatingen (9er)"
+        }
+      ],
+      "category": "C-Juniorinnen",
+      "format": "9er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/bsv-nordstern-radolfzell-9er-sc-konstanz-wollmatingen-9er/-/spiel/031N42RNJG000000VS5489BTVV1LNS7C",
+      "preliminary": true,
+      "notes": []
+    },
+    {
+      "id": "031KQTQ2KG000000VS5489BUVVKNMR0J",
+      "date": "2026-11-08",
+      "kickoff": "15:00",
+      "start": 870,
+      "end": 1020,
+      "pitch": "Hauptplatz",
+      "venue": "Rasenplatz, Hauptpl. bei Nordst. Radolfz., Schlesierstr. 43, 78315 Radolfzell am Bodensee",
+      "label": "A-Junioren",
+      "teams": [
+        {
+          "id": "02ENGA3D98000000VS5489B1VU24SJ9U",
+          "name": "SG Markelfingen"
+        },
+        {
+          "id": "011MIB06P0000000VTVG0001VTR8C1K7",
+          "name": "SG F.A.L."
+        }
+      ],
+      "category": "A-Junioren",
+      "format": "11er",
+      "halves": 2,
+      "url": "https://www.fussball.de/spiel/sg-markelfingen-sg-fal/-/spiel/031KQTQ2KG000000VS5489BUVVKNMR0J",
+      "preliminary": true,
+      "notes": []
+    }
+  ],
+  "excludedAway": 88,
+  "cancelled": 1
+}

@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import TrainingPlanFilter from '../../components/TrainingPlanFilter.astro';
+import PlanLink from '../../components/PlanLink.astro';
 import { teamProfiles } from '../../data/teamPages';
 import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
@@ -131,6 +132,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
             <article><strong>{bsvSessions.length}</strong><span>Trainingseinheiten</span></article>
             <article><strong>Mo–Fr</strong><span>Wochenansicht</span></article>
           </div>
+          <div class="plan-switch"><PlanLink href="/fussball/spieltagsbelegung" label="Spieltagsbelegung" /></div>
         </div>
       </div>
     </section>
@@ -228,6 +230,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
 </Layout>
 
 <style>
+  .plan-switch{margin-top:20px}
   .pitch-card.is-kaefig{grid-column:1/-1;border-left:0;border-top:1px solid #dbe3dc}
   :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
   html{scroll-behavior:smooth}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}

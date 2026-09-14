@@ -57,6 +57,10 @@ const rows = [
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
     </button>
   </div>
+  <nav class="teams-plans" aria-label="Platzbelegung">
+    <a href={withBase('/fussball/belegungsplan')}>Belegungsplan</a>
+    <a href={withBase('/fussball/spieltagsbelegung')}>Spieltagsbelegung</a>
+  </nav>
   <div class="teams-grid" role="navigation" aria-label="Mannschaften">
     {rows.map((row) => (
       <div class="teams-row" style={`--columns: ${row.length}`}>
@@ -109,7 +113,7 @@ const rows = [
   .teams-dialog { position:fixed; inset:0; box-sizing:border-box; width:100%; max-width:none; height:100vh; height:100dvh; max-height:none; margin:0; padding:0; border:0; background:#092f20; color:white; font-family:inherit; letter-spacing:normal; overflow:hidden; }
   .teams-dialog[open] { display:flex; flex-direction:column; }
   .teams-dialog[open]::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgb(9 47 32 / 50%), transparent 25%, rgb(9 47 32 / 15%)), var(--teams-background) center / cover no-repeat; opacity:.48; pointer-events:none; }
-  .teams-heading, .teams-grid { position:relative; z-index:1; }
+  .teams-heading, .teams-plans, .teams-grid { position:relative; z-index:1; }
   .teams-dialog::backdrop { background:#092f20; }
   .teams-heading { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); border-bottom:1px solid rgb(255 255 255 / 15%); }
   .teams-heading p { margin:0 0 5px; color:#f4d638; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.14em; }
@@ -117,13 +121,17 @@ const rows = [
   .teams-close { width:44px; height:44px; flex:0 0 auto; display:grid; place-items:center; padding:10px; border:1px solid rgb(255 255 255 / 30%); border-radius:50%; background:transparent; color:white; cursor:pointer; }
   .teams-close svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
   .teams-close:hover { background:#f4d638; color:#092f20; }
+  .teams-plans { flex:0 0 auto; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:12px max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px)); }
+  .teams-plans a { box-sizing:border-box; min-width:0; min-height:44px; display:flex; align-items:center; justify-content:center; padding:6px 8px; border:1px solid rgb(244 214 56 / 40%); border-radius:4px; background:rgb(244 214 56 / 55%); color:#092f20; font-size:13px; font-weight:850; line-height:1.3; letter-spacing:0; text-align:center; text-decoration:none; overflow-wrap:anywhere; }
+  .teams-plans a:hover, .teams-plans a:active { background:rgb(244 214 56 / 65%); border-color:rgb(244 214 56 / 65%); }
+  .teams-plans a:focus-visible { outline:3px solid white; outline-offset:3px; }
   .teams-grid { flex:1; min-height:0; display:grid; grid-template-rows:repeat(9, minmax(52px, 1fr)); gap:8px; overflow-y:auto; overscroll-behavior:contain; padding:16px max(12px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
   .teams-row { display:grid; grid-template-columns:repeat(var(--columns), minmax(0, 1fr)); gap:8px; }
   .teams-dialog .team-card { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:3px; min-width:0; padding:8px 3px; border:1px solid rgb(255 255 255 / 18%); border-radius:8px; background:rgb(22 79 50 / 55%); color:white; text-align:center; text-decoration:none; }
   .team-card strong { color:inherit; font-size:clamp(.95rem, 4vw, 1.35rem); font-weight:850; line-height:1.15; }
   .teams-dialog .team-card span { color:#d7e5dc; font-size:clamp(.6rem, 2.6vw, .8rem); line-height:1.2; }
-  .teams-dialog .team-card:hover, .teams-dialog .team-card:active { border-color:#f4d638; background:#f4d638; color:#092f20; }
-  .teams-dialog .team-card:hover span, .teams-dialog .team-card:active span { color:#092f20; }
+  .teams-dialog .team-card:hover, .teams-dialog .team-card:active { border-color:rgb(215 229 220 / 35%); background:rgb(9 47 32 / 75%); color:white; }
+  .teams-dialog .team-card:hover span, .teams-dialog .team-card:active span { color:#d7e5dc; }
   .teams-toggle:focus-visible, .teams-close:focus-visible, .team-card:focus-visible { outline:3px solid #f4d638; outline-offset:3px; }
   @media (max-width:980px) { .teams-toggle { display:flex; } }
   @media (max-width:620px) { .teams-toggle { gap:7px; color:#d7e5dc; font-size:.68rem; } .teams-icon { width:28px; } }

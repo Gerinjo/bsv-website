@@ -1,0 +1,12 @@
+---
+import { withBase } from '../utils/paths';
+interface Props { href: string; label: string }
+const { href, label } = Astro.props;
+---
+<a class="plan-link" href={withBase(href)}>{label}<span aria-hidden="true">→</span></a>
+<style>
+  .plan-link { box-sizing:border-box; display:inline-flex; align-items:center; justify-content:space-between; gap:24px; min-height:44px; max-width:100%; padding:10px 16px; border:1px solid #c5d3cc; border-radius:4px; background:#f1f5f2; color:#164f32; font-size:14px; font-weight:800; line-height:1.4; letter-spacing:0; text-decoration:none; overflow-wrap:anywhere; }
+  .plan-link:hover { background:#e3eae6; border-color:#164f32; }
+  .plan-link:focus-visible { outline:2px solid #164f32; outline-offset:3px; }
+  .plan-link span { font-size:20px; line-height:1; flex:none; }
+</style>

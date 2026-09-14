@@ -60,6 +60,7 @@ export const menu: MenuItem[] = [
       { title: 'Sportstätten', links: [
         { label: 'Sportstätten & Anfahrt', href: '/fussball/sportplaetze' },
         { label: 'Belegungsplan', href: '/fussball/belegungsplan' },
+        { label: 'Spieltagsbelegung', href: '/fussball/spieltagsbelegung' },
       ]},
     ],
   },

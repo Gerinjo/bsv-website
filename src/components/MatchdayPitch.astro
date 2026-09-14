@@ -1,0 +1,88 @@
+---
+import { clockLabel, pitchBlocks } from '../utils/matchdayPlan';
+import type { Pitch, PitchBooking } from '../utils/matchdayPlan';
+interface Props { pitch: Pitch; bookings: PitchBooking[]; boundaries: number[]; date: string }
+const { pitch, bookings, boundaries, date } = Astro.props;
+const { segments, blocks, conflicts, columns } = pitchBlocks(bookings, boundaries);
+const rows = segments.map((s) => Math.max(36, (s.end - s.start) * 1.3) + 'px').join(' ');
+const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings.indexOf(booking) + '-' + pitch;
+---
+<section class="matchday-pitch" aria-label={pitch + ' am ' + date}>
+  <header><h3>{pitch}</h3><span>{bookings.length} {bookings.length === 1 ? 'Belegung' : 'Belegungen'}</span></header>
+  <div class="lane-head"><span>Zeit</span>{conflicts.length ? <span class="parallel-heading">Zeitgleiche Belegungen · 2 Hälften verfügbar</span> : <><span>Hälfte 1</span><span>Hälfte 2</span></>}</div>
+  {segments.length ? <>
+    <div class="timeline-scroll">
+      <div class="pitch-timeline" style={'grid-template-rows:' + rows + ';--columns:' + columns + ';--minimum:' + (48 + columns * 112) + 'px'}>
+        {segments.map((segment, i) => <>
+          <div class="time-label" style={'grid-row:' + (i + 1)}>{clockLabel(segment.start)}</div>
+          {Array.from({ length: columns }, (_, n) => <div class="available" aria-hidden="true" style={'grid-row:' + (i + 1) + ';grid-column:' + (n + 2)} />)}
+        </>)}
+        {blocks.map(({ booking, column, span, row, endRow, conflict }) => (
+          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format === '4er-Spieltag', girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), 'has-conflict':conflict }]}
+            data-booking-id={booking.id} href={'#' + bookingId(booking)} style={'grid-row:' + row + ' / ' + endRow + ';grid-column:' + (column + 2) + ' / span ' + span}>
+            <strong>{booking.label}</strong>
+            <span>{booking.halves === 2 ? 'Ganzer Platz' : '½ Platz'} · {booking.format}</span>
+            <span>{clockLabel(booking.start!)}–{clockLabel(booking.end!)}</span>
+            <span>Anstoß {booking.kickoff}</span>
+            {conflict && <b class="block-warning">Platzkonflikt</b>}
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="end-time">{clockLabel(boundaries[boundaries.length - 1])}</div>
+    {conflicts.length > 0 && <div class="conflict-details">{conflicts.map((segment) => <p><strong>{clockLabel(segment.start)}–{clockLabel(segment.end)} · Platzkonflikt</strong><br />{segment.active.map((b) => b.label).join(' + ')}: {segment.active.reduce((sum, b) => sum + b.halves, 0)} benötigte Hälften, 2 verfügbar.</p>)}</div>}
+  </> : <p class="empty">Keine angesetzten Spiele.</p>}
+  {bookings.length > 0 && <div class="booking-details">
+    {bookings.map((booking) => (
+      <article id={bookingId(booking)}>
+        <div class="booking-head"><h4>{booking.label}</h4><span>{booking.format} · {booking.halves === 1 ? '½ Platz' : 'Ganzer Platz'}</span></div>
+        <p class="booking-time">Belegt {clockLabel(booking.start!)}–{clockLabel(booking.end!)} · Anstoß {booking.kickoff} Uhr</p>
+        <p>{booking.teams.map((t) => t.name).join(' · ')}</p>
+        {booking.notes.map((note) => <p class="note">{note}</p>)}
+        {booking.preliminary && <span class="preliminary">Vorläufig angesetzt</span>}
+        <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format === '4er-Spieltag' ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>
+      </article>
+    ))}
+  </div>}
+</section>
+<style>
+  .matchday-pitch { min-width:0; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:3px solid #164f32; padding:18px 0; }
+  h3 { margin:0; font-size:22px; }
+  header>span { font-size:12px; color:#52625a; }
+  .lane-head { display:grid; grid-template-columns:66px minmax(0,1fr) minmax(0,1fr); gap:4px; min-height:40px; }
+  .lane-head { font-size:12px; font-weight:700; padding:0 0 8px; }
+  .lane-head span:not(:first-child) { text-align:center; }
+  .parallel-heading { grid-column:2 / 4; color:#8c231e; }
+  .timeline-scroll { overflow-x:auto; }
+  .pitch-timeline { display:grid; grid-template-columns:66px repeat(var(--columns),minmax(0,1fr)); gap:4px; min-width:var(--minimum); }
+  .time-label,.end-time { grid-column:1; font-size:12px; color:#52625a; }
+  .end-time { padding-top:4px; }
+  .slot { min-width:0; min-height:0; z-index:1; display:flex; flex-direction:column; justify-content:safe center; gap:5px; padding:10px; text-decoration:none; overflow-wrap:anywhere; overflow:auto; background:#e5eee8; color:#164f32; border-left:3px solid #287847; }
+  .slot strong { font-size:14px; }
+  .slot span { font-size:11px; }
+  .slot:hover { background:#d3e4d9; }
+  .slot:focus-visible { outline:3px solid #164f32; outline-offset:1px; }
+  .slot.full { background:#164f32; color:white; }
+  .slot.full:hover { background:#0b3923; }
+  .slot.kids { background:#fff3ab; border-color:#cfac00; color:#443d14; }
+  .slot.girls { background:#e1eff1; border-color:#277481; color:#184d56; }
+  .available { background:#f3f5f3; border:1px dashed #cdd6cf; }
+  .slot.has-conflict { border:2px solid #b3322b; }
+  .block-warning { font-size:11px; background:#fbe6e3; color:#8c231e; padding:4px; }
+  .conflict-details { margin-top:16px; padding:2px 12px; background:#fbe6e3; border-left:3px solid #b3322b; }
+  .conflict-details p { color:#8c231e; }
+  .booking-details { margin-top:24px; }
+  .booking-details article { padding:18px 0; border-bottom:1px solid #dce4de; scroll-margin-top:150px; }
+  .booking-details article:target { background:#fff6c4; outline:4px solid #fff6c4; }
+  .booking-head { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; }
+  h4 { margin:0; font-size:16px; }
+  .booking-head>span,.booking-time,.preliminary { font-size:12px; }
+  p { font-size:13px; line-height:1.6; margin:8px 0; color:#52625a; overflow-wrap:anywhere; }
+  .booking-time { color:#18362b; font-weight:700; }
+  .note { border-left:3px solid #d9ac24; padding-left:10px; color:#685016; }
+  .preliminary { display:block; color:#806020; margin:8px 0; }
+  .source-link { font-size:12px; color:#164f32; font-weight:700; text-underline-offset:3px; }
+  .empty { padding:24px 0; }
+  @media(max-width:420px) { .lane-head { grid-template-columns:48px minmax(0,1fr) minmax(0,1fr); } .pitch-timeline { grid-template-columns:48px repeat(var(--columns),minmax(0,1fr)); } .slot { padding:8px; } .slot strong { font-size:12px; } h3 { font-size:20px; } }
+</style>
