@@ -9,6 +9,8 @@ export type PitchBooking = {
   pitch: Pitch | null; venue: string; label: string; teams: MatchTeam[];
   category: string; format: string; halves: 1 | 2; url: string;
   preliminary: boolean; notes: string[];
+  kind?: 'fixed';
+  relocation?: 'suggested' | 'blocked';
 };
 export type MatchdaySchedule = {
   version: 1; checkedAt: string; from: string; through: string;
@@ -81,7 +83,7 @@ export function applyChangeovers(bookings: PitchBooking[]): PitchBooking[] {
   }
   for (const group of groups.values()) {
     const previous: (PitchBooking | undefined)[] = [undefined, undefined];
-    const coreEnd = (b: PitchBooking) => b.end! - matchdaySettings.after;
+    const coreEnd = (b: PitchBooking) => b.end! - (b.kind === 'fixed' ? 0 : matchdaySettings.after);
     group.sort((a, b) => a.kickoff.localeCompare(b.kickoff) || b.halves - a.halves || a.id.localeCompare(b.id));
     for (const b of group) {
       const kickoff = timeMinutes(b.kickoff)!;

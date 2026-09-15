@@ -1,6 +1,7 @@
 ---
 import { clockLabel, pitchBlocks } from '../utils/matchdayPlan';
 import type { Pitch, PitchBooking } from '../utils/matchdayPlan';
+import { withBase } from '../utils/paths';
 interface Props { pitch: Pitch; bookings: PitchBooking[]; boundaries: number[]; date: string }
 const { pitch, bookings, boundaries, date } = Astro.props;
 const { segments, blocks, conflicts, columns } = pitchBlocks(bookings, boundaries);
@@ -18,12 +19,13 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
           {Array.from({ length: columns }, (_, n) => <div class="available" aria-hidden="true" style={'grid-row:' + (i + 1) + ';grid-column:' + (n + 2)} />)}
         </>)}
         {blocks.map(({ booking, column, span, row, endRow, conflict }) => (
-          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format === '4er-Spieltag', girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), 'has-conflict':conflict }]}
+          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format === '4er-Spieltag', girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), fixed:booking.kind === 'fixed', relocated:booking.relocation === 'suggested', 'has-conflict':conflict }]}
             data-booking-id={booking.id} href={'#' + bookingId(booking)} style={'grid-row:' + row + ' / ' + endRow + ';grid-column:' + (column + 2) + ' / span ' + span}>
             <strong>{booking.label}</strong>
             <span>{booking.halves === 2 ? 'Ganzer Platz' : '½ Platz'} · {booking.format}</span>
             <span>{clockLabel(booking.start!)}–{clockLabel(booking.end!)}</span>
-            <span>Anstoß {booking.kickoff}</span>
+            {booking.kind !== 'fixed' && <span>Anstoß {booking.kickoff}</span>}
+            {booking.relocation === 'suggested' && <b class="move-label">Vorschlag: Hauptplatz</b>}
             {conflict && <b class="block-warning">Platzkonflikt</b>}
           </a>
         ))}
@@ -36,11 +38,12 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
     {bookings.map((booking) => (
       <article id={bookingId(booking)}>
         <div class="booking-head"><h4>{booking.label}</h4><span>{booking.format} · {booking.halves === 1 ? '½ Platz' : 'Ganzer Platz'}</span></div>
-        <p class="booking-time">Belegt {clockLabel(booking.start!)}–{clockLabel(booking.end!)} · Anstoß {booking.kickoff} Uhr</p>
-        <p>{booking.teams.map((t) => t.name).join(' · ')}</p>
+        <p class="booking-time">Belegt {clockLabel(booking.start!)}–{clockLabel(booking.end!)}{booking.kind !== 'fixed' && <> · Anstoß {booking.kickoff} Uhr</>}</p>
+        {booking.teams.length > 0 && <p>{booking.teams.map((t) => t.name).join(' · ')}</p>}
+        {booking.relocation && <p class="note">Gemeldeter Spielort: {booking.venue}</p>}
         {booking.notes.map((note) => <p class="note">{note}</p>)}
         {booking.preliminary && <span class="preliminary">Vorläufig angesetzt</span>}
-        <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format === '4er-Spieltag' ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>
+        {booking.kind === 'fixed' ? <a class="source-link" href={withBase(booking.url)}>Bogensport →</a> : <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format === '4er-Spieltag' ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>}
       </article>
     ))}
   </div>}
@@ -67,6 +70,10 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
   .slot.full:hover { background:#0b3923; }
   .slot.kids { background:#fff3ab; border-color:#cfac00; color:#443d14; }
   .slot.girls { background:#e1eff1; border-color:#277481; color:#184d56; }
+  .slot.fixed { background:#f3e5ee; border-color:#a56087; color:#663751; }
+  .slot.fixed:hover { background:#ead5e2; }
+  .slot.relocated { border:2px solid #c99a21; }
+  .move-label { font-size:11px; background:#fff4d6; color:#665016; padding:4px; }
   .available { background:#f3f5f3; border:1px dashed #cdd6cf; }
   .slot.has-conflict { border:2px solid #b3322b; }
   .block-warning { font-size:11px; background:#fbe6e3; color:#8c231e; padding:4px; }

@@ -6,7 +6,8 @@ import MatchdayPitch from '../../components/MatchdayPitch.astro';
 import PlanLink from '../../components/PlanLink.astro';
 import snapshot from '../../data/matchdaySchedule.json';
 import type { MatchdaySchedule, Pitch } from '../../utils/matchdayPlan';
-import { addDays, applyChangeovers, pitchSegments } from '../../utils/matchdayPlan';
+import { addDays, pitchSegments } from '../../utils/matchdayPlan';
+import { planWithPitchReservations } from '../../utils/pitchReservations';
 import { savedMatchdayPlan } from '../../utils/savedMatchdayPlan';
 import { withBase } from '../../utils/paths';
 import { berlinNow } from '../../utils/nextMatch';
@@ -17,7 +18,7 @@ const pitches: Pitch[] = ['Hauptplatz', 'Nebenplatz'];
 const dates: string[] = [];
 for (let date = schedule.from; date <= schedule.through; date = addDays(date, 1)) dates.push(date);
 const dateLabel = (date: string) => new Intl.DateTimeFormat('de-DE', { weekday:'long', day:'2-digit', month:'2-digit', year:'numeric', timeZone:'Europe/Berlin' }).format(new Date(date + 'T12:00:00Z'));
-const plannedBookings = applyChangeovers(schedule.bookings);
+const plannedBookings = planWithPitchReservations(schedule.bookings, schedule.from, schedule.through);
 const bookingsFor = (date: string) => plannedBookings.filter((b) => b.date === date);
 const isTimed = (b: MatchdaySchedule['bookings'][number]) => b.pitch !== null && b.start !== null && b.end !== null;
 const days = dates.map((date) => {
@@ -29,6 +30,7 @@ const days = dates.map((date) => {
 const initial = days.find((d) => d.date >= today)?.date ?? days[0]?.date ?? '';
 const pendingCount = days.reduce((sum, d) => sum + d.pending.length, 0);
 const conflictDays = days.filter((d) => d.conflicts.length).length;
+const relocationCount = plannedBookings.filter((b) => b.relocation === 'suggested').length;
 const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Berlin' }).format(new Date(schedule.checkedAt));
 ---
 <Layout title="Spieltagsbelegung | BSV Nordstern Radolfzell" description="Spiele und E-Jugend-Spieltage auf Haupt- und Nebenplatz: Belegung der Spielfeldhälften, Zeitpuffer und Platzkonflikte.">
@@ -47,21 +49,23 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
       {stale && <p class="status-warning" role="status">Aktualisierung nicht verfügbar. Gespeicherter Stand vom {checkedAt} Uhr; neuere Änderungen sind möglicherweise nicht enthalten.</p>}
       {schedule.through < today && <p class="status-warning" role="alert">Der gespeicherte Planungszeitraum ist abgelaufen. Aktuelle Belegungen sind nicht bestätigt.</p>}
       <div class="summary">
-        <span><b>{schedule.bookings.length}</b> Belegungen / offene Termine</span>
+        <span><b>{plannedBookings.length}</b> Belegungen / offene Termine</span>
         <span class:list={{ danger:conflictDays > 0 }}><b>{conflictDays}</b> Tage mit Platzkonflikt</span>
+        <span><b>{relocationCount}</b> Platzwechsel vorgeschlagen</span>
         <span><b>{pendingCount}</b> Termine zu klären</span>
       </div>
       <div class="plan-controls">
-        <label>Datum<select id="matchday-date" disabled={!days.length}>{!days.length && <option value="">Keine Spieltage vorhanden</option>}{days.map((d) => <option value={d.date} selected={d.date === initial}>{dateLabel(d.date)} · {d.bookings.length}{d.conflicts.length ? ' · Konflikt' : ''}{d.pending.length ? ' · Klärung' : ''}</option>)}</select></label>
+        <label>Datum<select id="matchday-date" disabled={!days.length}>{!days.length && <option value="">Keine Belegungen vorhanden</option>}{days.map((d) => <option value={d.date} selected={d.date === initial}>{dateLabel(d.date)} · {d.bookings.length}{d.conflicts.length ? ' · Konflikt' : ''}{d.bookings.some((b) => b.relocation === 'suggested') ? ' · Platzwechsel' : ''}{d.pending.length ? ' · Klärung' : ''}</option>)}</select></label>
         <label>Ansicht<select id="matchday-view" disabled={!days.length}><option value="day">Einzelner Tag</option><option value="all">Alle Spieltage</option></select></label>
       </div>
-      <p class="planning-note">Gleiche Teamstärke hintereinander (7er, 9er, 11er): 15 Min. Wechselzeit. Sonst 30 Min. Vorlauf und 15 Min. Nachlauf. E-Spieltage: 2 Std.; sonst reguläre Spielzeit + 15 Min. Halbzeitpause. Hälften rechnerisch verteilt, keine verbindliche Seitenzuweisung. Ohne Trainings- und Fremdbelegungen.</p>
-      <div class="legend" aria-label="Legende"><span class="full">Ganzer Platz</span><span class="half">Halber Platz</span><span class="kids">E-Spieltag</span><span class="girls">Juniorinnen 7er</span><span class="conflict">Platzkonflikt</span></div>
+      <p class="planning-note">Gleiche Teamstärke hintereinander (7er, 9er, 11er): 15 Min. Wechselzeit. Sonst 30 Min. Vorlauf und 15 Min. Nachlauf. E-Spieltage: 2 Std.; sonst reguläre Spielzeit + 15 Min. Halbzeitpause. Bogensport sperrt den Nebenplatz freitags 17:30–19:00 Uhr und sonntags 10:00–12:00 Uhr, ohne zusätzliche Puffer. Sonstige Trainings- und Fremdbelegungen sind nicht enthalten. Hälften rechnerisch verteilt, keine verbindliche Seitenzuweisung.</p>
+      <div class="legend" aria-label="Legende"><span class="full">Ganzer Platz</span><span class="half">Halber Platz</span><span class="kids">E-Spieltag</span><span class="girls">Juniorinnen 7er</span><span class="fixed">Bogensport</span><span class="conflict">Platzkonflikt</span></div>
       <div id="matchday-plans" aria-live="polite">
         {!days.length && <p class="empty">Im Planungszeitraum sind keine Spiele für das BSV-Sportgelände eingetragen.</p>}
         {days.map((day) => (
           <section class="matchday" id={'tag-' + day.date} data-date={day.date} data-bookings={day.bookings.length} hidden={day.date !== initial}>
             <div class="day-heading"><h2>{dateLabel(day.date)}</h2>{day.conflicts.length > 0 && <strong class="conflict-label">Platzkonflikt</strong>}</div>
+            {day.bookings.some((b) => b.relocation) && <div class="relocation-notice"><strong>Platzwechsel wegen Bogensport</strong>{day.bookings.filter((b) => b.relocation).map((b) => <p><b>{b.label} · {b.kickoff} Uhr:</b> {b.relocation === 'suggested' ? 'Hauptplatz vorgeschlagen, noch nicht bestätigt. Bei FUSSBALL.DE ist weiterhin der Nebenplatz gemeldet.' : 'Nebenplatz gesperrt; Hauptplatz ebenfalls belegt oder nicht sicher verfügbar. Platz oder Anstoßzeit abstimmen.'}</p>)}</div>}
             {day.bookings.length === 0 ? <p class="empty">Keine Spiele für das BSV-Sportgelände eingetragen.</p> : (
               <div class="pitches">{pitches.map((pitch) => <MatchdayPitch pitch={pitch} bookings={day.timed.filter((b) => b.pitch === pitch)} boundaries={day.boundaries} date={day.date} />)}</div>
             )}
@@ -71,6 +75,7 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
       </div>
       <details class="rules">
         <summary>Planungsgrundlagen</summary>
+        <p>Bogensport ist eine feste Vollbelegung des Nebenplatzes. Überschneidungen einschließlich Fußball-Puffern führen zu einem Planungsvorschlag für den Hauptplatz, sofern dessen bekannte Belegungen dies erlauben. Bereits vorgeschlagene Wechsel werden mitgerechnet. Gemeldete Spielorte werden nicht geändert; alle Platzwechsel müssen bestätigt werden.</p>
         <p>Bei gleicher Teamstärke auf derselben Fläche reichen 15 Minuten zwischen geplantem Spielende und nächstem Anstoß. Der Nachlauf des ersten Spiels zählt als Wechselzeit; der Vorlauf des Folgespiels wird entsprechend gekürzt. Bei anderer Teamstärke bleiben die folgenden Standardpuffer bestehen.</p>
         <dl>
           <div><dt>E-Jugend-Viererspieltag</dt><dd>½ Platz · 120 Min. + 45 Min. Puffer. Ein gemeinsamer Spieltag mehrerer BSV-Teams zählt einmal.</dd></div>
@@ -127,6 +132,9 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
   .legend { display:flex; flex-wrap:wrap; gap:12px 20px; font-size:11px; color:#52625a; }
   .legend span::before { content:''; display:inline-block; width:10px; height:10px; margin-right:6px; background:#164f32; }
   .legend .half::before { background:#b7d5c3; }.legend .kids::before { background:#e9c423; }.legend .girls::before { background:#68a7b0; }.legend .conflict::before { background:#b3322b; }
+  .legend .fixed::before { background:#a56087; }
+  .relocation-notice { margin-bottom:20px; padding:14px 16px; border-left:3px solid #c99a21; background:#fff4d6; font-size:13px; line-height:1.6; }
+  .relocation-notice p { margin:8px 0 0; overflow-wrap:anywhere; }
   .matchday { padding:28px 0; scroll-margin-top:145px; }
   .matchday[hidden] { display:none; }
   .day-heading { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-bottom:22px; }

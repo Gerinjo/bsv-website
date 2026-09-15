@@ -1,8 +1,9 @@
 # Spieltagsbelegung
 
 Die neue Seite `/fussball/spieltagsbelegung` ist getrennt von der Trainingsplanung.
-Sie umfasst nur Spiele im FUSSBALL.DE-Vereinsspielplan mit Spielort beim BSV.
-Training, Bogensport, Fremdnutzung und nicht gemeldete Veranstaltungen sind nicht enthalten.
+Sie umfasst Spiele im FUSSBALL.DE-Vereinsspielplan mit Spielort beim BSV sowie
+die festen Bogensport-Belegungen. Sonstiges Training, Fremdnutzung und nicht
+gemeldete Veranstaltungen sind nicht enthalten.
 Die Hälften sind rechnerische Kapazitäten, keine verbindliche Seitenzuweisung.
 
 ## Daten und Aktualisierung
@@ -26,7 +27,7 @@ ihn nach dem Build. Der eingecheckte Snapshot ist die Rückfallebene ohne Cache.
 
 ## Planungsregeln
 
-Vom Nutzer bestätigt: E-Spieltag 120 Minuten, für alle Belegungen zusätzlich
+Vom Nutzer bestätigt: E-Spieltag 120 Minuten, für alle Fußball-Belegungen zusätzlich
 30 Minuten Vorlauf und 15 Minuten Nachlauf. Reguläre Spiele erhalten außerdem
 15 Minuten Halbzeitpause. Regelspielzeiten laut SBFV AB 13: D 60, C 70, B 80,
 A/Aktive 90 Minuten.
@@ -57,6 +58,22 @@ Jede Belegung wird einmal als durchgehender Block über die gemeinsame Zeitachse
 gezeichnet. Grenzen anderer Spiele teilen den Block nicht. Bei Überbelegung
 zeigt der betroffene Platz ausdrücklich parallele Belegungen statt vermeintlich
 freier Hälften; benötigte Platzgröße und genaue Konfliktzeiten bleiben sichtbar.
+
+## Bogensport und Platzwechsel
+
+`src/data/pitchReservations.ts` ist die gemeinsame Quelle für Wochenplan und
+Spieltag: Nebenplatz komplett gesperrt, Freitag 17:30–19:00 und Sonntag 10:00–12:00.
+Festbelegungen erhalten keine Fußball-Puffer und werden unabhängig von den
+FUSSBALL.DE-Daten erzeugt, auch an Tagen ohne Spiele und bei Quellen-Ausfällen.
+
+`planWithPitchReservations` prüft betroffene Spiele einschließlich ihrer Puffer.
+Passt die Belegung auf den Hauptplatz, erscheint sie dort als unbestätigter
+Vorschlag. Quellen-URL, gemeldeter Spielort und Anstoß bleiben unverändert.
+Jeder Vorschlag berücksichtigt vorherige Vorschläge und berechnet Wechselzeiten
+auf beiden Plätzen neu. Unbekannte Belegungen oder Kapazitätskonflikte verhindern
+eine Freigabe: Das Spiel bleibt mit offener Klärung beim gesperrten Nebenplatz.
+Die Entscheidung ist konservativ und kein vollständiger Optimierungsalgorithmus.
+Platzwechsel müssen vor Durchführung durch die Verantwortlichen bestätigt werden.
 
 ## Tests
 

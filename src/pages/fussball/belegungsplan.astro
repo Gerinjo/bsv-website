@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import TrainingPlanFilter from '../../components/TrainingPlanFilter.astro';
 import PlanLink from '../../components/PlanLink.astro';
+import { pitchReservations } from '../../data/pitchReservations';
 import { teamProfiles } from '../../data/teamPages';
 import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
@@ -14,10 +15,10 @@ type Allocation = {
   pitch: Pitch;
   share: number;
   shareLabel: string;
-  tone: 'active' | 'girls' | 'youth' | 'kids';
+  tone: 'active' | 'girls' | 'youth' | 'kids' | 'other';
 };
 
-const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Sonntag'];
 const teamNames: Record<string, string> = {
   'fussball/herren/bezirksliga': 'Herren 1',
   'fussball/herren/kreisliga-2': 'Herren 2',
@@ -99,10 +100,17 @@ const offsiteSessions = allTraining
   .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time));
 const openSessions = allTraining.filter((session) => !dayOrder.includes(session.day));
 
-const sessionsFor = (day: string, pitch: Pitch) => bsvSessions.filter((session) => session.day === day && session.allocation.pitch === pitch);
-const trainingConflicts = findTrainingConflicts(bsvSessions);
+const fixedSessions = pitchReservations.map((fixed) => ({
+  day: fixed.day, time: fixed.start + ' – ' + fixed.end + ' Uhr', team: fixed.label,
+  path: fixed.path.slice(1), filterKey: 'other',
+  allocation: { pitch: fixed.pitch, share: 1, shareLabel: 'Nebenplatz belegt', tone: 'other' as const },
+}));
+const allBsvSessions = [...bsvSessions, ...fixedSessions];
+const sessionsFor = (day: string, pitch: Pitch) => allBsvSessions.filter((session) => session.day === day && session.allocation.pitch === pitch);
+const trainingConflicts = findTrainingConflicts(allBsvSessions);
 const conflictsFor = (day: string, pitch: Pitch) => trainingConflicts.filter((conflict) => conflict.day === day && conflict.pitch === pitch);
 const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([path, name]) => [name, trainingFilterKeyByTeam[path]]));
+filterKeyByTeamName.Bogensport = 'other';
 ---
 
 <Layout
@@ -129,8 +137,8 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
           <p>Die E1 trainiert donnerstags von 17:00 bis 19:00 Uhr im Käfig am Friedrich-Hecker-Gymnasium. Weitere auswärtige Termine und noch offene Zeiten stehen unter dem Wochenplan.</p>
           <div class="facts">
             <article><strong>3</strong><span>Plätze</span></article>
-            <article><strong>{bsvSessions.length}</strong><span>Trainingseinheiten</span></article>
-            <article><strong>Mo–Fr</strong><span>Wochenansicht</span></article>
+            <article><strong>{allBsvSessions.length}</strong><span>Belegungen</span></article>
+            <article><strong>Mo–So</strong><span>Wochenansicht</span></article>
           </div>
           <div class="plan-switch"><PlanLink href="/fussball/spieltagsbelegung" label="Spieltagsbelegung" /></div>
         </div>
@@ -154,7 +162,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
     </section>
 
     <section id="wochenplan" class="schedule-section">
-      <div class="shell section-head"><div><span>Montag bis Freitag</span><h2>Belegung auf einen Blick.</h2></div><p>Rote Hinweise zeigen automatisch erkannte Zeitfenster, in denen die eingetragenen Platzanteile zusammen mehr als einen ganzen Platz benötigen.</p></div>
+      <div class="shell section-head"><div><span>Montag bis Sonntag</span><h2>Belegung auf einen Blick.</h2></div><p>Bogensport belegt den gesamten Nebenplatz freitags von 17:30–19:00 Uhr und sonntags von 10:00–12:00 Uhr. Rote Hinweise zeigen Überschneidungen; betroffene Spiele stehen mit Planungshinweis in der Spieltagsbelegung.</p></div>
       <div class="shell"><TrainingPlanFilter /></div>
       <div class="shell schedule-list" data-schedule-list>
         {dayOrder.map((day) => (
@@ -174,11 +182,7 @@ const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([p
                           <strong>{session.team}</strong>
                           <span class="share"><i style={`--share:${session.allocation.share * 100}%`}></i><b>{session.allocation.shareLabel}</b></span>
                         </a>
-                      )) : day === 'Freitag' && pitch === 'Nebenplatz' ? (
-                        <a class="booking is-other" data-team-filter="other" href={withBase('/abteilungen/bogensport')}>
-                          <span class="booking-time">17:30 – 19:00 Uhr</span><strong>Bogensport</strong><span class="share"><i style="--share:100%"></i><b>Nebenplatz belegt</b></span>
-                        </a>
-                      ) : <p class="free">Keine feste Belegung eingetragen.</p>}
+                      )) : <p class="free">Keine feste Belegung eingetragen.</p>}
                       <p class="free filter-empty" data-filter-empty hidden>Keine Termine für diese Auswahl.</p>
                     </div>
                     {conflicts.length > 0 && <div class="conflict-list" data-conflict-list aria-label={`Überlastungen ${pitch} am ${day}`}>
