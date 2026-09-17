@@ -6,6 +6,7 @@ export type ManualTournamentSchedule = TournamentSchedule & {
   id: string; sourceLabel: string; category: 'G-Junioren' | 'F-Junioren';
   ownTeamIds: string[]; label: string; homePitch: Pitch | null; halves: 1 | 2; pagePath: string;
   sectionId?: string;
+  homePitchNote?: string;
 };
 
 export function manualTournamentBookings(schedules: ManualTournamentSchedule[], from: string, through: string): PitchBooking[] {
@@ -24,6 +25,7 @@ export function manualTournamentBookings(schedules: ManualTournamentSchedule[], 
         category: schedule.category, format: 'Fair-Play-Spieltag',
         url: schedule.pagePath + '#' + (schedule.sectionId ?? 'spieltage'), source: 'club', preliminary: day.preliminary,
         notes: [...(schedule.homePitch === null ? ['BSV-Heimspieltag: Haupt-/Nebenplatz und Platzumfang noch zu bestätigen.'] : []),
+          ...(schedule.homePitchNote ? [schedule.homePitchNote] : []),
           schedule.sourceLabel + ' · Stand ' + new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt)),
           (schedule.ownTeamIds.length > 1 ? 'Gemeinsamer Spieltag der BSV-Teams: ' : 'Spieltag: ') + '2 Stunden, 30 Min. Vorlauf und 15 Min. Nachlauf.'],
       });

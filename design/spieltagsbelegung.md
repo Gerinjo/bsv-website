@@ -107,6 +107,10 @@ F1 am 18.10. und F3 am 31.10. bleiben mit offener Uhrzeit sichtbar.
 Die Heimspieltage am 10.10. um 09, 12 und 15 Uhr sind eigenständige Belegungen,
 jeweils zwei Stunden plus Puffer. Überschneidungen mit anderen Mannschaften
 bleiben als Konflikte sichtbar; es werden keine Spielorte stillschweigend geändert.
-Haupt-/Nebenplatz und Platzumfang der F-Heimspieltage sind noch nicht bestätigt.
-Bis dahin bleibt `homePitch: null`; die Termine erscheinen mit Zeitpuffern unter
-„Noch zu klären“ und verhindern unsichere automatische Verlegungsvorschläge.
+Nach Freigabe der flexiblen Platzwahl sind alle drei F-Heimspieltage am 10.10.
+auf jeweils einem halben Nebenplatz eingeplant: F1 08:30–11:15 Uhr parallel
+zu D2, F2 11:30–14:15 Uhr parallel zu E3, F3 14:30–17:15 Uhr danach.
+Damit bleiben C1 und Herren 1 unverändert auf dem Hauptplatz. Die Zuordnung ist
+als Platzplanung kenntlich; spätere Änderungen des Spielplans werden weiterhin
+auf Konflikte geprüft. Unbekannte Zuordnungen unterstützt `homePitch: null`
+weiterhin als Prüffälle und verhindert damit unsichere Verlegungsvorschläge.

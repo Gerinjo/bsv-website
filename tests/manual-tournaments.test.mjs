@@ -76,7 +76,7 @@ test('three F home tournaments are separate 165-minute bookings, with correct te
   assert.equal(bookings[1].url, '/jugend/u8-f#spieltage-f2');
   assert.equal(bookings[2].url, '/jugend/u8-f#spieltage-f3');
   assert.ok(bookings.every((b) => !b.notes.join(' ').includes('Gemeinsamer Spieltag')));
-  assert.ok(bookings.every((b) => b.pitch === null && b.notes.some((note) => note.includes('noch zu bestätigen'))));
+  assert.ok(bookings.every((b) => b.pitch === 'Nebenplatz' && b.halves === 1 && b.notes.some((note) => note.includes('Platzplanung am 10.10.'))));
 });
 
 test('F bookings participate in capacity checks against the existing matches', () => {
@@ -94,4 +94,26 @@ test('unknown manual home kickoff remains pending instead of inventing midnight'
   const [booking] = manualTournamentBookings([incomplete], '2026-10-10', '2026-10-10');
   assert.equal(booking.start, null);
   assert.equal(booking.end, null);
+});
+
+test('F home days fit half the side pitch alongside D2 and E3 without changing main-pitch games', () => {
+  const data = JSON.parse(readFileSync(new URL('../src/data/matchdaySchedule.json', import.meta.url)));
+  const added = manualTournamentBookings(fTournamentSchedules, '2026-10-10', '2026-10-10');
+  const original = planWithPitchReservations(data.bookings, data.from, data.through).filter((b) => b.date === '2026-10-10');
+  const planned = planWithPitchReservations([...data.bookings, ...added], data.from, data.through).filter((b) => b.date === '2026-10-10');
+  for (const pitch of ['Hauptplatz', 'Nebenplatz']) {
+    assert.ok(!pitchSegments(planned.filter((b) => b.pitch === pitch)).some((s) => s.conflict));
+  }
+  assert.deepEqual(planned.filter((b) => b.pitch === 'Hauptplatz'), original.filter((b) => b.pitch === 'Hauptplatz'));
+  const side = pitchSegments(planned.filter((b) => b.pitch === 'Nebenplatz'));
+  for (const [first, second] of [['F1 · Spieltag', 'D2'], ['F2 · Spieltag', 'E3 · Spieltag']]) {
+    assert.ok(side.some((s) => s.lanes.every((lane) => lane.length === 1) && [first, second].every((label) => s.active.some((b) => b.label === label))));
+  }
+  assert.equal(planned.filter((b) => b.source === 'club').length, 3);
+});
+
+test('unknown pitch allocation still remains a pending booking', () => {
+  const [booking] = manualTournamentBookings([{ ...fTournamentSchedules[0], homePitch: null, homePitchNote: undefined }], '2026-10-10', '2026-10-10');
+  assert.equal(booking.pitch, null);
+  assert.ok(booking.notes.some((note) => note.includes('noch zu bestätigen')));
 });
