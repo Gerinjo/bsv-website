@@ -7,12 +7,14 @@ export type TournamentDay = {
   date: string; firstTeamKickoff: string; title: string; url: string;
   teams: TournamentTeam[]; venues: { name: string; matchUrl: string }[];
   preliminary: boolean; cancelled?: boolean;
+  host?: string; home?: boolean;
 };
-export type TournamentSchedule = { teamId: string; season: string; checkedAt: string; days: TournamentDay[] };
+export type TournamentSchedule = { teamId: string; season: string; checkedAt: string; days: TournamentDay[]; sourceLabel?: string; notice?: string };
 const origin = 'https://www.fussball.de';
 const clean = (text: string) => text.replace(/\u200b/g, '').replace(/\s+/g, ' ').trim();
 
-export function isBsvHomeTournament(day: Pick<TournamentDay, 'venues'>): boolean {
+export function isBsvHomeTournament(day: Pick<TournamentDay, 'venues' | 'home'>): boolean {
+  if (day.home !== undefined) return day.home;
   return day.venues.some(({ name }) => {
     const venue = clean(name).toLowerCase().replace(/ß/g, 'ss');
     return /\bnordst(?:ern|\.)?\s+radolfz(?:ell|\.)?(?=\W|$)/.test(venue)
@@ -118,6 +120,7 @@ export async function loadTournamentSchedule(teamId: string, season: string, fet
 }
 
 export async function tournamentScheduleWithFallback(fallback: TournamentSchedule, fetcher: typeof fetch = fetch) {
+  if (fallback.sourceLabel) return { schedule: fallback, stale: false };
   try {
     return { schedule: await loadTournamentSchedule(fallback.teamId, fallback.season, fetcher), stale: false };
   } catch (error) {

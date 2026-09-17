@@ -10,6 +10,7 @@ export type PitchBooking = {
   category: string; format: string; halves: 1 | 2; url: string;
   preliminary: boolean; notes: string[];
   kind?: 'fixed';
+  source?: 'club';
   relocation?: 'suggested' | 'blocked';
 };
 export type MatchdaySchedule = {

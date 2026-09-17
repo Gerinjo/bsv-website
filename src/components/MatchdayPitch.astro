@@ -19,7 +19,7 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
           {Array.from({ length: columns }, (_, n) => <div class="available" aria-hidden="true" style={'grid-row:' + (i + 1) + ';grid-column:' + (n + 2)} />)}
         </>)}
         {blocks.map(({ booking, column, span, row, endRow, conflict }) => (
-          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format === '4er-Spieltag', girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), fixed:booking.kind === 'fixed', relocated:booking.relocation === 'suggested', 'has-conflict':conflict }]}
+          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format.endsWith('Spieltag'), girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), fixed:booking.kind === 'fixed', relocated:booking.relocation === 'suggested', 'has-conflict':conflict }]}
             data-booking-id={booking.id} href={'#' + bookingId(booking)} style={'grid-row:' + row + ' / ' + endRow + ';grid-column:' + (column + 2) + ' / span ' + span}>
             <strong>{booking.label}</strong>
             <span>{booking.halves === 2 ? 'Ganzer Platz' : '½ Platz'} · {booking.format}</span>
@@ -43,7 +43,7 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
         {booking.relocation && <p class="note">Gemeldeter Spielort: {booking.venue}</p>}
         {booking.notes.map((note) => <p class="note">{note}</p>)}
         {booking.preliminary && <span class="preliminary">Vorläufig angesetzt</span>}
-        {booking.kind === 'fixed' ? <a class="source-link" href={withBase(booking.url)}>Bogensport →</a> : <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format === '4er-Spieltag' ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>}
+        {booking.kind === 'fixed' ? <a class="source-link" href={withBase(booking.url)}>Bogensport →</a> : booking.source === 'club' ? <a class="source-link" href={withBase(booking.url)}>Spieltage der {booking.category.startsWith('F-') ? 'F' : 'G'}-Jugend →</a> : <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format.endsWith('Spieltag') ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>}
       </article>
     ))}
   </div>}

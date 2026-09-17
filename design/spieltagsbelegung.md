@@ -2,8 +2,8 @@
 
 Die neue Seite `/fussball/spieltagsbelegung` ist getrennt von der Trainingsplanung.
 Sie umfasst Spiele im FUSSBALL.DE-Vereinsspielplan mit Spielort beim BSV sowie
-die festen Bogensport-Belegungen. Sonstiges Training, Fremdnutzung und nicht
-gemeldete Veranstaltungen sind nicht enthalten.
+die festen Bogensport-Belegungen und die ausdrücklich erfassten G-Spieltage.
+Sonstiges Training, Fremdnutzung und nicht erfasste Veranstaltungen sind nicht enthalten.
 Die Hälften sind rechnerische Kapazitäten, keine verbindliche Seitenzuweisung.
 
 ## Daten und Aktualisierung
@@ -80,3 +80,33 @@ Platzwechsel müssen vor Durchführung durch die Verantwortlichen bestätigt wer
 `npm test` prüft Spielformen, Puffer, Parser, Turnierzusammenfassung, Spielorte,
 Absagen, Fehler-Fallback und Konflikte. Die Browserprüfung umfasst Datumswechsel,
 Gesamtübersicht, Quellen-/Detailverweise und Desktop-/Handyansichten.
+
+## Manuelle G-/F-Spieltage
+
+G1 und G2 verwenden gemeinsam `src/data/gTournamentSchedule.ts` (Gruppenplan 7,
+Herbstrunde 2026/27, Stand 15.09.2026). Beide G-Teamseiten zeigen dieselben fünf
+Termine. Die leeren Zeilen für 18.–20.09. sind keine angesetzten Spieltage.
+Die Gruppenteilnehmer stammen aus der Vorlage; FC Steißlingen richtet erst im
+Frühjahr aus. Ohne belegten FUSSBALL.DE-Link wird kein externer Link erfunden.
+
+`manualTournamentBookings` ergänzt Heimspieltage vor der Berechnung der
+Bogensport-Verlegungen und Platzkonflikte. Ein gemeinsamer Spieltag zählt nur
+einmal. G und F dauern 120 Minuten plus 30 Minuten Vorlauf und 15 Minuten
+Nachlauf. Platz und Umfang werden je Gruppenplan ausdrücklich angegeben.
+Bestätigt: G1 + G2 am 11.10.2026, 09–11 Uhr, halber Hauptplatz;
+Belegungszeit 08:30–11:15 Uhr. Auswärtsspieltage belegen keinen BSV-Platz.
+Manuelle Termine werden bei jedem Build ergänzt und von automatischen
+FUSSBALL.DE-Aktualisierungen nicht überschrieben. Ihr Quellenstand bleibt
+sichtbar; Terminänderungen benötigen eine Aktualisierung der Datendatei.
+
+F1 (Gruppe 9, Stand 15.09.), F2 (Gruppe 10, neuerer Stand 13.09.) und F3
+(Gruppe 5, Stand 10.09.) stehen in `src/data/fTournamentSchedules.ts`.
+F1 erscheint auf `/jugend/u9-f`, F2/F3 getrennt auf `/jugend/u8-f` mit eigenen
+Abschnitts-IDs und Rückverweisen. Leere Terminfenster werden nicht erfunden;
+F1 am 18.10. und F3 am 31.10. bleiben mit offener Uhrzeit sichtbar.
+Die Heimspieltage am 10.10. um 09, 12 und 15 Uhr sind eigenständige Belegungen,
+jeweils zwei Stunden plus Puffer. Überschneidungen mit anderen Mannschaften
+bleiben als Konflikte sichtbar; es werden keine Spielorte stillschweigend geändert.
+Haupt-/Nebenplatz und Platzumfang der F-Heimspieltage sind noch nicht bestätigt.
+Bis dahin bleibt `homePitch: null`; die Termine erscheinen mit Zeitpuffern unter
+„Noch zu klären“ und verhindern unsichere automatische Verlegungsvorschläge.

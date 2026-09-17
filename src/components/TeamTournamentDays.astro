@@ -1,24 +1,29 @@
 ---
 import type { TournamentSchedule } from '../utils/tournamentDays';
 import { isBsvHomeTournament, splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
+import { clockLabel, matchdaySettings, timeMinutes } from '../utils/matchdayPlan';
+import { withBase } from '../utils/paths';
 
-interface Props { fallback: TournamentSchedule; teamLabel: string }
-const { fallback, teamLabel } = Astro.props;
+interface Props { fallback: TournamentSchedule; teamLabel: string; ownTeamIds?: string[]; sectionId?: string; heading?: string }
+const { fallback, teamLabel, ownTeamIds = [fallback.teamId], sectionId = 'spieltage', heading = 'Spieltage' } = Astro.props;
 const { schedule, stale } = await tournamentScheduleWithFallback(fallback);
 const { upcoming, past } = splitTournamentDays(schedule.days);
 const date = (value: string) => new Date(`${value}T12:00:00Z`);
 const format = (value: string, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', ...options }).format(date(value));
 const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt));
+const manual = Boolean(schedule.sourceLabel);
+const sourceDate = manual ? format(schedule.checkedAt.slice(0, 10), { dateStyle: 'medium' }) : checkedAt + ' Uhr';
 const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', days: [...past].reverse() }];
 ---
 
-<section class="tournament-days" id="spieltage" aria-labelledby="tournament-title">
+<section class="tournament-days" id={sectionId} aria-labelledby={sectionId + '-title'}>
   <header class="tournament-heading">
-    <div><span class="eyebrow">{teamLabel} · Saison {schedule.season.replace('-', '/')}</span><h2 id="tournament-title">Spieltage</h2></div>
-    <p class="source-status">FUSSBALL.DE · Stand {checkedAt} Uhr</p>
+    <div><span class="eyebrow">{teamLabel} · Saison {schedule.season.replace('-', '/')}</span><h2 id={sectionId + '-title'}>{heading}</h2></div>
+    <p class="source-status">{schedule.sourceLabel ?? 'FUSSBALL.DE'} · Stand {sourceDate}</p>
   </header>
   {stale && <p class="schedule-notice">FUSSBALL.DE ist derzeit nicht abrufbar. Angezeigt wird der zuletzt gespeicherte Datenstand.</p>}
-  {upcoming.some((day) => day.preliminary) && <p class="schedule-notice">Vorläufiger Spielplan: Die Freigabe durch die Staffelleitung steht für einzelne Spiele noch aus.</p>}
+  {schedule.notice && <p class="schedule-notice">{schedule.notice}</p>}
+  {!manual && upcoming.some((day) => day.preliminary) && <p class="schedule-notice">Vorläufiger Spielplan: Die Freigabe durch die Staffelleitung steht für einzelne Spiele noch aus.</p>}
   {upcoming.length === 0 && <p class="empty-schedule">Derzeit sind keine weiteren Spieltage angesetzt.</p>}
   {groups.filter((group) => group.days.length).map((group) => (
     <div class:list={["tournament-group", { "is-past": !!group.title }]}>
@@ -27,20 +32,22 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
         <article class="tournament-day" aria-label={`${day.title}, ${format(day.date, { dateStyle: 'long' })}`}>
           <div class="tournament-date">
             <time datetime={day.date}><span>{format(day.date, { weekday: 'long' })}</span><strong>{format(day.date, { day: '2-digit', month: '2-digit' })}</strong><span>{format(day.date, { year: 'numeric' })}</span></time>
-            {day.cancelled ? <p class="cancelled"><b>Abgesagt</b></p> : <p><b>{day.firstTeamKickoff} Uhr</b><small>Erstes {teamLabel}-Spiel</small></p>}
+            {day.cancelled ? <p class="cancelled"><b>Abgesagt</b></p> : timeMinutes(day.firstTeamKickoff) === null ? <p><b>Uhrzeit offen</b>{manual && <small>Dauer: 2 Std.</small>}</p> : <p><b>{day.firstTeamKickoff} Uhr</b><small>{manual ? `Bis ${clockLabel(timeMinutes(day.firstTeamKickoff)! + matchdaySettings.tournament)} Uhr · 2 Std.` : `Erstes ${teamLabel}-Spiel`}</small></p>}
           </div>
           <div class="tournament-location">
             <h3>
               <span>{day.title.replace(/^Herbstrunde Staffel \d+ /, '')}</span>
               {isBsvHomeTournament(day) && <span class="home-tournament">Heimspieltag</span>}
             </h3>
+            {day.host && <><span class="field-label">Ausrichter</span><p>{day.host}</p></>}
             <span class="field-label">Austragungsort</span>
             {day.venues.length ? day.venues.map((venue) => <p>{venue.name}</p>) : <p>Noch nicht angegeben</p>}
-            <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>
+            {day.url && <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>}
+            {manual && day.home && <a href={withBase('/fussball/spieltagsbelegung') + '#tag-' + day.date}>Spieltagsbelegung <span aria-hidden="true">→</span></a>}
           </div>
           <div class="tournament-teams">
             <span class="field-label">{day.teams.length} Mannschaften</span>
-            <ul>{[...day.teams].sort((a, b) => Number(b.id === schedule.teamId) - Number(a.id === schedule.teamId)).map((team) => <li class:list={{ "own-team": team.id === schedule.teamId }}>{team.name}</li>)}</ul>
+            <ul>{[...day.teams].sort((a, b) => Number(ownTeamIds.includes(b.id)) - Number(ownTeamIds.includes(a.id))).map((team) => <li class:list={{ "own-team": ownTeamIds.includes(team.id) }}>{team.name}</li>)}</ul>
           </div>
         </article>
       ))}

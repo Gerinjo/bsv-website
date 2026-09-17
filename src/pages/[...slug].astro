@@ -10,6 +10,8 @@ import type { TournamentSchedule } from '../utils/tournamentDays';
 import e1TournamentSchedule from '../data/e1TournamentSchedule.json';
 import e2TournamentSchedule from '../data/e2TournamentSchedule.json';
 import e3TournamentSchedule from '../data/e3TournamentSchedule.json';
+import { gTournamentSchedule } from '../data/gTournamentSchedule';
+import { fTournamentSchedules } from '../data/fTournamentSchedules';
 import { legacyContent } from '../data/legacyContent';
 import { sportsPages, sportsPaths } from '../data/sportsPages';
 import { teamProfiles } from '../data/teamPages';
@@ -102,8 +104,11 @@ const tournamentSchedules: Record<string, TournamentSchedule> = {
   'jugend/u11-e1': e1TournamentSchedule,
   'jugend/u11-e2': e2TournamentSchedule,
   'jugend/u11-e3': e3TournamentSchedule,
+  'jugend/u7-g': gTournamentSchedule,
+  'jugend/u6-g': gTournamentSchedule,
 };
 const tournamentSchedule = tournamentSchedules[page.path];
+const fSchedules = fTournamentSchedules.filter((schedule) => schedule.pagePath === '/' + page.path);
 const isTeamPage = Boolean(teamProfile);
 const isOldMenTeam = page.path === 'fussball/alte-herren';
 const hasTeamGallery = Boolean(teamProfile && (
@@ -732,7 +737,8 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </div>
           </section>
 
-          {tournamentSchedule && <TeamTournamentDays fallback={tournamentSchedule} teamLabel={teamProfile.letter} />}
+          {tournamentSchedule && <TeamTournamentDays fallback={tournamentSchedule} teamLabel={tournamentSchedule === gTournamentSchedule ? 'G1 + G2' : teamProfile.letter} ownTeamIds={tournamentSchedule === gTournamentSchedule ? gTournamentSchedule.ownTeamIds : undefined} />}
+          {fSchedules.length > 0 && <div id="spieltage">{fSchedules.map((schedule) => <TeamTournamentDays fallback={schedule} teamLabel={schedule.label} ownTeamIds={schedule.ownTeamIds} sectionId={schedule.sectionId} heading={schedule.label + ' · Spieltage'} />)}</div>}
 
           {teamProfile.fussballDeWidgetId && (
             <section class="team-matches-widget" aria-label={`Spiele von ${page.title}`}>
