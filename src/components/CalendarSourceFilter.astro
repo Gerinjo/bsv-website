@@ -41,6 +41,8 @@ const { sources, total } = Astro.props;
 </div>
 
 <script>
+  import { matchesCalendarFilter } from '../utils/calendarFilters';
+
   const filter = document.querySelector<HTMLElement>('[data-calendar-filter]');
 
   if (filter) {
@@ -52,13 +54,15 @@ const { sources, total } = Astro.props;
 
     const applyFilter = (sourceId: string, label: string, updateUrl = false) => {
       buttons.forEach((button) => {
-        const active = button.dataset.calendarFilterButton === sourceId;
+        const active = sourceId === 'jugend'
+          ? matchesCalendarFilter(button.dataset.calendarFilterButton ?? '', sourceId)
+          : button.dataset.calendarFilterButton === sourceId;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', String(active));
       });
 
       events.forEach((event) => {
-        event.hidden = sourceId !== 'all' && event.dataset.calendarSource !== sourceId;
+        event.hidden = !matchesCalendarFilter(event.dataset.calendarSource ?? '', sourceId);
       });
 
       let firstVisibleMonthFound = false;
@@ -93,7 +97,9 @@ const { sources, total } = Astro.props;
 
     const requestedFilter = new URLSearchParams(window.location.search).get('kalender');
     const requestedButton = buttons.find((button) => button.dataset.calendarFilterValue === requestedFilter);
-    if (requestedButton) {
+    if (requestedFilter === 'jugend') {
+      applyFilter('jugend', 'Jugendevents und Spieltage');
+    } else if (requestedButton) {
       applyFilter(
         requestedButton.dataset.calendarFilterButton ?? 'all',
         requestedButton.dataset.calendarFilterLabel ?? requestedButton.textContent?.trim() ?? 'Alle Kalender',

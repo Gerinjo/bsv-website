@@ -2,14 +2,15 @@
 import { advertisingPartners } from '../data/advertisingPartners';
 import { isYouthSponsorAssignment } from '../data/sponsorAreas';
 import { loadClubCalendarCached } from '../utils/calendar';
+import { isYouthCalendarSource } from '../utils/calendarFilters';
 import { withBase } from '../utils/paths';
 
 const youthSponsors = advertisingPartners.filter((partner) =>
   partner.audienceAssignments.some(isYouthSponsorAssignment),
 );
 const { events } = await loadClubCalendarCached();
-const nextYouthEvent = events.find((event) => event.source.id === 'youth-events');
-const youthEventsHref = withBase('/verein/termine?kalender=jugendevents');
+const nextYouthEvent = events.find((event) => isYouthCalendarSource(event.source.id));
+const youthEventsHref = withBase('/jugend/termine');
 const eventDate = new Intl.DateTimeFormat('de-DE', {
   day: '2-digit',
   month: 'long',
@@ -42,8 +43,8 @@ const eventTime = new Intl.DateTimeFormat('de-DE', {
   </section>
 )}
 
-<section class="youth-menu-event" aria-label="Nächstes Jugendevent">
-  <span>Nächstes Jugendevent</span>
+<section class="youth-menu-event" aria-label="Nächster Jugendtermin">
+  <span>Nächster Jugendtermin</span>
   {nextYouthEvent ? (
     <a class="youth-menu-event-card" href={youthEventsHref}>
       <time datetime={nextYouthEvent.start.toISOString()}>
@@ -56,7 +57,7 @@ const eventTime = new Intl.DateTimeFormat('de-DE', {
   ) : (
     <p>Neue Termine folgen.</p>
   )}
-  <a class="youth-menu-events-link" href={youthEventsHref}>Alle Jugendevents <b aria-hidden="true">↗</b></a>
+  <a class="youth-menu-events-link" href={youthEventsHref}>Alle Jugendtermine <b aria-hidden="true">↗</b></a>
 </section>
 
 <script>

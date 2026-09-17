@@ -1,10 +1,14 @@
+import { load } from 'cheerio';
+
 export const CLUB_CALENDAR_URL = 'https://calendar.google.com/calendar/ical/bsvnordsternradolfzell%40gmail.com/public/basic.ics';
 export const YOUTH_EVENTS_CALENDAR_URL = 'https://calendar.google.com/calendar/ical/44441b5aa88fb2f94d035df62770eda875140e0568d7d02c04ee14d7fa877520%40group.calendar.google.com/public/basic.ics';
+export const MATCHDAYS_CALENDAR_URL = 'https://calendar.google.com/calendar/ical/3382a8f2d9d3c03e152720ab576ec1dd6dcc012a5172ed769f63d5c28f20e6bb%40group.calendar.google.com/public/basic.ics';
+export const SUPPORTERS_CALENDAR_URL = 'https://calendar.google.com/calendar/ical/81806fb21f7241872d6575884c888dec487607eaf7da29932c56f0aaae44a4c9%40group.calendar.google.com/public/basic.ics';
 
 export const CALENDAR_SOURCES = [
   {
     id: 'meetings',
-    label: 'Meetings & Veranstaltungen',
+    label: 'Meetings',
     shortLabel: 'Meetings',
     url: CLUB_CALENDAR_URL,
     color: '#164f32',
@@ -17,6 +21,22 @@ export const CALENDAR_SOURCES = [
     url: YOUTH_EVENTS_CALENDAR_URL,
     color: '#8e3e78',
     softColor: '#f3d8eb',
+  },
+  {
+    id: 'spieltage',
+    label: 'Spieltage',
+    shortLabel: 'Spieltage',
+    url: MATCHDAYS_CALENDAR_URL,
+    color: '#956315',
+    softColor: '#fbe983',
+  },
+  {
+    id: 'foerderverein',
+    label: 'Förderverein',
+    shortLabel: 'Förderverein',
+    url: SUPPORTERS_CALENDAR_URL,
+    color: '#235e91',
+    softColor: '#dcebf7',
   },
 ] as const;
 
@@ -102,6 +122,17 @@ const createGoogleUrl = (event: Omit<CalendarEvent, 'googleUrl'>) => {
   return `https://calendar.google.com/calendar/render?${params}`;
 };
 
+const matchdayDescription = (description: string) => {
+  // Google appends conference details to the ICS description, even when the
+  // description in Calendar already ends after the planned duration.
+  const text = load(description.replace(/<\/p\s*>/gi, '\n\n').replace(/<br\s*\/?>/gi, '\n'), null, false).text();
+  const summary = text.match(/^[\s\S]*?Geplante Dauer:\s*\d+\s*Stunden?\./)?.[0];
+  if (!summary) return description;
+  return summary.trim().split(/\n\s*\n/)
+    .map((paragraph) => `<p>${escapeHtml(paragraph.replace(/\s+/g, ' ').trim())}</p>`)
+    .join('');
+};
+
 export const parseCalendar = (ics: string, source: CalendarSource = CALENDAR_SOURCES[0]): CalendarEvent[] => {
   const lines = ics.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
   const rawEvents: RawEvent[] = [];
@@ -131,7 +162,9 @@ export const parseCalendar = (ics: string, source: CalendarSource = CALENDAR_SOU
     const base = {
       id: `${source.id}:${raw.UID ?? `${raw.DTSTART}-${raw.SUMMARY}`}`,
       title: unescapeText(raw.SUMMARY),
-      description: unescapeText(raw.DESCRIPTION),
+      description: source.id === 'spieltage'
+        ? matchdayDescription(unescapeText(raw.DESCRIPTION))
+        : unescapeText(raw.DESCRIPTION),
       location: unescapeText(raw.LOCATION),
       start: parsedStart.date,
       end: parsedEnd.date,
