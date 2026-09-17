@@ -107,9 +107,9 @@ test('girls use half a pitch when either side explicitly reports 7-a-side', () =
   }
 });
 
-test('E four-team tournaments reserve 120 minutes plus the confirmed 30/15 minute buffers', () => {
-  assert.deepEqual(matchRule('E-Junioren', [], true), { halves:1, format:'4er-Spieltag', duration:120 });
-  assert.deepEqual(bookingTimes('10:00', 120), { start:570, end:735 });
+test('E four-team tournaments reserve 60 minutes plus the confirmed 30/15 minute buffers', () => {
+  assert.deepEqual(matchRule('E-Junioren', [], true), { halves:1, format:'4er-Spieltag', duration:60 });
+  assert.deepEqual(bookingTimes('10:00', 60), { start:570, end:675 });
   assert.deepEqual(bookingTimes('18:00', 75), { start:1050, end:1170 });
   assert.deepEqual(bookingTimes('', 75), { start:null, end:null });
   assert.equal(timeMinutes('25:00'), null);

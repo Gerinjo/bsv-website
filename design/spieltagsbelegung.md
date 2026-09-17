@@ -27,7 +27,7 @@ ihn nach dem Build. Der eingecheckte Snapshot ist die Rückfallebene ohne Cache.
 
 ## Planungsregeln
 
-Vom Nutzer bestätigt: E-Spieltag 120 Minuten, für alle Fußball-Belegungen zusätzlich
+Vom Nutzer bestätigt: E-Spieltag 60 Minuten, F-/G-Spieltag 120 Minuten, für alle Fußball-Belegungen zusätzlich
 30 Minuten Vorlauf und 15 Minuten Nachlauf. Reguläre Spiele erhalten außerdem
 15 Minuten Halbzeitpause. Regelspielzeiten laut SBFV AB 13: D 60, C 70, B 80,
 A/Aktive 90 Minuten.
@@ -108,9 +108,27 @@ Die Heimspieltage am 10.10. um 09, 12 und 15 Uhr sind eigenständige Belegungen,
 jeweils zwei Stunden plus Puffer. Überschneidungen mit anderen Mannschaften
 bleiben als Konflikte sichtbar; es werden keine Spielorte stillschweigend geändert.
 Nach Freigabe der flexiblen Platzwahl sind alle drei F-Heimspieltage am 10.10.
-auf jeweils einem halben Nebenplatz eingeplant: F1 08:30–11:15 Uhr parallel
-zu D2, F2 11:30–14:15 Uhr parallel zu E3, F3 14:30–17:15 Uhr danach.
-Damit bleiben C1 und Herren 1 unverändert auf dem Hauptplatz. Die Zuordnung ist
+auf jeweils einem halben Nebenplatz eingeplant: F1 08:30–11:15 Uhr,
+F2 11:30–14:15 Uhr, F3 14:30–17:15 Uhr. D2 und E3 werden wegen des Torbedarfs
+auf dem Hauptplatz geplant (siehe unten). C1 und Herren 1 bleiben dort unverändert. Die Zuordnung ist
 als Platzplanung kenntlich; spätere Änderungen des Spielplans werden weiterhin
 auf Konflikte geprüft. Unbekannte Zuordnungen unterstützt `homePitch: null`
 weiterhin als Prüffälle und verhindert damit unsichere Verlegungsvorschläge.
+
+## 5er-Tore und Platzkorrekturen
+
+Fester Bestand: Hauptplatz 4, Nebenplatz 6. E-/F-Spieltage benötigen jeweils
+4 Tore, D-Spiele einschließlich D-Juniorinnen jeweils 2. Andere Spielformen
+haben noch keinen hinterlegten 5er-Torbedarf. Der Bedarf gilt über die gesamte
+Belegung einschließlich Vor-/Nachlauf. Bestände werden nicht zwischen Plätzen
+verrechnet. Torkonflikte erscheinen unabhängig von Flächenkonflikten in den
+Blöcken, Tagesübersichten und der Datumsauswahl. Bogensport-Verlegungsvorschläge
+prüfen ebenfalls den Torbestand des Zielplatzes.
+
+`applyMatchdayAdjustments` normalisiert E-Belegungen auch aus alten Snapshots
+auf 60 Minuten und wendet die datums-/teambezogenen Vereinsplanungen aus
+`src/data/matchdayPitchOverrides.ts` vor der Konfliktberechnung an. Am 10.10.
+wechseln D2 (09:30–11:30 belegt) und E3 (11:30–13:15 belegt) auf den Hauptplatz.
+Damit sind vor C1 ab 13:30 Uhr sowohl Fläche als auch Tore frei. Gemeldete
+FUSSBALL.DE-Orte und Links bleiben unverändert und werden neben der Vereinsplanung
+kenntlich gemacht. E3 zeigt die abweichende Planung auch auf der Teamseite.

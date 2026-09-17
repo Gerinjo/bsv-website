@@ -6,7 +6,7 @@ import MatchdayPitch from '../../components/MatchdayPitch.astro';
 import PlanLink from '../../components/PlanLink.astro';
 import snapshot from '../../data/matchdaySchedule.json';
 import type { MatchdaySchedule, Pitch } from '../../utils/matchdayPlan';
-import { addDays, clockLabel, pitchSegments } from '../../utils/matchdayPlan';
+import { addDays, clockLabel, pitchGoalSegments, pitchSegments } from '../../utils/matchdayPlan';
 import { planWithPitchReservations } from '../../utils/pitchReservations';
 import { savedMatchdayPlan } from '../../utils/savedMatchdayPlan';
 import { withBase } from '../../utils/paths';
@@ -29,11 +29,13 @@ const days = dates.map((date) => {
   const bookings = bookingsFor(date), timed = bookings.filter(isTimed);
   const boundaries = [...new Set(timed.flatMap((b) => [b.start!, b.end!]))].sort((a,b) => a-b);
   const conflicts = pitches.flatMap((pitch) => pitchSegments(timed.filter((b) => b.pitch === pitch)).filter((s) => s.conflict));
-  return { date, bookings, timed, boundaries, conflicts, pending: bookings.filter((b) => !isTimed(b)) };
+  const goalConflicts = pitches.flatMap((pitch) => pitchGoalSegments(timed, pitch).filter((s) => s.conflict));
+  return { date, bookings, timed, boundaries, conflicts, goalConflicts, pending: bookings.filter((b) => !isTimed(b)) };
 }).filter((day) => day.bookings.length > 0);
 const initial = days.find((d) => d.date >= today)?.date ?? days[0]?.date ?? '';
 const pendingCount = days.reduce((sum, d) => sum + d.pending.length, 0);
 const conflictDays = days.filter((d) => d.conflicts.length).length;
+const goalConflictDays = days.filter((d) => d.goalConflicts.length).length;
 const relocationCount = plannedBookings.filter((b) => b.relocation === 'suggested').length;
 const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Berlin' }).format(new Date(schedule.checkedAt));
 ---
@@ -55,14 +57,16 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
       <div class="summary">
         <span><b>{plannedBookings.length}</b> Belegungen / offene Termine</span>
         <span class:list={{ danger:conflictDays > 0 }}><b>{conflictDays}</b> Tage mit Platzkonflikt</span>
+        <span class:list={{ danger:goalConflictDays > 0 }}><b>{goalConflictDays}</b> Tage mit Torkonflikt</span>
         <span><b>{relocationCount}</b> Platzwechsel vorgeschlagen</span>
         <span><b>{pendingCount}</b> Termine zu klären</span>
       </div>
       <div class="plan-controls">
-        <label>Datum<select id="matchday-date" disabled={!days.length}>{!days.length && <option value="">Keine Belegungen vorhanden</option>}{days.map((d) => <option value={d.date} selected={d.date === initial}>{dateLabel(d.date)} · {d.bookings.length}{d.conflicts.length ? ' · Konflikt' : ''}{d.bookings.some((b) => b.relocation === 'suggested') ? ' · Platzwechsel' : ''}{d.pending.length ? ' · Klärung' : ''}</option>)}</select></label>
+        <label>Datum<select id="matchday-date" disabled={!days.length}>{!days.length && <option value="">Keine Belegungen vorhanden</option>}{days.map((d) => <option value={d.date} selected={d.date === initial}>{dateLabel(d.date)} · {d.bookings.length}{d.conflicts.length ? ' · Konflikt' : ''}{d.goalConflicts.length ? ' · Torkonflikt' : ''}{d.bookings.some((b) => b.relocation === 'suggested' || b.pitchOverride) ? ' · Platzwechsel' : ''}{d.pending.length ? ' · Klärung' : ''}</option>)}</select></label>
         <label>Ansicht<select id="matchday-view" disabled={!days.length}><option value="day">Einzelner Tag</option><option value="all">Alle Spieltage</option></select></label>
       </div>
-      <p class="planning-note">Gleiche Teamstärke hintereinander (7er, 9er, 11er): 15 Min. Wechselzeit. Sonst 30 Min. Vorlauf und 15 Min. Nachlauf. E-, F- und G-Spieltage: 2 Std.; sonst reguläre Spielzeit + 15 Min. Halbzeitpause. Bogensport sperrt den Nebenplatz freitags 17:30–19:00 Uhr und sonntags 10:00–12:00 Uhr, ohne zusätzliche Puffer. Sonstige Trainings- und Fremdbelegungen sind nicht enthalten. Hälften rechnerisch verteilt, keine verbindliche Seitenzuweisung.</p>
+      <p class="planning-note">Gleiche Teamstärke hintereinander (7er, 9er, 11er): 15 Min. Wechselzeit. Sonst 30 Min. Vorlauf und 15 Min. Nachlauf. E-Spieltage: 1 Std.; F- und G-Spieltage: 2 Std.; sonst reguläre Spielzeit + 15 Min. Halbzeitpause. Bogensport sperrt den Nebenplatz freitags 17:30–19:00 Uhr und sonntags 10:00–12:00 Uhr, ohne zusätzliche Puffer. Sonstige Trainings- und Fremdbelegungen sind nicht enthalten. Hälften rechnerisch verteilt, keine verbindliche Seitenzuweisung.</p>
+      <p class="planning-note">5er-Tore: Hauptplatz 4, Nebenplatz 6. E-/F-Spieltag jeweils 4, D-Spiel jeweils 2. Der Bedarf zählt einschließlich Puffer; kein Tortransport zwischen den Plätzen eingeplant. Für andere Spielformen ist kein 5er-Torbedarf hinterlegt.</p>
       <p class="planning-note">G1 + G2: zusätzlich erfasster Gruppenplan, Stand 15.09.2026. Gemeinsamer Heimspieltag am 11.10., 09:00–11:00 Uhr, auf dem halben Hauptplatz.</p>
       <p class="planning-note">F1, F2 und F3: zusätzlich erfasste Gruppenpläne (Stand 10.–15.09.2026). Heimspieltage am 10.10. um 09:00, 12:00 und 15:00 Uhr; jeweils zwei Stunden zuzüglich Puffer auf einem halben Nebenplatz eingeplant. Der Hauptplatz bleibt für C1 und Herren 1 verfügbar.</p>
       <div class="legend" aria-label="Legende"><span class="full">Ganzer Platz</span><span class="half">Halber Platz</span><span class="kids">Jugend-Spieltag</span><span class="girls">Juniorinnen 7er</span><span class="fixed">Bogensport</span><span class="conflict">Platzkonflikt</span></div>
@@ -70,8 +74,9 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
         {!days.length && <p class="empty">Im Planungszeitraum sind keine Spiele für das BSV-Sportgelände eingetragen.</p>}
         {days.map((day) => (
           <section class="matchday" id={'tag-' + day.date} data-date={day.date} data-bookings={day.bookings.length} hidden={day.date !== initial}>
-            <div class="day-heading"><h2>{dateLabel(day.date)}</h2>{day.conflicts.length > 0 && <strong class="conflict-label">Platzkonflikt</strong>}</div>
-            {day.bookings.some((b) => b.relocation) && <div class="relocation-notice"><strong>Platzwechsel wegen Bogensport</strong>{day.bookings.filter((b) => b.relocation).map((b) => <p><b>{b.label} · {b.kickoff} Uhr:</b> {b.relocation === 'suggested' ? 'Hauptplatz vorgeschlagen, noch nicht bestätigt. Bei FUSSBALL.DE ist weiterhin der Nebenplatz gemeldet.' : 'Nebenplatz gesperrt; Hauptplatz ebenfalls belegt oder nicht sicher verfügbar. Platz oder Anstoßzeit abstimmen.'}</p>)}</div>}
+            <div class="day-heading"><h2>{dateLabel(day.date)}</h2>{day.conflicts.length > 0 && <strong class="conflict-label">Platzkonflikt</strong>}{day.goalConflicts.length > 0 && <strong class="conflict-label">Torkonflikt</strong>}</div>
+            {day.bookings.some((b) => b.pitchOverride) && <div class="relocation-notice"><strong>Platzplanung wegen Torbedarf</strong>{day.bookings.filter((b) => b.pitchOverride).map((b) => <p><b>{b.label} · {b.kickoff} Uhr:</b> {b.pitchOverride!.reason}</p>)}<p>Vereinsplanung; die Spielorte bei FUSSBALL.DE bleiben unverändert.</p></div>}
+            {day.bookings.some((b) => b.relocation) && <div class="relocation-notice"><strong>Platzwechsel wegen Bogensport</strong>{day.bookings.filter((b) => b.relocation).map((b) => <p><b>{b.label} · {b.kickoff} Uhr:</b> {b.relocation === 'suggested' ? 'Hauptplatz vorgeschlagen, noch nicht bestätigt. Bei FUSSBALL.DE ist weiterhin der Nebenplatz gemeldet.' : 'Nebenplatz gesperrt; Hauptplatz ebenfalls belegt, 5er-Tore nicht ausreichend oder Verfügbarkeit ungeklärt. Platz oder Anstoßzeit abstimmen.'}</p>)}</div>}
             {day.bookings.length === 0 ? <p class="empty">Keine Spiele für das BSV-Sportgelände eingetragen.</p> : (
               <div class="pitches">{pitches.map((pitch) => <MatchdayPitch pitch={pitch} bookings={day.timed.filter((b) => b.pitch === pitch)} boundaries={day.boundaries} date={day.date} />)}</div>
             )}
@@ -81,12 +86,12 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
       </div>
       <details class="rules">
         <summary>Planungsgrundlagen</summary>
-        <p>Bogensport ist eine feste Vollbelegung des Nebenplatzes. Überschneidungen einschließlich Fußball-Puffern führen zu einem Planungsvorschlag für den Hauptplatz, sofern dessen bekannte Belegungen dies erlauben. Bereits vorgeschlagene Wechsel werden mitgerechnet. Gemeldete Spielorte werden nicht geändert; alle Platzwechsel müssen bestätigt werden.</p>
+        <p>Bogensport ist eine feste Vollbelegung des Nebenplatzes. Überschneidungen einschließlich Fußball-Puffern führen zu einem Planungsvorschlag für den Hauptplatz, sofern dessen bekannte Belegungen und 5er-Tore dies erlauben. Bereits vorgeschlagene Wechsel werden mitgerechnet. Gemeldete Spielorte werden nicht geändert; vorgeschlagene Platzwechsel müssen bestätigt werden.</p>
         <p>Bei gleicher Teamstärke auf derselben Fläche reichen 15 Minuten zwischen geplantem Spielende und nächstem Anstoß. Der Nachlauf des ersten Spiels zählt als Wechselzeit; der Vorlauf des Folgespiels wird entsprechend gekürzt. Bei anderer Teamstärke bleiben die folgenden Standardpuffer bestehen.</p>
         <dl>
-          <div><dt>E-Jugend-Viererspieltag</dt><dd>½ Platz · 120 Min. + 45 Min. Puffer. Ein gemeinsamer Spieltag mehrerer BSV-Teams zählt einmal.</dd></div>
+          <div><dt>E-Jugend-Viererspieltag</dt><dd>½ Platz · 60 Min. + 45 Min. Puffer · 4 5er-Tore. Ein gemeinsamer Spieltag mehrerer BSV-Teams zählt einmal.</dd></div>
           <div><dt>G- / F-Jugend-Spieltag</dt><dd>120 Min. + 45 Min. Puffer, ohne zusätzliche Halbzeitpause. Platzumfang je Veranstaltung. G1 + G2 am 11.10.: gemeinsam ½ Hauptplatz, belegt 08:30–11:15 Uhr.</dd></div>
-          <div><dt>D-Junioren / D-Juniorinnen</dt><dd>7er · ½ Platz · 2 × 30 Min. + 15 Min. Pause + 45 Min. Puffer.</dd></div>
+          <div><dt>D-Junioren / D-Juniorinnen</dt><dd>7er · ½ Platz · 2 × 30 Min. + 15 Min. Pause + 45 Min. Puffer · 2 5er-Tore.</dd></div>
           <div><dt>C- / B-Juniorinnen</dt><dd>Mindestens eine 7er-Meldung: ½ Platz; sonst ganzer Platz. Spielzeit 2 × 35 / 2 × 40 Min. + 15 Min. Pause + 45 Min. Puffer.</dd></div>
           <div><dt>C1 / C2</dt><dd>11er / 9er · ganzer Platz · 2 × 35 Min. + 15 Min. Pause + 45 Min. Puffer.</dd></div>
           <div><dt>B / A / Aktive</dt><dd>Ganzer Platz · B: 2 × 40 Min.; A und Aktive: 2 × 45 Min. Jeweils + 15 Min. Pause + 45 Min. Puffer.</dd></div>

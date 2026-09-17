@@ -3,6 +3,7 @@ import type { TournamentSchedule } from '../utils/tournamentDays';
 import { isBsvHomeTournament, splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
 import { clockLabel, matchdaySettings, timeMinutes } from '../utils/matchdayPlan';
 import { withBase } from '../utils/paths';
+import { matchdayPitchOverrides } from '../data/matchdayPitchOverrides';
 
 interface Props { fallback: TournamentSchedule; teamLabel: string; ownTeamIds?: string[]; sectionId?: string; heading?: string }
 const { fallback, teamLabel, ownTeamIds = [fallback.teamId], sectionId = 'spieltage', heading = 'Spieltage' } = Astro.props;
@@ -13,7 +14,9 @@ const format = (value: string, options: Intl.DateTimeFormatOptions) => new Intl.
 const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt));
 const manual = Boolean(schedule.sourceLabel);
 const sourceDate = manual ? format(schedule.checkedAt.slice(0, 10), { dateStyle: 'medium' }) : checkedAt + ' Uhr';
-const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', days: [...past].reverse() }];
+const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', days: [...past].reverse() }].map((group) => ({
+  ...group, days: group.days.map((day) => ({ ...day, pitchOverride: matchdayPitchOverrides.find((entry) => entry.date === day.date && entry.teamId === schedule.teamId) })),
+}));
 ---
 
 <section class="tournament-days" id={sectionId} aria-labelledby={sectionId + '-title'}>
@@ -41,9 +44,10 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
             </h3>
             {day.host && <><span class="field-label">Ausrichter</span><p>{day.host}</p></>}
             <span class="field-label">Austragungsort</span>
-            {day.venues.length ? day.venues.map((venue) => <p>{venue.name}</p>) : <p>Noch nicht angegeben</p>}
+            {day.pitchOverride && <p><strong>BSV-{day.pitchOverride.pitch} (Planung)</strong></p>}
+            {day.venues.length ? day.venues.map((venue) => <p>{day.pitchOverride ? 'Gemeldet: ' : ''}{venue.name}</p>) : <p>Noch nicht angegeben</p>}
             {day.url && <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>}
-            {manual && day.home && <a href={withBase('/fussball/spieltagsbelegung') + '#tag-' + day.date}>Spieltagsbelegung <span aria-hidden="true">→</span></a>}
+            {((manual && day.home) || day.pitchOverride) && <a href={withBase('/fussball/spieltagsbelegung') + '#tag-' + day.date}>Spieltagsbelegung <span aria-hidden="true">→</span></a>}
           </div>
           <div class="tournament-teams">
             <span class="field-label">{day.teams.length} Mannschaften</span>

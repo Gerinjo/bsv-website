@@ -1,5 +1,6 @@
 import { pitchReservations } from '../data/pitchReservations.ts';
-import { addDays, applyChangeovers, pitchSegments, timeMinutes } from './matchdayPlan.ts';
+import { addDays, applyChangeovers, pitchGoalSegments, pitchSegments, timeMinutes } from './matchdayPlan.ts';
+import { applyMatchdayAdjustments } from './matchdayAdjustments.ts';
 import type { PitchBooking } from './matchdayPlan.ts';
 
 export function recurringPitchBookings(from: string, through: string): PitchBooking[] {
@@ -19,7 +20,7 @@ export function recurringPitchBookings(from: string, through: string): PitchBook
 
 export function planWithPitchReservations(matches: PitchBooking[], from: string, through: string): PitchBooking[] {
   const fixed = recurringPitchBookings(from, through);
-  let raw = [...matches.map((b) => ({ ...b, notes: [...b.notes] })), ...fixed];
+  let raw = [...applyMatchdayAdjustments(matches), ...fixed];
   let planned = applyChangeovers(raw);
   const overlaps = (a: PitchBooking, b: PitchBooking) => a.date === b.date && a.pitch === b.pitch
     && a.start !== null && a.end !== null && b.start !== null && b.end !== null
@@ -36,15 +37,16 @@ export function planWithPitchReservations(matches: PitchBooking[], from: string,
     const main = proposed.filter((b) => b.date === affected.date && b.pitch === 'Hauptplatz');
     const changed = new Set(main.filter((b) => b.id === affected.id || b.start !== planned.find((p) => p.id === b.id)?.start).map((b) => b.id));
     const conflict = pitchSegments(main).some((s) => s.conflict && s.active.some((b) => changed.has(b.id)));
+    const goalConflict = pitchGoalSegments(main, 'Hauptplatz').some((s) => s.conflict && s.active.some((b) => changed.has(b.id)));
     // Unknown locations/times can hide a main-pitch reservation; do not promise availability.
     const uncertain = planned.some((b) => b.date === affected.date && b.kind !== 'fixed'
       && (b.pitch === null || (b.pitch === 'Hauptplatz' && (b.start === null || b.end === null))));
-    const relocation = conflict || uncertain ? 'blocked' as const : 'suggested' as const;
+    const relocation = conflict || goalConflict || uncertain ? 'blocked' as const : 'suggested' as const;
     if (relocation === 'suggested') raw = candidate;
     raw = raw.map((b) => b.id === affected.id ? { ...b, relocation, notes: [...b.notes,
       relocation === 'suggested'
         ? 'Planungsvorschlag wegen Bogensport: vom Nebenplatz auf den Hauptplatz. Noch nicht bestätigt; bei FUSSBALL.DE bleibt der gemeldete Nebenplatz unverändert.'
-        : 'Nebenplatz wegen Bogensport gesperrt. Hauptplatz ebenfalls belegt oder nicht sicher verfügbar; Platz oder Anstoßzeit müssen abgestimmt werden.'] } : b);
+        : 'Nebenplatz wegen Bogensport gesperrt. Hauptplatz ebenfalls belegt, 5er-Tore nicht ausreichend oder Verfügbarkeit ungeklärt; Platz oder Anstoßzeit müssen abgestimmt werden.'] } : b);
     planned = applyChangeovers(raw);
   }
   return planned.sort((a, b) => a.date.localeCompare(b.date) || (a.start ?? Infinity) - (b.start ?? Infinity) || a.id.localeCompare(b.id));

@@ -96,7 +96,7 @@ test('unknown manual home kickoff remains pending instead of inventing midnight'
   assert.equal(booking.end, null);
 });
 
-test('F home days fit half the side pitch alongside D2 and E3 without changing main-pitch games', () => {
+test('F home days fit half the side pitch while D2 and E3 use the main pitch', () => {
   const data = JSON.parse(readFileSync(new URL('../src/data/matchdaySchedule.json', import.meta.url)));
   const added = manualTournamentBookings(fTournamentSchedules, '2026-10-10', '2026-10-10');
   const original = planWithPitchReservations(data.bookings, data.from, data.through).filter((b) => b.date === '2026-10-10');
@@ -105,10 +105,8 @@ test('F home days fit half the side pitch alongside D2 and E3 without changing m
     assert.ok(!pitchSegments(planned.filter((b) => b.pitch === pitch)).some((s) => s.conflict));
   }
   assert.deepEqual(planned.filter((b) => b.pitch === 'Hauptplatz'), original.filter((b) => b.pitch === 'Hauptplatz'));
-  const side = pitchSegments(planned.filter((b) => b.pitch === 'Nebenplatz'));
-  for (const [first, second] of [['F1 · Spieltag', 'D2'], ['F2 · Spieltag', 'E3 · Spieltag']]) {
-    assert.ok(side.some((s) => s.lanes.every((lane) => lane.length === 1) && [first, second].every((label) => s.active.some((b) => b.label === label))));
-  }
+  assert.deepEqual(planned.filter((b) => b.pitch === 'Nebenplatz').map((b) => b.label), ['F1 · Spieltag', 'F2 · Spieltag', 'F3 · Spieltag']);
+  for (const label of ['D2', 'E3 · Spieltag']) assert.equal(planned.find((b) => b.label === label).pitch, 'Hauptplatz');
   assert.equal(planned.filter((b) => b.source === 'club').length, 3);
 });
 

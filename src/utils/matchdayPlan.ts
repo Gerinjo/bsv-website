@@ -12,13 +12,32 @@ export type PitchBooking = {
   kind?: 'fixed';
   source?: 'club';
   relocation?: 'suggested' | 'blocked';
+  pitchOverride?: { from: Pitch | null; reason: string };
 };
 export type MatchdaySchedule = {
   version: 1; checkedAt: string; from: string; through: string;
   bookings: PitchBooking[]; excludedAway: number; cancelled: number;
 };
 
-export const matchdaySettings = { before: 30, after: 15, interval: 15, tournament: 120, days: 56 };
+export const matchdaySettings = { before: 30, after: 15, interval: 15, tournament: 120, eTournament: 60, days: 56 };
+export const pitchGoalStock: Record<Pitch, number> = { Hauptplatz: 4, Nebenplatz: 6 };
+
+export function fiveMeterGoals(booking: Pick<PitchBooking, 'category' | 'format' | 'kind'>): number {
+  if (booking.kind === 'fixed') return 0;
+  if (/^[EF]-Junior/.test(booking.category) && booking.format.endsWith('Spieltag')) return 4;
+  if (/^D-Junior/.test(booking.category)) return 2;
+  return 0;
+}
+
+export function pitchGoalSegments(bookings: PitchBooking[], pitch: Pitch) {
+  const dates = new Map<string, PitchBooking[]>();
+  for (const booking of bookings.filter((b) => b.pitch === pitch)) dates.set(booking.date, [...(dates.get(booking.date) ?? []), booking]);
+  return [...dates].flatMap(([date, entries]) => pitchSegments(entries).map((segment) => {
+    const active = segment.active.filter((b) => fiveMeterGoals(b) > 0);
+    const needed = active.reduce((sum, b) => sum + fiveMeterGoals(b), 0);
+    return { date, start: segment.start, end: segment.end, active, needed, available: pitchGoalStock[pitch], conflict: needed > pitchGoalStock[pitch] };
+  }));
+}
 export const matchdayTeams: Record<string, string> = {
   '011MICLVK0000000VTVG0001VTR8C1K7': 'Herren 1',
   '011MIBT808000000VTVG0001VTR8C1K7': 'Herren 2',
@@ -58,7 +77,7 @@ export const addDays = (day: string, count: number) => {
 export function matchRule(category: string, teams: MatchTeam[], tournament = false) {
   const seven = teams.some(({ name }) => /\b7\s*(?:er|gegen\s*7|vs\.?\s*7)\b/i.test(name));
   const nine = teams.some(({ name }) => /\b9\s*er\b/i.test(name));
-  if (tournament && /^E-Junior/.test(category)) return { halves: 1 as const, format: '4er-Spieltag', duration: matchdaySettings.tournament };
+  if (tournament && /^E-Junior/.test(category)) return { halves: 1 as const, format: '4er-Spieltag', duration: matchdaySettings.eTournament };
   if (/^D-Junior/.test(category)) return { halves: 1 as const, format: '7er', duration: 60 + matchdaySettings.interval };
   const duration = /^C-Junior/.test(category) ? 70 : /^B-Junior/.test(category) ? 80 : 90;
   if (/^[BC]-Juniorinnen/.test(category) && seven) return { halves: 1 as const, format: '7er', duration: duration + matchdaySettings.interval };

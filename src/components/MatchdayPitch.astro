@@ -1,15 +1,19 @@
 ---
-import { clockLabel, pitchBlocks } from '../utils/matchdayPlan';
+import { clockLabel, fiveMeterGoals, pitchBlocks, pitchGoalSegments, pitchGoalStock } from '../utils/matchdayPlan';
 import type { Pitch, PitchBooking } from '../utils/matchdayPlan';
 import { withBase } from '../utils/paths';
 interface Props { pitch: Pitch; bookings: PitchBooking[]; boundaries: number[]; date: string }
 const { pitch, bookings, boundaries, date } = Astro.props;
 const { segments, blocks, conflicts, columns } = pitchBlocks(bookings, boundaries);
+const goalSegments = pitchGoalSegments(bookings, pitch);
+const goalConflicts = goalSegments.filter((segment) => segment.conflict);
+const goalConflictIds = new Set(goalConflicts.flatMap((segment) => segment.active.map((booking) => booking.id)));
 const rows = segments.map((s) => Math.max(36, (s.end - s.start) * 1.3) + 'px').join(' ');
 const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings.indexOf(booking) + '-' + pitch;
 ---
 <section class="matchday-pitch" aria-label={pitch + ' am ' + date}>
   <header><h3>{pitch}</h3><span>{bookings.length} {bookings.length === 1 ? 'Belegung' : 'Belegungen'}</span></header>
+  <p class="goal-stock">{pitchGoalStock[pitch]} 5er-Tore vorhanden · maximal {Math.max(0, ...goalSegments.map((segment) => segment.needed))} benötigt</p>
   <div class="lane-head"><span>Zeit</span>{conflicts.length ? <span class="parallel-heading">Zeitgleiche Belegungen · 2 Hälften verfügbar</span> : <><span>Hälfte 1</span><span>Hälfte 2</span></>}</div>
   {segments.length ? <>
     <div class="timeline-scroll">
@@ -19,20 +23,24 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
           {Array.from({ length: columns }, (_, n) => <div class="available" aria-hidden="true" style={'grid-row:' + (i + 1) + ';grid-column:' + (n + 2)} />)}
         </>)}
         {blocks.map(({ booking, column, span, row, endRow, conflict }) => (
-          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format.endsWith('Spieltag'), girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), fixed:booking.kind === 'fixed', relocated:booking.relocation === 'suggested', 'has-conflict':conflict }]}
+          <a class:list={['slot', { full:booking.halves === 2, kids:booking.format.endsWith('Spieltag'), girls:booking.halves === 1 && booking.category.includes('Juniorinnen'), fixed:booking.kind === 'fixed', relocated:booking.relocation === 'suggested' || !!booking.pitchOverride, 'has-conflict':conflict, 'has-goal-conflict':goalConflictIds.has(booking.id) }]}
             data-booking-id={booking.id} href={'#' + bookingId(booking)} style={'grid-row:' + row + ' / ' + endRow + ';grid-column:' + (column + 2) + ' / span ' + span}>
             <strong>{booking.label}</strong>
             <span>{booking.halves === 2 ? 'Ganzer Platz' : '½ Platz'} · {booking.format}</span>
             <span>{clockLabel(booking.start!)}–{clockLabel(booking.end!)}</span>
             {booking.kind !== 'fixed' && <span>Anstoß {booking.kickoff}</span>}
+            {fiveMeterGoals(booking) > 0 && <span>{fiveMeterGoals(booking)} 5er-Tore</span>}
             {booking.relocation === 'suggested' && <b class="move-label">Vorschlag: Hauptplatz</b>}
+            {booking.pitchOverride && <b class="move-label">Planung: {booking.pitch}</b>}
             {conflict && <b class="block-warning">Platzkonflikt</b>}
+            {goalConflictIds.has(booking.id) && <b class="block-warning">Zu wenige 5er-Tore</b>}
           </a>
         ))}
       </div>
     </div>
     <div class="end-time">{clockLabel(boundaries[boundaries.length - 1])}</div>
     {conflicts.length > 0 && <div class="conflict-details">{conflicts.map((segment) => <p><strong>{clockLabel(segment.start)}–{clockLabel(segment.end)} · Platzkonflikt</strong><br />{segment.active.map((b) => b.label).join(' + ')}: {segment.active.reduce((sum, b) => sum + b.halves, 0)} benötigte Hälften, 2 verfügbar.</p>)}</div>}
+    {goalConflicts.length > 0 && <div class="conflict-details goal-conflicts">{goalConflicts.map((segment) => <p><strong>{clockLabel(segment.start)}–{clockLabel(segment.end)} · Torkonflikt</strong><br />{segment.active.map((b) => b.label).join(' + ')}: {segment.needed} 5er-Tore benötigt, {segment.available} vorhanden; {segment.needed - segment.available} fehlen.</p>)}</div>}
   </> : <p class="empty">Keine angesetzten Spiele.</p>}
   {bookings.length > 0 && <div class="booking-details">
     {bookings.map((booking) => (
@@ -40,7 +48,8 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
         <div class="booking-head"><h4>{booking.label}</h4><span>{booking.format} · {booking.halves === 1 ? '½ Platz' : 'Ganzer Platz'}</span></div>
         <p class="booking-time">Belegt {clockLabel(booking.start!)}–{clockLabel(booking.end!)}{booking.kind !== 'fixed' && <> · Anstoß {booking.kickoff} Uhr</>}</p>
         {booking.teams.length > 0 && <p>{booking.teams.map((t) => t.name).join(' · ')}</p>}
-        {booking.relocation && <p class="note">Gemeldeter Spielort: {booking.venue}</p>}
+        {fiveMeterGoals(booking) > 0 && <p>{fiveMeterGoals(booking)} 5er-Tore während der gesamten Belegung einschließlich Puffer.</p>}
+        {(booking.relocation || booking.pitchOverride) && <p class="note">Gemeldeter Spielort: {booking.venue}</p>}
         {booking.notes.map((note) => <p class="note">{note}</p>)}
         {booking.preliminary && <span class="preliminary">Vorläufig angesetzt</span>}
         {booking.kind === 'fixed' ? <a class="source-link" href={withBase(booking.url)}>Bogensport →</a> : booking.source === 'club' ? <a class="source-link" href={withBase(booking.url)}>Spieltage der {booking.category.startsWith('F-') ? 'F' : 'G'}-Jugend →</a> : <a class="source-link" href={booking.url} target="_blank" rel="noopener noreferrer">{booking.format.endsWith('Spieltag') ? 'Spieltag' : 'Spiel'} auf FUSSBALL.DE ↗</a>}
@@ -75,7 +84,8 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
   .slot.relocated { border:2px solid #c99a21; }
   .move-label { font-size:11px; background:#fff4d6; color:#665016; padding:4px; }
   .available { background:#f3f5f3; border:1px dashed #cdd6cf; }
-  .slot.has-conflict { border:2px solid #b3322b; }
+  .slot.has-conflict,.slot.has-goal-conflict { border:2px solid #b3322b; }
+  .goal-stock { margin:0 0 14px; font-size:12px; }
   .block-warning { font-size:11px; background:#fbe6e3; color:#8c231e; padding:4px; }
   .conflict-details { margin-top:16px; padding:2px 12px; background:#fbe6e3; border-left:3px solid #b3322b; }
   .conflict-details p { color:#8c231e; }
