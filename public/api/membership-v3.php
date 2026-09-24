@@ -996,7 +996,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     "Sportliche Grüße\n" .
     "BSV Nordstern e.V. Radolfzell\n" .
     "Schlesierstraße 43, 78315 Radolfzell\n" .
-    "info@bsvnordstern.de · +49 7732 910080\n";
+    "info@bsvnordstern.de\n";
 
 $footballHtml = '';
 if ($isFootball) {
@@ -1099,7 +1099,7 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '</td></tr>' .
 '<tr><td style="padding:30px 36px;background:#f3f6f3;border-top:1px solid #dfe7df;">' .
 '<p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#164f32;">Jetzt aber auf den Platz – wir freuen uns auf dich!</p>' .
-'<p style="margin:0;line-height:1.7;color:#3f5146;">Sportliche Grüße<br><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:#164f32;">info@bsvnordstern.de</a> · <a href="tel:+497732910080" style="color:#164f32;">+49 7732 910080</a></p>' .
+'<p style="margin:0;line-height:1.7;color:#3f5146;">Sportliche Grüße<br><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:#164f32;">info@bsvnordstern.de</a></p>' .
 '</td></tr>' .
 '</table></td></tr></table></body></html>';
 
