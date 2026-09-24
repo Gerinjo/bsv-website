@@ -1,0 +1,130 @@
+---
+import { withBase } from '../utils/paths';
+import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newsletter';
+---
+
+<section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
+  <div class="newsletter-shell">
+    <div class="newsletter-copy">
+      <p class="eyebrow"><span aria-hidden="true">✦</span> Nordstern Post</p>
+      <h2 id="newsletter-title">Dein Verein.<br /><em>In deinem Postfach.</em></h2>
+      <p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit der Nordstern Post bleibst du dem BSV ganz nah.</p>
+      <span class="newsletter-note">Kostenlos. Für alle BSV-Fans. Jederzeit abbestellbar.</span>
+    </div>
+    <form data-newsletter-signup data-endpoint={newsletterEndpoint} data-captcha-endpoint={newsletterCaptchaEndpoint}>
+      <label for="newsletter-email">Deine E-Mail-Adresse</label>
+      <input id="newsletter-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="du@beispiel.de" required />
+      <label class="consent"><input name="consent" type="checkbox" required /><span>Ich möchte die Nordstern Post mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten. Die <a href={withBase('/datenschutz#newsletter')}>Datenschutzhinweise</a> habe ich gelesen.</span></label>
+      <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
+      <div class="captcha-row">
+        <div><label for="newsletter-captcha" data-captcha-label>Spamschutz wird geladen …</label><input id="newsletter-captcha" name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required aria-describedby="newsletter-status" /></div>
+        <button type="button" class="reload" data-captcha-reload>Neue Aufgabe</button>
+      </div>
+      <button type="submit" class="subscribe" disabled>Newsletter abonnieren <span aria-hidden="true">↗</span></button>
+      <p class="hint">Fast geschafft: Nach der Anmeldung bestätigst du deine E-Mail-Adresse über den Link in unserer Nachricht.</p>
+      <p id="newsletter-status" class="status" role="status" aria-live="polite" tabindex="-1"></p>
+      <noscript><p>Bitte aktiviere JavaScript, um dich für die Nordstern Post anzumelden.</p></noscript>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter-signup]');
+  if (form) {
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+    const reload = form.querySelector<HTMLButtonElement>('[data-captcha-reload]')!;
+    const label = form.querySelector<HTMLElement>('[data-captcha-label]')!;
+    const answer = form.elements.namedItem('captchaAnswer') as HTMLInputElement;
+    const status = form.querySelector<HTMLElement>('[role="status"]')!;
+    let captchaToken = '';
+    let busy = false;
+    const loadCaptcha = async () => {
+      submit.disabled = true;
+      reload.disabled = true;
+      captchaToken = '';
+      answer.value = '';
+      label.textContent = 'Spamschutz wird geladen …';
+      try {
+        const response = await fetch(form.dataset.captchaEndpoint!, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+        const data = await response.json();
+        if (!response.ok || !data.ok || !data.token) throw new Error();
+        captchaToken = data.token;
+        label.textContent = `Spamschutz: Wie viel ist ${data.a} + ${data.b}?`;
+        submit.disabled = busy;
+      } catch {
+        label.textContent = 'Spamschutz nicht erreichbar.';
+        if (!status.textContent) status.textContent = 'Bitte lade die Aufgabe erneut. Deine Eingaben bleiben erhalten.';
+      } finally { reload.disabled = false; }
+    };
+    reload.addEventListener('click', () => { status.textContent = ''; delete status.dataset.success; void loadCaptcha(); });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (busy || !captchaToken || !form.reportValidity()) return;
+      busy = true;
+      submit.disabled = true;
+      reload.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      delete status.dataset.success;
+      status.textContent = 'Deine Anmeldung wird gesendet …';
+      const values = new FormData(form);
+      try {
+        const response = await fetch(form.dataset.endpoint!, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(30000),
+          body: JSON.stringify({ action: 'subscribe', email: values.get('email'), consent: values.get('consent') === 'on', website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')) }),
+        });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.message || 'Die Anmeldung ist gerade nicht möglich. Bitte versuche es später erneut.');
+        form.reset();
+        status.textContent = data.message;
+        status.dataset.success = 'true';
+      } catch (error) {
+        status.dataset.success = 'false';
+        status.textContent = error instanceof Error && error.name === 'Error' ? error.message : 'Die Verbindung wurde unterbrochen. Bitte versuche es erneut.';
+      } finally {
+        busy = false;
+        form.removeAttribute('aria-busy');
+        status.focus();
+        await loadCaptcha();
+      }
+    });
+    // Load only when the section approaches the viewport, not on every homepage visit.
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) { observer.disconnect(); void loadCaptcha(); }
+    }, { rootMargin: '200px' });
+    observer.observe(form);
+  }
+</script>
+
+<style>
+  .newsletter { padding: 76px 0; scroll-margin-top: 130px; background: #164f32; color: white; }
+  .newsletter-shell { width: min(1160px, calc(100% - 48px)); margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+  .eyebrow { color: #f4d638; font-size: .75rem; letter-spacing: .15em; font-weight: 800; text-transform: uppercase; }
+  .eyebrow span { margin-right: 10px; }
+  h2 { margin: 20px 0 24px; font-size: clamp(2.6rem, 4vw, 4rem); letter-spacing: -.045em; line-height: 1; }
+  h2 em { color: #f4d638; font-family: Georgia, serif; font-weight: 400; }
+  .newsletter-copy > p:not(.eyebrow) { max-width: 470px; color: #e0ebe4; line-height: 1.7; }
+  .newsletter-note { display: block; margin-top: 24px; color: #c5d9cd; font-size: .78rem; }
+  form { position: relative; padding: 30px; background: #fff; color: #10251a; border-top: 5px solid #f4d638; box-shadow: 12px 12px 0 #092f20; }
+  label { display: block; margin-bottom: 8px; font-size: .85rem; font-weight: 750; }
+  input[type=email], input[type=text] { box-sizing: border-box; width: 100%; min-height: 48px; border: 1px solid #82988a; border-radius: 3px; padding: 11px 13px; font: inherit; background: #fafbf9; color: #10251a; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #216b43; outline-offset: 3px; }
+  .consent { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; font-size: .78rem; font-weight: 400; line-height: 1.55; }
+  .consent input { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 2px; accent-color: #164f32; }
+  a { color: #164f32; text-decoration: underline; }
+  .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .captcha-row { display: flex; align-items: end; gap: 16px; margin-bottom: 20px; }
+  .captcha-row > div { flex: 1; }
+  .captcha-row input { max-width: 100px; }
+  button { font: inherit; cursor: pointer; }
+  button:disabled { cursor: wait; opacity: .6; }
+  .reload { padding: 12px 0; border: 0; background: none; color: #164f32; font-size: .8rem; text-decoration: underline; }
+  .subscribe { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 12px 18px; border: 0; border-radius: 3px; background: #f4d638; color: #10251a; font-weight: 850; }
+  .subscribe:hover:not(:disabled) { background: #ffe65e; }
+  .hint { margin: 15px 0 0; font-size: .75rem; line-height: 1.55; color: #506459; }
+  .status { margin: 16px 0 0; font-size: .85rem; line-height: 1.6; }
+  .status:empty { display: none; }
+  .status[data-success=true] { padding: 12px; background: #e8f4e9; }
+  .status[data-success=false] { color: #9b251c; }
+  @media (max-width: 800px) { .newsletter-shell { grid-template-columns: 1fr; gap: 32px; } .newsletter-copy > p:not(.eyebrow) { max-width: none; } }
+  @media (max-width: 480px) { .newsletter { padding: 52px 0; } .newsletter-shell { width: calc(100% - 36px); } form { padding: 22px 18px; box-shadow: 6px 6px 0 #092f20; } }
+</style>

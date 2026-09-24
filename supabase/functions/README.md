@@ -1,5 +1,9 @@
 # Gemeinsame E-Mail-Konfiguration
 
+Die Startseiten-Anmeldung zur **Nordstern Post** verwendet denselben E-Mail-Dienst.
+Double-Opt-in, Sponsoren, Verteileraufnahme, Wiederholungen und Bereitstellung sind
+in [newsletter/README.md](newsletter/README.md) beschrieben.
+
 Alle Supabase Edge Functions, die E-Mails versenden, verwenden
 `_shared/email-service.ts`. Der gemeinsame Dienst erzwingt den Testmodus für
 `to`, `cc`, `bcc` und `reply-to` und kennzeichnet Testnachrichten automatisch.

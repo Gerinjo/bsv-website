@@ -3,7 +3,7 @@ import LegalPage from '../components/LegalPage.astro';
 import { umami } from '../utils/umami';
 ---
 
-<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated="11. September 2026">
+<LegalPage title="Datenschutz" eyebrow="Deine Daten. Unser Schutz." intro="Hier erklären wir verständlich, welche personenbezogenen Daten beim Besuch unserer Website und im Kontakt mit dem Verein verarbeitet werden." updated="24. September 2026">
   <section>
     <h2>Verantwortliche Stelle</h2>
     <div class="legal-card">
@@ -41,6 +41,13 @@ import { umami } from '../utils/umami';
     <h2>Kontaktformular</h2>
     <p>Bei Nutzung unseres Kontaktformulars verarbeiten wir das ausgewählte Anliegen sowie Vorname, Name, E-Mail-Adresse, eine freiwillig angegebene Telefonnummer und den Nachrichtentext. Die Anfrage wird in unserem Supabase-Projekt gespeichert, dort der zuständigen Stelle beziehungsweise Mannschaft zugeordnet und über den Versanddienst Resend per E-Mail weitergeleitet. Die technische Empfängerzuordnung ist nicht öffentlich abrufbar. Rechtsgrundlage ist je nach Anliegen Art. 6 Abs. 1 lit. b DSGVO oder Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO.</p>
     <p>Die Angaben und der Versandstatus werden gelöscht, wenn die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten oder weiteren berechtigten Gründe entgegenstehen. Kurzlebige Angaben des Spamschutzes werden nach Verwendung sofort gelöscht.</p>
+  </section>
+
+  <section>
+    <h2 id="newsletter">Newsletter „Nordstern Post“</h2>
+    <p>Wenn Sie die Nordstern Post abonnieren, verwenden wir Ihre E-Mail-Adresse für Vereinsneuigkeiten, Termine und Informationen zu BSV-Partnern. Nach der Anmeldung erhalten Sie zunächst eine E-Mail mit einem Bestätigungslink. Erst wenn Sie diesen Link öffnen und Ihre Anmeldung bestätigen, werden Sie für den Newsletter freigeschaltet. Anschließend erhalten Sie eine Bestätigungsnachricht. Sie können sich jederzeit über den Abmeldelink in unseren Newsletter-E-Mails oder per Nachricht an info@bsvnordstern.de abmelden.</p>
+    <p>Wir speichern die E-Mail-Adresse, den Zeitpunkt der Anforderung und Bestätigung, die Fassung der Einwilligung, den Anmeldestatus und technische Versandstatus in Supabase. Die Bestätigungslinks sind 48 Stunden gültig. Nicht bestätigte Erstanmeldungen werden nach sieben Tagen gelöscht. Zum Schutz vor Missbrauch verwenden wir kurzlebige Rechenaufgaben und einen nicht im Klartext gespeicherten, kryptografisch abgeleiteten Wert der IP-Adresse für eine auf eine Stunde begrenzte Anfragesperre; dieser Wert wird spätestens beim täglichen Bereinigungslauf entfernt.</p>
+    <p>Für Bestätigungsnachrichten und den Newsletter-Versand nutzen wir Resend. Erst nach Ihrer Bestätigung wird Ihre Adresse dem Verteiler der Nordstern Post hinzugefügt. Unsere E-Mails enthalten außerdem verlinkte Logos ausgewählter BSV-Partner. Beim Laden externer Bilder kann der jeweilige Server technische Verbindungsdaten erhalten. Die Anmeldung ist freiwillig und beruht auf Ihrer Einwilligung. Nach einer Abmeldung wird die Adresse nicht mehr für den Newsletter verwendet; erforderliche Einwilligungsnachweise und Abmeldeinformationen können zur Dokumentation erhalten bleiben.</p>
   </section>
 
   <section>

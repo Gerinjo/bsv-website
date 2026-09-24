@@ -4,6 +4,11 @@
 # working directory name when running `supabase init`.
 project_id = "bsv-website"
 
+# Public registration; confirmation/unsubscribe use unguessable bearer tokens.
+# The retry worker authenticates with NEWSLETTER_WORKER_SECRET (or service role).
+[functions.newsletter]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.

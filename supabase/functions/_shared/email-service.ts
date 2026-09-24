@@ -55,7 +55,7 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
   };
 };
 
-export const sendEmail = async (message: EmailMessage) => {
+export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number } = {}) => {
   const config = getEmailRuntimeConfig();
   if (!config.resendApiKey) throw new Error('RESEND_API_KEY fehlt.');
   if (!config.mailFrom) throw new Error('MAIL_FROM fehlt.');
@@ -102,8 +102,10 @@ export const sendEmail = async (message: EmailMessage) => {
     headers: {
       Authorization: `Bearer ${config.resendApiKey}`,
       'Content-Type': 'application/json',
+      ...(options.idempotencyKey ? { 'Idempotency-Key': options.idempotencyKey } : {}),
     },
     body: JSON.stringify(payload),
+    ...(options.timeoutMs ? { signal: AbortSignal.timeout(options.timeoutMs) } : {}),
   });
 
   if (!response.ok) {

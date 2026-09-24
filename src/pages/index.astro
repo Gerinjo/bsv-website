@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import HomeSponsorShowcase from '../components/HomeSponsorShowcase.astro';
 import HomeNextMatch from '../components/HomeNextMatch.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
@@ -160,6 +161,8 @@ const getEventType = (title: string) => {
         </div>
       </div>
     </section>
+
+    <NewsletterSignup />
 
     <section class="join-section">
       <div class="shell join-card">
