@@ -26,6 +26,51 @@ bestehenden GitHub-Pages-Workflow bei einem Push auf `main` veröffentlicht.
 
 ## Ablauf
 
+### Auswahl im Mitgliedsantrag
+
+Das separate Newsletter-Häkchen im Mitgliedsantrag startet denselben
+Bestätigungsworkflow. PHP übergibt die geprüfte Auswahl als boolesches
+`emailNewsletterAccepted` und die Antragsnummer an die authentifizierte
+Mailbrücke `membership-email`. Allgemeine Vereinsinformationen sind eine
+unabhängige Auswahl und starten keinen Newsletter-Versand.
+
+Nach erfolgreicher Übergabe des Antrags an die Verwaltung legt die Mailbrücke
+vor dem Versand der Antragstellerkopie einen dauerhaften Bestätigungsauftrag an.
+Der vorhandene minütliche Worker versendet ihn im BSV-Design mit Sponsoren.
+Auch hier ist erst der Link-Klick die Freigabe zum Newsletter; anschließend
+folgen Verteileraufnahme und Willkommensmail. Bereits lokal bestätigte Adressen
+erhalten keinen neuen Bestätigungsauftrag. Ein noch gültiger, bereits
+angeforderter Link bleibt gültig. Vorhandene Resend-Abmeldungen werden nicht
+automatisch zurückgesetzt.
+
+`newsletter_request_membership` verarbeitet dieselbe Antragsnummer nur einmal,
+auch wenn zwischenzeitlich eine Abmeldung erfolgt ist. Nur ein neuer Antrag mit
+erneuter Auswahl kann einen neuen Bestätigungslink anfordern. Die privaten
+Antragsreferenzen in `newsletter_membership_requests` werden bei der Löschung
+der zugehörigen Anmeldung mit entfernt. Die Fassung des Newsletter-Häkchens ist
+als `mitgliedsantrag-newsletter-2026-09-24` dokumentiert. Test- und Live-Modus
+bleiben getrennt; die öffentliche Formularantwort verrät keinen Abonnentenstatus.
+
+Schlägt die Vormerkung fehl, bleibt der Mitgliedsantrag erfolgreich. Das Formular
+weist auf die Newsletter-Anmeldung auf der Startseite hin. Ist nur die Zustellung
+gestört, wiederholt der bestehende Worker den gespeicherten Auftrag automatisch.
+
+Die Migration `20260924215451_membership_newsletter_opt_in.sql` und die erweiterte
+Function `membership-email` sind im Website-Projekt bereitgestellt. Für die
+Aktivierung ist zusätzlich die aktualisierte `public/api/membership-v3.php` auf
+`api.bsvnordstern.de` erforderlich. Die vorbereitete Upload-Datei liegt lokal
+unter `/home/gerinjo/bsv-api-upload/membership-v3.php`; GitHub Pages aktualisiert
+diesen PHP-Server nicht. Die private `membership-config.php` bleibt unverändert.
+Die Website-Hinweise sind vorbereitet; ihre Veröffentlichung erfolgt zusammen
+mit der PHP-Aktivierung. Der neue Mailbrücken-Ablauf wurde mit einer offiziellen
+Resend-Testadresse produktiv geprüft: ohne Auswahl keine Anmeldung, mit Auswahl
+zunächst ausstehend, Cron-Versand mit drei Sponsoren, Freischaltung und eine
+Willkommensmail nach Klick. Eine neue Anfrage für dieselbe bestätigte Adresse
+erzeugte keinen zweiten Link; eine wiederholte Antragsnummer nach Abmeldung
+reaktivierte das Abonnement nicht. Die synthetischen Daten wurden entfernt.
+
+### Anmeldung auf der Startseite
+
 1. `subscribe`: E-Mail normalisieren, Einwilligung und Spamschutz prüfen. Eine
    private Anmeldung und ein Bestätigungsauftrag werden atomar gespeichert.
    Die Person ist noch kein Newsletter-Empfänger und wird nicht zu Resend Contacts
@@ -144,6 +189,11 @@ und prüft Zustandswechsel, Ablauffristen, Wiederholbarkeit, Modustrennung,
 Lease-Wiederaufnahme und private Zugriffsrechte. `tests/newsletter.test.mjs` prüft
 den HTTP-Handler, Versandfehler, Resend-Integration und beide E-Mail-Varianten
 ohne echten Versand.
+
+`tests/membership-newsletter.test.mjs` und
+`supabase/tests/membership_newsletter_opt_in.sql` prüfen die Auswahl im
+Mitgliedsantrag, fehlende Einwilligung, doppelte Aufrufe, bestehende Abonnements,
+erneute Anmeldung nach Abmeldung, Modustrennung und private Zugriffsrechte.
 
 Referenzen: [Supabase Cron und Edge Functions](https://supabase.com/docs/guides/functions/schedule-functions),
 [Resend Contacts](https://resend.com/docs/api-reference/contacts/create-contact),

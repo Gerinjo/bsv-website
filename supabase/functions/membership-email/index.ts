@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail, type EmailAttachment } from '../_shared/email-service.ts';
 import { collectRecipientEmails, getMembershipRoutingKeys } from '../_shared/membership-routing.mjs';
+import { queueMembershipNewsletter } from '../_shared/membership-newsletter.mjs';
 
 const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
 const MAX_ATTACHMENT_BYTES = 12 * 1024 * 1024;
@@ -121,6 +122,21 @@ Deno.serve(async (request) => {
     attachments.push({ filename, content, content_type: contentType });
   }
 
+  // PHP invokes the applicant message only after the application was delivered
+  // to administration. Persist its opt-in before sending the applicant's copy,
+  // so a failure of that copy does not lose the newsletter request.
+  let newsletterStatus = 'not_requested';
+  try {
+    newsletterStatus = await queueMembershipNewsletter({
+      db: messageType === 'applicant' && body.emailNewsletterAccepted === true ? getSupabase() : null,
+      body, mode: getEmailRuntimeConfig().mode,
+      siteUrl: Deno.env.get('NEWSLETTER_SITE_URL') || 'https://bsvnordstern.de',
+    });
+  } catch {
+    newsletterStatus = 'unavailable';
+    console.error('Mitgliedsantrag: Newsletter-Anmeldung konnte nicht vorgemerkt werden.');
+  }
+
   try {
     const result = await sendEmail({
       to: recipient,
@@ -130,9 +146,9 @@ Deno.serve(async (request) => {
       text: plainText,
       attachments,
     });
-    return json({ ok: true, mailMode: result.mode, resendId: result.id }, 201);
+    return json({ ok: true, mailMode: result.mode, resendId: result.id, newsletterStatus }, 201);
   } catch (error) {
     console.error('Mitgliedsantrags-Mail konnte nicht versendet werden:', error);
-    return json({ error: 'email_failed', mailMode: getEmailRuntimeConfig().mode }, 502);
+    return json({ error: 'email_failed', mailMode: getEmailRuntimeConfig().mode, newsletterStatus }, 502);
   }
 });

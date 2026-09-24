@@ -54,8 +54,9 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
                 <p><strong>Freiwillige Informationen per E-Mail</strong><span>Die beiden Einwilligungen können unabhängig voneinander erteilt und jederzeit widerrufen werden.</span></p>
                 <div class="legal-list">
                   <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
-                  <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
+                  <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" aria-describedby="newsletter-consent-hint" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
                 </div>
+                <p id="newsletter-consent-hint">Nach dem Absenden erhältst du einen Bestätigungslink per E-Mail. Erst nach deinem Klick bekommst du die Nordstern Post. Wenn du den Newsletter bereits bestätigt hast, ist keine weitere Bestätigung nötig.</p>
               </div>
             </div>
           </section>
@@ -523,6 +524,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
     formIsSending = true;
     updateMembershipEligibility();
     status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
+    const newsletterRequested = form.querySelector('input[name="emailNewsletterAccepted"]').checked;
 
     try {
       const response = await fetch(endpoint, {
@@ -547,6 +549,11 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
       document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
       await createCaptcha();
       status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet.`;
+      if (newsletterRequested) {
+        status.textContent += result.newsletterStatus === 'requested'
+          ? ' Für die Nordstern Post: Bitte bestätige den Link in deinem Postfach, sofern du den Newsletter noch nicht bestätigt hast. Prüfe auch den Spam-Ordner.'
+          : ' Deine Newsletter-Anmeldung konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für den Newsletter das Formular auf der Startseite.';
+      }
       window.scrollTo({ top: form.offsetTop - 90, behavior: 'smooth' });
     } catch (error) {
       status.textContent = error instanceof Error ? error.message : 'Der Antrag konnte nicht versendet werden.';

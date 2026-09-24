@@ -1,12 +1,12 @@
 import { loadSponsors, renderNewsletterEmail } from './emails.mjs';
 import { processNewsletterJob } from './workflow.mjs';
+import { token, hash } from '../_shared/newsletter-tokens.mjs';
+export { token, hash } from '../_shared/newsletter-tokens.mjs';
 
 export const CONSENT_VERSION = 'nordstern-post-2026-09-24';
 const RECEIVED = 'Danke für deine Anmeldung! Schau bitte in dein Postfach und bestätige deine E-Mail-Adresse über unseren Link. Prüfe auch den Spam-Ordner. Falls du gerade schon einen Link angefordert hast, nutze bitte diese Nachricht.';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TOKEN = /^[0-9a-f]{64}$/;
-export const token = () => [...crypto.getRandomValues(new Uint8Array(32))].map((n) => n.toString(16).padStart(2, '0')).join('');
-export const hash = async (value) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))].map((n) => n.toString(16).padStart(2, '0')).join('');
 const rateKey = async (value, secret) => {
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return [...new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)))].map((n) => n.toString(16).padStart(2, '0')).join('');
