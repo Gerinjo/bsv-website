@@ -37,6 +37,10 @@ const findCaseMismatch = (target) => {
 
 const validateReference = (sourceFile, rawReference) => {
   const reference = rawReference.trim();
+  if (/^mailto:/i.test(reference)) {
+    issues.push(`${relative(projectRoot, sourceFile)}: E-Mail-Kontakte müssen zum Kontaktformular führen: ${reference}`);
+    return;
+  }
   if (!reference || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(reference)) return;
 
   checkedReferences += 1;

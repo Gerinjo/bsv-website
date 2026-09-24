@@ -1,5 +1,8 @@
 import { menu } from './navigation';
 import { teamProfiles } from './teamPages';
+import { contactPeople } from './contactPeople.server.mjs';
+
+export const personContactTopics = contactPeople.map(({ id, label, description }) => ({ id, label, description }));
 
 export type ContactTopic = {
   id: string;
@@ -8,6 +11,10 @@ export type ContactTopic = {
 };
 
 export const fixedContactTopics: ContactTopic[] = [
+  { id: 'goalkeeping', label: 'Torwarttraining · Stefan Gastaudo', description: 'Fragen zum Torwarttraining oder Lust, mitzumachen? Deine Nachricht geht direkt an Stefan Gastaudo. Nenne bitte Mannschaft, Alter und Körpergröße, damit Stefan die passende Trainingsgruppe mit dir abstimmen kann.' },
+  { id: 'finance', label: 'Vereinskasse', description: 'Für Fragen an die Kasse des Vereins.' },
+  { id: 'passwesen', label: 'Passwesen', description: 'Für Fragen zur Spielgenehmigung und zum Spielerpass. Deine Nachricht geht an das Passwesen.' },
+  { id: 'match-operations', label: 'Spielbetrieb', description: 'Für organisatorische Fragen zum Spielbetrieb. Deine Nachricht geht an Oliver Schillinger.' },
   { id: 'general', label: 'Allgemeine Themen (Vorstandschaft)', description: 'Nutze diese Auswahl für allgemeine Fragen zum Verein, die keiner Abteilung direkt zugeordnet werden können. Die Nachricht geht an die Vorstandschaft. Bei Fragen zu einer Mitgliedschaft oder einer Mannschaft wähle bitte den passenderen Eintrag aus.' },
   { id: 'membership', label: 'Mitgliederverwaltung', description: 'Hier bist du richtig bei Fragen zu Mitgliedsdaten, Beiträgen oder Änderungen deiner persönlichen Angaben. Auch Rückfragen zu einem bestehenden Mitgliedsantrag gehören hierher. Eine Kündigung muss weiterhin über den dafür vorgesehenen Weg eingereicht werden.' },
   { id: 'youth', label: 'Jugendabteilung', description: 'Wähle im nächsten Schritt Jugendleitung, Elternvertretung oder Jugendkasse aus. Probetrainings und Freundschaftsspiele fragst du bitte direkt beim jeweiligen Team an.' },

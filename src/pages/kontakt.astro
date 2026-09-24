@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { contactTeams, fixedContactTopics, youthContactTopics } from '../data/contactTopics';
+import { contactTeams, fixedContactTopics, youthContactTopics, personContactTopics } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 
 const configuredContactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
@@ -21,10 +21,11 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
         <form id="contact-form" action={contactEndpoint} method="post">
           <div class="field full">
             <label for="topic-area">Worum geht es?</label>
-            <select id="topic-area" required><option value="">Bitte auswählen …</option>{fixedContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}<option value="active-team">Aktive Mannschaft</option><option value="youth-team">Jugendmannschaft</option></select>
+            <select id="topic-area" required><option value="">Bitte auswählen …</option>{fixedContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}<option value="active-team">Aktive Mannschaft</option><option value="youth-team">Jugendmannschaft</option><option value="person">Eine bestimmte Ansprechperson</option></select>
             <input id="topic" name="topic" type="hidden" />
             <p id="topic-description" class="topic-description" aria-live="polite">Bitte wähle zunächst einen Eintrag aus der Liste.</p>
           </div>
+          <div id="person-contact-field" class="field full conditional" hidden><label for="person-contact-select">Wen möchtest du erreichen?</label><select id="person-contact-select"><option value="">Bitte auswählen …</option>{personContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}</select></div>
           <div id="youth-contact-field" class="field full conditional" hidden><label for="youth-contact-select">Wen möchtest du erreichen?</label><select id="youth-contact-select"><option value="">Bitte auswählen …</option>{youthContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}</select></div>
           <div id="team-field" class="field full conditional" hidden><label for="team-select">Welche Mannschaft?</label><select id="team-select"><option value="">Bitte Mannschaft auswählen …</option></select></div>
           <div id="request-field" class="field full conditional" hidden><label for="request-type">Was möchtest du anfragen?</label><select id="request-type"><option value="">Bitte auswählen …</option><option value="trial">Probetraining</option><option value="friendly">Freundschaftsspiel</option><option value="general">Allgemeines</option></select></div>
@@ -48,9 +49,11 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   <Footer />
 </Layout>
 
-<script define:vars={{ fixedTopics: fixedContactTopics, youthTopics: youthContactTopics, teams: contactTeams, contactEndpoint }}>
+<script define:vars={{ fixedTopics: fixedContactTopics, youthTopics: youthContactTopics, personTopics: personContactTopics, teams: contactTeams, contactEndpoint }}>
   const form = document.querySelector('#contact-form');
   const area = document.querySelector('#topic-area');
+  const personContactField = document.querySelector('#person-contact-field');
+  const personContactSelect = document.querySelector('#person-contact-select');
   const youthContactField = document.querySelector('#youth-contact-field');
   const youthContactSelect = document.querySelector('#youth-contact-select');
   const teamField = document.querySelector('#team-field');
@@ -67,6 +70,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   const captchaToken = document.querySelector('#captcha-token');
   const fixedById = new Map(fixedTopics.map((topic) => [topic.id, topic]));
   const youthById = new Map(youthTopics.map((topic) => [topic.id, topic]));
+  const personById = new Map(personTopics.map((topic) => [topic.id, topic]));
   let isSubmitting = false;
 
   const updateSubmitState = () => {
@@ -101,6 +105,9 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   const updateTopic = () => {
     const isTeam = area.value === 'active-team' || area.value === 'youth-team';
     const isYouthDepartment = area.value === 'youth';
+    const isPerson = area.value === 'person';
+    personContactField.hidden = !isPerson;
+    personContactSelect.required = isPerson;
     const fixed = fixedById.get(area.value);
     youthContactField.hidden = !isYouthDepartment;
     youthContactSelect.required = isYouthDepartment;
@@ -113,6 +120,13 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
     friendlyFields.hidden = !isFriendly;
     clubName.required = isFriendly;
     opponentTeam.required = isFriendly;
+    if (isPerson) {
+      const personTopic = personById.get(personContactSelect.value);
+      topicInput.value = personTopic?.id ?? '';
+      description.textContent = personTopic?.description ?? 'Bitte wähle eine Ansprechperson aus.';
+      updateSubmitState();
+      return;
+    }
     if (isYouthDepartment) {
       const youthTopic = youthById.get(youthContactSelect.value);
       topicInput.value = youthTopic?.id ?? '';
@@ -146,7 +160,8 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
         : `Nutze diese Auswahl für alle anderen Fragen zu ${team.name}. Beschreibe dein Anliegen bitte möglichst konkret. Die Nachricht geht direkt an die Kontaktadresse der Mannschaft.`;
     updateSubmitState();
   };
-  area.addEventListener('change', () => { populateTeams(area.value); youthContactSelect.value = ''; requestType.value = ''; updateTopic(); });
+  area.addEventListener('change', () => { populateTeams(area.value); youthContactSelect.value = ''; personContactSelect.value = ''; requestType.value = ''; updateTopic(); });
+  personContactSelect.addEventListener('change', updateTopic);
   youthContactSelect.addEventListener('change', updateTopic);
   teamSelect.addEventListener('change', () => { requestType.value = ''; updateTopic(); });
   requestType.addEventListener('change', updateTopic);
@@ -154,10 +169,14 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
   const requestedTopic = new URLSearchParams(window.location.search).get('thema');
   const requestedTeam = teams.find((team) => requestedTopic?.startsWith(`team--${team.key}--`));
   const requestedYouthTopic = youthById.get(requestedTopic);
+  const requestedPerson = personById.get(requestedTopic);
   if (requestedTeam) {
     area.value = requestedTeam.group;
     populateTeams(requestedTeam.group, requestedTeam.key);
     requestType.value = requestedTopic.split('--').at(-1) ?? '';
+  } else if (requestedPerson) {
+    area.value = 'person';
+    personContactSelect.value = requestedPerson.id;
   } else if (requestedYouthTopic) {
     area.value = 'youth';
     youthContactSelect.value = requestedYouthTopic.id;
@@ -196,6 +215,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
       }
       if (!response.ok || !result.ok) throw new Error(result.message || 'Die Nachricht konnte nicht gesendet werden.');
       form.reset();
+      updateTopic();
       topicInput.value = '';
       youthContactField.hidden = true;
       teamField.hidden = true;

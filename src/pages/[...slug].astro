@@ -894,44 +894,6 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   <Footer />
 
   <script>
-    document.querySelectorAll<HTMLElement>('.legacy-content .contact-icons, .referee-page .contact-icons, .d-girls-page .contact-icons, .department-page .contact-icons').forEach((contacts, groupIndex) => {
-      const links = [...contacts.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"], a[href^="tel:"]')];
-
-      links.forEach((originalLink, linkIndex) => {
-        const href = originalLink.getAttribute('href');
-        if (!href) return;
-
-        const isEmail = href.startsWith('mailto:');
-        const value = decodeURIComponent(href.replace(/^(mailto:|tel:)/, ''));
-        const panelId = `contact-${groupIndex}-${linkIndex}`;
-        const toggle = document.createElement('button');
-        const directLink = document.createElement('a');
-
-        toggle.type = 'button';
-        toggle.className = `contact-toggle ${isEmail ? 'is-email' : 'is-phone'}`;
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-controls', panelId);
-        toggle.setAttribute('aria-label', isEmail ? 'E-Mail-Adresse anzeigen' : 'Telefonnummer anzeigen');
-
-        directLink.id = panelId;
-        directLink.className = 'contact-value';
-        directLink.href = href;
-        directLink.hidden = true;
-        directLink.textContent = value;
-        directLink.setAttribute('aria-label', isEmail ? `E-Mail an ${value}` : `${value} anrufen`);
-
-        toggle.addEventListener('click', () => {
-          const willOpen = directLink.hidden;
-          contacts.querySelectorAll<HTMLButtonElement>('.contact-toggle').forEach((button) => button.setAttribute('aria-expanded', 'false'));
-          contacts.querySelectorAll<HTMLElement>('.contact-value').forEach((contact) => contact.hidden = true);
-          toggle.setAttribute('aria-expanded', String(willOpen));
-          directLink.hidden = !willOpen;
-        });
-
-        originalLink.replaceWith(toggle, directLink);
-      });
-    });
-
     const galleryDialog = document.querySelector<HTMLDialogElement>('.gallery-dialog');
     const galleryDialogImage = galleryDialog?.querySelector<HTMLImageElement>('img');
     const galleryDialogCaption = galleryDialog?.querySelector<HTMLElement>('figcaption');

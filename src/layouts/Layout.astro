@@ -55,45 +55,6 @@ const friendlyMatchTeamPaths = [
 		<TagDesMaedchenfussballMenuEnhancer />
 		<HomeShopEnhancer />
 		<script define:vars={{ contactPath, basePath, friendlyMatchTeamPaths }}>
-			const topicByEmail = new Map([
-				['info@bsvnordstern.de', 'general'],
-				['jugend@bsvnordstern.de', 'youth'],
-				['stefan.gastaudo@bsvnordstern.de', 'referees'],
-				['konrad.mauz@bsvnordstern.de', 'archery'],
-				['verwaltung@bsvnordstern.de', 'gymnastics'],
-				['thomas.graf@bsvnordstern.de', 'hiking'],
-			]);
-
-			const contactButtons = document.querySelectorAll([
-				'.referee-cta a[href^="mailto:"]',
-				'.concept-join a[href^="mailto:"]',
-				'.department-notice a[href^="mailto:"]',
-			].join(','));
-
-			contactButtons.forEach((link) => {
-				const rawHref = link.getAttribute('href') ?? '';
-				const address = decodeURIComponent(rawHref.slice(7).split('?')[0]).trim().toLowerCase();
-				const topic = topicByEmail.get(address);
-				link.setAttribute('href', topic ? `${contactPath}?thema=${encodeURIComponent(topic)}` : contactPath);
-			});
-
-			const restoreDirectContactLinks = () => {
-				document.querySelectorAll('.contact-toggle').forEach((toggle) => {
-					const revealedLink = toggle.nextElementSibling;
-					if (!(revealedLink instanceof HTMLAnchorElement) || !revealedLink.classList.contains('contact-value')) return;
-
-					const isEmail = toggle.classList.contains('is-email');
-					const directLink = document.createElement('a');
-					directLink.href = revealedLink.getAttribute('href') ?? '';
-					directLink.className = `contact-direct ${isEmail ? 'is-email' : 'is-phone'}`;
-					directLink.setAttribute('aria-label', revealedLink.getAttribute('aria-label') ?? (isEmail ? 'E-Mail schreiben' : 'Telefonnummer anrufen'));
-					directLink.textContent = isEmail ? '✉' : '☎';
-
-					toggle.replaceWith(directLink);
-					revealedLink.remove();
-			});
-			};
-
 			const correctCoachNames = () => {
 				const nameCorrections = new Map([
 					['Dana Bulander', 'Dana-Sophie Bulander'],
@@ -153,7 +114,6 @@ const friendlyMatchTeamPaths = [
 			};
 
 			const enhancePage = () => {
-				restoreDirectContactLinks();
 				correctCoachNames();
 				addFriendlyMatchButton();
 			};

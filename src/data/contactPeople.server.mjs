@@ -1,0 +1,42 @@
+// Existing, published club contacts. Only id/label/description are passed to the browser.
+export const contactPeople = [
+  ['sandra-fuchs', 'Sandra Fuchs · 1. Vorstand', 'Sandra.Fuchs@bsvnordstern.de'],
+  ['felix-schuele', 'Felix Schüle · 2. Vorstand / Herren', 'Felix.Schuele@bsvnordstern.de'],
+  ['michaela-auer', 'Michaela Auer · Schriftführerin', 'Michaela.Auer@bsvnordstern.de'],
+  ['ann-kathrin-sugg', 'Ann-Kathrin Sugg · Frauenfußball', 'Ann-Kathrin.Sugg@bsvnordstern.de'],
+  ['karsten-grammel', 'Karsten Grammel · Alte Herren', 'alte.herren@bsvnordstern.de'],
+  ['jerome-ernsberger', 'Jérôme Ernsberger · IT & Jugend', 'Jerome.Ernsberger@bsvnordstern.de'],
+  ['markus-sawicki', 'Markus Sawicki · Einkauf & Organisation', 'Markus.Sawicki@bsvnordstern.de'],
+  ['julian-kemmer', 'Julian Kemmer · Presse', 'Julian.Kemmer@bsvnordstern.de'],
+  ['mario-jost', 'Mario Jost · Platzwart', 'Mario.Jost@bsvnordstern.de'],
+  ['eberhard-klinkenberg', 'Eberhard Klinkenberg · Hausmeister', 'Eberhard.Klinkenberg@bsvnordstern.de'],
+  ['markus-mossbrugger', 'Markus Moßbrugger · Schlüsselmanagement', 'Markus.Mossbrugger@bsvnordstern.de'],
+  ['ole-schmal', 'Ole Schmal', 'Ole.Schmal@bsvnordstern.de'],
+  ['monika-peglau', 'Monika Peglau · Kinderschutz', 'kinderschutz@bsvnordstern.de'],
+  ['susi-eisner', 'Susi Eisner', 'Susi.Eisner@bsvnordstern.de'],
+  ['wiebke-baronner-dieterle', 'Wiebke Baronner-Dieterle', 'Wiebke.Baronner-Dieterle@bsvnordstern.de'],
+  ['tobias-messmer', 'Tobias Messmer', 'Tobias.Messmer@bsvnordstern.de'],
+  ['peter-weidele', 'Peter Weidele · Wandergruppe', 'Peter.Weidele@t-online.de'],
+].map(([key, label, email]) => ({
+  id: `person-${key}`, label, email,
+  description: `Deine Kontaktanfrage wird an ${label.split(' · ')[0]} weitergeleitet.`,
+}));
+
+export const emailTopics = new Map([
+  ['info@bsvnordstern.de', 'general'],
+  ['jugend@bsvnordstern.de', 'youth-leadership'],
+  ['jugendkasse@bsvnordstern.de', 'youth-finance'],
+  ['sarah.klumpp@bsvnordstern.de', 'youth-parents'],
+  ['kasse@bsvnordstern.de', 'finance'],
+  ['verwaltung@bsvnordstern.de', 'membership'],
+  ['stefan.gastaudo@bsvnordstern.de', 'referees'],
+  ['oliver.schillinger@bsvnordstern.de', 'match-operations'],
+  ['passwesen@bsvnordstern.de', 'passwesen'],
+  ['konrad.mauz@bsvnordstern.de', 'archery'],
+  ['bogensport@bsvnordstern.de', 'archery'],
+  ['heike.seidel@bsvnordstern.de', 'gymnastics'],
+  ['thomas.graf@bsvnordstern.de', 'hiking'],
+  ['socialmedia@bsvnordstern.de', 'social'],
+  ['sponsoring@bsvnordstern.de', 'sponsoring'],
+  ...contactPeople.map(({ email, id }) => [email.toLowerCase(), id]),
+]);

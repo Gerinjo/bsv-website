@@ -129,7 +129,7 @@ test('DFBnet qualifications are applied to the respective youth coaches', () => 
 test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
   assert.match(navigationSource, /Torwarttraining', href: '\/jugend\/torwarttraining'/);
   assert.match(sportsPagesSource, /path: 'jugend\/torwarttraining'/);
-  assert.match(sportsPagesSource, /5er- und 7er-Tore/);
+  assert.match(sportsPagesSource, /5-m- und 7,32-m-Tor/);
   assert.match(sportsPagesSource, /Stefan Gastaudo', role: 'Torwarttrainer · C-Lizenz'/);
 });
 
