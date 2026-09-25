@@ -1,0 +1,16 @@
+---
+const { notes, filterKeyByTeamName } = Astro.props;
+---
+{notes.length > 0 && <div class="conflict-list goal-notes" data-conflict-list aria-label="Torbedarf bei parallelem Training">
+  {notes.map((note) => <p data-conflict-filter-keys={note.teams.map((team) => filterKeyByTeamName[team]).filter(Boolean).join(' ')}>
+    <strong>Torraum abstimmen · {note.time}</strong>
+    {note.goalTeam}: {note.goalLabel} freihalten. Parallel trainieren {note.otherTeams.join(', ')}.
+  </p>)}
+</div>}
+<style>
+  .goal-notes { margin-top:14px; padding:14px; border:1px solid #dbc36a; background:#fff8dc; color:#66521c; }
+  .goal-notes p { margin:0; font-size:.79rem; line-height:1.55; }
+  .goal-notes p+p { margin-top:10px; }
+  .goal-notes strong { display:block; margin-bottom:3px; }
+  .goal-notes[hidden],.goal-notes p[hidden] { display:none; }
+</style>

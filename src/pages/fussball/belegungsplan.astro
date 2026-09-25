@@ -3,14 +3,16 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import TrainingPlanFilter from '../../components/TrainingPlanFilter.astro';
+import TrainingGoalNotes from '../../components/TrainingGoalNotes.astro';
+import { goalkeeperTraining } from '../../data/goalkeeperTraining';
 import PlanLink from '../../components/PlanLink.astro';
 import { pitchReservations } from '../../data/pitchReservations';
 import { teamProfiles } from '../../data/teamPages';
 import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
-import { findTrainingConflicts } from '../../utils/trainingConflicts.mjs';
+import { findTrainingConflicts, findGoalTrainingOverlaps } from '../../utils/trainingConflicts.mjs';
 
-type Pitch = 'Hauptplatz' | 'Nebenplatz' | 'Käfig';
+type Pitch = 'Hauptplatz' | 'Nebenplatz' | 'Gleisdreieck' | 'Käfig';
 type Allocation = {
   pitch: Pitch;
   share: number;
@@ -92,7 +94,7 @@ const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
       : undefined,
   })),
 );
-const bsvSessions = allTraining
+const bsvSessions = [...allTraining, ...goalkeeperTraining]
   .filter((session) => isOnTrainingPlan(session.place) && dayOrder.includes(session.day) && session.allocation)
   .sort((left, right) => dayOrder.indexOf(left.day) - dayOrder.indexOf(right.day) || timeValue(left.time) - timeValue(right.time) || left.team.localeCompare(right.team, 'de'));
 const offsiteSessions = allTraining
@@ -108,14 +110,16 @@ const fixedSessions = pitchReservations.map((fixed) => ({
 const allBsvSessions = [...bsvSessions, ...fixedSessions];
 const sessionsFor = (day: string, pitch: Pitch) => allBsvSessions.filter((session) => session.day === day && session.allocation.pitch === pitch);
 const trainingConflicts = findTrainingConflicts(allBsvSessions);
+const goalOverlaps = findGoalTrainingOverlaps(allBsvSessions);
 const conflictsFor = (day: string, pitch: Pitch) => trainingConflicts.filter((conflict) => conflict.day === day && conflict.pitch === pitch);
 const filterKeyByTeamName = Object.fromEntries(Object.entries(teamNames).map(([path, name]) => [name, trainingFilterKeyByTeam[path]]));
 filterKeyByTeamName.Bogensport = 'other';
+for (const session of goalkeeperTraining) filterKeyByTeamName[session.team] = session.filterKey;
 ---
 
 <Layout
   title="Belegungsplan | BSV Nordstern Radolfzell"
-  description="Wochenplan für Hauptplatz, Nebenplatz und den Käfig am Friedrich-Hecker-Gymnasium mit Trainingszeiten und Platzanteilen."
+  description="Wochenplan für Hauptplatz, Nebenplatz, Gleisdreieck und den Käfig am Friedrich-Hecker-Gymnasium mit Trainingszeiten, Platzanteilen und Torwarttraining."
 >
   <Header />
   <main>
@@ -124,8 +128,8 @@ filterKeyByTeamName.Bogensport = 'other';
       <div class="shade"></div>
       <div class="shell hero-inner">
         <span>Fußball · Platzplanung</span>
-        <h1>Drei Plätze.<br /><em>Viele Teams.</em></h1>
-        <p>Unsere Mannschaften trainieren auf dem Haupt- und Nebenplatz sowie im Käfig am Friedrich-Hecker-Gymnasium Radolfzell.</p>
+        <h1>Vier Bereiche.<br /><em>Viele Teams.</em></h1>
+        <p>Unsere Mannschaften trainieren auf dem Haupt- und Nebenplatz, im Gleisdreieck zwischen den beiden Plätzen sowie im Käfig am Friedrich-Hecker-Gymnasium Radolfzell.</p>
         <a href="#wochenplan">Wochenplan ansehen <b aria-hidden="true">↓</b></a>
       </div>
     </header>
@@ -135,8 +139,9 @@ filterKeyByTeamName.Bogensport = 'other';
         <div><span>Aktueller Planungsstand</span><h2>Training gut<br />aufeinander abstimmen.</h2></div>
         <div class="intro-copy">
           <p>Die E1 trainiert donnerstags von 17:00 bis 19:00 Uhr im Käfig am Friedrich-Hecker-Gymnasium. Weitere auswärtige Termine und noch offene Zeiten stehen unter dem Wochenplan.</p>
+          <p>Torwarttraining am Mittwoch: 17:30–18:30 Uhr am 5-m-Tor im Gleisdreieck, 18:45–19:45 Uhr an einem großen Tor auf dem Nebenplatz. Der Torraum ist mit parallel trainierenden Teams abzustimmen.</p>
           <div class="facts">
-            <article><strong>3</strong><span>Plätze</span></article>
+            <article><strong>4</strong><span>Trainingsbereiche</span></article>
             <article><strong>{allBsvSessions.length}</strong><span>Belegungen</span></article>
             <article><strong>Mo–So</strong><span>Wochenansicht</span></article>
           </div>
@@ -157,6 +162,8 @@ filterKeyByTeamName.Bogensport = 'other';
           <div><b>C2- & B-Junioren</b><span>je ½ Platz</span></div>
           <div><b>A-Junioren</b><span>½ Platz</span></div>
           <div><b>E1 am Donnerstag</b><span>Käfig belegt</span></div>
+          <div><b>Torwarttraining · 5 m</b><span>1 Tor im Gleisdreieck</span></div>
+          <div><b>Torwarttraining · 7,32 m</b><span>1 Tor auf dem Nebenplatz</span></div>
         </div>
       </div>
     </section>
@@ -169,18 +176,18 @@ filterKeyByTeamName.Bogensport = 'other';
           <article class="day-card" data-schedule-day>
             <header><span>{day.slice(0, 2).toUpperCase()}</span><h3>{day}</h3></header>
             <div class="pitch-grid">
-              {(['Hauptplatz', 'Nebenplatz', 'Käfig'] as Pitch[]).filter((pitch) => pitch !== 'Käfig' || sessionsFor(day, pitch).length > 0).map((pitch, index) => {
+              {(['Hauptplatz', 'Nebenplatz', 'Gleisdreieck', 'Käfig'] as Pitch[]).filter((pitch) => ['Hauptplatz', 'Nebenplatz'].includes(pitch) || sessionsFor(day, pitch).length > 0).map((pitch, index) => {
                 const sessions = sessionsFor(day, pitch);
                 const conflicts = conflictsFor(day, pitch);
                 return (
-                  <section class:list={['pitch-card', { 'is-kaefig': pitch === 'Käfig' }]} data-pitch-card>
-                    <div class="pitch-title"><span>{String(index + 1).padStart(2, '0')}</span><div><small>{pitch === 'Käfig' ? 'Friedrich-Hecker-Gymnasium Radolfzell' : 'BSV-Sportgelände'}</small><h4>{pitch}</h4></div></div>
+                  <section class:list={['pitch-card', { 'is-extra': pitch === 'Käfig' || pitch === 'Gleisdreieck' }]} data-pitch-card>
+                    <div class="pitch-title"><span>{String(index + 1).padStart(2, '0')}</span><div><small>{pitch === 'Käfig' ? 'Friedrich-Hecker-Gymnasium Radolfzell' : pitch === 'Gleisdreieck' ? 'Zwischen Haupt- und Nebenplatz' : 'BSV-Sportgelände'}</small><h4>{pitch}</h4></div></div>
                     <div class="booking-list">
                       {sessions.length ? sessions.map((session) => (
                         <a class:list={['booking', `is-${session.allocation.tone}`]} data-team-filter={session.filterKey} href={withBase(`/${session.path}`)}>
                           <span class="booking-time">{session.time}</span>
                           <strong>{session.team}</strong>
-                          <span class="share"><i style={`--share:${session.allocation.share * 100}%`}></i><b>{session.allocation.shareLabel}</b></span>
+                          <span class:list={['share', { 'is-goal': session.allocation.share === 0 }]}>{session.allocation.share > 0 && <i style={`--share:${session.allocation.share * 100}%`}></i>}<b>{session.allocation.shareLabel}</b></span>
                         </a>
                       )) : <p class="free">Keine feste Belegung eingetragen.</p>}
                       <p class="free filter-empty" data-filter-empty hidden>Keine Termine für diese Auswahl.</p>
@@ -193,6 +200,7 @@ filterKeyByTeamName.Bogensport = 'other';
                         </p>
                       ))}
                     </div>}
+                    <TrainingGoalNotes notes={goalOverlaps.filter((note) => note.day === day && note.pitch === pitch)} filterKeyByTeamName={filterKeyByTeamName} />
                   </section>
                 );
               })}
@@ -234,8 +242,10 @@ filterKeyByTeamName.Bogensport = 'other';
 </Layout>
 
 <style>
+  .share.is-goal { height:auto; padding-top:0; }
+  .share.is-goal::before,.share.is-goal::after { display:none; }
   .plan-switch{margin-top:20px}
-  .pitch-card.is-kaefig{grid-column:1/-1;border-left:0;border-top:1px solid #dbe3dc}
+  .pitch-card.is-extra{grid-column:1/-1;border-left:0;border-top:1px solid #dbe3dc}
   :global(:root){--green:#164f32;--dark:#082f20;--yellow:#f4d638;--light:#f4f7f4;--ink:#14251a}
   html{scroll-behavior:smooth}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
   .hero{position:relative;min-height:610px;display:flex;align-items:flex-end;overflow:hidden;background:var(--dark);color:white}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(5 34 22 / 96%) 0%,rgb(5 34 22 / 80%) 44%,rgb(5 34 22 / 18%) 82%),linear-gradient(0deg,rgb(5 34 22 / 82%),transparent 58%)}.hero-inner{position:relative;z-index:1;padding:95px 0 78px}.hero-inner>span,.intro-grid>div>span,.allocation-heading>span,.section-head span,.detail-card>span,.plan-note span{color:var(--yellow);font-size:.69rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero h1{margin:18px 0 22px;font-family:Georgia,serif;font-size:clamp(3.5rem,7vw,6.8rem);line-height:.88;letter-spacing:-.055em}.hero h1 em{color:var(--yellow);font-weight:400}.hero p{max-width:710px;margin:0;color:#cfddd4;font-size:1.06rem;line-height:1.75}.hero a{display:inline-flex;align-items:center;gap:22px;margin-top:30px;padding:15px 19px;background:var(--yellow);color:var(--dark);font-weight:900;text-decoration:none}

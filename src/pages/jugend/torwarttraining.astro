@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { withBase } from '../../utils/paths';
+import { goalkeeperTraining } from '../../data/goalkeeperTraining';
 
 const contactUrl = withBase('/kontakt?thema=goalkeeping');
 const skills = [
@@ -64,6 +65,7 @@ const skills = [
           <div class="group-top"><span>Gruppe 01</span><span class="day-badge">Mittwoch</span></div>
           <h3>5<span> m</span><small>Torbreite</small></h3>
           <p class="training-time"><time datetime="17:30">17:30</time><span>–</span><time datetime="18:30">18:30</time><small>Uhr</small></p>
+          <p class="training-location">{goalkeeperTraining[0].location}</p>
           <div class="group-description"><strong>E-Jugend, D-Jugend & D-Juniorinnen</strong><p>Für Torhüterinnen und Torhüter bis einschließlich 160 cm Körpergröße.</p></div>
           <a href={contactUrl}>Für diese Gruppe anfragen <span aria-hidden="true">↗</span></a>
         </article>
@@ -71,6 +73,7 @@ const skills = [
           <div class="group-top"><span>Gruppe 02</span><span class="day-badge">Mittwoch</span></div>
           <h3>7,32<span> m</span><small>Torbreite</small></h3>
           <p class="training-time"><time datetime="18:45">18:45</time><span>–</span><time datetime="19:45">19:45</time><small>Uhr</small></p>
+          <p class="training-location">{goalkeeperTraining[1].location}</p>
           <div class="group-description"><strong>Training am großen Tor</strong><p>Auch für Torhüterinnen und Torhüter über 160 cm aus der ersten Gruppe. Die Einteilung besprichst du mit Stefan.</p></div>
           <a href={contactUrl}>Für diese Gruppe anfragen <span aria-hidden="true">↗</span></a>
         </article>
@@ -145,6 +148,7 @@ const skills = [
   .training-time { display:flex; align-items:baseline; flex-wrap:wrap; gap:10px; margin:28px 0 23px; font-size:clamp(1.7rem,3.3vw,2.7rem); font-weight:750; letter-spacing:-.04em; }
   .training-time>span { font-weight:400; opacity:.5; }
   .training-time>small { font-size:.82rem; letter-spacing:0; font-weight:600; }
+  .training-location { margin:-8px 0 23px; font-size:.85rem; line-height:1.6; font-weight:650; }
   .group-description { border-top:1px solid #bdcbb9; padding-top:22px; }
   .group-description strong { font-size:.9rem; }
   .group-description p { font-size:.86rem; line-height:1.7; color:#53674f; margin:9px 0 25px; }

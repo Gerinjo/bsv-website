@@ -8,6 +8,35 @@ const parsedTimeRange = (value) => {
 
 const timeLabel = (minutes) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 
+// A reserved goal has no confirmed field fraction. Report concurrent use for
+// coordination, separately from numeric pitch overloads.
+export function findGoalTrainingOverlaps(sessions = []) {
+  const scheduled = sessions.flatMap((session) => {
+    const interval = parsedTimeRange(session?.time);
+    if (!interval || !session?.day || !session?.team || !session?.allocation?.pitch) return [];
+    if (!(session.allocation.share > 0 || session.allocation.goalCount > 0)) return [];
+    return [{ ...session, ...interval }];
+  });
+  return scheduled.filter((session) => session.allocation.goalCount > 0).flatMap((goalSession) => {
+    const parallel = scheduled.filter((session) => session !== goalSession && session.day === goalSession.day
+      && session.allocation.pitch === goalSession.allocation.pitch
+      && session.start < goalSession.end && session.end > goalSession.start);
+    const boundaries = [...new Set([goalSession.start, goalSession.end, ...parallel.flatMap((session) => [
+      Math.max(session.start, goalSession.start), Math.min(session.end, goalSession.end),
+    ])])].sort((a, b) => a - b);
+    return boundaries.slice(0, -1).flatMap((start, index) => {
+      const end = boundaries[index + 1];
+      const active = parallel.filter((session) => session.start < end && session.end > start);
+      if (!active.length) return [];
+      const otherTeams = [...new Set(active.map((session) => session.team))].sort((a, b) => a.localeCompare(b, 'de'));
+      return [{ day: goalSession.day, pitch: goalSession.allocation.pitch,
+        time: `${timeLabel(start)}–${timeLabel(end)} Uhr`,
+        goalTeam: goalSession.team, goalLabel: goalSession.allocation.shareLabel,
+        otherTeams, teams: [goalSession.team, ...otherTeams] }];
+    });
+  });
+}
+
 export function findTrainingConflicts(sessions = []) {
   const scheduled = sessions.flatMap((session) => {
     const interval = parsedTimeRange(session?.time);

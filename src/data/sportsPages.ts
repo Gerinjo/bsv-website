@@ -40,7 +40,7 @@ export const sportsPages = [
     intro: 'Dein Tor. Dein Moment. Torwarttraining mit Stefan Gastaudo – mittwochs am 5-m- und 7,32-m-Tor.',
     image: youthImage,
     body: [
-      'Mittwochs: 17:30–18:30 Uhr am 5-m-Tor für E-Jugend, D-Jugend und D-Juniorinnen bis 160 cm; 18:45–19:45 Uhr am 7,32-m-Tor.',
+      'Mittwochs: 17:30–18:30 Uhr am 5-m-Tor im Gleisdreieck zwischen Haupt- und Nebenplatz für E-Jugend, D-Jugend und D-Juniorinnen bis 160 cm; 18:45–19:45 Uhr an einem großen Tor (7,32 m) auf dem Nebenplatz.',
       'Als Trainer mit C-Lizenz begleitet Stefan die jungen Torhüterinnen und Torhüter bei ihrer individuellen Entwicklung. Fragen und Kontaktanfragen gehen direkt an Stefan.',
     ],
     people: [{ name: 'Stefan Gastaudo', role: 'Torwarttrainer · C-Lizenz', image: '/images/verein/personen/stefan-gastaudo.jpg' }],

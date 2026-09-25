@@ -105,7 +105,7 @@ test('the youth mega menu promotes the next youth event and its filtered overvie
   assert.match(youthMenuSponsors, /\/jugend\/termine/);
   assert.match(youthMenuSponsors, /Nächster Jugendtermin/);
   assert.match(youthMenuSponsors, /Alle Jugendtermine/);
-  assert.match(navigation, /'Torwarttraining'[\s\S]*?\{ label: 'Termine', href: '\/jugend\/termine' \}/);
+  assert.match(navigation, /title: 'Jugendabteilung'[\s\S]*?\{ label: 'Termine', href: '\/jugend\/termine' \}/);
 });
 
 test('youth overview combines youth events and matchdays while source filters remain separate', () => {

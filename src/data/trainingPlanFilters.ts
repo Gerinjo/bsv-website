@@ -1,5 +1,6 @@
 export const trainingFilterOptions = [
   { key: 'all', label: 'Alle', fullLabel: 'Alle Mannschaften' },
+  { key: 'goalkeeping', label: 'Torwarttraining', fullLabel: 'Torwarttraining' },
   { key: 'men', label: 'Herren', fullLabel: 'Herren 1, Herren 2 und Alte Herren' },
   { key: 'women', label: 'Frauen', fullLabel: 'Frauen 1 und Frauen 2' },
   { key: 'a', label: 'A', fullLabel: 'A-Junioren' },
