@@ -272,7 +272,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .mega-directory-head > a b { display:grid; place-items:center; width:25px; aspect-ratio:1; border-radius:50%; background:#f4d638; transition:.18s ease; }
   .mega-directory-head > a:hover b { transform:translate(2px,-2px); }
   .mega-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:21px 26px; }
-  .youth-mega-groups { grid-template-areas:'department stories' 'department support' 'performance development' 'children girls'; grid-template-rows:repeat(2,minmax(0,1fr)) auto auto; }
+  .youth-mega-groups { grid-template-areas:'department stories' 'department support' 'performance development' 'children girls' 'children training'; grid-template-rows:repeat(2,minmax(0,1fr)) auto auto auto; }
   .youth-mega-groups [data-mega-group='Jugendabteilung'] { grid-area:department; }
   .youth-mega-groups [data-mega-group='Geschichten'] { grid-area:stories; }
   .youth-mega-groups [data-mega-group='Unterstützung gesucht'] { grid-area:support; }
@@ -280,6 +280,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .youth-mega-groups [data-mega-group='Entwicklungsbereich'] { grid-area:development; }
   .youth-mega-groups [data-mega-group='Kinderfußball'] { grid-area:children; }
   .youth-mega-groups [data-mega-group='Juniorinnen'] { grid-area:girls; }
+  .youth-mega-groups [data-mega-group='Fördertraining'] { grid-area:training; }
   .mega-group { min-width:0; padding-top:9px; border-top:3px solid #164f32; }
   .mega-group h2 { display:flex; align-items:center; min-height:18px; margin-bottom:5px; color:#164f32; font-size:.69rem; }
   .mega-group li { border-bottom:1px solid #e5eae6; }

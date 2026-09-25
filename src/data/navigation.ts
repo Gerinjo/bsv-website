@@ -72,7 +72,6 @@ export const menu: MenuItem[] = [
         { label: 'Qualitätsoffensive', href: '/jugend/qualitaetsoffensive' },
         { label: 'Auszeichnungen', href: '/jugend/auszeichnungen' },
         { label: 'Schiedsrichter & Jugendschiedsrichter', href: '/jugend/jugendschiedsrichter' },
-        { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
         { label: 'Termine', href: '/jugend/termine' },
       ]},
       { title: 'Geschichten', links: [
@@ -105,6 +104,9 @@ export const menu: MenuItem[] = [
         { label: 'U17 B-Juniorinnen', href: '/jugend/juniorinnen/u17' },
         { label: 'U15 C-Juniorinnen', href: '/jugend/juniorinnen/u15' },
         { label: 'U13 D-Juniorinnen', href: '/jugend/juniorinnen/u13' },
+      ]},
+      { title: 'Fördertraining', links: [
+        { label: 'Torwarttraining', href: '/jugend/torwarttraining' },
       ]},
     ],
   },
