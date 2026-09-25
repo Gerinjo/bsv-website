@@ -8,8 +8,8 @@ const youthMenu = menu.find((item) => item.label === 'Junge Sterne')!;
 const departmentGroup = youthMenu.groups.find((group) => group.title === 'Jugendabteilung')!;
 const storyGroup = youthMenu.groups.find((group) => group.title === 'Geschichten')!;
 const supportGroup = youthMenu.groups.find((group) => group.title === 'Unterstützung gesucht')!;
-const teamGroups = youthMenu.groups.filter((group) => ['Leistungsbereich', 'Entwicklungsbereich', 'Kinderfußball', 'Juniorinnen'].includes(group.title));
-const teamGroupColumns = [teamGroups.slice(0, 2), teamGroups.slice(2, 3), teamGroups.slice(3, 4)];
+const teamGroups = youthMenu.groups.filter((group) => ['Leistungsbereich', 'Entwicklungsbereich', 'Kinderfußball', 'Juniorinnen', 'Fördertraining'].includes(group.title));
+const teamGroupColumns = [teamGroups.slice(0, 2), teamGroups.slice(2, 3), teamGroups.slice(3)];
 const leadershipLink = departmentGroup.links.find((link) => link.href === '/jugend/vorstandschaft')!;
 const departmentLinks = [...departmentGroup.links.filter((link) => link !== leadershipLink), ...supportGroup.links];
 const featuredStory = storyGroup.links[0];
@@ -60,10 +60,10 @@ const featuredStory = storyGroup.links[0];
 <section class="youth-teams" aria-labelledby="youth-teams-title">
   <div class="section-heading teams-heading">
     <div>
-      <span>Unsere Mannschaften</span>
-      <h2 id="youth-teams-title">Vier Bereiche.<br /><em>Ein Nachwuchs.</em></h2>
+      <span>Mannschaften & Fördertraining</span>
+      <h2 id="youth-teams-title">Fünf Bereiche.<br /><em>Ein Nachwuchs.</em></h2>
     </div>
-    <p>Wähle den passenden Bereich und öffne direkt die Seite der gewünschten Mannschaft.</p>
+    <p>Hier findest du unsere Mannschaften und das ergänzende Fördertraining. Wähle den passenden Bereich und erfahre mehr.</p>
   </div>
 
   <div class="team-groups">

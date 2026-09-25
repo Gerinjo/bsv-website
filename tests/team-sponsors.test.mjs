@@ -71,14 +71,14 @@ test('the youth page shows up to four direct youth sponsors and links to the pre
   assert.match(headerSource, /item\.label === 'Junge Sterne' \? item\.href/);
 });
 
-test('the youth landing keeps leadership and stories above sponsors and four team groups below', () => {
+test('the youth landing keeps leadership and stories above sponsors and adds training below the team groups', () => {
   assert.match(pageSource, /isYouthLanding && <YouthLandingContent \/>/);
   assert.ok(youthLandingSource.indexOf('class="leadership-card"') < youthLandingSource.indexOf('<YouthSponsorShowcase />'));
   assert.ok(youthLandingSource.indexOf('class="story-card"') < youthLandingSource.indexOf('<YouthSponsorShowcase />'));
   assert.ok(youthLandingSource.indexOf('<YouthSponsorShowcase />') < youthLandingSource.indexOf('class="youth-teams"'));
-  assert.match(youthLandingSource, /\['Leistungsbereich', 'Entwicklungsbereich', 'Kinderfußball', 'Juniorinnen'\]/);
-  assert.match(youthLandingSource, /Vier Bereiche/);
-  assert.match(youthLandingSource, /teamGroupColumns = \[teamGroups\.slice\(0, 2\), teamGroups\.slice\(2, 3\), teamGroups\.slice\(3, 4\)\]/);
+  assert.match(youthLandingSource, /\['Leistungsbereich', 'Entwicklungsbereich', 'Kinderfußball', 'Juniorinnen', 'Fördertraining'\]/);
+  assert.match(youthLandingSource, /Fünf Bereiche/);
+  assert.match(youthLandingSource, /teamGroupColumns = \[teamGroups\.slice\(0, 2\), teamGroups\.slice\(2, 3\), teamGroups\.slice\(3\)\]/);
   assert.match(youthLandingSource, /\.team-groups \{ display:grid; grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(navigationSource, /title: 'Leistungsbereich',[\s\S]*?'U13 D2-Junioren'[\s\S]*?title: 'Entwicklungsbereich'/);
   assert.match(navigationSource, /title: 'Entwicklungsbereich',[\s\S]*?'U15 C2-Junioren'[\s\S]*?'U13 D3-Junioren'[\s\S]*?title: 'Kinderfußball'/);
