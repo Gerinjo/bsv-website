@@ -70,3 +70,40 @@ test('does not present old matches as upcoming', async () => {
     ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('12.09.2020 16:00')));
   assert.deepEqual(result, []);
 });
+
+test('loads today’s finished game from previousMatches with its result', async () => {
+  const data = { props: { pageProps: { generatedAt: '2026-09-26T16:00:00Z', nextMatches: [], previousMatches: [
+    { id, status: 'acknowledged', kickoff: { date: '26.09.2026' }, result: { homeResult: '2', guestResult: '0' } },
+  ] } } };
+  const fetcher = async (url) => new Response(url.includes('/widget/')
+    ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('26.09.2026 16:00'));
+  const result = await loadNextMatches('widget', fetcher, { now: new Date('2026-09-26T21:59:00Z') });
+  assert.equal(result.length, 1);
+  assert.equal(result[0].status, 'acknowledged');
+  assert.equal(result[0].homeScore, 2);
+  assert.equal(result[0].awayScore, 0);
+  assert.deepEqual(await loadNextMatches('widget', fetcher, { now: new Date('2026-09-26T22:00:00Z') }), []);
+});
+
+test('keeps a live game after kickoff and isolates an unreadable match page', async () => {
+  const other = '031H21VMTK000000VS5489BTVVG7L386';
+  const data = { props: { pageProps: { nextMatches: [
+    { id, status: 'live', live: true, result: { homeResult: '0', guestResult: '0' } },
+    { id: other, status: 'scheduled' },
+  ] } } };
+  const result = await loadNextMatches('widget', async (url) => new Response(url.includes('/widget/')
+    ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>`
+    : url.endsWith(other) ? 'Unavailable' : page('26.09.2026 16:00')),
+  { now: new Date('2026-09-26T14:20:00Z') });
+  assert.equal(result.length, 1);
+  assert.equal(result[0].status, 'live');
+  assert.equal(result[0].homeScore, 0);
+});
+
+test('retains the same-day cancellation status instead of showing LIVE', async () => {
+  const data = { props: { pageProps: { nextMatches: [{ id, status: 'cancelled', live: true, kickoff: { date: '26.09.2026' } }] } } };
+  const result = await loadNextMatches('widget', async (url) => new Response(url.includes('/widget/')
+    ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('26.09.2026 16:00')),
+  { now: new Date('2026-09-26T14:20:00Z') });
+  assert.equal(result[0].status, 'cancelled');
+});

@@ -1,6 +1,8 @@
 ---
 import { teamProfiles } from '../data/teamPages';
 import { loadNextMatches } from '../utils/nextMatch';
+import { matchPresentation, selectHomepageMatch } from '../utils/matchPresentation';
+import { withBase } from '../utils/paths';
 
 const loadTeam = async ({ path, label }: { path: string; label: string }) => {
   const team = teamProfiles[path];
@@ -10,7 +12,7 @@ const loadTeam = async ({ path, label }: { path: string; label: string }) => {
     home: teamId && match.homeTeamId === teamId ? 'BSV' : match.home,
     away: teamId && match.awayTeamId === teamId ? 'BSV' : match.away,
   }));
-  return { label, url: team.fussballDeUrl, matches };
+  return { label, url: team.fussballDeUrl, matches, widgetId: team.fussballDeWidgetId, teamId };
 };
 const groups = await Promise.all([
   { id: 'first', label: 'Erste', teams: [
@@ -25,45 +27,58 @@ const groups = await Promise.all([
 ---
 
 <section class="next-matches" aria-labelledby="next-matches-title">
-  <h2 id="next-matches-title">Die nächsten Spiele</h2>
-  <div class="match-tabs" role="tablist" aria-label="Mannschaften auswählen" hidden>
-    {groups.map((group, index) => (
-      <button type="button" role="tab" id={`matches-tab-${group.id}`} aria-controls={`matches-panel-${group.id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}>{group.label}</button>
-    ))}
+  <h2 id="next-matches-title">Unsere Spiele</h2>
+  <div class="match-nav">
+    <div class="match-tabs" role="tablist" aria-label="Mannschaften auswählen" hidden>
+      {groups.map((group, index) => (
+        <button type="button" role="tab" id={`matches-tab-${group.id}`} aria-controls={`matches-panel-${group.id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}>{group.label}</button>
+      ))}
+    </div>
+    <a class="stadium-link" href={withBase('/media/stadionheft')}>
+      <span>Stadionheft</span>
+      <svg class="pdf-icon" viewBox="0 0 24 28" width="21" height="25" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M14 2H4v24h16V8l-6-6Z"/><path d="M14 2v6h6"/><rect x="1" y="13" width="22" height="10" rx="1" fill="currentColor" stroke="none"/><text x="12" y="20.5" text-anchor="middle" fill="#092f20" stroke="none" font-size="7" font-weight="800" font-family="Arial,sans-serif">PDF</text></svg>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
+    </a>
   </div>
   {groups.map((group) => (
     <div class="match-panel" id={`matches-panel-${group.id}`} role="tabpanel" aria-labelledby={`matches-tab-${group.id}`} tabindex="0">
-      {group.teams.map((team) => (
-        <div class="next-match" aria-label={`Nächstes Spiel · ${team.label}`}>
+      {group.teams.map((team) => {
+        const match = selectHomepageMatch(team.matches);
+        const state = matchPresentation(match);
+        return (
+        <div class="next-match" aria-label={`Spiel · ${team.label}`} data-widget-id={team.widgetId} data-team-id={team.teamId} data-label={team.label} data-matches={JSON.stringify(team.matches)}>
           <h3>{team.label}</h3>
-          {team.matches.map((match, index) => (
-            <div class="match-details" data-kickoff={match.dateTime} hidden={index !== 0}>
+            <div class="match-details" data-kickoff={match?.dateTime} hidden={!match}>
               <div class="match-copy">
-                <p class="match-teams">{match.home} <span>–</span> {match.away}</p>
+                <p class="match-teams"><span data-home>{match?.home}</span> <span class="versus">–</span> <span data-away>{match?.away}</span></p>
                 <p class="match-meta">
-                  <time datetime={match.dateTime}>{match.dateLabel} <span class="separator">·</span> {match.time} Uhr</time>
-                  {match.competition && <><span class="separator">·</span><span>{match.competition}</span></>}
+                  <time datetime={match?.dateTime}>{match?.dateLabel} · {match?.time} Uhr</time>
+                  <span class="competition" hidden={!match?.competition}><span class="separator">·</span><span data-competition>{match?.competition}</span></span>
                 </p>
               </div>
-              <a href={match.url} target="_blank" rel="noopener noreferrer" aria-label={`${team.label}: ${match.home} gegen ${match.away} auf fussball.de`} title="Spiel auf fussball.de öffnen">
+              <div class="match-state" role="status" aria-live="polite" aria-atomic="true" hidden={!state.label}>
+                <span class="live-badge" hidden={!state.live}><span class="live-dot" aria-hidden="true"></span>LIVE</span>
+                <strong class="match-score" hidden={!state.score} aria-label={`Ergebnis ${state.score}`}>{state.score}</strong>
+                <span class="state-label" hidden={state.live}>{state.label}</span>
+              </div>
+              <a class="match-link" href={match?.url ?? team.url} target="_blank" rel="noopener noreferrer" aria-label={`${team.label}: ${match?.home ?? ''} gegen ${match?.away ?? ''} auf fussball.de`} title="Spiel auf fussball.de öffnen">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
               </a>
             </div>
-          ))}
-          <div class="match-fallback" hidden={team.matches.length > 0}>
+          <div class="match-fallback" hidden={Boolean(match)}>
             <p>Aktueller Spieltermin auf fussball.de</p>
-            <a href={team.url} target="_blank" rel="noopener noreferrer" aria-label={`Spielplan ${team.label} auf fussball.de`} title="Spielplan auf fussball.de öffnen">
+            <a class="match-link" href={team.url} target="_blank" rel="noopener noreferrer" aria-label={`Spielplan ${team.label} auf fussball.de`} title="Spielplan auf fussball.de öffnen">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
             </a>
           </div>
         </div>
-      ))}
+      )})}
     </div>
   ))}
 </section>
 
 <script>
-  import { berlinNow } from '../utils/nextMatch';
+  import '../scripts/home-matches';
   document.querySelectorAll<HTMLElement>('.next-matches').forEach((section) => {
     const tablist = section.querySelector<HTMLElement>('.match-tabs');
     const tabs = [...section.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
@@ -92,25 +107,13 @@ const groups = await Promise.all([
     selectTab(0);
     if (tablist) tablist.hidden = false;
   });
-  const refreshMatches = () => {
-    const now = berlinNow();
-    document.querySelectorAll<HTMLElement>('.next-match').forEach((team) => {
-      const cards = [...team.querySelectorAll<HTMLElement>('[data-kickoff]')];
-      const next = cards.find((card) => card.dataset.kickoff! > now);
-      cards.forEach((card) => { card.hidden = card !== next; });
-      const fallback = team.querySelector<HTMLElement>('.match-fallback');
-      if (fallback) fallback.hidden = Boolean(next);
-    });
-  };
-  refreshMatches();
-  window.setInterval(refreshMatches, 60000);
-  document.addEventListener('visibilitychange', refreshMatches);
 </script>
 
 <style>
   /* Include the buttons' 7px shadow when matching the gap above the buttons. */
   .next-matches { margin-top:calc(var(--hero-action-gap, 28px) + 7px); color:white; }
   h2 { margin:0 0 10px; color:#f4d638; font-size:.68rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+  .match-nav { display:flex; align-items:center; justify-content:space-between; gap:12px; }
   .match-tabs { display:flex; gap:0; margin-bottom:0; }
   .match-tabs button { position:relative; min-height:32px; padding:0 20px; border:0; border-radius:0; background:transparent; color:#d2e3d8; font:inherit; font-size:.76rem; font-weight:750; cursor:pointer; }
   .match-tabs button:first-child { padding-left:0; }
@@ -121,20 +124,30 @@ const groups = await Promise.all([
   .match-tabs button[aria-selected="true"]::before { background:#f4d638; }
   .match-tabs button:hover { color:#f4d638; }
   .match-tabs button:focus-visible,.match-panel:focus-visible { outline:2px solid #f4d638; outline-offset:3px; }
+  .stadium-link { display:flex; align-items:center; gap:8px; margin-left:auto; min-height:40px; padding:2px 0 2px 8px; color:#f4d638; text-decoration:none; font-size:.75rem; font-weight:750; white-space:nowrap; }
+  .stadium-link:hover span { text-decoration:underline; text-underline-offset:4px; }.stadium-link svg{flex-shrink:0}
   .next-match { padding:12px 0; border-top:1px solid rgb(255 255 255 / 22%); }
   h3 { margin:0 0 4px; color:#d2e3d8; font-size:.68rem; font-weight:650; }
   .match-details,.match-fallback { display:flex; align-items:center; gap:12px; }
   .match-copy { flex:1; min-width:0; }
   .match-teams { margin:0 0 5px; font-size:.88rem; line-height:1.4; font-weight:750; overflow-wrap:anywhere; }
-  .match-teams span { color:#f4d638; }
+  .match-teams .versus { color:#f4d638; }
   .match-meta { margin:0; color:#d2e3d8; font-size:.76rem; line-height:1.5; overflow-wrap:anywhere; }
   .separator { margin:0 5px; }
-  a { width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; color:#f4d638; border-radius:4px; text-decoration:none; }
-  a:hover { background:rgb(255 255 255 / 10%); } a:focus-visible { outline:2px solid #f4d638; outline-offset:2px; }
+  .match-link { width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; color:#f4d638; border-radius:4px; text-decoration:none; }
+  .match-link:hover { background:rgb(255 255 255 / 10%); } a:focus-visible { outline:2px solid #f4d638; outline-offset:2px; }
+  .match-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; flex:0 0 auto; text-align:center; max-width:82px; }
+  .live-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 8px; border:1px solid #ffc8bc66; border-radius:4px; color:#fff0eb; background:#a32e25; font-size:.65rem; font-weight:850; letter-spacing:.1em; animation:live-glow 1.8s ease-in-out infinite; }
+  .live-dot { width:6px; height:6px; border-radius:50%; background:#ffe0b7; box-shadow:0 0 0 3px #ffd6b722; }
+  .match-score { font-size:1.25rem; line-height:1.1; font-variant-numeric:tabular-nums; color:#f4d638; white-space:nowrap; }
+  .state-label { font-size:.62rem; line-height:1.3; color:#d2e3d8; }
+  @keyframes live-glow { 0%,100%{opacity:1;box-shadow:0 0 0 0 #ffad852b}50%{opacity:.65;box-shadow:0 0 0 4px #ffad8500} }
+  @media(prefers-reduced-motion:reduce){.live-badge{animation:none}}
   .match-fallback p { flex:1; margin:0; color:#d2e3d8; font-size:.8rem; }
   [hidden] { display:none; }
   @media(max-width:650px) {
     .next-match { padding:10px 0; }
     .match-teams { font-size:.82rem; }
   }
+  @media(max-width:380px){.match-nav{gap:4px}.match-tabs button{padding-inline:12px}.stadium-link{gap:5px;padding-left:4px;font-size:.7rem}.match-details{gap:6px}.match-link{width:36px}.match-state{max-width:70px}.match-score{font-size:1.1rem}}
 </style>

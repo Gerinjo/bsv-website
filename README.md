@@ -56,6 +56,16 @@ Neue Ausgabe veröffentlichen:
 
 Der Leser verwendet die festgelegte Version von `pdfjs-dist` und lädt PDF, Worker sowie benötigte Hilfsdateien von der eigenen Website. Die Bibliothek wird nur auf den Leseansichten geladen. Original-PDF und Download bleiben auch ohne JavaScript erreichbar. Lizenztexte liegen unter `public/vendor/pdfjs/`; bei einem Bibliotheksupdate ebenfalls aktualisieren.
 
+## Spiele auf der Startseite
+
+`HomeNextMatch.astro` zeigt unter „Erste / Reserve“ die Spiele der vier aktiven Mannschaften und rechts den Link zur Stadionheftübersicht. Das Spiel des aktuellen Tages bleibt bis Mitternacht in `Europe/Berlin` sichtbar, einschließlich seines Endstands. Erst danach wird das nächste Spiel ausgewählt. Diese Auswahl erfolgt auch bei einer länger geöffneten Seite ohne Neuladen.
+
+Die öffentlich lesbare Edge Function `home-matches` liefert die aktuellen Daten aus den vier FUSSBALL.DE-Widgets. Sie nutzt denselben Parser wie der Seitenaufbau (`supabase/functions/_shared/football-matches.ts`), berücksichtigt sowohl kommende als auch heutige abgeschlossene Spiele und entschlüsselt Uhrzeit und Ergebnis mit der vom Widget gelieferten Schrift. Sie hat keinen Datenbankzugriff. Bei Änderungen am Parser die Funktion ebenfalls bereitstellen.
+
+Am Spieltag fragt die sichtbare Startseite minütlich neue Daten ab, sonst alle 15 Minuten. Verdeckte Tabs pausieren den Abruf; Antworten werden serverseitig eine Minute zwischengespeichert. Ein gemeldeter LIVE-Status erscheint pulsierend zwischen Spieltext und Spiel-Link; reduzierte Bewegung wird respektiert. Ohne aktuelle Statusmeldung wird kein LIVE behauptet, ohne gemeldete Tore kein Ergebnis erfunden. Nach drei Minuten ohne frische LIVE-Daten erlischt der LIVE-Hinweis. Ein gemeldeter Endstand bleibt erhalten; ohne Ergebnis erscheint nach der üblichen Spielzeit „Ergebnis folgt“.
+
+Tests: `node --test tests/next-match.test.mjs tests/match-presentation.test.mjs`. Der Feed kann bei Bedarf über `PUBLIC_HOME_MATCHES_URL` umgestellt werden. Details zur Bereitstellung: `supabase/functions/home-matches/README.md`.
+
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
 
 ## 🧞 Commands

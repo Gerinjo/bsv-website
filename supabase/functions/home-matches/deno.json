@@ -1,0 +1,5 @@
+{
+  "nodeModulesDir": "none",
+  "imports": { "fontkitten": "npm:fontkitten@1.0.3" },
+  "lock": true
+}

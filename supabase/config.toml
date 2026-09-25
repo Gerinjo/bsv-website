@@ -9,6 +9,10 @@ project_id = "bsv-website"
 [functions.newsletter]
 verify_jwt = false
 
+# Anonymous homepage feed: public fixtures/results only, no database access.
+[functions.home-matches]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.

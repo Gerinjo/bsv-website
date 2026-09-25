@@ -1,0 +1,22 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:fontkitten@1.0.3": "1.0.3"
+  },
+  "npm": {
+    "fontkitten@1.0.3": {
+      "integrity": "sha512-Wp1zXWPVUPBmfoa3Cqc9ctaKuzKAV6uLstRqlR56kSjplf5uAce+qeyYym7F+PHbGTk+tCEdkCW6RD7DX/gBZw==",
+      "dependencies": [
+        "tiny-inflate"
+      ]
+    },
+    "tiny-inflate@1.0.3": {
+      "integrity": "sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:fontkitten@1.0.3"
+    ]
+  }
+}
