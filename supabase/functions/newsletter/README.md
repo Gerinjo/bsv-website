@@ -30,7 +30,7 @@ bestehenden GitHub-Pages-Workflow bei einem Push auf `main` veröffentlicht.
 
 ## Media und getrennte E-Mail-Angebote
 
-`/media` bündelt das digitale Stadionheft und `/newsletter`. Das Media-Menü steht
+`/media` bündelt das Stadionheft als PDF und `/newsletter`. Das Media-Menü steht
 hinter Sponsoring; die mobile Navigation öffnet dieselbe Übersicht. Die
 Newsletter-Seite stellt beide Angebote vor. Auf der Startseite und in den
 Newsletter-Mails wird ebenfalls auf die laufende Konzeptphase hingewiesen.
