@@ -1003,7 +1003,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     $textLink('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') . "\n" .
     "DEINE AUSWAHL ZUR E-MAIL-KOMMUNIKATION\n" .
     $emailConsentSummary .
-    ($emailNewsletterAccepted ? "Für die Nordstern Post erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.\n" : '') .
+    ($emailNewsletterAccepted ? "Für unseren Newsletter erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.\n" : '') .
     "Die freiwilligen Einwilligungen können jederzeit widerrufen werden.\n\n" .
     "Jetzt aber auf den Platz – wir freuen uns darauf, dich kennenzulernen!\n\n" .
     "Sportliche Grüße\n" .
@@ -1108,7 +1108,7 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">Deine Auswahl zur E-Mail-Kommunikation</h2>' .
 '<p style="margin:0;line-height:1.75;color:#3f5146;">Allgemeine Vereinsinformationen: <strong>' . $htmlEscape($yesNo($emailGeneralInfoAccepted)) . '</strong><br>' .
 'Newsletter und digitale Vereinszeitschrift: <strong>' . $htmlEscape($yesNo($emailNewsletterAccepted)) . '</strong></p>' .
-($emailNewsletterAccepted ? '<p style="margin:10px 0 0;line-height:1.65;color:#3f5146;">Für die Nordstern Post erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.</p>' : '') .
+($emailNewsletterAccepted ? '<p style="margin:10px 0 0;line-height:1.65;color:#3f5146;">Für unseren Newsletter erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.</p>' : '') .
 '<p style="margin:10px 0 0;font-size:13px;line-height:1.6;color:#6b786f;">Die freiwilligen Einwilligungen können jederzeit widerrufen werden.</p>' .
 '</td></tr>' .
 '<tr><td style="padding:30px 36px;background:#f3f6f3;border-top:1px solid #dfe7df;">' .

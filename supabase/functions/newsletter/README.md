@@ -1,8 +1,12 @@
-# Nordstern Post: Anmeldung und Bestätigung
+# BSV-Newsletter: Anmeldung und Bestätigung
 
 Das Startseitenformular sendet an die öffentliche Edge Function `newsletter`.
 Es verwendet den bestehenden, einmal nutzbaren Spamschutz von `contact-request`.
 Ein Konto oder Supabase-Login ist nicht erforderlich.
+
+Der Newsletter hat noch keinen festgelegten Eigennamen. Sichtbare Texte verwenden
+„Newsletter des BSV Nordstern Radolfzell“ oder „unser Newsletter“. Die bestehende
+Segment-ID und historische Einwilligungskennungen bleiben unverändert.
 
 ## Produktionsanbindung am 24. September 2026
 
@@ -83,12 +87,12 @@ reaktivierte das Abonnement nicht. Die synthetischen Daten wurden entfernt.
    bindet keine Analyse- oder Fremdskripte ein. Ein Klick auf denselben Link ist
    wiederholbar, erzeugt aber nur einen Willkommensauftrag.
 3. Nach Bestätigung werden Einwilligungsfassung und Zeitpunkt gespeichert. Der
-   Workflow fügt die Adresse im Live-Modus zum Resend-Segment **Nordstern Post**
+   Workflow fügt die Adresse im Live-Modus zum bestehenden Newsletter-Segment bei Resend
    hinzu und versendet danach die Willkommensmail. Ein fehlgeschlagener Versand
    nimmt die erteilte Einwilligung nicht zurück.
 4. Der Link in der Willkommensmail führt zu einer Abmeldeseite mit Bestätigungsbutton.
    Die Abmeldung entzieht lokal die Freigabe und entfernt die Person aus dem
-   Nordstern-Post-Segment. Alte Bestätigungslinks können sie nicht wieder anmelden.
+   Newsletter-Segment. Alte Bestätigungslinks können sie nicht wieder anmelden.
    Die normalen Newsletter-Broadcasts verwenden weiterhin Resends Abmeldelink.
 
 Die Segment-ID `76a53fca-4c76-40a7-8c56-404806f88364` stammt aus den vorhandenen

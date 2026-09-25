@@ -31,11 +31,11 @@ export async function loadSponsors(fetcher = fetch) {
 
 export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [] }) {
   const confirmation = kind === 'confirmation';
-  const subject = confirmation ? 'Nordstern Post: Bitte bestätige deine Anmeldung ✦' : 'Willkommen bei der Nordstern Post! ✦';
+  const subject = confirmation ? 'BSV Nordstern Radolfzell: Bitte bestätige deine Newsletter-Anmeldung ✦' : 'Willkommen beim Newsletter des BSV Nordstern Radolfzell! ✦';
   const headline = confirmation ? 'Ein Klick.<br>Ganz nah am BSV.' : 'Du bist dabei.<br>Auf geht’s grün!';
   const intro = confirmation
-    ? 'Schön, dass du die Nordstern Post abonnieren möchtest! Bestätige bitte noch deine E-Mail-Adresse – erst dann nehmen wir dich in unseren Newsletter auf.'
-    : 'Deine E-Mail-Adresse ist bestätigt. Ab jetzt erhältst du die Nordstern Post mit Geschichten aus unserem Verein, Neuigkeiten von den Jungen Sternen und Einladungen zu unseren Veranstaltungen.';
+    ? 'Schön, dass du unseren Newsletter abonnieren möchtest! Bestätige bitte noch deine E-Mail-Adresse – erst dann nehmen wir dich in unseren Newsletter auf.'
+    : 'Deine E-Mail-Adresse ist bestätigt. Ab jetzt erhältst du unseren Newsletter mit Geschichten aus unserem Verein, Neuigkeiten von den Jungen Sternen und Einladungen zu unseren Veranstaltungen.';
   const buttonLabel = confirmation ? 'Anmeldung bestätigen' : 'Den BSV entdecken';
   const buttonUrl = confirmation ? actionUrl : SITE;
   const note = confirmation
@@ -49,7 +49,7 @@ export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [] })
 <!--[if mso]><table role="presentation" width="720"><tr><td><![endif]-->
 <table role="presentation" width="100%" style="max-width:720px;background:white;border:4px solid #17613a;">
 <tr><td class="section" style="padding:32px 40px;background:#092f20;border-top:6px solid #f4d638;">
-<table role="presentation" width="100%"><tr><td><p style="margin:0;color:#f4d638;font-size:13px;letter-spacing:2px;font-weight:bold;">NORDSTERN POST</p><p style="color:#d7e5dc;font-size:13px;">BSV Nordstern Radolfzell · Seit 1956</p></td><td width="76"><a href="${SITE}/"><img src="${SITE}/images/verein/wappen/bsv-nordstern.png" width="76" height="72" alt="BSV Nordstern" style="display:block;border:0;"></a></td></tr></table>
+<table role="presentation" width="100%"><tr><td><p style="margin:0;color:#f4d638;font-size:13px;letter-spacing:2px;font-weight:bold;">UNSER NEWSLETTER</p><p style="color:#d7e5dc;font-size:13px;">BSV Nordstern Radolfzell · Seit 1956</p></td><td width="76"><a href="${SITE}/"><img src="${SITE}/images/verein/wappen/bsv-nordstern.png" width="76" height="72" alt="BSV Nordstern" style="display:block;border:0;"></a></td></tr></table>
 <h1 class="headline" style="margin:28px 0 8px;color:white;font-size:44px;line-height:1.05;letter-spacing:-1px;">${headline}</h1></td></tr>
 <tr><td class="section" style="padding:36px 40px;font-size:16px;line-height:1.7;">
 <p style="margin-top:0;">Hallo, liebe Nordstern-Freundin, lieber Nordstern-Freund!</p><p>${intro}</p>

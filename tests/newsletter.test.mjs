@@ -159,7 +159,7 @@ test('unsubscribed contacts and exhausted retry windows cannot trigger a welcome
   }
 });
 
-test('existing global provider opt-outs are preserved; unsubscribe removes only Nordstern Post', async () => {
+test('existing global provider opt-outs are preserved; unsubscribe removes only the newsletter segment', async () => {
   const calls = [];
   const fetcher = async (url, options) => { calls.push(options.method); return Response.json({ unsubscribed: true }); };
   await assert.rejects(syncNewsletterContact({ kind: 'welcome', email: 'fan@example.org', apiKey: 'fake', segmentId: NORDSTERN_SEGMENT_ID, fetcher }), /resend_global_opt_out/);

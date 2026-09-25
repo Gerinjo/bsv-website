@@ -119,9 +119,9 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
           : 'Deine Anmeldung ist bestätigt. Die Aufnahme in den Versandverteiler und deine Willkommensmail werden noch verarbeitet. Bei Fragen erreichst du uns unter info@bsvnordstern.de.' });
       }
       return json({ ok: true, status: result.status, message: body.action === 'unsubscribe'
-        ? 'Du bist von der Nordstern Post abgemeldet. Vielen Dank, dass du dabei warst!'
+        ? 'Du bist von unserem Newsletter abgemeldet. Vielen Dank, dass du dabei warst!'
         : config.testMode ? 'Deine Testanmeldung ist bestätigt. Die Willkommensmail geht an die Testadresse; du wirst nicht in den echten Newsletter-Verteiler aufgenommen.'
-        : 'Deine Anmeldung ist bestätigt. Schön, dass du dabei bist! Du erhältst jetzt die Nordstern Post. Eine Willkommensmail ist auf dem Weg zu dir.' });
+        : 'Deine Anmeldung ist bestätigt. Schön, dass du dabei bist! Du erhältst jetzt unseren Newsletter. Eine Willkommensmail ist auf dem Weg zu dir.' });
     } catch {
       console.error('Newsletter: Verarbeitung fehlgeschlagen.');
       return json({ ok: false, message: 'Das hat gerade nicht geklappt. Bitte versuche es in wenigen Minuten erneut.' }, 503);

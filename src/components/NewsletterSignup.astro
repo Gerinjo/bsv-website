@@ -6,15 +6,15 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
 <section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
   <div class="newsletter-shell">
     <div class="newsletter-copy">
-      <p class="eyebrow"><span aria-hidden="true">✦</span> Nordstern Post</p>
+      <p class="eyebrow"><span aria-hidden="true">✦</span> Unser Newsletter</p>
       <h2 id="newsletter-title">Dein Verein.<br /><em>In deinem Postfach.</em></h2>
-      <p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit der Nordstern Post bleibst du dem BSV ganz nah.</p>
+      <p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit unserem Newsletter bleibst du dem BSV ganz nah.</p>
       <span class="newsletter-note">Kostenlos. Für alle BSV-Fans. Jederzeit abbestellbar.</span>
     </div>
     <form data-newsletter-signup data-endpoint={newsletterEndpoint} data-captcha-endpoint={newsletterCaptchaEndpoint}>
       <label for="newsletter-email">Deine E-Mail-Adresse</label>
       <input id="newsletter-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="du@beispiel.de" required />
-      <label class="consent"><input name="consent" type="checkbox" required /><span>Ich möchte die Nordstern Post mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten. Die <a href={withBase('/datenschutz#newsletter')}>Datenschutzhinweise</a> habe ich gelesen.</span></label>
+      <label class="consent"><input name="consent" type="checkbox" required /><span>Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten. Die <a href={withBase('/datenschutz#newsletter')}>Datenschutzhinweise</a> habe ich gelesen.</span></label>
       <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
       <div class="captcha-row">
         <div><label for="newsletter-captcha" data-captcha-label>Spamschutz wird geladen …</label><input id="newsletter-captcha" name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required aria-describedby="newsletter-status" /></div>
@@ -23,7 +23,7 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
       <button type="submit" class="subscribe" disabled>Newsletter abonnieren <span aria-hidden="true">↗</span></button>
       <p class="hint">Fast geschafft: Nach der Anmeldung bestätigst du deine E-Mail-Adresse über den Link in unserer Nachricht.</p>
       <p id="newsletter-status" class="status" role="status" aria-live="polite" tabindex="-1"></p>
-      <noscript><p>Bitte aktiviere JavaScript, um dich für die Nordstern Post anzumelden.</p></noscript>
+      <noscript><p>Bitte aktiviere JavaScript, um dich für unseren Newsletter anzumelden.</p></noscript>
     </form>
   </div>
 </section>
