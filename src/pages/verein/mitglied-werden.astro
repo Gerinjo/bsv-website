@@ -56,7 +56,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
                   <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
                   <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" aria-describedby="newsletter-consent-hint" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
                 </div>
-                <p id="newsletter-consent-hint">Nach dem Absenden erhältst du einen Bestätigungslink per E-Mail. Erst nach deinem Klick bekommst du unseren Newsletter. Wenn du den Newsletter bereits bestätigt hast, ist keine weitere Bestätigung nötig.</p>
+                <p id="newsletter-consent-hint">Nach deiner Online-Anmeldung erhältst du eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail. Wenn du den Newsletter auswählst, bekommst du zusätzlich eine E-Mail zur Verifizierung deiner E-Mail-Adresse. Bitte klicke auf den Bestätigungslink darin. Erst danach ist dein Newsletter-Abonnement aktiv. Bereits bestätigte Newsletter-Abonnements müssen nicht erneut bestätigt werden.</p>
               </div>
             </div>
           </section>
@@ -548,11 +548,11 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
       clearSignature.click();
       document.querySelector('#signingDate').value = new Date().toISOString().slice(0, 10);
       await createCaptcha();
-      status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet.`;
+      status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet. Du erhältst eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail.`;
       if (newsletterRequested) {
         status.textContent += result.newsletterStatus === 'requested'
-          ? ' Für unseren Newsletter: Bitte bestätige den Link in deinem Postfach, sofern du den Newsletter noch nicht bestätigt hast. Prüfe auch den Spam-Ordner.'
-          : ' Deine Newsletter-Anmeldung konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für den Newsletter das Formular auf der Startseite.';
+          ? ' Für unseren Newsletter erhältst du zusätzlich eine E-Mail zur Verifizierung deiner E-Mail-Adresse, sofern dein Newsletter-Abonnement noch nicht bestätigt ist. Klicke auf den Bestätigungslink, um dein Abonnement zu aktivieren. Prüfe auch den Spam-Ordner.'
+          : ' Deine Newsletter-Anmeldung konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für den Newsletter das Formular auf unserer Newsletter-Seite unter /newsletter.';
       }
       window.scrollTo({ top: form.offsetTop - 90, behavior: 'smooth' });
     } catch (error) {
