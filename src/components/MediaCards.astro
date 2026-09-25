@@ -1,0 +1,39 @@
+---
+import { mediaChannels } from '../data/media';
+import { withBase } from '../utils/paths';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+
+<div class:list={['media-cards', { compact }]}>
+  {mediaChannels.map((channel) => (
+    <a href={withBase(channel.href)} class="media-card">
+      <span class="media-symbol" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          {channel.symbol === 'book'
+            ? <><path d="M24 12c-6-4-12-5-19-3v28c7-2 13-1 19 3 6-4 12-5 19-3V9c-7-2-13-1-19 3Z" /><path d="M24 12v28M11 16l7 2M11 23l7 2M30 18l7-2M30 25l7-2" /></>
+            : <><rect x="4" y="9" width="40" height="30" rx="2" /><path d="m5 11 19 15 19-15M5 37l12-12M43 37 31 25" /></>}
+        </svg>
+      </span>
+      <div><span class="eyebrow">{channel.eyebrow}</span><h2>{channel.label}</h2><p>{channel.description}</p><strong>{channel.action}<span aria-hidden="true">↗</span></strong></div>
+    </a>
+  ))}
+</div>
+
+<style>
+  .media-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+  .media-card{box-sizing:border-box;display:grid;grid-template-columns:1fr;gap:28px;padding:38px;background:#fff;border-top:4px solid #164f32;color:#102b1d;text-decoration:none;box-shadow:0 12px 35px rgb(9 47 32 / 6%)}
+  .media-card:last-child{background:#eef4ee;border-color:#f4d638}
+  .media-symbol{display:grid;place-items:center;width:72px;height:72px;background:#164f32;color:#f4d638}
+  .media-symbol svg{width:44px;height:44px}
+  .eyebrow{color:#164f32;font-size:.65rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+  h2{margin:12px 0 16px;font-family:Georgia,serif;font-size:2.5rem;line-height:1.05;letter-spacing:-.035em}
+  p{margin:0;max-width:490px;color:#52665a;line-height:1.65;font-size:.95rem}
+  strong{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:26px;font-size:.85rem;color:#164f32}
+  strong span{display:grid;place-items:center;flex:0 0 auto;width:30px;height:30px;background:#f4d638;border-radius:50%}
+  .media-card:hover,.media-card:focus-visible{outline:2px solid #164f32;outline-offset:3px}
+  .compact .media-card{padding:24px;grid-template-columns:56px minmax(0,1fr);gap:22px;box-shadow:none}
+  .compact .media-symbol{width:56px;height:56px}.compact .media-symbol svg{width:34px;height:34px}
+  .compact h2{font-size:1.75rem}.compact p{font-size:.85rem}.compact strong{margin-top:20px;font-size:.8rem}
+  @media(max-width:650px){.media-cards{grid-template-columns:1fr;gap:20px}.media-card{padding:28px;gap:22px}}
+</style>

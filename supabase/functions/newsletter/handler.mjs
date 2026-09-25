@@ -4,6 +4,7 @@ import { token, hash } from '../_shared/newsletter-tokens.mjs';
 export { token, hash } from '../_shared/newsletter-tokens.mjs';
 
 export const CONSENT_VERSION = 'nordstern-post-2026-09-24';
+export const INFO_CONSENT_VERSION = 'vereinsinformationen-2026-09-25';
 const RECEIVED = 'Danke für deine Anmeldung! Schau bitte in dein Postfach und bestätige deine E-Mail-Adresse über unseren Link. Prüfe auch den Spam-Ordner. Falls du gerade schon einen Link angefordert hast, nutze bitte diese Nachricht.';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TOKEN = /^[0-9a-f]{64}$/;
@@ -40,8 +41,8 @@ async function readBody(request) {
   return body;
 }
 
-export function createNewsletterHandler({ db, config, sendEmail, serviceKey, workerSecret = serviceKey, siteUrl = 'https://bsvnordstern.de', allowedOrigins = ['https://bsvnordstern.de', 'https://www.bsvnordstern.de'], segmentId, contactsApiKey, fetcher = fetch }) {
-  const processJob = (jobId = null) => processNewsletterJob({ db, config, sendEmail, fetcher, segmentId, contactsApiKey, jobId });
+export function createNewsletterHandler({ db, config, sendEmail, serviceKey, workerSecret = serviceKey, siteUrl = 'https://bsvnordstern.de', allowedOrigins = ['https://bsvnordstern.de', 'https://www.bsvnordstern.de'], segmentId, infoSegmentId, contactsApiKey, fetcher = fetch }) {
+  const processJob = (jobId = null) => processNewsletterJob({ db, config, sendEmail, fetcher, segmentId, infoSegmentId, contactsApiKey, jobId });
   const query = async (operation) => {
     const result = await operation;
     if (result.error) throw new Error('database');
@@ -71,57 +72,61 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
         while (processed < 5 && Date.now() - started < 40000 && await processJob()) processed++;
         return json({ ok: true, processed });
       }
-      if (!config.resendApiKey || !config.mailFrom || !serviceKey) return json({ ok: false, message: 'Die Newsletter-Anmeldung ist momentan nicht verfügbar. Bitte versuche es später erneut.' }, 503);
+      if (!config.resendApiKey || !config.mailFrom || !serviceKey) return json({ ok: false, message: 'Die E-Mail-Anmeldung ist momentan nicht verfügbar. Bitte versuche es später erneut.' }, 503);
       if (body.action === 'subscribe') {
         if (typeof body.website === 'string' && body.website.trim()) return json({ ok: true, message: RECEIVED });
+        const topic = body.topic ?? 'newsletter';
+        if (!['newsletter', 'club_info'].includes(topic)) return json({ ok: false, message: 'Bitte wähle Newsletter oder Informations-E-Mails aus.' }, 422);
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
         if (email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) || body.consent !== true) {
-          return json({ ok: false, message: 'Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Newsletter-Einwilligung.' }, 422);
+          return json({ ok: false, message: 'Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung für deine Auswahl.' }, 422);
         }
         if (!UUID.test(body.captchaToken ?? '') || !Number.isInteger(body.captchaAnswer)) return json({ ok: false, message: 'Bitte löse den Spamschutz.' }, 422);
         const captcha = await query(db.from('contact_captcha_challenges').delete().eq('id', body.captchaToken).select('antwort, expires_at').maybeSingle());
         if (!captcha || Date.parse(captcha.expires_at) <= Date.now() || captcha.antwort !== body.captchaAnswer) return json({ ok: false, message: 'Der Spamschutz ist falsch oder abgelaufen. Bitte löse die neue Aufgabe.' }, 422);
         const confirmationToken = token();
-        const message = renderNewsletterEmail({ kind: 'confirmation', email, actionUrl: link('bestaetigen', confirmationToken), sponsors: await loadSponsors(fetcher) });
+        const message = renderNewsletterEmail({ kind: 'confirmation', topic, email, actionUrl: link('bestaetigen', confirmationToken), sponsors: await loadSponsors(fetcher) });
         const ip = request.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() || 'unknown';
-        const jobId = await query(db.rpc('newsletter_request', {
+        const jobId = await query(db.rpc('newsletter_request_topic', {
           p_email: email, p_mode: config.mode, p_token_hash: await hash(confirmationToken), p_message: message,
-          p_consent_version: CONSENT_VERSION, p_rate_key: await rateKey(`${config.mode}:${ip}`, serviceKey),
+          p_topic: topic, p_consent_version: topic === 'club_info' ? INFO_CONSENT_VERSION : CONSENT_VERSION, p_rate_key: await rateKey(`${config.mode}:${ip}`, serviceKey),
         }));
         // The durable job remains available to the scheduled worker after any failure.
         if (jobId) await processJob(jobId).catch(() => console.error('Newsletter: Versand zur Wiederholung vorgemerkt.'));
         return json({ ok: true, message: config.testMode ? `Testmodus: Die Nachricht geht an die hinterlegte Testadresse. ${RECEIVED}` : RECEIVED }, 202);
       }
-      if (!['confirm', 'unsubscribe'].includes(body.action) || typeof body.token !== 'string' || !TOKEN.test(body.token)) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte melde dich auf der Startseite erneut an.' }, 400);
+      if (!['confirm', 'unsubscribe'].includes(body.action) || typeof body.token !== 'string' || !TOKEN.test(body.token)) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte melde dich auf unserer Newsletter-Seite erneut an.' }, 400);
       const tokenHash = await hash(body.token);
       let result;
       if (body.action === 'confirm') {
-        const sub = await query(db.from('newsletter_subscriptions').select('email, token_consumed, confirmation_expires_at').eq('confirmation_token_hash', tokenHash).eq('mail_mode', config.mode).maybeSingle());
-        if (!sub) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte fordere auf der Startseite einen neuen Link an.' }, 400);
+        const sub = await query(db.from('newsletter_subscriptions').select('email, topic, token_consumed, confirmation_expires_at').eq('confirmation_token_hash', tokenHash).eq('mail_mode', config.mode).maybeSingle());
+        if (!sub) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte fordere auf unserer Newsletter-Seite einen neuen Link an.' }, 400);
         const unsubscribeToken = token();
         // Avoid fetching sponsors or composing another email for repeated/expired links.
         const message = sub.token_consumed || Date.parse(sub.confirmation_expires_at) <= Date.now() ? null : renderNewsletterEmail({
-          kind: 'welcome', email: sub.email, actionUrl: link('abmelden', unsubscribeToken), sponsors: await loadSponsors(fetcher),
+          kind: 'welcome', topic: sub.topic ?? 'newsletter', email: sub.email, actionUrl: link('abmelden', unsubscribeToken), sponsors: await loadSponsors(fetcher),
         });
         result = await query(db.rpc('newsletter_confirm', { p_token_hash: tokenHash, p_mode: config.mode, p_unsubscribe_hash: await hash(unsubscribeToken), p_message: message }));
       } else {
         result = await query(db.rpc('newsletter_unsubscribe', { p_token_hash: tokenHash, p_mode: config.mode }));
       }
       if (['invalid', 'expired'].includes(result.status)) return json({ ok: false, message: result.status === 'expired'
-        ? 'Dein Bestätigungslink ist abgelaufen. Bitte melde dich auf der Startseite erneut an.'
+        ? 'Dein Bestätigungslink ist abgelaufen. Bitte melde dich auf unserer Newsletter-Seite erneut an.'
         : 'Dieser Link ist nicht mehr gültig. Bitte melde dich bei Fragen unter info@bsvnordstern.de.' }, 400);
       if (result.job_id) {
         await processJob(result.job_id).catch(() => console.error('Newsletter: Benachrichtigung zur Wiederholung vorgemerkt.'));
         const delivery = await query(db.from('newsletter_jobs').select('status, last_error').eq('id', result.job_id).maybeSingle());
-        if (delivery?.last_error === 'resend_global_opt_out') return json({ ok: true, status: 'delivery_blocked', message: 'Deine E-Mail-Adresse ist bestätigt. Beim Versanddienst besteht noch eine frühere Abmeldung für alle BSV-Mails. Bitte melde dich unter info@bsvnordstern.de, damit wir deine Newsletter-Anmeldung klären können.' });
+        if (delivery?.last_error === 'resend_global_opt_out') return json({ ok: true, status: 'delivery_blocked', message: 'Deine E-Mail-Adresse ist bestätigt. Beim Versanddienst besteht noch eine frühere Abmeldung für alle BSV-Mails. Bitte melde dich unter info@bsvnordstern.de, damit wir deine E-Mail-Anmeldung klären können.' });
         if (delivery && delivery.status !== 'sent') return json({ ok: true, status: result.status, message: body.action === 'unsubscribe'
           ? 'Deine Abmeldung ist gespeichert. Die Übernahme in den Versandverteiler wird noch abgeschlossen.'
           : 'Deine Anmeldung ist bestätigt. Die Aufnahme in den Versandverteiler und deine Willkommensmail werden noch verarbeitet. Bei Fragen erreichst du uns unter info@bsvnordstern.de.' });
       }
-      return json({ ok: true, status: result.status, message: body.action === 'unsubscribe'
-        ? 'Du bist von unserem Newsletter abgemeldet. Vielen Dank, dass du dabei warst!'
-        : config.testMode ? 'Deine Testanmeldung ist bestätigt. Die Willkommensmail geht an die Testadresse; du wirst nicht in den echten Newsletter-Verteiler aufgenommen.'
-        : 'Deine Anmeldung ist bestätigt. Schön, dass du dabei bist! Du erhältst jetzt unseren Newsletter. Eine Willkommensmail ist auf dem Weg zu dir.' });
+      const infoOnly = result.topic === 'club_info';
+      return json({ ok: true, status: result.status, topic: result.topic ?? 'newsletter', message: body.action === 'unsubscribe'
+        ? (infoOnly ? 'Du bist von den Informations-E-Mails abgemeldet. Eine separate Newsletter-Anmeldung bleibt davon unberührt.' : 'Du bist von unserem Newsletter abgemeldet. Eine separate Anmeldung für Informations-E-Mails bleibt davon unberührt.')
+        : config.testMode ? 'Deine Testanmeldung ist bestätigt. Die Willkommensmail geht an die Testadresse; du wirst nicht in den echten Versandverteiler aufgenommen.'
+        : infoOnly ? 'Deine Anmeldung für allgemeine Informations-E-Mails ist bestätigt. Du wirst dadurch nicht für den Newsletter angemeldet. Eine Bestätigungsmail ist auf dem Weg zu dir.'
+        : 'Deine Newsletter-Anmeldung ist bestätigt. Schön, dass du dabei bist! Wir arbeiten gerade am Konzept; die ersten Sendungen folgen in absehbarer Zeit. Eine Willkommensmail ist auf dem Weg zu dir.' });
     } catch {
       console.error('Newsletter: Verarbeitung fehlgeschlagen.');
       return json({ ok: false, message: 'Das hat gerade nicht geklappt. Bitte versuche es in wenigen Minuten erneut.' }, 503);

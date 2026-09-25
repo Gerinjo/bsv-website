@@ -1,3 +1,5 @@
+import { mediaChannels } from './media';
+
 export type MenuLink = {
   label: string;
   href: string;
@@ -143,6 +145,11 @@ export const menu: MenuItem[] = [
         { label: 'Einzelbausteine', href: '/sponsoring#bausteine' },
         { label: 'Sponsoring anfragen', href: '/kontakt?thema=sponsoring' },
       ]},
+    ],
+  },
+  {
+    label: 'Media', href: '/media', groups: [
+      { title: 'Lesen & verbunden bleiben', links: mediaChannels.map(({ label, href }) => ({ label, href })) },
     ],
   },
   {

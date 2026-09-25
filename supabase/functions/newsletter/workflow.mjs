@@ -1,4 +1,5 @@
 export const NORDSTERN_SEGMENT_ID = '76a53fca-4c76-40a7-8c56-404806f88364';
+export const CLUB_INFO_SEGMENT_ID = '13c075cd-265a-42d5-a220-4ea98307d83f';
 
 // Resend is only touched by confirmed LIVE jobs. Test contacts never enter a segment.
 export async function syncNewsletterContact({ kind, email, apiKey, segmentId, fetcher = fetch }) {
@@ -37,13 +38,16 @@ const checked = async (query) => {
   return result.data;
 };
 
-export async function processNewsletterJob({ db, config, sendEmail, fetcher = fetch, segmentId = NORDSTERN_SEGMENT_ID, contactsApiKey = config.resendApiKey, jobId = null }) {
+export async function processNewsletterJob({ db, config, sendEmail, fetcher = fetch, segmentId = NORDSTERN_SEGMENT_ID, infoSegmentId = CLUB_INFO_SEGMENT_ID, contactsApiKey = config.resendApiKey, jobId = null }) {
   const jobs = await checked(db.rpc('newsletter_claim_job', { p_mode: config.mode, p_job_id: jobId }));
   const job = jobs?.[0];
   if (!job) return false;
   const save = (values) => checked(db.from('newsletter_jobs').update(values).eq('id', job.id).eq('lease_id', job.lease_id));
   try {
     const sub = await checked(db.from('newsletter_subscriptions').select('*').eq('id', job.subscription_id).single());
+    const topic = sub.topic ?? 'newsletter';
+    if (!['newsletter', 'club_info'].includes(topic)) throw new Error('invalid_subscription_topic');
+    const selectedSegment = topic === 'club_info' ? infoSegmentId : segmentId;
     if (sub.mail_mode !== config.mode) throw new Error('mail_mode_changed');
     if (Date.now() - Date.parse(job.first_attempt_at) >= 23 * 60 * 60 * 1000) {
       await save({ status: 'failed', message: null, last_error: 'retry_window_expired', locked_until: null });
@@ -54,7 +58,7 @@ export async function processNewsletterJob({ db, config, sendEmail, fetcher = fe
       return true;
     }
     if (job.kind !== 'confirmation' && !job.provider_synced) {
-      if (!config.testMode) await syncNewsletterContact({ kind: job.kind, email: sub.email, apiKey: contactsApiKey, segmentId, fetcher });
+      if (!config.testMode) await syncNewsletterContact({ kind: job.kind, email: sub.email, apiKey: contactsApiKey, segmentId: selectedSegment, fetcher });
       await save({ provider_synced: true });
     }
     let providerId = null;

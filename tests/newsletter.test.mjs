@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createNewsletterHandler, hash, token } from '../supabase/functions/newsletter/handler.mjs';
 import { renderNewsletterEmail, selectSponsors, loadSponsors } from '../supabase/functions/newsletter/emails.mjs';
-import { processNewsletterJob, syncNewsletterContact, NORDSTERN_SEGMENT_ID } from '../supabase/functions/newsletter/workflow.mjs';
+import { processNewsletterJob, syncNewsletterContact, NORDSTERN_SEGMENT_ID, CLUB_INFO_SEGMENT_ID } from '../supabase/functions/newsletter/workflow.mjs';
 
 const config = { mode: 'test', testMode: true, resendApiKey: 'fake', mailFrom: 'BSV <test@example.org>' };
 const noFetch = async () => new Response('', { status: 503 });
@@ -30,7 +30,7 @@ test('email templates contain BSV identity, action, address and same sponsor sel
     }
     assert.match(mail.html, /bsv-nordstern.png/);
     assert.match(mail.html, /#f4d638/);
-    if (kind === 'confirmation') assert.match(mail.text, /Ohne deine Bestätigung erhältst du keinen Newsletter/);
+    if (kind === 'confirmation') assert.match(mail.text, /Ohne deine Bestätigung erhältst du keine E-Mails aus diesem Verteiler/);
     else assert.match(mail.text, /Newsletter abmelden/);
   }
 });
@@ -83,12 +83,13 @@ test('a signup consumes the captcha and queues a confirmation without activating
   let queued;
   const db = stubDb({
     table: (state) => { assert.equal(state.name, 'contact_captcha_challenges'); assert.equal(state.operation, 'delete'); return { antwort: 7, expires_at: new Date(Date.now() + 60000).toISOString() }; },
-    rpc: (name, args) => { assert.equal(name, 'newsletter_request'); queued = args; return null; },
+    rpc: (name, args) => { assert.equal(name, 'newsletter_request_topic'); queued = args; return null; },
   });
   const response = await handler(db)(makeRequest({ action: 'subscribe', email: ' Fan@Example.ORG ', consent: true, captchaToken: '11111111-1111-4111-8111-111111111111', captchaAnswer: 7 }));
   assert.equal(response.status, 202);
   assert.equal(queued.p_email, 'fan@example.org');
   assert.equal(queued.p_mode, 'test');
+  assert.equal(queued.p_topic, 'newsletter');
   assert.match(queued.p_message.html, /Anmeldung bestätigen/);
   assert.equal(queued.p_token_hash, await hash(queued.p_message.text.match(/#token=([a-f0-9]+)/)[1]));
   assert.match(queued.p_rate_key, /^[a-f0-9]{64}$/);
@@ -120,11 +121,11 @@ test('only a token confirmed by the database creates the welcome job', async () 
   assert.equal(parameters.p_unsubscribe_hash, await hash(parameters.p_message.text.match(/abmelden#token=([a-f0-9]+)/)[1]));
 });
 
-function workflowFixture({ mode = 'test', kind = 'welcome', status = 'confirmed', attempts = 1, providerSynced = false, firstAttempt = new Date().toISOString() } = {}) {
+function workflowFixture({ topic = 'newsletter', mode = 'test', kind = 'welcome', status = 'confirmed', attempts = 1, providerSynced = false, firstAttempt = new Date().toISOString() } = {}) {
   const changes = [];
   const job = { id: 'job-1', subscription_id: 'sub-1', lease_id: 'lease-1', kind, attempts, first_attempt_at: firstAttempt, provider_synced: providerSynced, message: { to: 'fan@example.org', subject: 'Welcome', html: '<p>Hello</p>' } };
   const db = stubDb({ rpc: (name, args) => { assert.equal(name, 'newsletter_claim_job'); assert.equal(args.p_mode, mode); return [job]; }, table: (state) => {
-    if (state.name === 'newsletter_subscriptions') return { id: 'sub-1', email: 'fan@example.org', status, mail_mode: mode, token_consumed: true };
+    if (state.name === 'newsletter_subscriptions') return { id: 'sub-1', email: 'fan@example.org', status, topic, mail_mode: mode, token_consumed: true };
     assert.equal(state.filters.lease_id, 'lease-1'); changes.push(state.values); return null;
   } });
   return { db, changes, config: { ...config, mode, testMode: mode === 'test' } };
@@ -165,4 +166,76 @@ test('existing global provider opt-outs are preserved; unsubscribe removes only 
   await assert.rejects(syncNewsletterContact({ kind: 'welcome', email: 'fan@example.org', apiKey: 'fake', segmentId: NORDSTERN_SEGMENT_ID, fetcher }), /resend_global_opt_out/);
   assert.deepEqual(calls, ['GET']);
   await syncNewsletterContact({ kind: 'unsubscribe', email: 'fan@example.org', apiKey: 'fake', segmentId: NORDSTERN_SEGMENT_ID, fetcher: async (url, options) => { assert.equal(options.method, 'DELETE'); assert.ok(url.endsWith(`/segments/${NORDSTERN_SEGMENT_ID}`)); return new Response('', { status: 404 }); } });
+});
+
+
+test('information-only signup records its own consent and sends a matching confirmation', async () => {
+  let queued;
+  const db = stubDb({
+    table: () => ({ antwort: 7, expires_at: new Date(Date.now() + 60000).toISOString() }),
+    rpc: (name, args) => { assert.equal(name, 'newsletter_request_topic'); queued = args; return null; },
+  });
+  const result = await handler(db)(makeRequest({ action: 'subscribe', topic: 'club_info', email: 'fan@example.org', consent: true, captchaToken: '11111111-1111-4111-8111-111111111111', captchaAnswer: 7 }));
+  assert.equal(result.status, 202);
+  assert.equal(queued.p_topic, 'club_info');
+  assert.equal(queued.p_consent_version, 'vereinsinformationen-2026-09-25');
+  assert.match(queued.p_message.subject, /Informations-E-Mails bestätigen/);
+  assert.match(queued.p_message.text, /Diese Anmeldung umfasst keinen Newsletter/);
+  assert.match(queued.p_message.html, /Mitgliederversammlung/);
+});
+
+test('unknown topics and missing consent cannot create information subscriptions', async () => {
+  const db = stubDb({ rpc: () => assert.fail('unexpected write'), table: () => assert.fail('unexpected captcha consumption') });
+  for (const body of [
+    { topic: 'all', consent: true }, { topic: ['newsletter', 'club_info'], consent: true }, { topic: 'club_info', consent: false },
+  ]) {
+    assert.equal((await handler(db)(makeRequest({ action: 'subscribe', email: 'fan@example.org', ...body }))).status, 422);
+  }
+});
+
+test('confirmation uses the stored topic, ignoring any client-supplied topic', async () => {
+  let message;
+  const db = stubDb({
+    table: () => ({ email: 'fan@example.org', topic: 'club_info', token_consumed: false, confirmation_expires_at: new Date(Date.now() + 60000).toISOString() }),
+    rpc: (name, args) => { assert.equal(name, 'newsletter_confirm'); message = args.p_message; return { status: 'confirmed', topic: 'club_info' }; },
+  });
+  const result = await (await handler(db, { config: { ...config, testMode: false, mode: 'live' } })(makeRequest({ action: 'confirm', topic: 'newsletter', token: 'a'.repeat(64) }))).json();
+  assert.equal(result.topic, 'club_info');
+  assert.match(result.message, /nicht für den Newsletter angemeldet/);
+  assert.match(message.subject, /Informations-E-Mails ist bestätigt/);
+  assert.doesNotMatch(message.text, /Unser Newsletter entsteht gerade/);
+});
+
+test('information emails retain BSV design, sponsors and their own unsubscribe wording', () => {
+  for (const kind of ['confirmation', 'welcome']) {
+    const mail = renderNewsletterEmail({ kind, topic: 'club_info', email: 'fan@example.org', actionUrl: 'https://bsvnordstern.de/newsletter/abmelden#token=' + 'a'.repeat(64), sponsors: [sponsor('one')] });
+    for (const body of [mail.html, mail.text]) {
+      assert.match(body, /Schlesierstraße 43/);
+      assert.match(body, /Partner one/);
+      assert.match(body, /organisatorische Mitteilungen/);
+    }
+    if (kind === 'welcome') assert.match(mail.text, /Informations-E-Mails abmelden/);
+  }
+});
+
+test('information welcome and unsubscribe synchronize only the separate information segment', async () => {
+  for (const kind of ['welcome', 'unsubscribe']) {
+    const calls = [];
+    const fixture = workflowFixture({ mode: 'live', topic: 'club_info', kind, status: kind === 'welcome' ? 'confirmed' : 'unsubscribed' });
+    await processNewsletterJob({ ...fixture, fetcher: async (url, options) => {
+      calls.push({ path: new URL(url).pathname, method: options.method });
+      return Response.json({ id: 'existing-contact', unsubscribed: false });
+    }, sendEmail: async () => ({ mode: 'live', id: 'mail-1' }) });
+    assert.equal(calls.at(-1).path, `/contacts/fan%40example.org/segments/${CLUB_INFO_SEGMENT_ID}`);
+    assert.equal(calls.at(-1).method, kind === 'welcome' ? 'POST' : 'DELETE');
+    assert.ok(calls.every(call => !call.path.includes(NORDSTERN_SEGMENT_ID)));
+    assert.equal(fixture.changes.at(-1).status, 'sent');
+  }
+});
+
+test('information unsubscribe response describes the independent list', async () => {
+  const db = stubDb({ rpc: (name) => { assert.equal(name, 'newsletter_unsubscribe'); return { status: 'unsubscribed', topic: 'club_info' }; } });
+  const result = await (await handler(db)(makeRequest({ action: 'unsubscribe', token: 'b'.repeat(64) }))).json();
+  assert.match(result.message, /Informations-E-Mails abgemeldet/);
+  assert.match(result.message, /Newsletter-Anmeldung bleibt davon unberührt/);
 });

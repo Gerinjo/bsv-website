@@ -1,6 +1,8 @@
 ---
 import { withBase } from '../utils/paths';
 import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newsletter';
+interface Props { allowTopicSelection?: boolean }
+const { allowTopicSelection = false } = Astro.props;
 ---
 
 <section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
@@ -8,22 +10,27 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
     <div class="newsletter-copy">
       <p class="eyebrow"><span aria-hidden="true">✦</span> Unser Newsletter</p>
       <h2 id="newsletter-title">Dein Verein.<br /><em>In deinem Postfach.</em></h2>
-      <p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit unserem Newsletter bleibst du dem BSV ganz nah.</p>
+      {allowTopicSelection ? <p>Wähle den Newsletter oder nur allgemeine Informations-E-Mails. Beide Verteiler sind unabhängig voneinander. Für jeden bestätigst du deine E-Mail-Adresse separat und kannst dich jederzeit wieder abmelden.</p> : <><p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit unserem Newsletter bleibst du dem BSV ganz nah.</p><p class="concept-note">Unser Newsletter wird gerade konzeptionell aufgesetzt. Die ersten Sendungen folgen in absehbarer Zeit. Du kannst dich schon jetzt anmelden.</p><a class="more" href={withBase('/newsletter')}>Newsletter und Informations-E-Mails kennenlernen →</a></>}
       <span class="newsletter-note">Kostenlos. Für alle BSV-Fans. Jederzeit abbestellbar.</span>
     </div>
     <form data-newsletter-signup data-endpoint={newsletterEndpoint} data-captcha-endpoint={newsletterCaptchaEndpoint}>
+      {allowTopicSelection && <fieldset class="topic-options">
+        <legend>Welche E-Mails möchtest du erhalten?</legend>
+        <label><input type="radio" name="topic" value="newsletter" checked /><span><strong>Newsletter</strong><small>Vereinsgeschichten, Neuigkeiten, Termine und Informationen zu BSV-Partnern.</small></span></label>
+        <label><input type="radio" name="topic" value="club_info" /><span><strong>Nur Informations-E-Mails</strong><small>Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen. Kein Newsletter.</small></span></label>
+      </fieldset>}
       <label for="newsletter-email">Deine E-Mail-Adresse</label>
       <input id="newsletter-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="du@beispiel.de" required />
-      <label class="consent"><input name="consent" type="checkbox" required /><span>Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten. Die <a href={withBase('/datenschutz#newsletter')}>Datenschutzhinweise</a> habe ich gelesen.</span></label>
+      <label class="consent"><input name="consent" type="checkbox" required /><span><span data-consent-copy>Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten.</span> Die <a href={withBase('/datenschutz#newsletter')}>Datenschutzhinweise</a> habe ich gelesen.</span></label>
       <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
       <div class="captcha-row">
         <div><label for="newsletter-captcha" data-captcha-label>Spamschutz wird geladen …</label><input id="newsletter-captcha" name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required aria-describedby="newsletter-status" /></div>
         <button type="button" class="reload" data-captcha-reload>Neue Aufgabe</button>
       </div>
-      <button type="submit" class="subscribe" disabled>Newsletter abonnieren <span aria-hidden="true">↗</span></button>
+      <button type="submit" class="subscribe" disabled><span data-submit-label>{allowTopicSelection ? 'Anmeldung anfordern' : 'Newsletter abonnieren'}</span> <span aria-hidden="true">↗</span></button>
       <p class="hint">Fast geschafft: Nach der Anmeldung bestätigst du deine E-Mail-Adresse über den Link in unserer Nachricht.</p>
       <p id="newsletter-status" class="status" role="status" aria-live="polite" tabindex="-1"></p>
-      <noscript><p>Bitte aktiviere JavaScript, um dich für unseren Newsletter anzumelden.</p></noscript>
+      <noscript><p>Bitte aktiviere JavaScript, um dich für die gewünschten E-Mails anzumelden.</p></noscript>
     </form>
   </div>
 </section>
@@ -36,6 +43,15 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
     const label = form.querySelector<HTMLElement>('[data-captcha-label]')!;
     const answer = form.elements.namedItem('captchaAnswer') as HTMLInputElement;
     const status = form.querySelector<HTMLElement>('[role="status"]')!;
+    const topicOptions = form.querySelector<HTMLFieldSetElement>('.topic-options');
+    const consent = form.elements.namedItem('consent') as HTMLInputElement;
+    const updateConsent = () => {
+      const infoOnly = new FormData(form).get('topic') === 'club_info';
+      form.querySelector<HTMLElement>('[data-consent-copy]')!.textContent = infoOnly
+        ? 'Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen. Diese Auswahl enthält keinen Newsletter.'
+        : 'Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten.';
+    };
+    topicOptions?.addEventListener('change', () => { consent.checked = false; updateConsent(); });
     let captchaToken = '';
     let busy = false;
     const loadCaptcha = async () => {
@@ -67,14 +83,17 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
       delete status.dataset.success;
       status.textContent = 'Deine Anmeldung wird gesendet …';
       const values = new FormData(form);
+      if (topicOptions) topicOptions.disabled = true;
       try {
         const response = await fetch(form.dataset.endpoint!, {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(30000),
-          body: JSON.stringify({ action: 'subscribe', email: values.get('email'), consent: values.get('consent') === 'on', website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')) }),
+          body: JSON.stringify({ action: 'subscribe', topic: values.get('topic') || 'newsletter', email: values.get('email'), consent: values.get('consent') === 'on', website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')) }),
         });
         const data = await response.json();
         if (!response.ok || !data.ok) throw new Error(data.message || 'Die Anmeldung ist gerade nicht möglich. Bitte versuche es später erneut.');
         form.reset();
+        if (topicOptions) topicOptions.disabled = false;
+        updateConsent();
         status.textContent = data.message;
         status.dataset.success = 'true';
       } catch (error) {
@@ -82,6 +101,7 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
         status.textContent = error instanceof Error && error.name === 'Error' ? error.message : 'Die Verbindung wurde unterbrochen. Bitte versuche es erneut.';
       } finally {
         busy = false;
+        if (topicOptions) topicOptions.disabled = false;
         form.removeAttribute('aria-busy');
         status.focus();
         await loadCaptcha();
@@ -103,6 +123,15 @@ import { newsletterEndpoint, newsletterCaptchaEndpoint } from '../utils/newslett
   h2 { margin: 20px 0 24px; font-size: clamp(2.6rem, 4vw, 4rem); letter-spacing: -.045em; line-height: 1; }
   h2 em { color: #f4d638; font-family: Georgia, serif; font-weight: 400; }
   .newsletter-copy > p:not(.eyebrow) { max-width: 470px; color: #e0ebe4; line-height: 1.7; }
+  .newsletter-copy .concept-note { padding-left: 16px; border-left: 3px solid #f4d638; font-size: .9rem; }
+  a.more { color: #f4d638; font-size: .85rem; line-height: 1.6; }
+  .topic-options { min-width: 0; margin: 0 0 24px; padding: 0; border: 0; }
+  .topic-options legend { margin-bottom: 12px; font-weight: 800; font-size: .9rem; }
+  .topic-options label { display: flex; align-items: flex-start; gap: 10px; padding: 13px; border: 1px solid #cbd8ce; border-radius: 3px; background: #f4f7f4; cursor: pointer; }
+  .topic-options label:has(input:checked) { border-color: #164f32; box-shadow: inset 3px 0 #164f32; }
+  .topic-options input { flex: 0 0 auto; width: 18px; height: 18px; margin: 2px 0 0; accent-color: #164f32; }
+  .topic-options strong,.topic-options small { display: block; }
+  .topic-options small { margin-top: 5px; color: #506459; font-size: .75rem; font-weight: 400; line-height: 1.5; }
   .newsletter-note { display: block; margin-top: 24px; color: #c5d9cd; font-size: .78rem; }
   form { position: relative; padding: 30px; background: #fff; color: #10251a; border-top: 5px solid #f4d638; box-shadow: 12px 12px 0 #092f20; }
   label { display: block; margin-bottom: 8px; font-size: .85rem; font-weight: 750; }

@@ -29,17 +29,26 @@ export async function loadSponsors(fetcher = fetch) {
   } catch { return []; }
 }
 
-export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [] }) {
+export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [], topic = 'newsletter' }) {
+  if (!['newsletter', 'club_info'].includes(topic)) throw new Error('invalid_subscription_topic');
+  const infoOnly = topic === 'club_info';
   const confirmation = kind === 'confirmation';
-  const subject = confirmation ? 'BSV Nordstern Radolfzell: Bitte bestätige deine Newsletter-Anmeldung ✦' : 'Willkommen beim Newsletter des BSV Nordstern Radolfzell! ✦';
+  const subscriptionLabel = infoOnly ? 'Informations-E-Mails' : 'Newsletter';
+  const subject = infoOnly
+    ? (confirmation ? 'BSV Nordstern Radolfzell: Informations-E-Mails bestätigen ✦' : 'Deine Anmeldung für BSV-Informations-E-Mails ist bestätigt ✦')
+    : (confirmation ? 'BSV Nordstern Radolfzell: Bitte bestätige deine Newsletter-Anmeldung ✦' : 'Willkommen beim Newsletter des BSV Nordstern Radolfzell! ✦');
   const headline = confirmation ? 'Ein Klick.<br>Ganz nah am BSV.' : 'Du bist dabei.<br>Auf geht’s grün!';
-  const intro = confirmation
+  const intro = infoOnly
+    ? (confirmation
+      ? 'Du möchtest allgemeine Vereinsinformationen per E-Mail erhalten: Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen. Bestätige bitte deine E-Mail-Adresse. Diese Anmeldung umfasst keinen Newsletter.'
+      : 'Deine E-Mail-Adresse ist bestätigt. Du erhältst künftig allgemeine Vereinsinformationen: Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen. Für den Newsletter wirst du durch diese Anmeldung nicht angemeldet.')
+    : confirmation
     ? 'Schön, dass du unseren Newsletter abonnieren möchtest! Bestätige bitte noch deine E-Mail-Adresse – erst dann nehmen wir dich in unseren Newsletter auf.'
-    : 'Deine E-Mail-Adresse ist bestätigt. Ab jetzt erhältst du unseren Newsletter mit Geschichten aus unserem Verein, Neuigkeiten von den Jungen Sternen und Einladungen zu unseren Veranstaltungen.';
+    : 'Deine E-Mail-Adresse ist bestätigt. Du bist für unseren Newsletter angemeldet. Freu dich auf Geschichten aus unserem Verein, Neuigkeiten von den Jungen Sternen und Einladungen zu unseren Veranstaltungen.';
   const buttonLabel = confirmation ? 'Anmeldung bestätigen' : 'Den BSV entdecken';
   const buttonUrl = confirmation ? actionUrl : SITE;
   const note = confirmation
-    ? 'Der Bestätigungslink ist 48 Stunden gültig. Du hast dich nicht angemeldet? Dann ignoriere diese Nachricht. Ohne deine Bestätigung erhältst du keinen Newsletter.'
+    ? 'Der Bestätigungslink ist 48 Stunden gültig. Du hast dich nicht angemeldet? Dann ignoriere diese Nachricht. Ohne deine Bestätigung erhältst du keine E-Mails aus diesem Verteiler.'
     : 'Wir freuen uns, dass du Teil unserer grün-weißen Gemeinschaft bist. Ob am Spielfeldrand, in der Halle oder mittendrin im Vereinsleben: Schön, dass du dabei bist!';
   const partnersHtml = sponsors.map((partner) => `<td class="partner" align="center" valign="middle" style="padding:14px 8px;background:#fff;"><a href="${escapeHtml(partner.website)}" style="color:#164f32;font-size:12px;text-decoration:none;"><img src="${escapeHtml(partner.logo)}" alt="${escapeHtml(partner.name)}" width="${partner.width}" height="${partner.height}" style="display:block;border:0;margin:0 auto 10px;max-width:112px;"><span>${escapeHtml(partner.name)}</span></a></td>`).join('');
   const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${escapeHtml(subject)}</title><style>body{margin:0}table{border-collapse:collapse}a{overflow-wrap:anywhere}@media(max-width:600px){.section{padding:26px 22px!important}.headline{font-size:34px!important}.partner{display:block!important;width:auto!important}}</style></head>
@@ -49,16 +58,16 @@ export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [] })
 <!--[if mso]><table role="presentation" width="720"><tr><td><![endif]-->
 <table role="presentation" width="100%" style="max-width:720px;background:white;border:4px solid #17613a;">
 <tr><td class="section" style="padding:32px 40px;background:#092f20;border-top:6px solid #f4d638;">
-<table role="presentation" width="100%"><tr><td><p style="margin:0;color:#f4d638;font-size:13px;letter-spacing:2px;font-weight:bold;">UNSER NEWSLETTER</p><p style="color:#d7e5dc;font-size:13px;">BSV Nordstern Radolfzell · Seit 1956</p></td><td width="76"><a href="${SITE}/"><img src="${SITE}/images/verein/wappen/bsv-nordstern.png" width="76" height="72" alt="BSV Nordstern" style="display:block;border:0;"></a></td></tr></table>
+<table role="presentation" width="100%"><tr><td><p style="margin:0;color:#f4d638;font-size:13px;letter-spacing:2px;font-weight:bold;">${infoOnly ? 'INFORMATIONEN AUS DEM VEREIN' : 'UNSER NEWSLETTER'}</p><p style="color:#d7e5dc;font-size:13px;">BSV Nordstern Radolfzell · Seit 1956</p></td><td width="76"><a href="${SITE}/"><img src="${SITE}/images/verein/wappen/bsv-nordstern.png" width="76" height="72" alt="BSV Nordstern" style="display:block;border:0;"></a></td></tr></table>
 <h1 class="headline" style="margin:28px 0 8px;color:white;font-size:44px;line-height:1.05;letter-spacing:-1px;">${headline}</h1></td></tr>
 <tr><td class="section" style="padding:36px 40px;font-size:16px;line-height:1.7;">
 <p style="margin-top:0;">Hallo, liebe Nordstern-Freundin, lieber Nordstern-Freund!</p><p>${intro}</p>
 <table role="presentation"><tr><td style="background:#f4d638;border-radius:4px;"><a href="${escapeHtml(buttonUrl)}" style="display:inline-block;padding:15px 24px;color:#092f20;font-weight:bold;text-decoration:none;">${buttonLabel} →</a></td></tr></table>
 ${confirmation ? `<p style="font-size:12px;line-height:1.6;">Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:<br><a href="${escapeHtml(actionUrl)}" style="color:#164f32;word-break:break-all;">${escapeHtml(actionUrl)}</a></p>` : ''}
-<p>${note}</p><p style="margin-bottom:0;">Grün-weiße Grüße<br><strong>Dein BSV Nordstern Radolfzell</strong><br><span style="color:#164f32;">#aufgehtsgrün</span></p></td></tr>
+${!infoOnly ? '<p style="padding:16px;background:#f4f1e8;"><strong>Unser Newsletter entsteht gerade.</strong><br>Wir arbeiten aktuell am Konzept. Die ersten Sendungen folgen in absehbarer Zeit. Mit deiner bestätigten Anmeldung bist du zum Start dabei.</p>' : ''}<p>${note}</p><p style="margin-bottom:0;">Grün-weiße Grüße<br><strong>Dein BSV Nordstern Radolfzell</strong><br><span style="color:#164f32;">#aufgehtsgrün</span></p></td></tr>
 <tr><td class="section" style="padding:28px 40px;background:#f4f1e8;"><h2 style="margin:0 0 12px;font-size:20px;">Gemeinsam mehr möglich machen.</h2><p style="font-size:14px;line-height:1.6;">Danke an unsere Partner, die Sport und Gemeinschaft beim BSV unterstützen.</p>${sponsors.length ? `<table role="presentation" width="100%"><tr>${partnersHtml}</tr></table>` : ''}<p style="font-size:13px;"><a href="${SITE}/werbepartner" style="color:#164f32;">Alle BSV-Partner entdecken →</a></p></td></tr>
-<tr><td class="section" style="padding:28px 40px;background:#092f20;color:white;font-size:13px;line-height:1.8;"><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:white;">info@bsvnordstern.de</a><p><a href="${SITE}/impressum" style="color:#d7e5dc;">Impressum</a> · <a href="${SITE}/datenschutz#newsletter" style="color:#d7e5dc;">Datenschutz</a></p><p style="color:#d7e5dc;font-size:12px;">Diese Nachricht gehört zu deiner Newsletter-Anmeldung für ${escapeHtml(email)}.${confirmation ? '' : `<br>Du kannst dich jederzeit <a href="${escapeHtml(actionUrl)}" style="color:#f4d638;">vom Newsletter abmelden</a>.`}</p></td></tr>
+<tr><td class="section" style="padding:28px 40px;background:#092f20;color:white;font-size:13px;line-height:1.8;"><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:white;">info@bsvnordstern.de</a><p><a href="${SITE}/impressum" style="color:#d7e5dc;">Impressum</a> · <a href="${SITE}/datenschutz#newsletter" style="color:#d7e5dc;">Datenschutz</a></p><p style="color:#d7e5dc;font-size:12px;">Diese Nachricht gehört zu deiner Anmeldung (${subscriptionLabel}) für ${escapeHtml(email)}.${confirmation ? '' : `<br>Du kannst dich jederzeit <a href="${escapeHtml(actionUrl)}" style="color:#f4d638;">von diesen E-Mails abmelden</a>.`}</p></td></tr>
 </table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`;
-  const text = `${subject}\n\nHallo, liebe Nordstern-Freundin, lieber Nordstern-Freund!\n\n${intro}\n\n${buttonLabel}: ${buttonUrl}\n\n${note}\n\nGrün-weiße Grüße\nDein BSV Nordstern Radolfzell\n#aufgehtsgrün\n\nDanke an unsere Partner, die Sport und Gemeinschaft beim BSV unterstützen.\n${sponsors.map((partner) => `${partner.name}: ${partner.website}`).join('\n')}\nAlle BSV-Partner: ${SITE}/werbepartner\n\nBSV Nordstern e.V. Radolfzell\nSchlesierstraße 43 · 78315 Radolfzell\ninfo@bsvnordstern.de\nImpressum: ${SITE}/impressum\nDatenschutz: ${SITE}/datenschutz#newsletter\n\nDiese Nachricht gehört zu deiner Newsletter-Anmeldung für ${email}.${confirmation ? '' : `\nNewsletter abmelden: ${actionUrl}`}\n`;
+  const text = `${subject}\n\nHallo, liebe Nordstern-Freundin, lieber Nordstern-Freund!\n\n${intro}\n\n${!infoOnly ? 'Unser Newsletter entsteht gerade: Wir arbeiten aktuell am Konzept. Die ersten Sendungen folgen in absehbarer Zeit. Mit deiner bestätigten Anmeldung bist du zum Start dabei.\n\n' : ''}${buttonLabel}: ${buttonUrl}\n\n${note}\n\nGrün-weiße Grüße\nDein BSV Nordstern Radolfzell\n#aufgehtsgrün\n\nDanke an unsere Partner, die Sport und Gemeinschaft beim BSV unterstützen.\n${sponsors.map((partner) => `${partner.name}: ${partner.website}`).join('\n')}\nAlle BSV-Partner: ${SITE}/werbepartner\n\nBSV Nordstern e.V. Radolfzell\nSchlesierstraße 43 · 78315 Radolfzell\ninfo@bsvnordstern.de\nImpressum: ${SITE}/impressum\nDatenschutz: ${SITE}/datenschutz#newsletter\n\nDiese Nachricht gehört zu deiner Anmeldung (${subscriptionLabel}) für ${email}.${confirmation ? '' : `\n${subscriptionLabel} abmelden: ${actionUrl}`}\n`;
   return { to: email, subject, html, text };
 }

@@ -34,7 +34,7 @@ test('membership opt-in queues a BSV confirmation with source, reference and has
       const token = args.p_message.text.match(/bestaetigen#token=([0-9a-f]{64})/)[1];
       assert.equal(args.p_token_hash, await hash(token));
       assert.match(args.p_message.html, /Schlesierstraße 43/);
-      assert.match(args.p_message.text, /Ohne deine Bestätigung erhältst du keinen Newsletter/);
+      assert.match(args.p_message.text, /Ohne deine Bestätigung erhältst du keine E-Mails aus diesem Verteiler/);
       return { data: { status: 'queued' }, error: null };
     } };
     assert.equal(await queueMembershipNewsletter({ db, body, mode, fetcher: noFetch }), 'queued');

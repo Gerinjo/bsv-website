@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MediaCards from '../../components/MediaCards.astro';
+---
+
+<Layout title="Media | BSV Nordstern Radolfzell" description="Stadionheft und Newsletter des BSV Nordstern Radolfzell: Vereinsgeschichten lesen und E-Mails nach deinen Wünschen abonnieren.">
+  <Header />
+  <main>
+    <section class="hero"><div class="shell"><span>Media · BSV Nordstern Radolfzell</span><h1>Unser Verein.<br /><em>Deine Geschichten.</em></h1><p>Am Spielfeldrand, beim Blättern oder im Postfach: Hier findest du unser Stadionheft und alles rund um den Newsletter des BSV.</p></div></section>
+    <section class="channels shell" aria-label="Unsere Medien"><MediaCards /></section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.hero{padding:90px 0;background:#092f20;color:white}.hero span{color:#f4d638;font-size:.7rem;font-weight:850;letter-spacing:.14em;text-transform:uppercase}h1{margin:24px 0;font-size:clamp(3rem,6vw,5.5rem);line-height:1;letter-spacing:-.045em}h1 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}.hero p{max-width:690px;margin:0;color:#d6e3db;line-height:1.8}.channels{padding:65px 0 90px}@media(max-width:600px){.shell{width:calc(100% - 30px)}.hero{padding:60px 0}.channels{padding:35px 0 60px}}
+</style>

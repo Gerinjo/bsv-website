@@ -28,6 +28,42 @@ Bestätigungslinks. Die Testadresse wurde aus Resend und der Anmeldetabelle entf
 Die wiederholten Cron-Aufrufe antworten mit HTTP 200. Die Website wird über den
 bestehenden GitHub-Pages-Workflow bei einem Push auf `main` veröffentlicht.
 
+## Media und getrennte E-Mail-Angebote
+
+`/media` bündelt das digitale Stadionheft und `/newsletter`. Das Media-Menü steht
+hinter Sponsoring; die mobile Navigation öffnet dieselbe Übersicht. Die
+Newsletter-Seite stellt beide Angebote vor. Auf der Startseite und in den
+Newsletter-Mails wird ebenfalls auf die laufende Konzeptphase hingewiesen.
+
+Das Formular bietet `newsletter` oder `club_info` (nur allgemeine
+Informations-E-Mails). Eine Anmeldung umfasst genau einen Verteiler. Wer beide
+möchte, meldet sich separat für beide an und bestätigt beide Links. Der Server
+prüft die Auswahl und speichert sie zusammen mit einem eigenen Einwilligungsstand.
+Bestätigung und Abmeldung verwenden ausschließlich das zum Token gespeicherte
+Thema. Informations-E-Mails umfassen Einladungen zu Vereinsversammlungen und
+organisatorische Mitteilungen; sie erteilen keine Newsletter-Einwilligung.
+
+Die Migration `20260925090425_email_subscription_topics.sql` erweitert die
+bestehenden privaten Tabellen um `topic`. Bestehende Datensätze bleiben
+Newsletter-Abonnements. Die Eindeutigkeit gilt für Adresse, Versandmodus und
+Thema. `newsletter_request_topic` nimmt die neue Auswahl entgegen; die bisherige
+Funktion `newsletter_request` bleibt als Newsletter-Aufruf kompatibel. Die
+Mitgliedsantragsintegration berücksichtigt ausschließlich das Newsletter-Thema.
+
+Der Informations-Verteiler bei Resend heißt **BSV Nordstern – Informations-E-Mails**
+und hat die ID `13c075cd-265a-42d5-a220-4ea98307d83f`. Optional überschreibt
+`NEWSLETTER_INFO_SEGMENT_ID` diese Zuordnung. Der Newsletter behält seine bisherige
+Segment-ID. Der Worker fügt ausschließlich bestätigte Adressen zum jeweiligen
+Segment hinzu; eine Abmeldung entfernt nur dieses Segment. Globale Resend-
+Abmeldungen werden weiterhin respektiert. Broadcasts für Informations-E-Mails
+müssen das Informations-Segment verwenden.
+
+Zur Veröffentlichung zuerst ausschließlich die genannte Migration anwenden,
+danach die Funktionen `newsletter` und `membership-email` (gemeinsame
+E-Mail-Vorlage) aktualisieren und die Website bereitstellen. Die SQL-Prüfung
+`supabase/tests/email_subscription_topics.sql` ergänzt die bisherigen Tests um
+getrennte Einwilligungen, Mitgliedsanträge und Abmeldungen derselben Adresse.
+
 ## Ablauf
 
 ### Auswahl im Mitgliedsantrag

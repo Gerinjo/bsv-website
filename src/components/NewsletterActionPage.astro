@@ -4,7 +4,7 @@ import { newsletterEndpoint } from '../utils/newsletter';
 interface Props { action: 'confirm' | 'unsubscribe' }
 const { action } = Astro.props;
 const confirmation = action === 'confirm';
-const title = confirmation ? 'Newsletter-Anmeldung bestätigen' : 'Newsletter abmelden';
+const title = confirmation ? 'E-Mail-Anmeldung bestätigen' : 'E-Mails abmelden';
 ---
 <!doctype html>
 <html lang="de">
@@ -19,11 +19,11 @@ const title = confirmation ? 'Newsletter-Anmeldung bestätigen' : 'Newsletter ab
   <body>
     <main data-newsletter-operation={action} data-endpoint={newsletterEndpoint}>
       <a class="brand" href={withBase('/')} aria-label="BSV Nordstern – zur Startseite"><img src={withBase('/images/verein/wappen/bsv-nordstern.png')} width="76" height="72" alt="BSV Nordstern Radolfzell" /></a>
-      <p class="eyebrow">✦ Unser Newsletter</p>
+      <p class="eyebrow">✦ Post vom BSV</p>
       <h1>{confirmation ? 'Schön, dass du dabei bist.' : 'Bis bald beim BSV.'}</h1>
-      <p role="status" aria-live="polite" tabindex="-1" data-action-status>{confirmation ? 'Deine Anmeldung wird geprüft …' : 'Wenn du unseren Newsletter nicht mehr erhalten möchtest, bestätige hier deine Abmeldung.'}</p>
-      <button type="button" data-action-button hidden={confirmation}>{confirmation ? 'Erneut versuchen' : 'Newsletter abmelden'}</button>
-      <a class="back" href={withBase('/#newsletter')}>Zur Startseite →</a>
+      <p role="status" aria-live="polite" tabindex="-1" data-action-status>{confirmation ? 'Deine Anmeldung wird geprüft …' : 'Wenn du diese E-Mails nicht mehr erhalten möchtest, bestätige hier deine Abmeldung. Sie gilt nur für den Verteiler aus deiner Nachricht; andere Anmeldungen bleiben bestehen.'}</p>
+      <button type="button" data-action-button hidden={confirmation}>{confirmation ? 'Erneut versuchen' : 'Abmeldung bestätigen'}</button>
+      <a class="back" href={withBase('/newsletter')}>Zu Newsletter & Informations-E-Mails →</a>
       <noscript><p>Bitte aktiviere JavaScript, um {confirmation ? 'deine Anmeldung zu bestätigen' : 'dich abzumelden'}. Bei Fragen erreichst du uns unter info@bsvnordstern.de.</p></noscript>
     </main>
     <footer><strong>BSV Nordstern e.V. Radolfzell</strong><br />Schlesierstraße 43 · 78315 Radolfzell<br /><a href="mailto:info@bsvnordstern.de">info@bsvnordstern.de</a><p><a href={withBase('/impressum')}>Impressum</a> · <a href={withBase('/datenschutz#newsletter')}>Datenschutz</a></p></footer>
@@ -66,7 +66,7 @@ const title = confirmation ? 'Newsletter-Anmeldung bestätigen' : 'Newsletter ab
         }
       };
       if (!/^[0-9a-f]{64}$/.test(token)) {
-        status.textContent = 'Hier fehlt ein gültiger Link. Bitte öffne den vollständigen Link aus deiner E-Mail oder melde dich auf der Startseite erneut an.';
+        status.textContent = 'Hier fehlt ein gültiger Link. Bitte öffne den vollständigen Link aus deiner E-Mail oder melde dich auf unserer Newsletter-Seite erneut an.';
         button.hidden = true;
       } else {
         button.addEventListener('click', perform);
