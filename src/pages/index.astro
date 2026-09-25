@@ -51,14 +51,19 @@ const getEventType = (title: string) => {
           <HomeNextMatch />
         </div>
 
-        <div class="hero-art" aria-hidden="true">
-          <div class="year">19<span>56</span></div>
-          <div class="pitch">
-            <div class="pitch-circle"></div>
-            <div class="pitch-box"></div>
+        <div class="hero-art">
+          <div class="hero-field" aria-hidden="true">
+            <div class="year">19<span>56</span></div>
+            <div class="pitch">
+              <div class="pitch-circle"></div>
+              <div class="pitch-box"></div>
+            </div>
+            <div class="hero-badge"><strong>#aufgehtsgrün</strong><span>Gemeinsam. Stark.</span></div>
           </div>
-          <Image class="hero-player" src={heroPlayer} widths={[360, 640, 960]} sizes="(max-width: 650px) 280px, 450px" format="webp" alt="" loading="eager" fetchpriority="high" />
-          <div class="hero-badge"><strong>#aufgehtsgrün</strong><span>Gemeinsam. Stark.</span></div>
+          <figure class="hero-player-figure">
+            <Image class="hero-player" src={heroPlayer} widths={[360, 640, 960]} sizes="(max-width: 650px) 85vw, (max-width: 900px) 400px, 720px" format="webp" alt="KI-generierter Fußballer in grünem Trikot beim Schuss" loading="eager" fetchpriority="high" />
+            <figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption>
+          </figure>
         </div>
       </div>
       <div class="ticker" aria-label="Vereinswerte">
@@ -255,7 +260,7 @@ const getEventType = (title: string) => {
   h1, h2 { letter-spacing: -.055em; }
   h1 { margin-bottom: 28px; font-size: clamp(4rem, 7.6vw, 7rem); line-height: .86; }
   h1 em, h2 em { color: var(--yellow); font-family: Georgia, serif; font-weight: 400; }
-  .hero-copy { --hero-action-gap:28px; }
+  .hero-copy { position:relative; z-index:4; --hero-action-gap:28px; }
   .intro { max-width: 550px; margin-bottom:var(--hero-action-gap); color: #d2e3d8; font-size: 1.12rem; line-height: 1.65; }
   .text-link,
   .text-link:visited,
@@ -277,8 +282,15 @@ const getEventType = (title: string) => {
   .button-shop { border: 2px solid rgb(255 255 255 / 72%); color: white; background: rgb(255 255 255 / 8%); box-shadow: 0 7px 0 rgb(5 30 19 / 45%); }
   .button-shop:hover { transform: translateY(2px); border-color: white; background: rgb(255 255 255 / 15%); box-shadow: 0 5px 0 rgb(5 30 19 / 45%); }
   .dark-link { color: var(--ink); }
-  .hero-art { position: relative; min-height: 500px; isolation:isolate; }
-  .hero-player { position:absolute; z-index:2; left:-7%; bottom:-15px; width:110%; height:115%; object-fit:contain; object-position:center bottom; filter:drop-shadow(0 16px 14px rgb(0 0 0 / 18%)); pointer-events:none; }
+  .hero-art { min-height:500px; }
+  .hero-field { position:relative; min-height:inherit; }
+  /* The player spans the entire hero; the pitch retains its own fixed size. */
+  .hero-player-figure { position:absolute; z-index:2; top:-4%; bottom:-6%; right:calc((100% - 100vw) / 2 - 4px); aspect-ratio:2 / 3; margin:0; pointer-events:none; }
+  .hero-player { display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 16px 14px rgb(0 0 0 / 18%)); }
+  .hero-player-figure figcaption { position:absolute; top:8%; right:16px; font-size:.65rem; line-height:1.4; }
+  .hero-player-figure figcaption a { display:block; padding:5px 8px; border:1px solid rgb(255 255 255 / 25%); border-radius:3px; background:#123c2b; color:#d2e3d8; text-decoration:none; pointer-events:auto; }
+  .hero-player-figure figcaption a:hover { color:white; text-decoration:underline; }
+  .hero-player-figure figcaption a:focus-visible { outline:2px solid var(--yellow); outline-offset:3px; }
   .year { position: absolute; z-index: 1; right: 0; top: -25px; color: rgb(255 255 255 / 8%); font-size: 9rem; font-weight: 900; line-height: 1; writing-mode: vertical-rl; }.year span { color: rgb(244 214 56 / 15%); }
   .pitch { position: absolute; inset: 35px 36px 0 0; overflow: hidden; border: 2px solid rgb(255 255 255 / 32%); transform: rotate(-5deg); background: linear-gradient(90deg, rgb(255 255 255 / 3%) 50%, transparent 50%); }
   .pitch::before { content: ''; position: absolute; left: 50%; height: 100%; border-left: 2px solid rgb(255 255 255 / 28%); }.pitch-circle { position: absolute; left: 50%; top: 50%; width: 120px; aspect-ratio: 1; border: 2px solid rgb(255 255 255 / 28%); border-radius: 50%; transform: translate(-50%, -50%); }.pitch-box { position: absolute; left: -2px; top: 28%; width: 95px; height: 44%; border: 2px solid rgb(255 255 255 / 28%); }
@@ -323,7 +335,8 @@ const getEventType = (title: string) => {
   .join-section { padding: 110px 0; }
   .departments-section { padding: 120px 0; color: white; background: var(--green-dark); }.departments-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 100px; }.departments-intro h2 { color: white; }.departments-intro > p:last-child { max-width: 420px; margin-top: 30px; color: #9eb5a7; line-height: 1.7; }.department-list { border-top: 1px solid rgb(255 255 255 / 18%); }.department-list a { display: grid; grid-template-columns: 45px 1fr 40px; align-items: center; gap: 12px; padding: 24px 5px; border-bottom: 1px solid rgb(255 255 255 / 18%); color: white; text-decoration: none; transition: .2s; }.department-list a:hover { padding-left: 15px; background: rgb(255 255 255 / 4%); }.department-list > a > span { color: var(--yellow); font-size: .65rem; }.department-list strong,.department-list small { display: block; }.department-list strong { font-size: 1.45rem; }.department-list small { margin-top: 5px; color: #8da598; font-size: .72rem; }.department-list b { display: grid; place-items: center; width: 36px; aspect-ratio: 1; border: 1px solid rgb(255 255 255 / 30%); border-radius: 50%; }
   .join-section { background: #fff; }.join-card { position: relative; overflow: hidden; min-height: 330px; padding: 65px 70px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 70px; background: var(--yellow); border-radius: 8px; }.join-card::after { content: ''; position: absolute; right: -80px; top: -160px; width: 380px; aspect-ratio: 1; border: 1px solid rgb(9 47 32 / 18%); border-radius: 50%; box-shadow: 0 0 0 50px rgb(9 47 32 / 5%), 0 0 0 100px rgb(9 47 32 / 4%); }.join-star { position: absolute; right: 35px; top: 25px; color: white; font-size: 3rem; }.join-card h2 em { color: var(--green); }.join-copy { position: relative; z-index: 1; }.join-copy p { margin-bottom: 28px; color: #3b4c3f; line-height: 1.6; }.button-dark { background: var(--green-dark); color: white; }
-  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { min-height: 430px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
+  @media (min-width: 901px) and (max-width: 1200px) { .hero-player-figure { top:2%; right:-85px; }.hero-player-figure figcaption { right:110px; } }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { position:relative; min-height:430px; }.hero-player-figure { top:-20px; bottom:-110px; right:8%; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
   @media (max-width: 650px) { .shell { width: calc(100% - 30px); max-width: 1160px; }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 390px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
   @media (max-width: 650px) {
     .hero-grid { padding-top:28px; }
@@ -335,8 +348,9 @@ const getEventType = (title: string) => {
     .hero-cta-row { width:100%; gap:10px; }
     .hero-copy .intro .text-link { display:inline; width:auto; white-space:nowrap; }
     .hero-cta-row .button { flex:1; min-width:0; min-height:44px; padding:0 10px; gap:8px; font-size:.72rem; }
-    .hero-art { min-height:440px; }
-    .hero-player { left:0; top:72px; bottom:auto; width:100%; height:calc(100% - 62px); }
+    .hero-art { min-height:clamp(340px, 112vw, 440px); }
+    .hero-player-figure { top:64px; right:0; }
+    .hero-player-figure figcaption { top:26px; right:auto; left:0; }
     .hero-badge { top:10px; bottom:auto; left:20px; padding:14px 18px; box-shadow:8px 10px 0 rgb(9 47 32 / 55%); }
     .hero-badge strong { font-size:1.05rem; }
   }

@@ -1,9 +1,10 @@
 # Fußballer für die Startseite
 
 - Datei: `src/assets/fussball/hero-player.png` (PNG mit transparentem Hintergrund).
-- Ausgangsbild: `public/images/fussball/teams-schuss.webp` aus dem Teams-Menü; unverändert erhalten.
+- Ausgangsbild: `public/images/fussball/teams-schuss.webp` aus dem Teams-Menü; unverändert erhalten. Vollständig KI-generiertes Motiv einer fiktiven Person, siehe [ursprünglicher Generierungsnachweis](../../../design/teams-background.md).
 - Bearbeitung: integriertes Imagegen-Werkzeug, Modus `background-extraction`, 25. September 2026.
 - Einsatz: `src/pages/index.astro`, über dem gezeichneten Spielfeld und unter dem `#aufgehtsgrün`-Schild. Astro erzeugt beim Build WebP-Varianten mit erhaltenem Alphakanal.
+- Sichtbare Kennzeichnung: „KI-generierte Illustration“ unmittelbar am Motiv auf der Startseite und in der mobilen Teamauswahl; ausführlicher Bildnachweis unter `/impressum#ki-bildnachweis`.
 
 Verwendeter Prompt:
 

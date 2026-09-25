@@ -52,7 +52,7 @@ const rows = [
 
 <dialog id="mobile-teams" class="teams-dialog" aria-labelledby="teams-title" style={`--teams-background: url(${withBase('/images/fussball/teams-schuss.webp')})`}>
   <div class="teams-heading">
-    <div><p>BSV Nordstern</p><h2 id="teams-title">Unsere Teams</h2></div>
+    <div><p>BSV Nordstern</p><h2 id="teams-title">Unsere Teams</h2><small class="teams-image-credit">Hintergrund: KI-generierte Illustration</small></div>
     <button class="teams-close" type="button" aria-label="Teamauswahl schließen" autofocus>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
     </button>
@@ -118,6 +118,7 @@ const rows = [
   .teams-heading { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); border-bottom:1px solid rgb(255 255 255 / 15%); }
   .teams-heading p { margin:0 0 5px; color:#f4d638; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.14em; }
   .teams-heading h2 { margin:0; color:white; font-size:clamp(1.6rem, 6vw, 2.3rem); line-height:1.1; }
+  .teams-image-credit { display:block; margin-top:6px; color:#d7e5dc; font-size:.65rem; line-height:1.4; }
   .teams-close { width:44px; height:44px; flex:0 0 auto; display:grid; place-items:center; padding:10px; border:1px solid rgb(255 255 255 / 30%); border-radius:50%; background:transparent; color:white; cursor:pointer; }
   .teams-close svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
   .teams-close:hover { background:#f4d638; color:#092f20; }
