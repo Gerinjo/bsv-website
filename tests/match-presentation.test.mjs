@@ -2,9 +2,25 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { matchPresentation, selectHomepageMatch } from '../src/utils/matchPresentation.ts';
 import { createHomeMatchesHandler, homeMatchWidgets } from '../supabase/functions/home-matches/handler.mjs';
+import { homeMatchGroups } from '../supabase/functions/_shared/home-match-groups.mjs';
 
 const game = { home: 'BSV', away: 'Gast', dateTime: '2026-09-26T16:00', status: 'scheduled', url: 'today' };
 const next = { ...game, dateTime: '2026-10-03T16:00', url: 'next' };
+
+test('homepage groups cover all requested youth teams and each has its own feed and team ID', () => {
+  assert.deepEqual(homeMatchGroups.map((group) => group.label), ['Erste', 'Reserve', 'Junioren', 'Juniorinnen']);
+  assert.deepEqual(homeMatchGroups.find((group) => group.id === 'boys').teams.map((team) => team.path), [
+    'jugend/u19', 'jugend/u17', 'jugend/u15-c1', 'jugend/u15-c2', 'jugend/u13-d1', 'jugend/u13-d2', 'jugend/u13-d3',
+  ]);
+  assert.deepEqual(homeMatchGroups.find((group) => group.id === 'girls').teams.map((team) => team.path), [
+    'jugend/juniorinnen/u17', 'jugend/juniorinnen/u15', 'jugend/juniorinnen/u13',
+  ]);
+  assert.equal(homeMatchWidgets.length, 14);
+  assert.equal(new Set(homeMatchWidgets).size, 14);
+  const teams = homeMatchGroups.flatMap((group) => group.teams);
+  assert.equal(new Set(teams.map((team) => team.teamId)).size, 14);
+  for (const team of teams) assert.match(team.teamId, /^[A-Z0-9]{32}$/);
+});
 
 test('keeps today’s fixture before, during and after kickoff through 23:59 in Berlin', () => {
   for (const time of ['2026-09-26T10:00:00Z', '2026-09-26T14:00:00Z', '2026-09-26T21:59:59Z']) {
@@ -58,10 +74,10 @@ test('feed coalesces concurrent requests, caches results and refreshes after one
   const data = await responses[0].json();
   assert.equal(data.teams[homeMatchWidgets[0]].matches.length, 1);
   await handler(request());
-  assert.equal(calls.length, 4);
+  assert.equal(calls.length, homeMatchWidgets.length);
   time = new Date('2026-09-26T14:01:01Z');
   await handler(request());
-  assert.equal(calls.length, 8);
+  assert.equal(calls.length, homeMatchWidgets.length * 2);
 });
 
 test('feed isolates a team outage and rejects writes', async () => {

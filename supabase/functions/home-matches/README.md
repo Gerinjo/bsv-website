@@ -1,6 +1,6 @@
 # Startseiten-Spielstand
 
-Öffentlicher GET-Endpunkt für die vier aktiven Mannschaften. Keine Anmeldung und keine Datenbankzugriffe; die Funktion verarbeitet ausschließlich öffentliche Spielinformationen. Die Widget-IDs sind in `handler.mjs` festgelegt. Übergebene URLs oder IDs werden nicht verwendet.
+Öffentlicher GET-Endpunkt für die vier aktiven Mannschaften sowie Junioren von D bis A (einschließlich C1/C2 und D1–D3) und Juniorinnen von D bis B. Keine Anmeldung und keine Datenbankzugriffe; die Funktion verarbeitet ausschließlich öffentliche Spielinformationen. Gruppen, Widget-IDs und Mannschafts-IDs sind gemeinsam mit der Startseite in `supabase/functions/_shared/home-match-groups.mjs` festgelegt. Übergebene URLs oder IDs werden nicht verwendet.
 
 ```sh
 npx supabase functions deploy home-matches --project-ref avbkhyptztqitlgqnajn --use-api

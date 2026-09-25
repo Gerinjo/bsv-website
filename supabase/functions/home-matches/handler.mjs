@@ -1,11 +1,7 @@
-export const homeMatchWidgets = [
-  'af96d999-a7ba-432a-87c5-439ab401516d',
-  'a7855cb2-0226-49a3-98ca-b106b3786afb',
-  '48130047-3237-4579-8f2e-a581bbb98097',
-  '48107d01-3242-45df-8f09-55a20a959688',
-];
+import { homeMatchWidgets } from '../_shared/home-match-groups.mjs';
+export { homeMatchWidgets };
 
-// Public, read-only feed. It has no database access and only fetches these four widgets.
+// Public, read-only feed. It has no database access and only fetches the configured widgets.
 export function createHomeMatchesHandler(loadMatches, now = () => new Date()) {
   let cached;
   let expiresAt = 0;
