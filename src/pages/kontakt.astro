@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { contactTeams, fixedContactTopics, youthContactTopics, personContactTopics } from '../data/contactTopics';
+import { contactTeams, fixedContactTopics, youthContactTopics, personContactTopics, contactTopicGroups } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 
 const configuredContactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
@@ -21,7 +21,7 @@ const contactEndpoint = configuredContactEndpoint || 'https://avbkhyptztqitlgqna
         <form id="contact-form" action={contactEndpoint} method="post">
           <div class="field full">
             <label for="topic-area">Worum geht es?</label>
-            <select id="topic-area" required><option value="">Bitte auswählen …</option>{fixedContactTopics.map((topic) => <option value={topic.id}>{topic.label}</option>)}<option value="active-team">Aktive Mannschaft</option><option value="youth-team">Jugendmannschaft</option><option value="person">Eine bestimmte Ansprechperson</option></select>
+            <select id="topic-area" required><option value="">Bitte auswählen …</option>{contactTopicGroups.map((group) => <optgroup label={group.label}>{group.topics.map((topic) => <option value={topic.id}>{topic.label}</option>)}</optgroup>)}</select>
             <input id="topic" name="topic" type="hidden" />
             <p id="topic-description" class="topic-description" aria-live="polite">Bitte wähle zunächst einen Eintrag aus der Liste.</p>
           </div>

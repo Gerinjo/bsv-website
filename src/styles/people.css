@@ -1,0 +1,61 @@
+/* One portrait and contact language across teams, departments and legacy pages. */
+html:root body [data-profile-portrait] {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  aspect-ratio: 4 / 5;
+  height: auto !important;
+  min-height: 0;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 4px solid #f4d638;
+  border-radius: 6px;
+  background: #164f32;
+  box-shadow: 0 8px 22px rgb(9 47 32 / 10%);
+  color: #f4d638;
+  font-size: 2rem;
+  font-weight: 850;
+}
+html:root body [data-profile-portrait]::before { display: none; }
+html:root body [data-profile-portrait] img,
+html:root body img[data-profile-portrait] {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transform: none;
+  mask-image: none;
+}
+html:root body [data-profile-portrait] img[data-profile-cutout] { object-fit: contain; object-position: center bottom; }
+html:root body img[data-profile-portrait] { height: auto !important; }
+html:root body .contact-icons,
+html:root body .coach-contacts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; border: 0; }
+html:root body a.contact-action {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  margin: 0;
+  padding: 11px;
+  border: 1px solid #b7c8bc;
+  border-radius: 6px;
+  background: white;
+  color: #164f32;
+  text-decoration: none;
+  line-height: 1;
+  box-shadow: none;
+  transition: background .15s, border-color .15s;
+}
+html:root body a.contact-action svg { display: block; width: 20px; height: 20px; flex-shrink: 0; }
+html:root body a.contact-action::before, html:root body a.contact-action::after { display: none; }
+html:root body a.contact-action:hover { background: #f4d638; border-color: #f4d638; color: #092f20; }
+html:root body a.contact-action:focus-visible { outline: 3px solid #164f32; outline-offset: 3px; background: #f4d638; }

@@ -2,7 +2,8 @@ import { menu } from './navigation';
 import { teamProfiles } from './teamPages';
 import { contactPeople } from './contactPeople.server.mjs';
 
-export const personContactTopics = contactPeople.map(({ id, label, description }) => ({ id, label, description }));
+export const personContactTopics = contactPeople.map(({ id, label, description }) => ({ id, label, description }))
+  .sort((a, b) => a.label.localeCompare(b.label, 'de'));
 
 export type ContactTopic = {
   id: string;
@@ -45,3 +46,18 @@ export const contactTeams = Object.values(teamProfiles).map((team) => {
 });
 
 export const contactTopics = fixedContactTopics;
+
+// Keep familiar destinations together instead of mixing departments and people.
+const topicById = new Map(fixedContactTopics.map((topic) => [topic.id, topic]));
+const topic = (id: string) => topicById.get(id)!;
+export const contactTopicGroups = [
+  { label: 'Verein & Mitgliedschaft', topics: ['general', 'membership', 'finance'].map(topic) },
+  { label: 'Fußball & Junge Sterne', topics: [
+    { id: 'active-team', label: 'Aktive Mannschaft' },
+    { id: 'youth-team', label: 'Jugendmannschaft' },
+    ...['youth', 'goalkeeping', 'passwesen', 'match-operations', 'referees'].map(topic),
+  ] },
+  { label: 'Weitere Sportangebote', topics: ['archery', 'gymnastics', 'hiking'].map(topic) },
+  { label: 'Unterstützen & Mitgestalten', topics: ['foerderverein', 'sponsoring', 'social'].map(topic) },
+  { label: 'Persönlicher Kontakt', topics: [{ id: 'person', label: 'Eine bestimmte Ansprechperson' }] },
+];

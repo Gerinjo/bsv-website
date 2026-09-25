@@ -49,7 +49,7 @@ bestehenden privaten Tabellen um `topic`. Bestehende Datensätze bleiben
 Newsletter-Abonnements. Die Eindeutigkeit gilt für Adresse, Versandmodus und
 Thema. `newsletter_request_topic` nimmt die neue Auswahl entgegen; die bisherige
 Funktion `newsletter_request` bleibt als Newsletter-Aufruf kompatibel. Die
-Mitgliedsantragsintegration berücksichtigt ausschließlich das Newsletter-Thema.
+Mitgliedsantragsintegration unterstützt beide Auswahlen mit einer gemeinsamen Verifizierung (siehe unten).
 
 Der Informations-Verteiler bei Resend heißt **BSV Nordstern – Informations-E-Mails**
 und hat die ID `13c075cd-265a-42d5-a220-4ea98307d83f`. Optional überschreibt
@@ -69,32 +69,43 @@ getrennte Einwilligungen, Mitgliedsanträge und Abmeldungen derselben Adresse.
 
 ### Auswahl im Mitgliedsantrag
 
-Das separate Newsletter-Häkchen im Mitgliedsantrag startet denselben
-Bestätigungsworkflow. PHP übergibt die geprüfte Auswahl als boolesches
-`emailNewsletterAccepted` und die Antragsnummer an die authentifizierte
-Mailbrücke `membership-email`. Allgemeine Vereinsinformationen sind eine
-unabhängige Auswahl und starten keinen Newsletter-Versand.
+Beide freiwilligen Häkchen starten die Verifizierung: `emailNewsletterAccepted`
+und `emailGeneralInfoAccepted` werden vom PHP-Formular als echte boolesche Werte
+an die authentifizierte Mailbrücke übergeben. Die Eingangsbestätigung mit dem
+Mitgliedsantrag bleibt eine eigene Nachricht.
 
-Nach erfolgreicher Übergabe des Antrags an die Verwaltung legt die Mailbrücke
-vor dem Versand der Antragstellerkopie einen dauerhaften Bestätigungsauftrag an.
-Der vorhandene minütliche Worker versendet ihn im BSV-Design mit Sponsoren.
-Auch hier ist erst der Link-Klick die Freigabe zum Newsletter; anschließend
-folgen Verteileraufnahme und Willkommensmail. Bereits lokal bestätigte Adressen
-erhalten keinen neuen Bestätigungsauftrag. Ein noch gültiger, bereits
-angeforderter Link bleibt gültig. Vorhandene Resend-Abmeldungen werden nicht
-automatisch zurückgesetzt.
+`newsletter_request_membership_topics` legt für alle noch unbestätigten,
+ausgewählten Angebote einen privaten Bestätigungsvorgang an. Ein BSV-Mail mit
+Sponsoren enthält genau einen Link; ein Klick bestätigt die gespeicherte Auswahl
+atomar. Bereits bestätigte Angebote behalten ihre Einwilligung und Abmeldelinks.
+Auch eine Anmeldung ausschließlich für Informations-E-Mails wird verifiziert.
+Die gemeinsame Willkommensmail enthält je Angebot einen eigenen Abmeldelink.
+Der Worker synchronisiert nur bestätigte Angebote in die jeweiligen Segmente.
+Globale Resend-Abmeldungen werden weiterhin respektiert.
 
-`newsletter_request_membership` verarbeitet dieselbe Antragsnummer nur einmal,
-auch wenn zwischenzeitlich eine Abmeldung erfolgt ist. Nur ein neuer Antrag mit
-erneuter Auswahl kann einen neuen Bestätigungslink anfordern. Die privaten
-Antragsreferenzen in `newsletter_membership_requests` werden bei der Löschung
-der zugehörigen Anmeldung mit entfernt. Die Fassung des Newsletter-Häkchens ist
-als `mitgliedsantrag-newsletter-2026-09-24` dokumentiert. Test- und Live-Modus
-bleiben getrennt; die öffentliche Formularantwort verrät keinen Abonnentenstatus.
+`newsletter_confirmation_batches` und `newsletter_confirmation_items` halten
+Token-Hashes und die genaue Version der beteiligten Anmeldungen fest. Ein alter
+oder teilweise überholter Link bestätigt keine andere Auswahl. Wiederholte
+Antragsnummern lösen weder zusätzliche Mails noch eine erneute Anmeldung nach
+Abmeldung aus. Ein noch gültiger Vorgang mit identischer Auswahl wird wiederverwendet.
+Die Einwilligungsfassung lautet `mitgliedsantrag-email-auswahl-2026-09-25`.
+Test- und Live-Modus bleiben getrennt. Anonyme und angemeldete Browser haben
+keinen direkten Zugriff auf Tabellen oder RPCs. Alte Links der Einzelanmeldung
+bleiben gültig; die neue API versteht gemeinsame Links auch aus einer älteren,
+zwischengespeicherten Bestätigungsseite.
 
-Schlägt die Vormerkung fehl, bleibt der Mitgliedsantrag erfolgreich. Das Formular
-weist auf die Newsletter-Anmeldung auf der Startseite hin. Ist nur die Zustellung
-gestört, wiederholt der bestehende Worker den gespeicherten Auftrag automatisch.
+Die Migration `20260925124921_membership_email_confirmation_batches.sql` ist
+vor den aktualisierten Functions `newsletter` und `membership-email` einzuspielen.
+Zusätzlich Website und `public/api/membership-v3.php` auf dem PHP-Host aktualisieren.
+Fehlschläge der Vormerkung ändern nicht den Erfolg des Mitgliedsantrags; das
+Formular verweist dann auf `/newsletter`. Versandfehler werden erneut versucht.
+Unbestätigte Vorgänge werden nach sieben Tagen entfernt. Versandaufträge für
+beide Themen werden je Adresse nacheinander verarbeitet, einschließlich Abmeldungen.
+
+Die Datenbanktests in `supabase/tests/membership_email_confirmation_batches.sql`
+innerhalb einer Transaktion ausführen und anschließend zurückrollen. Sie prüfen
+beide Auswahlen, nur Informationen, Wiederholungen, unabhängige Abmeldungen,
+überholte/abgelaufene Links, bestehende Abonnements und Zugriffsrechte.
 
 Die Migration `20260924215451_membership_newsletter_opt_in.sql` und die erweiterte
 Function `membership-email` sind im Website-Projekt bereitgestellt. Für die

@@ -32,6 +32,7 @@ const title = confirmation ? 'E-Mail-Anmeldung bestätigen' : 'E-Mails abmelden'
       const status = main.querySelector<HTMLElement>('[data-action-status]')!;
       const button = main.querySelector<HTMLButtonElement>('[data-action-button]')!;
       const token = new URLSearchParams(window.location.hash.slice(1)).get('token') || '';
+      const batch = new URLSearchParams(window.location.hash.slice(1)).get('batch') === '1';
       // The bearer token never reaches server logs or third-party tracking.
       // Keep it only in this page's memory so retry remains possible.
       history.replaceState(null, '', window.location.pathname);
@@ -45,7 +46,7 @@ const title = confirmation ? 'E-Mail-Anmeldung bestätigen' : 'E-Mails abmelden'
         try {
           const response = await fetch(main.dataset.endpoint!, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(30000),
-            body: JSON.stringify({ action: main.dataset.newsletterOperation, token }),
+            body: JSON.stringify({ action: main.dataset.newsletterOperation, token, batch }),
           });
           const data = await response.json();
           if (!response.ok || !data.ok) {

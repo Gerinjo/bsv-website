@@ -27,5 +27,15 @@ test('rendered pages expose form links immediately and preserve telephone and sc
   assert.equal($('a.is-phone').attr('href'), 'tel:+491795111126');
   assert.equal($('a').last().attr('href'), '/kontakt?thema=team--jugend--u13-d3--trial');
   assert.equal($('script').text(), 'const email = "mailto:example@example.org";');
-  assert.equal($('meta[name="format-detection"]').attr('content'), 'email=no');
+  assert.equal($('meta[name="format-detection"]').attr('content'), 'telephone=no,email=no');
+});
+
+test('phone numbers stay callable without appearing as text or tooltips, including templates', () => {
+  const $ = load(routeContactLinks('<html><head></head><body><a href="tel:+49123456789" title="0123456789">Mobil: 0123456789</a><template><a href="tel:+49987654321">0987654321</a></template><div class="contact-icons"><a href="/kontakt?thema=goalkeeping">Nachricht</a></div></body></html>', '/', '/'));
+  assert.equal($('a.is-phone').length, 2);
+  assert.equal($('a.is-phone svg').length, 2);
+  assert.doesNotMatch($('body').text(), /0123456789|0987654321/);
+  assert.doesNotMatch($('a.is-phone').first().attr('title'), /\d/);
+  assert.equal($('a.is-email').attr('href'), '/kontakt?thema=goalkeeping');
+  assert.equal($('a.is-email svg').length, 1);
 });

@@ -654,8 +654,9 @@ if ($mailBridgeSecret === '' && is_file(__DIR__ . '/membership-config.php')) {
     }
     unset($membershipConfig);
 }
-$newsletterStatus = $emailNewsletterAccepted ? 'unavailable' : 'not_requested';
-$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape, $applicationNumber, $emailNewsletterAccepted, &$newsletterStatus) {
+$emailSubscriptionRequested = $emailNewsletterAccepted || $emailGeneralInfoAccepted;
+$newsletterStatus = $emailSubscriptionRequested ? 'unavailable' : 'not_requested';
+$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape, $applicationNumber, $emailNewsletterAccepted, $emailGeneralInfoAccepted, $emailSubscriptionRequested, &$newsletterStatus) {
     $deliveryFailed = function ($reason, $httpStatus = 0, $curlCode = 0) use ($messageType, $applicationNumber) {
         // Never log request/response bodies: they can contain membership data,
         // bank details, signatures, attachments, addresses or authentication keys.
@@ -700,6 +701,7 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
         'routingKey' => (string)$routingKey,
         'applicationNumber' => $applicationNumber,
         'emailNewsletterAccepted' => $messageType === 'applicant' && $emailNewsletterAccepted,
+        'emailGeneralInfoAccepted' => $messageType === 'applicant' && $emailGeneralInfoAccepted,
         'attachments' => $encodedFiles,
     ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if ($payload === false) return $deliveryFailed('invalid_message_encoding');
@@ -723,7 +725,7 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
     curl_close($request);
     if ($responseBody === false) return $deliveryFailed('bridge_connection_failed', $responseCode, $curlCode);
     $result = json_decode($responseBody, true);
-    if ($messageType === 'applicant' && $emailNewsletterAccepted && is_array($result)) {
+    if ($messageType === 'applicant' && $emailSubscriptionRequested && is_array($result)) {
         // Keep the existing subscriber status private in the public response.
         $queuedStates = array('queued', 'pending', 'already_confirmed', 'already_requested');
         if (isset($result['newsletterStatus']) && in_array($result['newsletterStatus'], $queuedStates, true)) {
@@ -1003,7 +1005,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     $textLink('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') . "\n" .
     "DEINE AUSWAHL ZUR E-MAIL-KOMMUNIKATION\n" .
     $emailConsentSummary .
-    ($emailNewsletterAccepted ? "Für unseren Newsletter erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.\n" : '') .
+    ($emailSubscriptionRequested ? "Für deine ausgewählten E-Mail-Angebote erhältst du eine gemeinsame Verifizierungsmail mit einem Bestätigungslink. Ein Klick bestätigt deine Auswahl – auch wenn du Newsletter und Vereinsinformationen angekreuzt hast. Bereits bestätigte Angebote musst du nicht erneut bestätigen.\n" : '') .
     "Die freiwilligen Einwilligungen können jederzeit widerrufen werden.\n\n" .
     "Jetzt aber auf den Platz – wir freuen uns darauf, dich kennenzulernen!\n\n" .
     "Sportliche Grüße\n" .
@@ -1108,7 +1110,7 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">Deine Auswahl zur E-Mail-Kommunikation</h2>' .
 '<p style="margin:0;line-height:1.75;color:#3f5146;">Allgemeine Vereinsinformationen: <strong>' . $htmlEscape($yesNo($emailGeneralInfoAccepted)) . '</strong><br>' .
 'Newsletter und digitale Vereinszeitschrift: <strong>' . $htmlEscape($yesNo($emailNewsletterAccepted)) . '</strong></p>' .
-($emailNewsletterAccepted ? '<p style="margin:10px 0 0;line-height:1.65;color:#3f5146;">Für unseren Newsletter erhältst du einen separaten Bestätigungslink. Bitte bestätige damit deine E-Mail-Adresse, sofern du den Newsletter noch nicht bestätigt hast. Erst danach bekommst du den Newsletter.</p>' : '') .
+($emailSubscriptionRequested ? '<p style="margin:10px 0 0;line-height:1.65;color:#3f5146;">Für deine ausgewählten E-Mail-Angebote erhältst du eine gemeinsame Verifizierungsmail mit einem Bestätigungslink. Ein Klick bestätigt deine Auswahl – auch wenn du Newsletter und Vereinsinformationen angekreuzt hast. Bereits bestätigte Angebote musst du nicht erneut bestätigen.</p>' : '') .
 '<p style="margin:10px 0 0;font-size:13px;line-height:1.6;color:#6b786f;">Die freiwilligen Einwilligungen können jederzeit widerrufen werden.</p>' .
 '</td></tr>' .
 '<tr><td style="padding:30px 36px;background:#f3f6f3;border-top:1px solid #dfe7df;">' .

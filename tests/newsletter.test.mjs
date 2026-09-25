@@ -239,3 +239,52 @@ test('information unsubscribe response describes the independent list', async ()
   assert.match(result.message, /Informations-E-Mails abgemeldet/);
   assert.match(result.message, /Newsletter-Anmeldung bleibt davon unberührt/);
 });
+
+test('combined confirmation takes both topics from stored consent and creates distinct unsubscribe links in one mail', async () => {
+  let confirmed;
+  const db = stubDb({
+    table: (state) => { assert.equal(state.name, 'newsletter_confirmation_batches'); return { email: 'fan@example.org', topics: ['club_info', 'newsletter'], expires_at: new Date(Date.now()+60000).toISOString(), confirmed_at: null }; },
+    rpc: (name, args) => { assert.equal(name, 'newsletter_confirm_batch'); confirmed=args; return { status: 'confirmed', topics: ['club_info','newsletter'] }; },
+  });
+  const result = await (await handler(db, {config:{...config, mode:'live', testMode:false}})(makeRequest({action:'confirm',token:'a'.repeat(64),batch:true,topic:'untrusted'}))).json();
+  assert.equal(result.topic,'both');
+  assert.match(result.message,/gemeinsame Bestätigungsmail/);
+  assert.match(confirmed.p_message.subject,/Newsletter und Informations-E-Mails/);
+  const links = [...confirmed.p_message.text.matchAll(/(Newsletter|Informations-E-Mails) abmelden: .*?#token=([a-f0-9]{64})/g)];
+  assert.equal(links.length,2);
+  assert.notEqual(links[0][2],links[1][2]);
+  for(const [,label,value] of links) assert.equal(confirmed.p_unsubscribe_hashes[label==='Newsletter'?'newsletter':'club_info'],await hash(value));
+});
+
+function batchWorkflowFixture(kind, {infoStatus='confirmed', stale=false, live=false}={}) {
+  const changes=[]; const mode=live?'live':'test';
+  const items=['club_info','newsletter'].map(topic=>({token_hash:`generation-${topic}`,subscription:{id:topic,email:'fan@example.org',topic,mail_mode:mode,status:kind==='confirmation'?'pending':topic==='club_info'?infoStatus:'confirmed',token_consumed:kind!=='confirmation',confirmation_token_hash:stale&&topic==='newsletter'?'new-generation':`generation-${topic}`}}));
+  const job={id:'batch-job',subscription_id:'club_info',confirmation_batch_id:'batch-id',lease_id:'lease',kind,attempts:1,first_attempt_at:new Date().toISOString(),provider_synced:false,message:{to:'fan@example.org',subject:'Both',html:'<p>Both</p>'}};
+  const db=stubDb({rpc:()=>[job],table:state=>{
+    if(state.name==='newsletter_subscriptions')return items[0].subscription;
+    if(state.name==='newsletter_confirmation_items')return items;
+    changes.push(state.values);return null;
+  }});
+  return {db,changes,config:{...config,mode,testMode:!live}};
+}
+
+test('combined verification sends one mail without activating either list; superseded batches send nothing',async()=>{
+  for(const stale of [false,true]){
+    const fixture=batchWorkflowFixture('confirmation',{stale});let sent=0;
+    await processNewsletterJob({...fixture,fetcher:()=>assert.fail('no contacts before verification'),sendEmail:async()=>{sent++;return {mode:'test',id:'sent'};}});
+    assert.equal(sent,stale?0:1);
+    assert.equal(fixture.changes.at(-1).status,stale?'cancelled':'sent');
+  }
+});
+
+test('combined welcome syncs both lists but sends once; later opt-out only suppresses its own list',async()=>{
+  for(const infoStatus of ['confirmed','unsubscribed']){
+    const fixture=batchWorkflowFixture('welcome',{infoStatus,live:true});const segments=[];let sent=0;
+    await processNewsletterJob({...fixture,fetcher:async(url,options)=>{
+      if(options.method==='POST')segments.push(new URL(url).pathname.split('/').at(-1));
+      return Response.json({id:'contact',unsubscribed:false});
+    },sendEmail:async()=>{sent++;return {mode:'live',id:'sent'};}});
+    assert.deepEqual(segments,infoStatus==='confirmed'?[CLUB_INFO_SEGMENT_ID,NORDSTERN_SEGMENT_ID]:[NORDSTERN_SEGMENT_ID]);
+    assert.equal(sent,infoStatus==='confirmed'?1:0);
+  }
+});

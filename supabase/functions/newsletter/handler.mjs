@@ -49,6 +49,26 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
     return result.data;
   };
   const link = (action, value) => `${siteUrl.replace(/\/$/, '')}/newsletter/${action}#token=${value}`;
+  const confirmBatch = async (tokenHash) => {
+    const batch = await query(db.from('newsletter_confirmation_batches').select('email, topics, confirmed_at, expires_at')
+      .eq('token_hash', tokenHash).eq('mail_mode', config.mode).maybeSingle());
+    if (!batch) return { status: 'invalid' };
+    const unsubscribeHashes = {}, unsubscribeUrls = {};
+    for (const topic of batch.topics) {
+      const unsubscribeToken = token();
+      unsubscribeHashes[topic] = await hash(unsubscribeToken);
+      unsubscribeUrls[topic] = link('abmelden', unsubscribeToken);
+    }
+    const message = batch.confirmed_at || Date.parse(batch.expires_at) <= Date.now() ? null : renderNewsletterEmail({
+      kind: 'welcome', topic: batch.topics.length === 2 ? 'both' : batch.topics[0], email: batch.email,
+      actionUrl: unsubscribeUrls[batch.topics[0]], unsubscribeUrls, sponsors: await loadSponsors(fetcher),
+    });
+    const result = await query(db.rpc('newsletter_confirm_batch', {
+      p_token_hash: tokenHash, p_mode: config.mode, p_unsubscribe_hashes: unsubscribeHashes, p_message: message,
+    }));
+    result.topic = result.topics?.length === 2 ? 'both' : result.topics?.[0];
+    return result;
+  };
   return async (request) => {
     const origin = request.headers.get('origin');
     const cors = {
@@ -98,15 +118,21 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
       if (!['confirm', 'unsubscribe'].includes(body.action) || typeof body.token !== 'string' || !TOKEN.test(body.token)) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte melde dich auf unserer Newsletter-Seite erneut an.' }, 400);
       const tokenHash = await hash(body.token);
       let result;
-      if (body.action === 'confirm') {
+      if (body.action === 'confirm' && body.batch === true) {
+        result = await confirmBatch(tokenHash);
+      } else if (body.action === 'confirm') {
         const sub = await query(db.from('newsletter_subscriptions').select('email, topic, token_consumed, confirmation_expires_at').eq('confirmation_token_hash', tokenHash).eq('mail_mode', config.mode).maybeSingle());
-        if (!sub) return json({ ok: false, message: 'Dieser Link ist ungültig. Bitte fordere auf unserer Newsletter-Seite einen neuen Link an.' }, 400);
-        const unsubscribeToken = token();
-        // Avoid fetching sponsors or composing another email for repeated/expired links.
-        const message = sub.token_consumed || Date.parse(sub.confirmation_expires_at) <= Date.now() ? null : renderNewsletterEmail({
-          kind: 'welcome', topic: sub.topic ?? 'newsletter', email: sub.email, actionUrl: link('abmelden', unsubscribeToken), sponsors: await loadSponsors(fetcher),
-        });
-        result = await query(db.rpc('newsletter_confirm', { p_token_hash: tokenHash, p_mode: config.mode, p_unsubscribe_hash: await hash(unsubscribeToken), p_message: message }));
+        if (!sub) {
+          // Also accept a batch link opened in a previously cached action page.
+          result = await confirmBatch(tokenHash);
+        } else {
+          const unsubscribeToken = token();
+          // Avoid fetching sponsors or composing another email for repeated/expired links.
+          const message = sub.token_consumed || Date.parse(sub.confirmation_expires_at) <= Date.now() ? null : renderNewsletterEmail({
+            kind: 'welcome', topic: sub.topic ?? 'newsletter', email: sub.email, actionUrl: link('abmelden', unsubscribeToken), sponsors: await loadSponsors(fetcher),
+          });
+          result = await query(db.rpc('newsletter_confirm', { p_token_hash: tokenHash, p_mode: config.mode, p_unsubscribe_hash: await hash(unsubscribeToken), p_message: message }));
+        }
       } else {
         result = await query(db.rpc('newsletter_unsubscribe', { p_token_hash: tokenHash, p_mode: config.mode }));
       }
@@ -125,7 +151,8 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
       return json({ ok: true, status: result.status, topic: result.topic ?? 'newsletter', message: body.action === 'unsubscribe'
         ? (infoOnly ? 'Du bist von den Informations-E-Mails abgemeldet. Eine separate Newsletter-Anmeldung bleibt davon unberührt.' : 'Du bist von unserem Newsletter abgemeldet. Eine separate Anmeldung für Informations-E-Mails bleibt davon unberührt.')
         : config.testMode ? 'Deine Testanmeldung ist bestätigt. Die Willkommensmail geht an die Testadresse; du wirst nicht in den echten Versandverteiler aufgenommen.'
-        : infoOnly ? 'Deine Anmeldung für allgemeine Informations-E-Mails ist bestätigt. Du wirst dadurch nicht für den Newsletter angemeldet. Eine Bestätigungsmail ist auf dem Weg zu dir.'
+        : result.topic === 'both' ? 'Deine Anmeldung für Newsletter und allgemeine Informations-E-Mails ist bestätigt. Du erhältst eine gemeinsame Bestätigungsmail und kannst beide Angebote jederzeit unabhängig abbestellen. Unser Newsletter entsteht gerade; die ersten Sendungen folgen in absehbarer Zeit.'
+        : infoOnly ? 'Deine Anmeldung für allgemeine Informations-E-Mails ist bestätigt. Du wirst dadurch nicht für den Newsletter angemeldet. Eine bestehende Newsletter-Anmeldung bleibt unverändert. Eine Bestätigungsmail ist auf dem Weg zu dir.'
         : 'Deine Newsletter-Anmeldung ist bestätigt. Schön, dass du dabei bist! Wir arbeiten gerade am Konzept; die ersten Sendungen folgen in absehbarer Zeit. Eine Willkommensmail ist auf dem Weg zu dir.' });
     } catch {
       console.error('Newsletter: Verarbeitung fehlgeschlagen.');

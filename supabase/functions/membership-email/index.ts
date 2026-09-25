@@ -128,7 +128,7 @@ Deno.serve(async (request) => {
   let newsletterStatus = 'not_requested';
   try {
     newsletterStatus = await queueMembershipNewsletter({
-      db: messageType === 'applicant' && body.emailNewsletterAccepted === true ? getSupabase() : null,
+      db: messageType === 'applicant' && (body.emailNewsletterAccepted === true || body.emailGeneralInfoAccepted === true) ? getSupabase() : null,
       body, mode: getEmailRuntimeConfig().mode,
       siteUrl: Deno.env.get('NEWSLETTER_SITE_URL') || 'https://bsvnordstern.de',
     });

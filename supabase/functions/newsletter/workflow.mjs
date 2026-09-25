@@ -45,21 +45,35 @@ export async function processNewsletterJob({ db, config, sendEmail, fetcher = fe
   const save = (values) => checked(db.from('newsletter_jobs').update(values).eq('id', job.id).eq('lease_id', job.lease_id));
   try {
     const sub = await checked(db.from('newsletter_subscriptions').select('*').eq('id', job.subscription_id).single());
-    const topic = sub.topic ?? 'newsletter';
-    if (!['newsletter', 'club_info'].includes(topic)) throw new Error('invalid_subscription_topic');
-    const selectedSegment = topic === 'club_info' ? infoSegmentId : segmentId;
+    const items = job.confirmation_batch_id
+      ? await checked(db.from('newsletter_confirmation_items').select('token_hash, subscription:newsletter_subscriptions(*)').eq('batch_id', job.confirmation_batch_id))
+      : [{ subscription: sub }];
+    const subscriptions = items.map((item) => item.subscription);
+    if (!subscriptions.length || subscriptions.some((item) => !item || item.email !== sub.email || item.mail_mode !== config.mode || !['newsletter', 'club_info'].includes(item.topic ?? 'newsletter'))) throw new Error('invalid_job_message');
     if (sub.mail_mode !== config.mode) throw new Error('mail_mode_changed');
     if (Date.now() - Date.parse(job.first_attempt_at) >= 23 * 60 * 60 * 1000) {
       await save({ status: 'failed', message: null, last_error: 'retry_window_expired', locked_until: null });
       return true;
     }
-    if ((job.kind === 'welcome' && sub.status !== 'confirmed') || (job.kind === 'confirmation' && sub.token_consumed)) {
+    const currentItems = items.filter((item) => (!item.token_hash || item.token_hash === item.subscription.confirmation_token_hash)
+      && (job.kind === 'confirmation' ? !item.subscription.token_consumed : item.subscription.status === 'confirmed'));
+    if ((job.kind === 'confirmation' && currentItems.length !== items.length) || (job.kind === 'welcome' && !currentItems.length)) {
       await save({ status: 'cancelled', message: null, locked_until: null });
       return true;
     }
     if (job.kind !== 'confirmation' && !job.provider_synced) {
-      if (!config.testMode) await syncNewsletterContact({ kind: job.kind, email: sub.email, apiKey: contactsApiKey, segmentId: selectedSegment, fetcher });
+      if (!config.testMode) {
+        const targets = job.kind === 'unsubscribe' ? subscriptions : currentItems.map((item) => item.subscription);
+        for (const item of targets) await syncNewsletterContact({ kind: job.kind, email: item.email, apiKey: contactsApiKey,
+          segmentId: item.topic === 'club_info' ? infoSegmentId : segmentId, fetcher });
+      }
       await save({ provider_synced: true });
+    }
+    // A later opt-out still allows the other list to sync, without sending a
+    // stale welcome message that claims both subscriptions are active.
+    if (job.kind === 'welcome' && currentItems.length !== items.length) {
+      await save({ status: 'cancelled', message: null, locked_until: null });
+      return true;
     }
     let providerId = null;
     if (job.kind !== 'unsubscribe') {

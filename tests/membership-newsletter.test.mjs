@@ -6,12 +6,12 @@ import { hash } from '../supabase/functions/_shared/newsletter-tokens.mjs';
 const body = { messageType: 'applicant', to: ' New.Member@Example.org ', emailNewsletterAccepted: true, applicationNumber: 'BSV-20260924-221000-A123' };
 const noFetch = async () => new Response('', { status: 503 });
 
-test('only explicit newsletter consent on the applicant message starts the workflow', async () => {
+test('only explicit email consent on the applicant message starts the workflow', async () => {
   for (const override of [
     { emailNewsletterAccepted: false }, { emailNewsletterAccepted: undefined },
     { emailNewsletterAccepted: 'accepted' }, { emailNewsletterAccepted: 'true' },
     { emailNewsletterAccepted: 1 }, { messageType: 'internal' }, { messageType: 'team' },
-    { emailNewsletterAccepted: false, emailGeneralInfoAccepted: true },
+    { emailNewsletterAccepted: false, emailGeneralInfoAccepted: 'true' },
     { emailNewsletterAccepted: undefined, text: 'Newsletter und digitale Vereinszeitschrift per E-Mail: Ja' },
   ]) {
     assert.equal(await queueMembershipNewsletter({
@@ -26,7 +26,8 @@ test('membership opt-in queues a BSV confirmation with source, reference and has
     let called = false;
     const db = { async rpc(name, args) {
       called = true;
-      assert.equal(name, 'newsletter_request_membership');
+      assert.equal(name, 'newsletter_request_membership_topics');
+      assert.deepEqual(args.p_topics, ['newsletter']);
       assert.equal(args.p_mode, mode);
       assert.equal(args.p_email, 'new.member@example.org');
       assert.equal(args.p_application_number, body.applicationNumber);
@@ -65,5 +66,23 @@ test('database failures and throttling are reported instead of claiming a succes
     await assert.rejects(queueMembershipNewsletter({
       db: { rpc: async () => response }, body, mode: 'live', fetcher: noFetch,
     }), /membership_newsletter_queue_failed/);
+  }
+});
+
+test('one verification job covers exactly the selected offers, including information-only applications', async () => {
+  for (const [news, info, topics] of [[true, true, ['newsletter', 'club_info']], [false, true, ['club_info']]]) {
+    let calls = 0;
+    const db = { async rpc(name, args) {
+      calls++;
+      assert.equal(name, 'newsletter_request_membership_topics');
+      assert.deepEqual(args.p_topics, topics);
+      assert.match(args.p_message.text, /Informations-E-Mails|Vereinsinformationen/);
+      assert.match(args.p_message.text, /&batch=1/);
+      if (news) assert.match(args.p_message.text, /Mit einem Klick.*beide Angebote/);
+      else assert.match(args.p_message.text, /keinen Newsletter/);
+      return { data: { status: 'queued' }, error: null };
+    } };
+    await queueMembershipNewsletter({ db, body: { ...body, emailNewsletterAccepted: news, emailGeneralInfoAccepted: info }, mode: 'test', fetcher: noFetch });
+    assert.equal(calls, 1);
   }
 });

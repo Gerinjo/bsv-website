@@ -63,10 +63,10 @@ begin
   perform public.newsletter_cleanup();
   assert (select status = 'failed' and message is null from public.newsletter_jobs where id = job);
   -- Pending personal data expires; consent records are retained.
-  update public.newsletter_subscriptions set requested_at = now() - interval '8 days' where mail_mode = 'live';
+  update public.newsletter_subscriptions set requested_at = now() - interval '8 days' where mail_mode = 'live' and email = 'fan@example.org';
   perform public.newsletter_cleanup();
-  assert not exists(select 1 from public.newsletter_subscriptions where mail_mode = 'live');
-  assert exists(select 1 from public.newsletter_subscriptions where mail_mode = 'test');
+  assert not exists(select 1 from public.newsletter_subscriptions where mail_mode = 'live' and email = 'fan@example.org');
+  assert exists(select 1 from public.newsletter_subscriptions where mail_mode = 'test' and email = 'fan@example.org');
 end;
 $$;
 rollback;

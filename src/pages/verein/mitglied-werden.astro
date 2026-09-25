@@ -53,10 +53,10 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
               <div class="field full email-consents">
                 <p><strong>Freiwillige Informationen per E-Mail</strong><span>Die beiden Einwilligungen können unabhängig voneinander erteilt und jederzeit widerrufen werden.</span></p>
                 <div class="legal-list">
-                  <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
+                  <label class="legal-check"><input type="checkbox" name="emailGeneralInfoAccepted" value="accepted" aria-describedby="newsletter-consent-hint" /><span>Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen.</span></label>
                   <label class="legal-check"><input type="checkbox" name="emailNewsletterAccepted" value="accepted" aria-describedby="newsletter-consent-hint" /><span>Ich möchte den Newsletter und die Vereinszeitschrift digital per E-Mail erhalten.</span></label>
                 </div>
-                <p id="newsletter-consent-hint">Nach deiner Online-Anmeldung erhältst du eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail. Wenn du den Newsletter auswählst, bekommst du zusätzlich eine E-Mail zur Verifizierung deiner E-Mail-Adresse. Bitte klicke auf den Bestätigungslink darin. Erst danach ist dein Newsletter-Abonnement aktiv. Bereits bestätigte Newsletter-Abonnements müssen nicht erneut bestätigt werden.</p>
+                <p id="newsletter-consent-hint">Nach deiner Online-Anmeldung erhältst du eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail. Wenn du Newsletter oder Vereinsinformationen auswählst, erhältst du zusätzlich eine gemeinsame Verifizierungsmail. Ein Klick auf den Link bestätigt alle von dir ausgewählten Angebote – auch wenn du beide angekreuzt hast. Bereits bestätigte Angebote musst du nicht erneut bestätigen.</p>
               </div>
             </div>
           </section>
@@ -524,7 +524,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
     formIsSending = true;
     updateMembershipEligibility();
     status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
-    const newsletterRequested = form.querySelector('input[name="emailNewsletterAccepted"]').checked;
+    const newsletterRequested = form.querySelector('input[name="emailNewsletterAccepted"]').checked || form.querySelector('input[name="emailGeneralInfoAccepted"]').checked;
 
     try {
       const response = await fetch(endpoint, {
@@ -551,8 +551,8 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
       status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet. Du erhältst eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail.`;
       if (newsletterRequested) {
         status.textContent += result.newsletterStatus === 'requested'
-          ? ' Für unseren Newsletter erhältst du zusätzlich eine E-Mail zur Verifizierung deiner E-Mail-Adresse, sofern dein Newsletter-Abonnement noch nicht bestätigt ist. Klicke auf den Bestätigungslink, um dein Abonnement zu aktivieren. Prüfe auch den Spam-Ordner.'
-          : ' Deine Newsletter-Anmeldung konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für den Newsletter das Formular auf unserer Newsletter-Seite unter /newsletter.';
+          ? ' Für deine ausgewählten E-Mail-Angebote erhältst du zusätzlich eine gemeinsame Verifizierungsmail, sofern sie noch nicht bestätigt sind. Ein Klick auf den Link bestätigt deine Auswahl. Prüfe auch den Spam-Ordner.'
+          : ' Die Anmeldung für deine E-Mail-Auswahl konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für die gewünschte E-Mail-Auswahl das Formular auf unserer Newsletter-Seite unter /newsletter.';
       }
       window.scrollTo({ top: form.offsetTop - 90, behavior: 'smooth' });
     } catch (error) {
