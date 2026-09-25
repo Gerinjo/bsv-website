@@ -43,6 +43,19 @@ Unter `/app` finden Besucher die Installationshilfe für Android und iOS. Ein Li
 
 Bei Änderungen an der Offline-Seite die Cache-Version in `public/sw.js` erhöhen. Alte Caches werden ausschließlich innerhalb des eigenen Namensraums und Scopes gelöscht. Der Worker aktualisiert sich ohne erzwungenes Neuladen offener Formulare. Zur lokalen Prüfung `npm run build` und `npm run preview` verwenden; der Dev-Modus registriert keinen Worker. Verhaltenstests: `node --test tests/pwa-worker.test.mjs`.
 
+## Stadionhefte
+
+Unter `/media/stadionheft` stehen die hochgeladenen Ausgaben mit Titelbild. Das Titelbild öffnet das Original-PDF in einem neuen Tab; „Im Heft blättern“ führt zur eigenen Leseansicht mit Seitenwahl, Zoom und Vollbild (in unterstützten Browsern). Die noch nicht freigegebene externe digitale Ausgabe wird nicht verlinkt.
+
+Neue Ausgabe veröffentlichen:
+
+1. Das Original-PDF unter `public/dokumente/stadionheft/` ablegen.
+2. Ein Titelbild aus der ersten PDF-Seite unter `public/images/stadionheft/` erzeugen, z. B. mit `pdftoppm -f 1 -singlefile -scale-to 900 -jpeg -jpegopt quality=86 eingabe.pdf public/images/stadionheft/2026-27-ausgabe-2`.
+3. In `src/data/stadiumMagazines.ts` einen Eintrag mit eindeutigem Slug, Ausgabe, Saison, Datum, Seitenzahl sowie PDF- und Bildpfad ergänzen. Die Übersicht sortiert nach Datum; die Leseroute wird beim Build automatisch angelegt.
+4. `npm run build` ausführen und Titelbild, PDF-Link und Leseansicht einschließlich der letzten Seite prüfen.
+
+Der Leser verwendet die festgelegte Version von `pdfjs-dist` und lädt PDF, Worker sowie benötigte Hilfsdateien von der eigenen Website. Die Bibliothek wird nur auf den Leseansichten geladen. Original-PDF und Download bleiben auch ohne JavaScript erreichbar. Lizenztexte liegen unter `public/vendor/pdfjs/`; bei einem Bibliotheksupdate ebenfalls aktualisieren.
+
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
 
 ## 🧞 Commands

@@ -1,0 +1,62 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { stadiumMagazines } from '../../../data/stadiumMagazines';
+import { withBase } from '../../../utils/paths';
+---
+
+<Layout title="Stadionheft | BSV Nordstern Radolfzell" description="Die Stadionhefte des BSV Nordstern Radolfzell: Entdecke unsere Ausgaben, blättere online im Heft oder öffne das PDF.">
+  <Header />
+  <main>
+    <section class="hero">
+      <div class="shell">
+        <a class="back" href={withBase('/media')}>← Media</a>
+        <h1>Stadionheft</h1>
+        <p>Ein Stück BSV zum Mitnehmen. Unsere Mannschaften, Geschichten und alles rund um den Spieltag – Ausgabe für Ausgabe.</p>
+      </div>
+    </section>
+    <section class="archive shell" aria-labelledby="issues-title">
+      <div class="archive-heading"><h2 id="issues-title">Unsere Ausgaben</h2><p>Ein Klick auf das Titelbild öffnet das PDF. Mit „Im Heft blättern“ liest du direkt hier weiter.</p></div>
+      <div class="issues">
+        {stadiumMagazines.map((magazine) => (
+          <article class="issue">
+            <a class="cover" href={withBase(magazine.pdf)} target="_blank" rel="noopener" aria-label={`Ausgabe ${magazine.issue}, Saison ${magazine.season} als PDF öffnen (neuer Tab)`}>
+              <img src={withBase(magazine.cover)} width="637" height="900" alt={`Titelbild des Stadionhefts vom ${magazine.dateLabel}`} />
+              <span class="cover-link">PDF öffnen <span aria-hidden="true">↗</span></span>
+            </a>
+            <div class="issue-info">
+              <span class="season">Saison {magazine.season}</span>
+              <h3>Ausgabe {magazine.issue}</h3>
+              <p><time datetime={magazine.date}>{magazine.dateLabel}</time><span aria-hidden="true"> · </span>{magazine.pages} Seiten</p>
+              <a class="read" href={withBase(`/media/stadionheft/${magazine.slug}`)}>Im Heft blättern <span aria-hidden="true">→</span></a>
+              <a class="download" href={withBase(magazine.pdf)} download>PDF herunterladen <span aria-hidden="true">↓</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}
+  .hero{padding:48px 0 62px;background:#092f20;color:#fff;border-bottom:5px solid #f4d638}
+  .back{color:#f4d638;text-decoration:none;font-size:.8rem;font-weight:750}
+  h1{margin:28px 0 20px;font-size:clamp(3rem,6vw,5.5rem);line-height:1;letter-spacing:-.045em}
+  .hero p{max-width:630px;margin:0;color:#d6e3db;line-height:1.8}
+  .archive{padding:50px 0 80px}.archive-heading{margin-bottom:30px}.archive-heading h2{margin:0 0 12px;font-size:1.6rem;color:#102b1d}.archive-heading p{max-width:650px;margin:0;color:#52665a;line-height:1.65}
+  .issues{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:32px}
+  .issue{max-width:352px;background:#fff;box-shadow:0 10px 30px rgb(9 47 32 / 7%)}
+  .cover{display:block;position:relative;background:#e5ece6;padding:22px 30px 0;overflow:hidden}
+  .cover img{display:block;width:100%;height:auto;box-shadow:0 6px 20px rgb(9 47 32 / 22%);transition:transform .2s}
+  .cover-link{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:16px;padding:10px 14px;background:#f4d638;color:#102b1d;font-size:.8rem;font-weight:800;box-shadow:0 2px 12px #0002}
+  .cover:hover img{transform:translateY(-5px)}.cover:focus-visible{outline:3px solid #164f32;outline-offset:4px}
+  .issue-info{padding:26px}.season{font-size:.65rem;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#164f32}
+  h3{font-family:Georgia,serif;font-size:2rem;margin:10px 0 12px;color:#102b1d}.issue-info p{color:#52665a;font-size:.8rem;margin:0;line-height:1.6}
+  .read,.download{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;font-weight:800;text-decoration:none}
+  .read{margin-top:22px;padding:14px 16px;background:#164f32;color:#fff}.read:hover{background:#092f20}.download{padding:16px 0 0;color:#164f32}.download:hover{text-decoration:underline}
+  @media(max-width:600px){.shell{width:calc(100% - 30px)}.hero{padding:32px 0 42px}.archive{padding:32px 0 55px}.issue{max-width:none}.issues{gap:24px}}
+  @media(prefers-reduced-motion:reduce){.cover img{transition:none}}
+</style>

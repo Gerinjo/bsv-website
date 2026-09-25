@@ -1,0 +1,67 @@
+---
+import type { StadiumMagazine } from '../data/stadiumMagazines';
+import { withBase } from '../utils/paths';
+import 'pdfjs-dist/web/pdf_viewer.css';
+interface Props { magazine: StadiumMagazine }
+const { magazine } = Astro.props;
+---
+
+<section class="magazine-reader" data-magazine-reader data-pdf={withBase(magazine.pdf)} aria-label={`Stadionheft, Ausgabe ${magazine.issue}`}>
+  <div class="toolbar" data-controls hidden>
+    <div class="page-controls">
+      <button type="button" data-previous aria-label="Vorherige Seite" title="Vorherige Seite" disabled>←</button>
+      <form data-page-form>
+        <label for="magazine-page">Seite</label>
+        <input id="magazine-page" data-page type="number" min="1" max={magazine.pages} value="1" inputmode="numeric" aria-label="Seite auswählen" disabled />
+        <span>/ <span data-page-count>{magazine.pages}</span></span>
+        <button class="jump" type="submit" aria-label="Zur eingegebenen Seite" title="Zur eingegebenen Seite" disabled>↵</button>
+      </form>
+      <button type="button" data-next aria-label="Nächste Seite" title="Nächste Seite" disabled>→</button>
+    </div>
+    <div class="view-controls">
+      <button type="button" data-zoom-out aria-label="Verkleinern" title="Verkleinern" disabled>−</button>
+      <button type="button" class="fit" data-fit title="Ganze Seite anzeigen" disabled>Ganze Seite</button>
+      <button type="button" data-zoom-in aria-label="Vergrößern" title="Vergrößern" disabled>+</button>
+      <button type="button" class="fullscreen" data-fullscreen aria-label="Vollbild öffnen" title="Vollbild öffnen" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" /></svg>
+      </button>
+    </div>
+  </div>
+  <div class="stage" data-stage tabindex="0" aria-label="Heftseite. Mit den Pfeiltasten links und rechts blättern." aria-busy="true">
+    <div class="paper" data-paper>
+      <img class="initial-cover" src={withBase(magazine.cover)} width="637" height="900" alt={`Titelbild: Ausgabe ${magazine.issue}, Saison ${magazine.season}`} />
+    </div>
+  </div>
+  <div class="reader-footer">
+    <p role="status" aria-live="polite" data-status>Leseansicht wird geladen …</p>
+    <div class="pdf-links">
+      <a href={withBase(magazine.pdf)} target="_blank" rel="noopener">PDF öffnen <span aria-hidden="true">↗</span><span class="sr-only"> (neuer Tab)</span></a>
+      <a href={withBase(magazine.pdf)} download>Herunterladen <span aria-hidden="true">↓</span></a>
+    </div>
+  </div>
+  <noscript><p class="no-script">Zum Blättern bitte JavaScript aktivieren oder das Heft über „PDF öffnen“ lesen.</p><style>[data-status]{display:none}</style></noscript>
+</section>
+
+<script>
+  import '../scripts/stadium-magazine-reader';
+</script>
+
+<style>
+  .magazine-reader{max-width:1240px;margin:auto;background:#163c2c;border:1px solid #163c2c;color:#fff;box-shadow:0 12px 40px #092f2018}
+  .magazine-reader *{box-sizing:border-box}.magazine-reader [hidden]{display:none!important}
+  .toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#092f20;border-bottom:2px solid #f4d638}
+  .page-controls,.view-controls,form{display:flex;align-items:center;gap:8px}form{margin:0;font-size:.8rem;white-space:nowrap}
+  button{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:6px;border:1px solid #ffffff35;border-radius:3px;background:#ffffff0d;color:#fff;font:inherit;font-size:1.25rem;cursor:pointer}
+  button:hover:not(:disabled){background:#f4d638;color:#092f20;border-color:#f4d638}button:disabled{opacity:.4;cursor:default}.fit{min-width:105px;font-size:.75rem;font-weight:700}.jump{min-width:32px;font-size:1rem}
+  button:focus-visible,input:focus-visible,a:focus-visible,.stage:focus-visible{outline:3px solid #f4d638;outline-offset:3px}
+  input{width:52px;height:44px;border:1px solid #ffffff55;border-radius:3px;text-align:center;background:#fff;color:#102b1d;font:inherit;font-weight:700;appearance:textfield;-moz-appearance:textfield}input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  .stage{height:clamp(400px,72svh,1000px);overflow:auto;overscroll-behavior:contain;padding:16px;background:radial-gradient(ellipse at top,#315642,#163c2c);outline-offset:-4px!important}
+  .paper{position:relative;width:fit-content;margin-inline:auto;background:#fff;box-shadow:0 6px 24px #0005;--scale-round-x:1px;--scale-round-y:1px}
+  .paper :global(canvas){display:block}.initial-cover{display:block;max-width:100%;max-height:calc(72svh - 32px);width:auto;height:auto;object-fit:contain}
+  .reader-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:#092f20;font-size:.75rem}
+  .reader-footer p{margin:0;line-height:1.6;color:#d6e3db}.pdf-links{display:flex;flex-wrap:wrap;gap:20px}.pdf-links a{color:#f4d638;font-weight:750;text-underline-offset:4px}
+  .no-script{padding:0 18px 18px;margin:0;line-height:1.6;font-size:.85rem}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .magazine-reader:fullscreen{width:100%;max-width:none;height:100dvh;display:flex;flex-direction:column;border:0}.magazine-reader:fullscreen .stage{flex:1;min-height:0;height:auto}.magazine-reader:fullscreen .toolbar,.magazine-reader:fullscreen .reader-footer{flex-shrink:0}
+  @media(max-width:620px){.toolbar{justify-content:center;padding:10px 8px;gap:8px}.page-controls{width:100%;justify-content:center}.view-controls{gap:10px}.stage{padding:12px;height:68svh;min-height:340px}.reader-footer{padding:12px;justify-content:center;text-align:center;gap:8px}.reader-footer p{width:100%}.pdf-links{justify-content:center}}
+</style>
