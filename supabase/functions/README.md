@@ -1,6 +1,6 @@
 # Gemeinsame E-Mail-Konfiguration
 
-Die Startseiten-Anmeldung zum **Newsletter des BSV Nordstern Radolfzell** verwendet denselben E-Mail-Dienst.
+Die Anmeldung auf `/newsletter` zum **Newsletter des BSV Nordstern Radolfzell** verwendet denselben E-Mail-Dienst.
 Double-Opt-in, Sponsoren, Verteileraufnahme, Wiederholungen und Bereitstellung sind
 in [newsletter/README.md](newsletter/README.md) beschrieben.
 

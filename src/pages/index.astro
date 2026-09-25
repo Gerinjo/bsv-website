@@ -3,7 +3,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import HomeSponsorShowcase from '../components/HomeSponsorShowcase.astro';
 import HomeNextMatch from '../components/HomeNextMatch.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
 import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
@@ -62,6 +61,18 @@ const getEventType = (title: string) => {
       </div>
       <div class="ticker" aria-label="Vereinswerte">
         <div>Fußball <span>✦</span> Gemeinschaft <span>✦</span> Leidenschaft <span>✦</span> Radolfzell <span>✦</span> Seit 1956 <span>✦</span> Fußball <span>✦</span> Gemeinschaft</div>
+      </div>
+    </section>
+
+    <section class="newsletter-teaser" id="newsletter" aria-labelledby="newsletter-title">
+      <div class="shell newsletter-teaser-card">
+        <div>
+          <p class="kicker dark"><span aria-hidden="true"></span> Unser Newsletter</p>
+          <h2 id="newsletter-title">Dein Verein. In deinem Postfach.</h2>
+          <p>Vereinsgeschichten oder nur allgemeine Informations-E-Mails: Lerne unser Angebot kennen und wähle, welche Post du erhalten möchtest.</p>
+          <p class="newsletter-concept">Unser Newsletter entsteht gerade. Die ersten Sendungen folgen in absehbarer Zeit.</p>
+        </div>
+        <a class="button button-yellow" href={withBase('/newsletter')}>Zum Newsletter <span aria-hidden="true">↗</span></a>
       </div>
     </section>
 
@@ -162,8 +173,6 @@ const getEventType = (title: string) => {
       </div>
     </section>
 
-    <NewsletterSignup />
-
     <section class="join-section">
       <div class="shell join-card">
         <span class="join-star" aria-hidden="true">✦</span>
@@ -225,6 +234,14 @@ const getEventType = (title: string) => {
   :global(:root) { --green: #164f32; --green-dark: #092f20; --green-light: #1e6b43; --yellow: #f4d638; --cream: #f4f1e8; --ink: #10251a; }
   main { width: 100%; overflow-x: clip; }
   .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+  .newsletter-teaser { padding: 38px 0 0; scroll-margin-top: 130px; background: var(--cream); }
+  .newsletter-teaser-card { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; padding: 28px 32px; border-left: 4px solid var(--green); background: white; }
+  .newsletter-teaser .kicker { margin-bottom: 12px; }
+  .newsletter-teaser h2 { margin: 0 0 12px; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.1; }
+  .newsletter-teaser p:not(.kicker) { max-width: 730px; margin: 0; color: #52665a; font-size: .9rem; line-height: 1.65; }
+  .newsletter-teaser p.newsletter-concept { margin-top: 10px; font-size: .78rem; }
+  .newsletter-teaser .button { white-space: nowrap; }
+  @media (max-width: 650px) { .newsletter-teaser { padding-top: 26px; }.newsletter-teaser-card { grid-template-columns: 1fr; gap: 22px; padding: 24px 22px; }.newsletter-teaser .button { justify-self: start; } }
   .hero { position: relative; overflow: hidden; color: white; background: var(--green); }
   .hero::before { content: ''; position: absolute; inset: 0; opacity: .17; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(to right, black, transparent 70%); }
   .hero-lines { position: absolute; width: 520px; height: 520px; right: -130px; top: -130px; border: 1px solid rgb(255 255 255 / 18%); border-radius: 50%; box-shadow: 0 0 0 70px rgb(255 255 255 / 4%), 0 0 0 140px rgb(255 255 255 / 4%); }

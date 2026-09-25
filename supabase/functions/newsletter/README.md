@@ -1,6 +1,6 @@
 # BSV-Newsletter: Anmeldung und Bestätigung
 
-Das Startseitenformular sendet an die öffentliche Edge Function `newsletter`.
+Das Formular auf `/newsletter` sendet an die öffentliche Edge Function `newsletter`.
 Es verwendet den bestehenden, einmal nutzbaren Spamschutz von `contact-request`.
 Ein Konto oder Supabase-Login ist nicht erforderlich.
 
@@ -32,7 +32,8 @@ bestehenden GitHub-Pages-Workflow bei einem Push auf `main` veröffentlicht.
 
 `/media` bündelt das Stadionheft als PDF und `/newsletter`. Das Media-Menü steht
 hinter Sponsoring; die mobile Navigation öffnet dieselbe Übersicht. Die
-Newsletter-Seite stellt beide Angebote vor. Auf der Startseite und in den
+Startseite verlinkt direkt unter dem Einstiegsbereich auf die Newsletter-Seite;
+dort stellt das Formular beide Angebote zur Auswahl. Auf der Startseite und in den
 Newsletter-Mails wird ebenfalls auf die laufende Konzeptphase hingewiesen.
 
 Das Formular bietet `newsletter` oder `club_info` (nur allgemeine
@@ -109,7 +110,7 @@ Willkommensmail nach Klick. Eine neue Anfrage für dieselbe bestätigte Adresse
 erzeugte keinen zweiten Link; eine wiederholte Antragsnummer nach Abmeldung
 reaktivierte das Abonnement nicht. Die synthetischen Daten wurden entfernt.
 
-### Anmeldung auf der Startseite
+### Anmeldung auf der Newsletter-Seite
 
 1. `subscribe`: E-Mail normalisieren, Einwilligung und Spamschutz prüfen. Eine
    private Anmeldung und ein Bestätigungsauftrag werden atomar gespeichert.
