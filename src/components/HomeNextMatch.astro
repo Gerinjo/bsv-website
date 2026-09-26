@@ -103,12 +103,35 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
     });
     selectTab(0);
     if (tablist) tablist.hidden = false;
+
+    const hero = section.closest<HTMLElement>('.hero');
+    const grid = hero?.querySelector<HTMLElement>('.hero-grid');
+    const ticker = hero?.querySelector<HTMLElement>('.ticker');
+    const art = hero?.querySelector<HTMLElement>('.hero-art');
+    if (grid && ticker && art) {
+      const fitPanels = () => {
+        const bottom = section.getBoundingClientRect().bottom;
+        const artTop = art.getBoundingClientRect().top;
+        // In the stacked layout the illustration, rather than the ticker,
+        // marks the end of the free space below the match list.
+        const limit = Math.min(ticker.getBoundingClientRect().top, artTop >= bottom ? artTop : Infinity);
+        const extra = `${Math.max(0, Math.floor(limit - bottom - 24))}px`;
+        if (section.style.getPropertyValue('--match-panel-extra') !== extra) {
+          section.style.setProperty('--match-panel-extra', extra);
+        }
+      };
+      const observer = new ResizeObserver(fitPanels);
+      observer.observe(grid);
+      observer.observe(section);
+      document.fonts.ready.then(fitPanels);
+      fitPanels();
+    }
   });
 </script>
 
 <style>
   /* Include the buttons' 7px shadow when matching the gap above the buttons. */
-  .next-matches { margin-top:calc(var(--hero-action-gap, 28px) + 7px); color:white; }
+  .next-matches { display:flow-root; margin-top:calc(var(--hero-action-gap, 28px) + 7px); color:white; }
   .matches-heading { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; column-gap:12px; }
   h2 { grid-column:1 / -1; margin:0 0 10px; color:#f4d638; font-size:.68rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
   .match-nav { display:contents; }
@@ -124,8 +147,8 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
   .match-tabs button:focus-visible,.match-panel:focus-visible { outline:2px solid #f4d638; outline-offset:3px; }
   .stadium-link { grid-column:2; display:flex; align-items:center; gap:8px; margin-left:auto; min-height:40px; padding:2px 0 2px 8px; color:#f4d638; text-decoration:none; font-size:.75rem; font-weight:750; white-space:nowrap; }
   .stadium-link:hover span { text-decoration:underline; text-underline-offset:4px; }.stadium-link svg{flex-shrink:0}
-  /* Reserve the same two-match space for every tab so the hero stays in place. */
-  .match-panel { height:11rem; overflow-y:auto; overscroll-behavior-y:contain; scrollbar-width:thin; scrollbar-color:#a8c8b6 transparent; }
+  /* Extend into unused hero space while preserving the original layout height. */
+  .match-panel { --match-panel-base:11rem; height:calc(var(--match-panel-base) + var(--match-panel-extra, 0px)); margin-bottom:calc(-1 * var(--match-panel-extra, 0px)); overflow-y:auto; overscroll-behavior-y:contain; scrollbar-width:thin; scrollbar-color:#a8c8b6 transparent; }
   .next-match { padding:12px 0; border-top:1px solid rgb(255 255 255 / 22%); }
   h3 { margin:0 0 4px; color:#d2e3d8; font-size:.68rem; font-weight:650; }
   .match-details,.match-fallback { display:flex; align-items:center; gap:12px; }
@@ -150,7 +173,7 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
     h2 { grid-column:1; grid-row:1; margin-bottom:0; }
     .stadium-link { grid-column:2; grid-row:1; }
     .match-tabs { grid-column:1 / -1; grid-row:2; }
-    .match-panel { height:13rem; }
+    .match-panel { --match-panel-base:13rem; }
     .next-match { padding:10px 0; }
     .match-teams { font-size:.82rem; }
   }
