@@ -1,3 +1,8 @@
+import { getImage } from 'astro:assets';
+import bambiniLogo from '../assets/events/weihnachts-bambini-logo.png';
+
+const bambiniLogoWeb = await getImage({ src: bambiniLogo, width: 600, format: 'webp' });
+
 export type ErlebnisCooperation = {
   id: string;
   partner: string;
@@ -19,6 +24,13 @@ export type ErlebnisCooperation = {
 };
 
 export const erlebnisCooperations: ErlebnisCooperation[] = [
+  {
+    id: 'weihnachts-bambini-spieltag', partner: 'Weihnachtlicher Bambini-Spieltag', title: 'Kleine Kicker. Große Weihnachtsfreude.', menuTitle: 'Weihnachtlicher Bambini-Spieltag', category: 'Bambini · Hallenspieltag',
+    summary: 'Weihnachtlicher Hallenfußball in der Unterseesporthalle Radolfzell. Jedes Kind bekommt eine Überraschung – und vielleicht schaut der Nikolaus vorbei.',
+    facts: ['12. Dezember 2026 · Unterseesporthalle Radolfzell', 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', 'Mannschaft anmelden und Wunschzeiten auswählen'],
+    actionLabel: 'Mannschaft anmelden', actionHref: '/erlebnis/weihnachts-bambini-spieltag', external: false, accent: '#a7323c', symbol: '✦',
+    logoSrc: bambiniLogoWeb.src, logoAlt: 'Eventlogo Weihnachtlicher Bambini-Spieltag · BSV Nordstern', logoBackground: '#0e3929', date: '12. Dezember 2026',
+  },
   {
     id: 'skechers-fussballschule',
     partner: 'SKECHERS Fußballschule mit Bernd Voss',

@@ -120,6 +120,7 @@ export const menu: MenuItem[] = [
         { label: 'Save & Play Torwartcamp', href: '/erlebnis/torwartcamp' },
       ]},
       { title: 'Turniere & Aktionstage', links: [
+        { label: 'Weihnachtlicher Bambini-Spieltag', href: '/erlebnis/weihnachts-bambini-spieltag' },
         { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
         { label: 'Tag des Mädchenfußballs', href: '/events/tag-des-maedchenfussballs' },
         { label: 'Allianz Juniors Cup – D-Junioren', href: '/events/allianz-juniors-cup-d' },

@@ -1,0 +1,162 @@
+---
+import { withBase } from '../utils/paths';
+import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
+const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
+  || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
+---
+
+<form data-bambini-registration data-endpoint={endpoint} data-topic={BAMBINI_EVENT.topic}>
+  <p class="form-note">Bitte gebt eure Trainerin oder euren Trainer als Kontaktperson an. Mit * markierte Felder sind Pflichtfelder.</p>
+  <fieldset data-registration-fields>
+    <legend>Euer Verein</legend>
+    <label class="full">Verein *<input name="clubName" autocomplete="organization" minlength="2" maxlength="160" required /></label>
+  </fieldset>
+  <fieldset data-registration-fields>
+    <legend>Eure Trainerin / euer Trainer</legend>
+    <label>Vorname *<input name="firstName" autocomplete="given-name" minlength="2" maxlength="80" required /></label>
+    <label>Nachname *<input name="lastName" autocomplete="family-name" minlength="2" maxlength="80" required /></label>
+    <label>E-Mail-Adresse *<input name="email" type="email" autocomplete="email" maxlength="160" required /></label>
+    <label>Telefon für Rückfragen *<input name="phone" type="tel" autocomplete="tel" pattern="[0-9+\(\) \/\-]{6,40}" maxlength="40" required /></label>
+  </fieldset>
+  <fieldset class="time-options" data-registration-fields aria-describedby="time-hint">
+    <legend>Eure priorisierten Zeitfenster *</legend>
+    <p id="time-hint" class="field-hint full">Welche Startzeiten bevorzugt ihr? Wählt mindestens eine aus. Mehrere Häkchen geben uns mehr Möglichkeiten bei der Einteilung.</p>
+    <div class="time-grid full">
+      {BAMBINI_EVENT.timeSlots.map((slot) => <label class="time-option"><input name="timeSlots" type="checkbox" value={slot} /><span><strong>{slot} Uhr</strong><small>Wunschzeit</small></span></label>)}
+    </div>
+    <label class="full">Möchtet ihr uns noch etwas mitteilen?<textarea name="message" rows="4" maxlength="2000" placeholder="Zum Beispiel eine bevorzugte Startzeit oder Fragen zum Spieltag"></textarea></label>
+    <p class="field-hint full">Bitte keine Namen oder Geburtsdaten der Kinder eintragen.</p>
+  </fieldset>
+  <fieldset class="finish" data-registration-fields>
+    <legend>Anmeldung abschicken</legend>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Mannschaft als Trainerin oder Trainer an. Mir ist bekannt, dass die ausgewählten Zeitfenster Wünsche sind und die Teilnahme sowie die zugeteilte Startzeit erst nach persönlicher Bestätigung durch den BSV feststehen. Die Startgebühr beträgt {BAMBINI_EVENT.fee}. *</span></label>
+    <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
+    <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
+    <div class="captcha-row">
+      <label><span data-captcha-label>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label>
+      <button type="button" class="reload" data-captcha-reload>Neue Aufgabe</button>
+    </div>
+    <button class="submit" type="submit" disabled><span data-submit-label>Mannschaft anmelden</span><span aria-hidden="true">↗</span></button>
+  </fieldset>
+  <p class="form-status" data-registration-status role="status" aria-live="polite" tabindex="-1"></p>
+  <p class="contact-help" data-contact-help hidden>Für Rückfragen: <a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation</a>.</p>
+  <noscript><p>Bitte aktiviere JavaScript, um das Anmeldeformular zu nutzen.</p></noscript>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-bambini-registration]');
+  if (form) {
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const reload = form.querySelector<HTMLButtonElement>('[data-captcha-reload]')!;
+    const captchaLabel = form.querySelector<HTMLElement>('[data-captcha-label]')!;
+    const answer = form.elements.namedItem('captchaAnswer') as HTMLInputElement;
+    const timeOptions = [...form.querySelectorAll<HTMLInputElement>('[name="timeSlots"]')];
+    const status = form.querySelector<HTMLElement>('[data-registration-status]')!;
+    const fields = [...form.querySelectorAll<HTMLFieldSetElement>('[data-registration-fields]')];
+    let captchaToken = '';
+    let busy = false;
+    let completed = false;
+
+    const checkTimes = () => timeOptions[0].setCustomValidity(timeOptions.some((option) => option.checked)
+      ? '' : 'Bitte wähle mindestens eine Wunschzeit aus.');
+    timeOptions.forEach((option) => option.addEventListener('change', checkTimes));
+    checkTimes();
+
+    const loadCaptcha = async () => {
+      if (completed || busy) return;
+      submit.disabled = true;
+      reload.disabled = true;
+      captchaToken = '';
+      answer.value = '';
+      captchaLabel.textContent = 'Spamschutz wird geladen …';
+      try {
+        const response = await fetch(form.dataset.endpoint!, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+        const data = await response.json();
+        if (!response.ok || !data.ok || !data.token) throw new Error();
+        captchaToken = data.token;
+        captchaLabel.textContent = `Spamschutz: Wie viel ist ${data.a} + ${data.b}? *`;
+        submit.disabled = false;
+      } catch {
+        captchaLabel.textContent = 'Spamschutz nicht erreichbar.';
+        if (!status.textContent) status.textContent = 'Bitte lade die Aufgabe erneut. Eure Eingaben bleiben erhalten.';
+      } finally { reload.disabled = false; }
+    };
+    reload.addEventListener('click', () => { if (!busy) void loadCaptcha(); });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      checkTimes();
+      if (busy || completed || !captchaToken || !form.reportValidity()) return;
+      const values = new FormData(form);
+      busy = true;
+      fields.forEach((fieldset) => { fieldset.disabled = true; });
+      form.setAttribute('aria-busy', 'true');
+      status.textContent = 'Eure Anmeldung wird übermittelt …';
+      delete status.dataset.success;
+      try {
+        const response = await fetch(form.dataset.endpoint!, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(30000),
+          body: JSON.stringify({
+            topic: form.dataset.topic,
+            clubName: values.get('clubName'), timeSlots: values.getAll('timeSlots'),
+            firstName: values.get('firstName'), lastName: values.get('lastName'), email: values.get('email'), phone: values.get('phone'),
+            message: values.get('message'), registrationAccepted: values.get('registrationAccepted') === 'on', privacyAccepted: values.get('privacyAccepted') === 'on',
+            website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')),
+          }),
+        });
+        const data = await response.json();
+        // A stored request must not be sent a second time after a mail failure.
+        completed = data.saved === true;
+        if (!response.ok || data.ok !== true) throw new Error(data.message || 'Die Anmeldung konnte nicht übermittelt werden. Bitte versuche es später erneut.');
+        completed = true;
+        status.dataset.success = 'true';
+        status.textContent = data.message || 'Vielen Dank! Eure Anmeldung ist eingegangen. Wir melden uns bei euch.';
+        form.reset();
+      } catch (error) {
+        status.dataset.success = 'false';
+        status.textContent = error instanceof Error && error.name === 'Error' ? error.message : 'Die Verbindung wurde unterbrochen. Eure Eingaben bleiben erhalten. Bitte versucht es erneut.';
+      } finally {
+        busy = false;
+        form.removeAttribute('aria-busy');
+        fields.forEach((fieldset) => { fieldset.disabled = completed; });
+        if (completed) {
+          submitLabel.textContent = 'Anmeldung gespeichert';
+          form.querySelector<HTMLElement>('[data-contact-help]')!.hidden = false;
+        } else {
+          await loadCaptcha();
+        }
+        status.focus();
+      }
+    });
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) { observer.disconnect(); void loadCaptcha(); }
+    }, { rootMargin: '200px' });
+    observer.observe(form);
+  }
+</script>
+
+<style>
+  form { position: relative; padding: clamp(22px, 4vw, 38px); border-top: 5px solid #e4bf6a; background: #fffefa; color: #173d2b; box-shadow: 10px 10px 0 #061f16; }
+  .form-note, .field-hint { color: #52665a; font-size: .82rem; line-height: 1.6; }
+  .form-note { margin: 0 0 26px; }
+  fieldset { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0 0 28px; padding: 0 0 28px; border: 0; border-bottom: 1px solid #d9e2da; }
+  legend { padding: 0; margin-bottom: 20px; font-size: 1.08rem; font-weight: 850; }
+  label { display: flex; flex-direction: column; gap: 8px; font-size: .82rem; font-weight: 750; line-height: 1.5; }
+  input:not([type=checkbox]), textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 47px; padding: 11px 12px; border: 1px solid #91a497; border-radius: 3px; background: #fff; color: #173d2b; font: inherit; font-weight: 400; }
+  textarea { resize: vertical; }
+  .full { grid-column: 1 / -1; }
+  .field-hint { margin: -6px 0 0; font-size: .76rem; }
+  .time-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }.time-option { flex-direction: row; align-items: center; gap: 10px; padding: 14px 10px; border: 1px solid #b0c1b4; background: #f3f6f1; cursor: pointer; }.time-option:has(input:checked) { border-color: #164f32; box-shadow: inset 0 -3px #164f32; background: #e7f0e6; }.time-option input { width: 18px; height: 18px; margin: 0; accent-color: #164f32; }.time-option strong, .time-option small { display: block; }.time-option small { font-weight: 400; color: #52665a; font-size: .65rem; }
+  .finish { display: flex; flex-direction: column; gap: 19px; padding: 0; margin-bottom: 0; border: 0; }
+  .checkbox { display: flex; flex-direction: row; align-items: flex-start; gap: 11px; font-weight: 400; font-size: .78rem; line-height: 1.6; }
+  .checkbox input { flex: 0 0 auto; width: 18px; height: 18px; margin: 3px 0 0; accent-color: #164f32; }
+  .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .captcha-row { display: flex; align-items: end; gap: 20px; }.captcha-row label { flex: 1; }.captcha-row input { max-width: 100px; }
+  button { font: inherit; cursor: pointer; }.reload { border: 0; padding: 12px 0; background: none; color: #164f32; font-size: .78rem; text-decoration: underline; }
+  .submit { display: flex; justify-content: space-between; gap: 15px; padding: 17px 20px; border: 0; border-radius: 3px; background: #f4d638; color: #092f20; font-weight: 850; text-align: left; }
+  .submit:hover:not(:disabled) { background: #ffe967; }button:disabled { opacity: .6; cursor: default; }
+  a { color: #164f32; text-decoration: underline; }input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #a22e36; outline-offset: 3px; }
+  .form-status { margin: 20px 0 0; font-size: .86rem; line-height: 1.65; }.form-status:empty { display: none; }.form-status[data-success=true] { padding: 16px; background: #e6f2e8; }.form-status[data-success=false] { color: #9a2530; }
+  .contact-help { margin: 15px 0 0; font-size: .82rem; line-height: 1.6; }.contact-help[hidden] { display: none; }
+  @media(max-width: 560px) { fieldset { grid-template-columns: 1fr; }form { box-shadow: 5px 5px 0 #061f16; }.captcha-row { gap: 12px; }.time-grid { grid-template-columns: 1fr; }.time-option { padding: 13px 16px; }.time-option small { display: inline; margin-left: 8px; }.time-option strong { display: inline; } }
+</style>

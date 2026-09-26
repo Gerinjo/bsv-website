@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BambiniRegistrationForm from '../../components/BambiniRegistrationForm.astro';
+import BambiniPhotoGallery from '../../components/BambiniPhotoGallery.astro';
+import { withBase } from '../../utils/paths';
+import { BAMBINI_EVENT } from '../../../supabase/functions/_shared/bambini-event.mjs';
+import { Image } from 'astro:assets';
+import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
+---
+
+<Layout title={`${BAMBINI_EVENT.title} · 12. Dezember 2026 | BSV Nordstern Radolfzell`} description="Weihnachtlicher Bambini-Spieltag am 12. Dezember 2026 in der Unterseesporthalle Radolfzell. Mannschaft anmelden, Wunschzeiten auswählen und gemeinsam Fußballfreude erleben.">
+  <Header />
+  <main class="christmas-event">
+    <section class="hero" aria-labelledby="event-title">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <a class="back" href={withBase('/erlebnis')}>← Zu den Events & Erlebnissen</a>
+          <p class="eyebrow"><span aria-hidden="true">✦</span> {BAMBINI_EVENT.title}</p>
+          <h1 id="event-title">Kleine Kicker.<br /><em>Große<br />Weihnachtsfreude.</em></h1>
+          <p class="intro">Wenn Fußballfreude auf Weihnachtszauber trifft: Wir laden eure Bambini-Mannschaften zu einem fröhlichen Hallenspieltag beim BSV Nordstern ein. Gemeinsam spielen, miteinander lachen und einen besonderen Tag erleben.</p>
+          <a class="button" href="#anmeldung">Mannschaft anmelden <span aria-hidden="true">↗</span></a>
+          <p class="hero-note">12. Dezember 2026 · Unterseesporthalle Radolfzell</p>
+        </div>
+        <aside class="holiday-card" aria-label="Ein Spieltag voller Weihnachtsfreude">
+          <div class="card-top"><img src={withBase('/images/verein/wappen/bsv-nordstern.png')} alt="BSV Nordstern Radolfzell" width="46" height="44" /><span>Fußball im Herzen.<br />Weihnachten im Blick.</span></div>
+          <Image class="holiday-art" src={bambiniLogo} width={600} widths={[320, 600]} sizes="(max-width: 480px) 75vw, 340px" format="webp" alt="Eventlogo: Weihnachtlicher Bambini-Spieltag · BSV Nordstern, mit Fußball, Nikolausmütze und Stern" loading="eager" fetchpriority="high" />
+          <div class="card-bottom"><span>Ein Geschenk voller Vorfreude</span><strong>Für jedes Kind<br /><em>eine Überraschung.</em></strong></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="event-facts shell" aria-label="Der Spieltag auf einen Blick">
+      <div><span>Wann?</span><strong><time datetime={BAMBINI_EVENT.isoDate}>{BAMBINI_EVENT.date}</time></strong></div>
+      <div><span>Wo?</span><strong>{BAMBINI_EVENT.venue}</strong></div>
+      <div><span>Startzeiten</span><strong>9:00 · 12:00 · 15:00 Uhr</strong></div>
+      <div><span>Startgebühr</span><strong>{BAMBINI_EVENT.fee}</strong></div>
+    </section>
+
+    <div class="atmosphere shell"><BambiniPhotoGallery id="event-bambini" /></div>
+
+    <section class="joy shell" aria-labelledby="joy-title">
+      <div class="section-heading"><p class="eyebrow">Ein Tag für unsere Kleinsten</p><h2 id="joy-title">Viel Spielfreude.<br /><em>Ein bisschen Weihnachtszauber.</em></h2></div>
+      <div class="joy-grid">
+        <article><span class="article-number" aria-hidden="true">01 / Spielen</span><h3>Fußball, der Freude macht.</h3><p>In der Halle gehört der Tag den Bambinis. Gemeinsam mit ihren Teams dürfen die Kinder kicken, jubeln und erleben, wie schön Fußball miteinander sein kann.</p></article>
+        <article><span class="article-number" aria-hidden="true">02 / Staunen</span><h3>Eine Überraschung für jedes Kind.</h3><p>Zum weihnachtlichen Spieltag gehört natürlich auch eine kleine Überraschung. Darauf darf sich jedes teilnehmende Kind freuen – ganz unabhängig davon, wie viele Tore fallen.</p></article>
+        <article class="nikolaus"><span class="article-number" aria-hidden="true">03 / Vielleicht …</span><h3>Hört ihr schon die Glöckchen?</h3><p>Wenn alle fair spielen, gut aufeinander aufpassen und sich von ihrer besten Seite zeigen, schaut vielleicht sogar der Nikolaus vorbei. Wer weiß, was er in seinem Sack dabeihat …</p></article>
+      </div>
+    </section>
+
+    <section class="times-section" aria-labelledby="times-title">
+      <div class="shell times-grid">
+        <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Die Teilnahme und eure endgültige Startzeit bestätigen wir anschließend persönlich.</p></div>
+        <ol class="time-list" aria-label="Mögliche Startzeiten">
+          {BAMBINI_EVENT.timeSlots.map((slot, index) => <li><span>Start {index + 1}</span><strong>{slot}<small> Uhr</small></strong></li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section id="anmeldung" class="registration" aria-labelledby="registration-title">
+      <div class="shell registration-grid">
+        <div class="registration-copy"><p class="eyebrow">Seid ihr dabei?</p><h2 id="registration-title">Ein Team.<br /><em>Ganz viel Vorfreude.</em></h2><p>Meldet eure Bambini-Mannschaft an und verratet uns eure Wunschzeiten. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Wir melden uns bei euch mit der Teilnahmebestätigung, der Startzeit und allen weiteren Informationen.</p><div class="organizer"><span>Fragen zum Spieltag?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
+        <BambiniRegistrationForm />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .christmas-event { --forest: #0e3929; --gold: #e4bf6a; --cream: #faf6ec; --berry: #a7323c; background: var(--cream); color: #173d2b; }
+  .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+  h1, h2, h3, p { margin-top: 0; }h1, h2 { letter-spacing: -.045em; }h1 em, h2 em, .card-bottom em { font-family: Georgia, serif; font-weight: 400; }
+  .hero { overflow: hidden; position: relative; padding: 65px 0 88px; background: radial-gradient(ellipse at 85% 20%, #22503a 0, transparent 55%), #092f20; color: #fff9ec; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr); align-items: center; gap: 60px; }
+  .back { display: block; width: fit-content; margin-bottom: 34px; color: #c4d4c5; font-size: .78rem; text-decoration: none; }.back:hover { text-decoration: underline; }
+  .eyebrow { font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; line-height: 1.65; }.hero .eyebrow, .registration .eyebrow { color: var(--gold); }.eyebrow > span { margin-right: 7px; }
+  h1 { font-size: clamp(2.8rem, 4.65vw, 4.4rem); line-height: 1.01; margin-bottom: 28px; }h1 em { color: var(--gold); }.intro { max-width: 580px; color: #d5dfd1; font-size: 1rem; line-height: 1.8; }
+  .button { width: fit-content; display: flex; justify-content: space-between; gap: 28px; padding: 17px 21px; margin-top: 28px; background: #f4d638; color: #092f20; font-weight: 850; font-size: .87rem; text-decoration: none; }.button:hover { background: #ffe967; }
+  .hero-note { margin: 18px 0 0; color: #d6ddc7; font-size: .75rem; line-height: 1.7; }
+  .holiday-card { position: relative; border: 1px solid #6e8054; background: #0e3929; box-shadow: 12px 12px 0 #08261b; transform: rotate(2deg); }.card-top { padding: 24px 26px 0; display: flex; align-items: center; gap: 12px; }.card-top img { object-fit: contain; }.card-top span { font-size: .67rem; font-weight: 750; line-height: 1.6; letter-spacing: .06em; text-transform: uppercase; color: #f6ecd6; }.holiday-art { display: block; width: 100%; height: auto; }.card-bottom { padding: 0 28px 30px; text-align: center; }.card-bottom > span { display: block; margin-bottom: 12px; color: #d2c49d; font-size: .6rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }.card-bottom strong { display: block; font-size: 1.9rem; line-height: 1.1; }.card-bottom em { color: var(--gold); }
+  .event-facts { position: relative; display: grid; grid-template-columns: 1fr 1.15fr 1.05fr 1fr; margin-top: -25px; background: #fffefa; box-shadow: 0 10px 28px #0e392910; border-top: 4px solid var(--gold); }.event-facts > div { padding: 26px 24px; border-right: 1px solid #e4e5d9; }.event-facts > div:last-child { border: 0; }.event-facts span { display: block; margin-bottom: 9px; font-size: .66rem; color: #6d745e; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; }.event-facts strong { display: block; font-size: .94rem; line-height: 1.55; }
+  .joy { padding-block: 90px; }.section-heading { margin-bottom: 38px; }.section-heading .eyebrow { color: var(--berry); }h2 { font-size: clamp(2.2rem, 3.9vw, 3.6rem); line-height: 1.05; margin-bottom: 24px; }h2 em { color: #426448; }.joy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }.joy-grid article { padding: 30px 28px; border-top: 3px solid #b4c3a4; background: #fffefa; }.article-number { color: #7c856c; font-size: .67rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }h3 { font-size: 1.35rem; line-height: 1.2; margin: 23px 0 16px; }.joy-grid p, .times-grid p { color: #536353; font-size: .94rem; line-height: 1.8; margin-bottom: 0; }.joy-grid .nikolaus { border-color: var(--berry); background: #f3e9df; }.nikolaus .article-number { color: var(--berry); }
+  .times-section { padding: 70px 0 80px; border-top: 1px solid #dedfcd; background: #eff0e5; }.times-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 90px; align-items: center; }.times-grid .eyebrow { color: var(--berry); }.times-grid p + p { margin-top: 15px; }.time-list { list-style: none; margin: 0; padding: 0; }.time-list li { display: flex; align-items: center; justify-content: space-between; padding: 22px 4px; border-bottom: 1px solid #c4cdba; }.time-list li:first-child { border-top: 1px solid #c4cdba; }.time-list li > span { color: #66735a; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }.time-list strong { font-size: 2.9rem; letter-spacing: -.045em; line-height: 1; }.time-list small { font-size: 1rem; font-weight: 550; letter-spacing: 0; }
+  .registration { padding: 90px 0 100px; background: var(--forest); color: #fff9ec; scroll-margin-top: 110px; }.registration-grid { display: grid; grid-template-columns: minmax(0, .76fr) minmax(0, 1.24fr); gap: 70px; align-items: start; }.registration-copy { position: sticky; top: 125px; }.registration h2 em { color: var(--gold); }.registration-copy > p:not(.eyebrow) { color: #d2dfcf; font-size: .95rem; line-height: 1.8; }.organizer { margin-top: 32px; border-top: 1px solid #52765b; padding-top: 25px; }.organizer > span, .organizer strong { display: block; }.organizer > span { color: #bed1ba; font-size: .76rem; margin-bottom: 9px; }.organizer strong { font-size: 1.08rem; }.organizer a { display: flex; align-items: center; gap: 20px; width: fit-content; margin-top: 15px; color: var(--gold); font-size: .78rem; text-underline-offset: 4px; }
+  a:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+  .holiday-card :global(.holiday-art) { width: min(340px, calc(100% - 48px)); height: auto; margin: 25px auto 30px; }
+  .atmosphere { margin-block: 65px 0; overflow: hidden; background: var(--forest); box-shadow: 0 14px 34px #0e392914; }
+  @media(max-width: 780px) { .atmosphere { margin-top: 40px; } }
+  @media(max-width: 1000px) { .hero-grid { gap: 30px; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); }.event-facts { grid-template-columns: 1fr 1fr; }.event-facts > div { border-bottom: 1px solid #e4e5d9; }.joy-grid { gap: 15px; }.joy-grid article { padding: 25px 20px; }.registration-grid { gap: 35px; }.times-grid { gap: 45px; }.card-bottom strong { font-size: 1.5rem; } }
+  @media(max-width: 780px) { .hero-grid, .registration-grid, .times-grid { grid-template-columns: 1fr; }.hero-grid { gap: 40px; }.hero-copy h1 { font-size: clamp(2.9rem, 6.8vw, 4.4rem); }.holiday-card { width: min(400px, calc(100% - 14px)); margin: auto; }.joy-grid { grid-template-columns: 1fr; }.registration-copy { position: static; }.times-grid { gap: 25px; }.registration-grid { gap: 30px; }.event-facts strong { font-size: .89rem; } }
+  @media(max-width: 480px) { .shell { width: calc(100% - 34px); }.hero { padding: 38px 0 65px; }.back { margin-bottom: 26px; }.hero-copy h1 { font-size: clamp(2.25rem, 9.6vw, 2.9rem); }.hero .eyebrow { font-size: .61rem; letter-spacing: .055em; }.intro { font-size: .92rem; }.holiday-card { transform: rotate(1deg); box-shadow: 6px 6px 0 #08261b; }.card-top { padding: 21px 23px 0; }.event-facts > div { padding: 20px 16px; }.joy { padding-block: 60px; }.times-section { padding-block: 50px; }.registration { padding: 60px 0 75px; }.time-list strong { font-size: 2.5rem; } }
+</style>

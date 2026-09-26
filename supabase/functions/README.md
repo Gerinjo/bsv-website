@@ -66,6 +66,36 @@ https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request
 Optional kann er beim Website-Build mit `PUBLIC_CONTACT_FORM_ENDPOINT`
 überschrieben werden.
 
+## Weihnachtlicher Bambini-Spieltag
+
+Die Mannschaftsanmeldung auf `/erlebnis/weihnachts-bambini-spieltag` verwendet
+ebenfalls `contact-request` und dessen einmal nutzbaren Spamschutz. Termin und
+Wunschzeiten stehen zentral in `_shared/bambini-event.mjs`: 12. Dezember 2026,
+Unterseesporthalle Radolfzell, Starts um 09:00, 12:00 und 15:00 Uhr.
+
+`contact-request/bambini-registration.mjs` prüft den Verein, die erforderliche
+Telefonnummer, mindestens eine der drei Wunschzeiten und die Bestätigung des
+Anmeldehinweises. Vorname, Nachname, E-Mail und Datenschutzbestätigung werden
+wie bei den übrigen Kontaktanfragen geprüft. Es werden keine Kinderdaten
+abgefragt.
+
+Das öffentliche Thema `event-bambini-weihnachten-2026` wird serverseitig auf den
+bestehenden Empfänger `person-jerome-ernsberger` abgebildet. Trainerkontakt,
+Verein, sämtliche ausgewählten Wunschzeiten und optionale Anmerkungen kommen
+in einer E-Mail an die Organisation an; Antworten gehen an den Trainerkontakt.
+Teilnahme und Startzeit werden anschließend persönlich bestätigt. Eine
+automatische Bestätigungsmail an die anmeldende Person ist nicht vorgesehen.
+
+Die private Speicherung erfolgt in `contact_anfragen`, mit dem Ereignisthema
+in `thema` und den Anmeldedaten in `nachricht`. Der zentrale E-Mail-Modus bleibt
+maßgeblich. Bei einem Versandfehler nach erfolgreicher Speicherung zeigt das
+Formular einen Kontaktlink und verhindert erneutes Absenden derselben
+Anmeldung. Es ist keine Datenbankmigration erforderlich.
+
+Zur Bereitstellung zuerst die aktualisierte öffentliche Edge Function
+`contact-request` deployen, danach die Website. Die Verhaltenstests laufen mit
+`node --test tests/bambini-registration.test.mjs` ohne echten E-Mail-Versand.
+
 ## Fördervereinsantrag
 
 `foerderverein-membership` nimmt den vollständigen Online-Antrag inklusive

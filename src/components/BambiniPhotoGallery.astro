@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import { bambiniImages } from '../data/bambiniImages';
+
+interface Props { id: string; compact?: boolean }
+const { id, compact = false } = Astro.props;
+---
+
+<div class:list={['bambini-gallery', { compact }]} data-bambini-gallery aria-label="Weihnachtliche Stimmungsmotive zum Bambini-Spieltag">
+  <div class="gallery-stage">
+    {bambiniImages.map((item, index) => (
+      <figure id={`${id}-bild-${index}`} data-gallery-slide hidden={index !== 0}>
+        <Image src={item.src} widths={[640, 1024, 1536]} sizes={compact ? '(max-width: 800px) 100vw, 640px' : '(max-width: 780px) 100vw, 1160px'} format="webp" quality={85} alt={`KI-generiertes Stimmungsmotiv: ${item.alt}`} loading="lazy" decoding="async" />
+        <figcaption><span>{item.title}</span><small>{index + 1} / {bambiniImages.length}</small></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="gallery-thumbnails" role="group" aria-label="Bild auswählen">
+    {bambiniImages.map((item, index) => (
+      <button type="button" data-gallery-select={index} data-title={item.title} aria-pressed={index === 0 ? 'true' : 'false'} aria-controls={`${id}-bild-${index}`} aria-label={`Bild ${index + 1} von ${bambiniImages.length}: ${item.title}`}>
+        <Image src={item.src} widths={[120, 240]} sizes={compact ? '(max-width: 800px) 17vw, 100px' : '(max-width: 780px) 17vw, 215px'} format="webp" alt="" loading="lazy" decoding="async" />
+      </button>
+    ))}
+  </div>
+  <p class="gallery-note">KI-generierte Stimmungsmotive zur Vorfreude auf den Spieltag.</p>
+  <span class="sr-only" data-gallery-status aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-bambini-gallery]').forEach((gallery) => {
+    const slides = [...gallery.querySelectorAll<HTMLElement>('[data-gallery-slide]')];
+    const buttons = [...gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-select]')];
+    const status = gallery.querySelector<HTMLElement>('[data-gallery-status]')!;
+    const show = (index: number) => {
+      slides.forEach((slide, position) => { slide.hidden = position !== index; });
+      buttons.forEach((button, position) => { button.setAttribute('aria-pressed', String(position === index)); });
+      status.textContent = `Bild ${index + 1} von ${slides.length}: ${buttons[index].dataset.title}`;
+    };
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => show(index));
+      button.addEventListener('keydown', (event) => {
+        const next = event.key === 'ArrowRight' ? (index + 1) % buttons.length
+          : event.key === 'ArrowLeft' ? (index - 1 + buttons.length) % buttons.length
+            : event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : null;
+        if (next === null) return;
+        event.preventDefault();
+        show(next);
+        buttons[next].focus({ preventScroll: true });
+      });
+    });
+  });
+</script>
+
+<style>
+  .bambini-gallery { min-width: 0; overflow: hidden; background: #0e3929; color: #fff9ec; }
+  figure { margin: 0; }figure[hidden] { display: none; }
+  .gallery-stage :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+  figcaption { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 17px 22px; }
+  figcaption > span { font-family: Georgia, serif; font-size: 1.1rem; font-style: italic; line-height: 1.35; }
+  figcaption > small { flex: 0 0 auto; color: #e4bf6a; font-size: .7rem; font-variant-numeric: tabular-nums; }
+  .gallery-thumbnails { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; padding: 0 20px; }
+  button { min-width: 0; padding: 0; overflow: hidden; border: 2px solid transparent; border-radius: 2px; background: #0b2e21; cursor: pointer; opacity: .72; }
+  button[aria-pressed=true], button:hover { border-color: #e4bf6a; opacity: 1; }button:focus-visible { outline: 3px solid #fff9ec; outline-offset: 3px; opacity: 1; }
+  button :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+  .gallery-note { margin: 0; padding: 13px 22px 19px; color: #bbcfbf; font-size: .65rem; line-height: 1.5; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media(max-width: 480px) { figcaption { padding: 15px 16px; min-height: 62px; box-sizing: border-box; }figcaption > span { font-size: .97rem; }.gallery-thumbnails { gap: 5px; padding-inline: 14px; }.gallery-note { padding-inline: 16px; } }
+</style>

@@ -1,5 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
+import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
+import { BAMBINI_ROUTING, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from './bambini-registration.mjs';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -35,6 +37,7 @@ const escapeHtml = (value: unknown) => String(value ?? '')
   .replaceAll("'", '&#039;');
 
 const getRouting = (topic: string) => {
+  if (topic === BAMBINI_EVENT.topic) return BAMBINI_ROUTING;
   if (!topic.startsWith('team--')) {
     return { routingKey: topic, requestType: 'kontakt', inquiryLabel: 'Kontaktanfrage' } as const;
   }
@@ -109,6 +112,7 @@ Deno.serve(async (request) => {
   let body: Record<string, unknown>;
   try {
     body = await request.json();
+    if (!body || Array.isArray(body) || typeof body !== 'object') throw new Error('invalid_body');
   } catch {
     return json({ ok: false, message: 'Die Formulardaten sind ungültig.' }, 400, origin);
   }
@@ -125,7 +129,9 @@ Deno.serve(async (request) => {
   const phone = text(body.phone, 40);
   const clubName = text(body.clubName, 160);
   const opponentTeam = text(body.opponentTeam, 100);
-  const message = text(body.message, 5000);
+  const bambini = topic === BAMBINI_EVENT.topic ? prepareBambiniRegistration(body) : null;
+  if (bambini?.error) return json({ ok: false, message: bambini.error }, 422, origin);
+  const message = bambini?.message ?? text(body.message, 5000);
   const captchaToken = text(body.captchaToken, 80);
   const captchaAnswer = typeof body.captchaAnswer === 'number'
     ? body.captchaAnswer
@@ -224,10 +230,10 @@ Deno.serve(async (request) => {
     const emailResult = await sendEmail({
       to: recipient.email,
       reply_to: email,
-      subject: `BSV Nordstern Kontaktanfrage: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
+      subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : 'Kontaktanfrage'}: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
       html: `
         <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
-          <h2>Neue Anfrage über bsvnordstern.de</h2>
+          <h2>${bambini ? 'Neue Mannschaftsanmeldung zum weihnachtlichen Bambini-Spieltag' : 'Neue Anfrage über bsvnordstern.de'}</h2>
           <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px">
             <tr><td><strong>Anliegen</strong></td><td>${escapeHtml(routing.inquiryLabel)}</td></tr>
             <tr><td><strong>Zuordnung</strong></td><td>${escapeHtml(recipient.bezeichnung)}</td></tr>
@@ -239,7 +245,7 @@ Deno.serve(async (request) => {
           <h3>Nachricht</h3>
           <p>${safeMessage}</p>
         </div>`,
-    });
+    }, bambini ? { idempotencyKey: `bambini-registration/${emailConfig.mode}/${inquiryId}`, timeoutMs: 15000 } : {});
 
     const { error: updateError } = await supabase
       .from('contact_anfragen')
@@ -258,7 +264,7 @@ Deno.serve(async (request) => {
       mailMode: emailResult.mode,
       notificationStatus: 'versendet',
       inquiryId,
-      message: 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.',
+      message: bambini ? BAMBINI_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.',
     }, 201, origin);
   } catch (error) {
     const detail = error instanceof Error ? error.message.slice(0, 2000) : 'Unbekannter E-Mail-Fehler';
@@ -278,7 +284,9 @@ Deno.serve(async (request) => {
       ok: false,
       saved: true,
       notificationStatus: 'fehler',
-      message: 'Deine Anfrage wurde gespeichert, die E-Mail konnte aber noch nicht versendet werden. Bitte versuche es später erneut.',
+      message: bambini
+        ? 'Eure Anmeldung wurde gespeichert, aber die E-Mail an die Organisation konnte nicht versendet werden. Bitte meldet euch über den Kontakt zur Organisation. Sendet die Anmeldung nicht erneut ab.'
+        : 'Deine Anfrage wurde gespeichert, die E-Mail konnte aber noch nicht versendet werden. Bitte versuche es später erneut.',
     }, 503, origin);
   }
 });

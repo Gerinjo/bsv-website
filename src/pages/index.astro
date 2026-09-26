@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import HomeSponsorShowcase from '../components/HomeSponsorShowcase.astro';
 import HomeNextMatch from '../components/HomeNextMatch.astro';
+import HomeBambiniEvent from '../components/HomeBambiniEvent.astro';
 import Layout from '../layouts/Layout.astro';
 import { loadClubCalendar } from '../utils/calendar';
 import { withBase } from '../utils/paths';
@@ -70,6 +71,8 @@ const getEventType = (title: string) => {
         <div>Fußball <span>✦</span> Gemeinschaft <span>✦</span> Leidenschaft <span>✦</span> Radolfzell <span>✦</span> Seit 1956 <span>✦</span> Fußball <span>✦</span> Gemeinschaft</div>
       </div>
     </section>
+
+    <HomeBambiniEvent />
 
     <section class="newsletter-teaser" id="newsletter" aria-labelledby="newsletter-title">
       <div class="shell newsletter-teaser-card">
