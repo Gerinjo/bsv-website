@@ -12,7 +12,7 @@ const loadTeam = async ({ path, label, widgetId, teamId, playingMinutes }: { pat
     home: teamId && match.homeTeamId === teamId ? 'BSV' : match.home,
     away: teamId && match.awayTeamId === teamId ? 'BSV' : match.away,
   }));
-  return { label, url: team.fussballDeUrl ?? `https://www.fussball.de/mannschaft/-/team-id/${teamId}`, matches, widgetId, teamId, playingMinutes };
+  return { label, url: team.fussballDeUrl ?? `https://www.fussball.de/mannschaft/-/team-id/${teamId}`, tableUrl: withBase(`/${path}/#tabelle`), matches, widgetId, teamId, playingMinutes };
 };
 const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...group, teams: await Promise.all(group.teams.map(loadTeam)) })));
 ---
@@ -37,11 +37,12 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
       {group.teams.map((team) => {
         const matches = selectHomepageMatches(team.matches);
         return (
-        <div class="next-match" aria-label={`Spiel · ${team.label}`} data-widget-id={team.widgetId} data-team-id={team.teamId} data-label={team.label} data-playing-minutes={team.playingMinutes} data-matches={JSON.stringify(team.matches)}>
+        <div class="next-match" aria-label={`Spiel · ${team.label}`} data-widget-id={team.widgetId} data-team-id={team.teamId} data-label={team.label} data-table-url={team.tableUrl} data-playing-minutes={team.playingMinutes} data-matches={JSON.stringify(team.matches)}>
           <h3>{team.label}</h3>
           <div class="match-fixtures">
           {(matches.length ? matches : [undefined]).map((match) => {
             const state = matchPresentation(match, new Date(), team.playingMinutes);
+            const finalResult = Boolean(state.score) && !state.live;
             return (
             <div class="match-details" data-kickoff={match?.dateTime} hidden={!match}>
               <div class="match-copy">
@@ -53,7 +54,7 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
               </div>
               <div class="match-state" role="status" aria-live="polite" aria-atomic="true" hidden={!state.label}>
                 <span class="live-badge" hidden={!state.live}><span class="live-dot" aria-hidden="true"></span>LIVE</span>
-                <strong class="match-score" hidden={!state.score} aria-label={`Ergebnis ${state.score}`}>{state.score}</strong>
+                <a class="match-score" href={finalResult ? team.tableUrl : undefined} hidden={!state.score} title={finalResult ? `Zur Tabelle: ${team.label}` : undefined} aria-label={finalResult ? `Endstand ${state.score} – Tabelle ${team.label} öffnen` : `Ergebnis ${state.score}`}>{state.score}</a>
                 <span class="state-label" hidden={state.live}>{state.label}</span>
               </div>
               <a class="match-link" href={match?.url ?? team.url} target="_blank" rel="noopener noreferrer" aria-label={`${team.label}: ${match?.home ?? ''} gegen ${match?.away ?? ''} auf fussball.de`} title="Spiel auf fussball.de öffnen">
@@ -163,7 +164,9 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
   .match-details + .match-details { margin-top:12px; padding-top:12px; border-top:1px solid rgb(255 255 255 / 14%); }
   .live-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 8px; border:1px solid #ffc8bc66; border-radius:4px; color:#fff0eb; background:#a32e25; font-size:.65rem; font-weight:850; letter-spacing:.1em; animation:live-glow 1.8s ease-in-out infinite; }
   .live-dot { width:6px; height:6px; border-radius:50%; background:#ffe0b7; box-shadow:0 0 0 3px #ffd6b722; }
-  .match-score { font-size:1.25rem; line-height:1.1; font-variant-numeric:tabular-nums; color:#f4d638; white-space:nowrap; }
+  .match-score { font-size:1.25rem; font-weight:700; line-height:1.1; font-variant-numeric:tabular-nums; color:#f4d638; white-space:nowrap; text-decoration:none; }
+  .match-score[href] { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+  .match-score[href]:hover { color:white; }
   .state-label { font-size:.62rem; line-height:1.3; color:#d2e3d8; }
   @keyframes live-glow { 0%,100%{opacity:1;box-shadow:0 0 0 0 #ffad852b}50%{opacity:.65;box-shadow:0 0 0 4px #ffad8500} }
   @media(prefers-reduced-motion:reduce){.live-badge{animation:none}}

@@ -41,10 +41,18 @@ function renderMatches(now = new Date()) {
       const state = matchPresentation(match, now, Number(element.dataset.playingMinutes) || 90);
       details.querySelector<HTMLElement>('.match-state')!.hidden = !state.label;
       details.querySelector<HTMLElement>('.live-badge')!.hidden = !state.live;
-      const score = details.querySelector<HTMLElement>('.match-score')!;
+      const score = details.querySelector<HTMLAnchorElement>('.match-score')!;
       score.hidden = !state.score;
       setText(score, state.score);
-      score.setAttribute('aria-label', `Ergebnis ${state.score}`);
+      if (state.score && !state.live) {
+        score.href = element.dataset.tableUrl!;
+        score.title = `Zur Tabelle: ${element.dataset.label}`;
+        score.setAttribute('aria-label', `Endstand ${state.score} – Tabelle ${element.dataset.label} öffnen`);
+      } else {
+        score.removeAttribute('href');
+        score.removeAttribute('title');
+        score.setAttribute('aria-label', `Ergebnis ${state.score}`);
+      }
       const label = details.querySelector<HTMLElement>('.state-label')!;
       label.hidden = state.live;
       setText(label, state.label);

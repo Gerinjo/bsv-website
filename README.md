@@ -68,6 +68,13 @@ Am Spieltag und bei noch ausstehenden Wochenendergebnissen fragt die sichtbare S
 
 Tests: `node --test tests/next-match.test.mjs tests/match-presentation.test.mjs`. Der Feed kann bei Bedarf über `PUBLIC_HOME_MATCHES_URL` umgestellt werden. Details zur Bereitstellung: `supabase/functions/home-matches/README.md`.
 
+Bestätigte Endstände verlinken direkt zur eigenen Mannschaftsseite mit `#tabelle`.
+Der Tabellen-Tab öffnet sich automatisch und wird in den sichtbaren Bereich
+gescrollt; die mobile Kopfzeile wird berücksichtigt. Zwischenstände bleiben
+reine Anzeigen. Auch nach einem Feed-Update wird der Linkstatus aktualisiert.
+Die Mannschaftsseiten unterstützen außerdem `#spiele` und aktualisieren den
+Anker beim manuellen Tabwechsel, ohne zusätzliche Verlaufseinträge anzulegen.
+
 ## Warnungen zum Jugendspielbetrieb
 
 Die Edge Function `football-alerts` prüft stündlich von 08:00 bis 20:00 Uhr

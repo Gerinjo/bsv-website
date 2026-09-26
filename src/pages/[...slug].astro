@@ -744,7 +744,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           {fSchedules.length > 0 && <div id="spieltage">{fSchedules.map((schedule) => <TeamTournamentDays fallback={schedule} teamLabel={schedule.label} ownTeamIds={schedule.ownTeamIds} sectionId={schedule.sectionId} heading={schedule.label + ' · Spieltage'} />)}</div>}
 
           {teamProfile.fussballDeWidgetId && (
-            <section class="team-matches-widget" aria-label={`Spiele von ${page.title}`}>
+            <section class="team-matches-widget" id="tabelle" aria-label={`Spiele von ${page.title}`}>
               <div class="team-data-tabs" role="tablist" aria-label="Spiele und Tabelle">
                 <button type="button" role="tab" id="team-tab-matches" aria-controls="team-panel-matches" aria-selected="true">Letzte / nächste Spiele</button>
                 <button type="button" role="tab" id="team-tab-table" aria-controls="team-panel-table" aria-selected="false" tabindex="-1">Tabelle</button>
@@ -986,26 +986,41 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
       const buttons = [...tabs.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
       const panels = [...tabs.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
 
-      const activateTab = (activeButton: HTMLButtonElement) => {
+      const activateTab = (activeButton: HTMLButtonElement, updateHash = false) => {
         buttons.forEach((button) => {
           const isActive = button === activeButton;
           button.setAttribute('aria-selected', String(isActive));
           button.tabIndex = isActive ? 0 : -1;
         });
         panels.forEach((panel) => panel.hidden = panel.id !== activeButton.getAttribute('aria-controls'));
+        if (updateHash) {
+          history.replaceState(history.state, '', activeButton.id === 'team-tab-table' ? '#tabelle' : '#spiele');
+        }
       };
 
       buttons.forEach((button, index) => {
-        button.addEventListener('click', () => activateTab(button));
+        button.addEventListener('click', () => activateTab(button, true));
         button.addEventListener('keydown', (event) => {
           if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
           event.preventDefault();
           const offset = event.key === 'ArrowRight' ? 1 : -1;
           const nextButton = buttons[(index + offset + buttons.length) % buttons.length];
-          activateTab(nextButton);
+          activateTab(nextButton, true);
           nextButton.focus();
         });
       });
+
+      const openLinkedTab = () => {
+        const hash = window.location.hash;
+        const targetId = hash === '#tabelle' ? 'team-tab-table' : hash === '#spiele' ? 'team-tab-matches' : hash.slice(1);
+        const button = buttons.find((entry) => entry.id === targetId || entry.getAttribute('aria-controls') === targetId);
+        if (!button) return;
+        activateTab(button);
+        button.focus({ preventScroll: true });
+        tabs.scrollIntoView({ block: 'start', behavior: 'instant' });
+      };
+      window.addEventListener('hashchange', openLinkedTab);
+      openLinkedTab();
     });
   </script>
 </Layout>
@@ -1250,7 +1265,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .team-squad[open] summary span { transform:rotate(45deg); }
   .team-squad > div { padding:3px 0 15px; }
   .team-squad > div p,.team-squad > div p:first-child { margin:0 0 10px; color:#66766c; font-size:.77rem; line-height:1.6; }
-  .team-matches-widget { min-height:220px; margin:-45px 0 110px; overflow:hidden; }
+  .team-matches-widget { min-height:220px; margin:-45px 0 110px; overflow:hidden; scroll-margin-top:20px; }
   .table-unavailable { padding:28px; background:#eef2ef; color:#183024; line-height:1.7; }
   .table-unavailable a { color:#164f32; font-weight:800; }
   .team-data-tabs { margin-bottom:22px; display:flex; gap:8px; border-bottom:1px solid var(--girls-line); }
