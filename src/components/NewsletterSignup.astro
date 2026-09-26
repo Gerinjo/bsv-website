@@ -10,14 +10,15 @@ const { allowTopicSelection = false } = Astro.props;
     <div class="newsletter-copy">
       <p class="eyebrow"><span aria-hidden="true">✦</span> Unser Newsletter</p>
       <h2 id="newsletter-title">Dein Verein.<br /><em>In deinem Postfach.</em></h2>
-      {allowTopicSelection ? <p>Wähle den Newsletter oder nur allgemeine Informations-E-Mails. Beide Verteiler sind unabhängig voneinander. Deine Auswahl bestätigst du über einen Link per E-Mail. Du kannst jedes Angebot jederzeit unabhängig abbestellen.</p> : <><p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit unserem Newsletter bleibst du dem BSV ganz nah.</p><p class="concept-note">Unser Newsletter wird gerade konzeptionell aufgesetzt. Die ersten Sendungen folgen in absehbarer Zeit. Du kannst dich schon jetzt anmelden.</p><a class="more" href={withBase('/newsletter')}>Newsletter und Informations-E-Mails kennenlernen →</a></>}
+      {allowTopicSelection ? <p>Wähle den Newsletter, allgemeine Informations-E-Mails oder beides. Deine gesamte Auswahl bestätigst du mit einem einzigen Link per E-Mail. Anschließend erhältst du eine gemeinsame Bestätigungsmail. Du kannst jedes Angebot jederzeit unabhängig abbestellen.</p> : <><p>Geschichten vom Spielfeld, Neues aus dem Vereinsleben und Termine, die du nicht verpassen möchtest. Mit unserem Newsletter bleibst du dem BSV ganz nah.</p><p class="concept-note">Unser Newsletter wird gerade konzeptionell aufgesetzt. Die ersten Sendungen folgen in absehbarer Zeit. Du kannst dich schon jetzt anmelden.</p><a class="more" href={withBase('/newsletter')}>Newsletter und Informations-E-Mails kennenlernen →</a></>}
       <span class="newsletter-note">Kostenlos. Für alle BSV-Fans. Jederzeit abbestellbar.</span>
     </div>
     <form data-newsletter-signup data-endpoint={newsletterEndpoint} data-captcha-endpoint={newsletterCaptchaEndpoint}>
       {allowTopicSelection && <fieldset class="topic-options">
         <legend>Welche E-Mails möchtest du erhalten?</legend>
-        <label><input type="radio" name="topic" value="newsletter" checked /><span><strong>Newsletter</strong><small>Vereinsgeschichten, Neuigkeiten, Termine und Informationen zu BSV-Partnern.</small></span></label>
-        <label><input type="radio" name="topic" value="club_info" /><span><strong>Nur Informations-E-Mails</strong><small>Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen. Kein Newsletter.</small></span></label>
+        <label><input type="checkbox" name="topics" value="newsletter" checked /><span><strong>Newsletter</strong><small>Vereinsgeschichten, Neuigkeiten, Termine und Informationen zu BSV-Partnern.</small></span></label>
+        <label><input type="checkbox" name="topics" value="club_info" /><span><strong>Informations-E-Mails</strong><small>Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen.</small></span></label>
+        <p class="hint">Wähle mindestens ein Angebot. Du kannst auch beide auswählen.</p>
       </fieldset>}
       <label for="newsletter-email">Deine E-Mail-Adresse</label>
       <input id="newsletter-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="du@beispiel.de" required />
@@ -45,13 +46,20 @@ const { allowTopicSelection = false } = Astro.props;
     const status = form.querySelector<HTMLElement>('[role="status"]')!;
     const topicOptions = form.querySelector<HTMLFieldSetElement>('.topic-options');
     const consent = form.elements.namedItem('consent') as HTMLInputElement;
+    const selectedTopics = () => topicOptions ? new FormData(form).getAll('topics') : ['newsletter'];
     const updateConsent = () => {
-      const infoOnly = new FormData(form).get('topic') === 'club_info';
-      form.querySelector<HTMLElement>('[data-consent-copy]')!.textContent = infoOnly
-        ? 'Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen. Diese Auswahl enthält keinen Newsletter.'
-        : 'Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten.';
+      const topics = selectedTopics();
+      topicOptions?.querySelector<HTMLInputElement>('input')?.setCustomValidity(topics.length ? '' : 'Bitte wähle mindestens ein E-Mail-Angebot aus.');
+      form.querySelector<HTMLElement>('[data-consent-copy]')!.textContent = topics.length === 2
+        ? 'Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern sowie allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung und wichtige organisatorische Mitteilungen.'
+        : topics.includes('club_info')
+          ? 'Ich möchte allgemeine Vereinsinformationen per E-Mail erhalten, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen. Diese Auswahl enthält keinen Newsletter.'
+          : topics.includes('newsletter')
+            ? 'Ich möchte den Newsletter des BSV Nordstern Radolfzell mit Vereinsneuigkeiten, Terminen und Informationen zu BSV-Partnern erhalten.'
+            : 'Ich möchte die oben ausgewählten E-Mail-Angebote des BSV Nordstern Radolfzell erhalten.';
     };
     topicOptions?.addEventListener('change', () => { consent.checked = false; updateConsent(); });
+    updateConsent();
     let captchaToken = '';
     let busy = false;
     const loadCaptcha = async () => {
@@ -83,11 +91,12 @@ const { allowTopicSelection = false } = Astro.props;
       delete status.dataset.success;
       status.textContent = 'Deine Anmeldung wird gesendet …';
       const values = new FormData(form);
+      const topics = selectedTopics();
       if (topicOptions) topicOptions.disabled = true;
       try {
         const response = await fetch(form.dataset.endpoint!, {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(30000),
-          body: JSON.stringify({ action: 'subscribe', topic: values.get('topic') || 'newsletter', email: values.get('email'), consent: values.get('consent') === 'on', website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')) }),
+          body: JSON.stringify({ action: 'subscribe', topics, email: values.get('email'), consent: values.get('consent') === 'on', website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')) }),
         });
         const data = await response.json();
         if (!response.ok || !data.ok) throw new Error(data.message || 'Die Anmeldung ist gerade nicht möglich. Bitte versuche es später erneut.');

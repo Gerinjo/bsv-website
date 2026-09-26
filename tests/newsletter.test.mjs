@@ -101,6 +101,58 @@ test('incorrect captcha and honeypot do not queue mail', async () => {
   assert.equal((await handle(makeRequest({ action: 'subscribe', website: 'spam' }))).status, 200);
 });
 
+test('public checkbox signup queues one combined verification with a single token', async () => {
+  let queued;
+  let requests = 0;
+  const db = stubDb({
+    table: () => ({ antwort: 7, expires_at: new Date(Date.now() + 60000).toISOString() }),
+    rpc: (name, args) => {
+      if (name === 'newsletter_claim_job') { assert.equal(args.p_job_id, 'combined-job'); return []; }
+      assert.equal(name, 'newsletter_request_topics');
+      requests++;
+      queued = args;
+      return 'combined-job';
+    },
+  });
+  const response = await handler(db)(makeRequest({ action: 'subscribe', topics: ['newsletter', 'club_info'],
+    email: ' Fan@Example.ORG ', consent: true, captchaToken: '11111111-1111-4111-8111-111111111111', captchaAnswer: 7 }));
+  assert.equal(response.status, 202);
+  assert.equal(requests, 1);
+  assert.deepEqual(queued.p_topics, ['newsletter', 'club_info']);
+  assert.equal(queued.p_email, 'fan@example.org');
+  assert.equal(queued.p_consent_version, 'email-auswahl-2026-09-26');
+  assert.match(queued.p_rate_key, /^[a-f0-9]{64}$/);
+  assert.match(queued.p_message.text, /Mit einem Klick.*für beide Angebote/);
+  const links = [...queued.p_message.text.matchAll(/#token=([a-f0-9]{64})&batch=1/g)];
+  assert.equal(links.length, 1);
+  assert.equal(queued.p_token_hash, await hash(links[0][1]));
+});
+
+test('each single checkbox still requests only the chosen list', async () => {
+  for (const topic of ['newsletter', 'club_info']) {
+    let queued;
+    const db = stubDb({
+      table: () => ({ antwort: 7, expires_at: new Date(Date.now() + 60000).toISOString() }),
+      rpc: (name, args) => { assert.equal(name, 'newsletter_request_topic'); queued = args; return null; },
+    });
+    const response = await handler(db)(makeRequest({ action: 'subscribe', topics: [topic],
+      email: 'fan@example.org', consent: true, captchaToken: '11111111-1111-4111-8111-111111111111', captchaAnswer: 7 }));
+    assert.equal(response.status, 202);
+    assert.equal(queued.p_topic, topic);
+    assert.doesNotMatch(queued.p_message.text, /batch=1|für beide Angebote/);
+  }
+});
+
+test('empty, malformed, duplicated selections and combined signup without consent have no side effects', async () => {
+  const db = stubDb({ rpc: () => assert.fail('unexpected write'), table: () => assert.fail('unexpected captcha consumption') });
+  for (const topics of [[], null, 'newsletter', {}, ['unknown'], ['newsletter', 'unknown'], ['newsletter', null],
+    ['newsletter', 'newsletter'], ['newsletter', 'club_info', 'newsletter']]) {
+    const response = await handler(db)(makeRequest({ action: 'subscribe', topic: 'newsletter', topics, email: 'fan@example.org', consent: true }));
+    assert.equal(response.status, 422);
+  }
+  assert.equal((await handler(db)(makeRequest({ action: 'subscribe', topics: ['newsletter', 'club_info'], email: 'fan@example.org', consent: false }))).status, 422);
+});
+
 test('expired confirmations cannot queue welcome mail, repeated clicks do not regenerate a message', async () => {
   for (const consumed of [false, true]) {
     let parameters;

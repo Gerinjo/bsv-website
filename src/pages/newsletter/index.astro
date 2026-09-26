@@ -6,7 +6,7 @@ import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { withBase } from '../../utils/paths';
 ---
 
-<Layout title="Newsletter & Informations-E-Mails | BSV Nordstern Radolfzell" description="Lerne den Newsletter des BSV Nordstern Radolfzell kennen. Melde dich für den Newsletter oder nur für allgemeine Informations-E-Mails an.">
+<Layout title="Newsletter & Informations-E-Mails | BSV Nordstern Radolfzell" description="Lerne die E-Mail-Angebote des BSV Nordstern Radolfzell kennen. Abonniere den Newsletter, allgemeine Informations-E-Mails oder beides mit einer gemeinsamen Bestätigung.">
   <Header />
   <main>
     <section class="hero"><div class="shell hero-grid">
@@ -17,9 +17,9 @@ import { withBase } from '../../utils/paths';
       <div class="section-head"><span class="eyebrow">Du entscheidest</span><h2 id="choices-title">Welche Post passt zu dir?</h2></div>
       <div class="choice-grid">
         <article><span class="number" aria-hidden="true">01</span><h3>Unser Newsletter</h3><p>Einblicke hinter die Kulissen, Geschichten vom Spielfeld, Neuigkeiten aus dem Vereinsleben, Termine und Informationen zu unseren BSV-Partnern.</p><strong>Für alle, die dem BSV nah bleiben möchten.</strong></article>
-        <article><span class="number" aria-hidden="true">02</span><h3>Nur Informations-E-Mails</h3><p>Allgemeine Vereinsinformationen, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen – wie bei der Auswahl im Mitgliedsantrag.</p><strong>Diese Anmeldung umfasst keinen Newsletter.</strong></article>
+        <article><span class="number" aria-hidden="true">02</span><h3>Informations-E-Mails</h3><p>Allgemeine Vereinsinformationen, zum Beispiel Einladungen zur Jugendvollversammlung oder Mitgliederversammlung sowie wichtige organisatorische Mitteilungen – wie bei der Auswahl im Mitgliedsantrag.</p><strong>Einzeln oder zusammen mit dem Newsletter abonnierbar.</strong></article>
       </div>
-      <p class="choice-note">Die beiden Verteiler sind unabhängig. Möchtest du beide Angebote erhalten, melde dich nacheinander für beide an. Jede Anmeldung wird separat per E-Mail bestätigt und kann einzeln widerrufen werden.</p>
+      <p class="choice-note">Du kannst ein Angebot oder beide gemeinsam auswählen. Du erhältst eine E-Mail mit einem Bestätigungslink für deine gesamte Auswahl und anschließend eine gemeinsame Bestätigungsmail. Beide Angebote kannst du jederzeit einzeln abbestellen.</p>
     </section>
     <NewsletterSignup allowTopicSelection />
   </main>

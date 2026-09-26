@@ -36,10 +36,16 @@ Startseite verlinkt direkt unter dem Einstiegsbereich auf die Newsletter-Seite;
 dort stellt das Formular beide Angebote zur Auswahl. Auf der Startseite und in den
 Newsletter-Mails wird ebenfalls auf die laufende Konzeptphase hingewiesen.
 
-Das Formular bietet `newsletter` oder `club_info` (nur allgemeine
-Informations-E-Mails). Eine Anmeldung umfasst genau einen Verteiler. Wer beide
-möchte, meldet sich separat für beide an und bestätigt beide Links. Der Server
-prüft die Auswahl und speichert sie zusammen mit einem eigenen Einwilligungsstand.
+Das Formular bietet Checkboxen für `newsletter` und `club_info` (allgemeine
+Informations-E-Mails). Mindestens ein Angebot muss ausgewählt sein; beide sind
+gemeinsam abonnierbar. Der Server nimmt ein `topics`-Array entgegen und unterstützt
+weiterhin das bisherige einzelne `topic` für bereits geöffnete Formulare.
+Bei zwei Angeboten legt `newsletter_request_topics` einen gemeinsamen
+Bestätigungsvorgang und genau einen Versandauftrag an. Ein Link bestätigt beide
+Abonnements atomar; anschließend folgt eine gemeinsame Bestätigungsmail mit
+zwei unabhängigen Abmeldelinks. Die Auswahl wird zusammen mit dem passenden
+Einwilligungsstand gespeichert. Leere, doppelte und unbekannte Auswahlen werden
+abgewiesen, bevor der Spamschutz verbraucht wird.
 Bestätigung und Abmeldung verwenden ausschließlich das zum Token gespeicherte
 Thema. Informations-E-Mails umfassen Einladungen zu Vereinsversammlungen und
 organisatorische Mitteilungen; sie erteilen keine Newsletter-Einwilligung.
@@ -59,9 +65,10 @@ Segment hinzu; eine Abmeldung entfernt nur dieses Segment. Globale Resend-
 Abmeldungen werden weiterhin respektiert. Broadcasts für Informations-E-Mails
 müssen das Informations-Segment verwenden.
 
-Zur Veröffentlichung zuerst ausschließlich die genannte Migration anwenden,
-danach die Funktionen `newsletter` und `membership-email` (gemeinsame
-E-Mail-Vorlage) aktualisieren und die Website bereitstellen. Die SQL-Prüfung
+Für die öffentliche Mehrfachauswahl zuerst die Migration
+`20260926204423_public_email_confirmation_batches.sql` anwenden (setzt die
+Newsletter-Migrationen einschließlich `20260925124921_membership_email_confirmation_batches.sql` voraus),
+danach die Function `newsletter` aktualisieren und die Website bereitstellen. Die SQL-Prüfung
 `supabase/tests/email_subscription_topics.sql` ergänzt die bisherigen Tests um
 getrennte Einwilligungen, Mitgliedsanträge und Abmeldungen derselben Adresse.
 
@@ -234,6 +241,10 @@ npm test
 npm run build
 deno check --config supabase/functions/newsletter/deno.json supabase/functions/newsletter/index.ts
 ```
+
+`supabase/tests/public_email_confirmation_batches.sql` prüft gemeinsame öffentliche
+Anmeldungen, genau eine Mail je Schritt, wiederholte und überholte Links,
+Abmeldungen, bestehende Abonnements sowie Limits und Zugriffsrechte.
 
 `supabase/tests/newsletter_double_opt_in.sql` auf einer isolierten PostgreSQL-
 Datenbank nach der Migration ausführen. Der Test rollt seine Beispieldaten zurück

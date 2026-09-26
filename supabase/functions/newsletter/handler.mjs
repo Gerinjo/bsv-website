@@ -5,6 +5,7 @@ export { token, hash } from '../_shared/newsletter-tokens.mjs';
 
 export const CONSENT_VERSION = 'nordstern-post-2026-09-24';
 export const INFO_CONSENT_VERSION = 'vereinsinformationen-2026-09-25';
+export const COMBINED_CONSENT_VERSION = 'email-auswahl-2026-09-26';
 const RECEIVED = 'Danke für deine Anmeldung! Schau bitte in dein Postfach und bestätige deine E-Mail-Adresse über unseren Link. Prüfe auch den Spam-Ordner. Falls du gerade schon einen Link angefordert hast, nutze bitte diese Nachricht.';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TOKEN = /^[0-9a-f]{64}$/;
@@ -95,8 +96,13 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
       if (!config.resendApiKey || !config.mailFrom || !serviceKey) return json({ ok: false, message: 'Die E-Mail-Anmeldung ist momentan nicht verfügbar. Bitte versuche es später erneut.' }, 503);
       if (body.action === 'subscribe') {
         if (typeof body.website === 'string' && body.website.trim()) return json({ ok: true, message: RECEIVED });
-        const topic = body.topic ?? 'newsletter';
-        if (!['newsletter', 'club_info'].includes(topic)) return json({ ok: false, message: 'Bitte wähle Newsletter oder Informations-E-Mails aus.' }, 422);
+        // Keep cached single-choice forms compatible; an explicit empty selection is invalid.
+        const topics = body.topics === undefined ? [body.topic ?? 'newsletter'] : body.topics;
+        if (!Array.isArray(topics) || topics.length < 1 || topics.length > 2
+          || topics.some((topic) => !['newsletter', 'club_info'].includes(topic))
+          || new Set(topics).size !== topics.length) return json({ ok: false, message: 'Bitte wähle mindestens ein E-Mail-Angebot aus: Newsletter, Informations-E-Mails oder beides.' }, 422);
+        const both = topics.length === 2;
+        const topic = both ? 'both' : topics[0];
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
         if (email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) || body.consent !== true) {
           return json({ ok: false, message: 'Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Einwilligung für deine Auswahl.' }, 422);
@@ -105,11 +111,13 @@ export function createNewsletterHandler({ db, config, sendEmail, serviceKey, wor
         const captcha = await query(db.from('contact_captcha_challenges').delete().eq('id', body.captchaToken).select('antwort, expires_at').maybeSingle());
         if (!captcha || Date.parse(captcha.expires_at) <= Date.now() || captcha.antwort !== body.captchaAnswer) return json({ ok: false, message: 'Der Spamschutz ist falsch oder abgelaufen. Bitte löse die neue Aufgabe.' }, 422);
         const confirmationToken = token();
-        const message = renderNewsletterEmail({ kind: 'confirmation', topic, email, actionUrl: link('bestaetigen', confirmationToken), sponsors: await loadSponsors(fetcher) });
+        const message = renderNewsletterEmail({ kind: 'confirmation', topic, email, actionUrl: link('bestaetigen', confirmationToken) + (both ? '&batch=1' : ''), sponsors: await loadSponsors(fetcher) });
         const ip = request.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() || 'unknown';
-        const jobId = await query(db.rpc('newsletter_request_topic', {
+        const jobId = await query(db.rpc(both ? 'newsletter_request_topics' : 'newsletter_request_topic', {
           p_email: email, p_mode: config.mode, p_token_hash: await hash(confirmationToken), p_message: message,
-          p_topic: topic, p_consent_version: topic === 'club_info' ? INFO_CONSENT_VERSION : CONSENT_VERSION, p_rate_key: await rateKey(`${config.mode}:${ip}`, serviceKey),
+          ...(both ? { p_topics: topics } : { p_topic: topic }),
+          p_consent_version: both ? COMBINED_CONSENT_VERSION : topic === 'club_info' ? INFO_CONSENT_VERSION : CONSENT_VERSION,
+          p_rate_key: await rateKey(`${config.mode}:${ip}`, serviceKey),
         }));
         // The durable job remains available to the scheduled worker after any failure.
         if (jobId) await processJob(jobId).catch(() => console.error('Newsletter: Versand zur Wiederholung vorgemerkt.'));
