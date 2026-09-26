@@ -1,4 +1,5 @@
 ---
+import { teamNames, allocationByTeam, allocationByTeamAndDay, type Pitch, type Allocation } from '../../data/trainingPlan';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -12,76 +13,12 @@ import { trainingFilterKeyByTeam } from '../../data/trainingPlanFilters';
 import { withBase } from '../../utils/paths';
 import { findTrainingConflicts, findGoalTrainingOverlaps } from '../../utils/trainingConflicts.mjs';
 
-type Pitch = 'Hauptplatz' | 'Nebenplatz' | 'Gleisdreieck' | 'Käfig';
-type Allocation = {
-  pitch: Pitch;
-  share: number;
-  shareLabel: string;
-  tone: 'active' | 'girls' | 'youth' | 'kids' | 'other';
-};
-
 const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Sonntag'];
-const teamNames: Record<string, string> = {
-  'fussball/herren/bezirksliga': 'Herren 1',
-  'fussball/herren/kreisliga-2': 'Herren 2',
-  'fussball/frauen/bezirksliga': 'Frauen 1',
-  'fussball/frauen/kreisliga': 'Frauen 2',
-  'fussball/alte-herren': 'Alte Herren',
-  'jugend/u11-e1': 'E1-Junioren',
-  'jugend/u11-e2': 'E2-Junioren',
-  'jugend/u11-e3': 'E3-Junioren',
-  'jugend/u9-f': 'U9 F-Junioren',
-  'jugend/u8-f': 'F2 + F3-Junioren',
-  'jugend/u7-g': 'U7 G-Junioren',
-  'jugend/u6-g': 'U6 Spielgruppe',
-  'jugend/u19': 'A-Junioren',
-  'jugend/u17': 'B-Junioren',
-  'jugend/u15-c1': 'C1-Junioren',
-  'jugend/u15-c2': 'C2-Junioren',
-  'jugend/u13-d1': 'D1-Junioren',
-  'jugend/u13-d2': 'D2-Junioren',
-  'jugend/u13-d3': 'D3-Junioren',
-  'jugend/juniorinnen/u17': 'B-Juniorinnen',
-  'jugend/juniorinnen/u15': 'C-Juniorinnen',
-  'jugend/juniorinnen/u13': 'D-Juniorinnen',
-};
-
-const allocationByTeam: Record<string, Allocation> = {
-  'fussball/herren/bezirksliga': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
-  'fussball/herren/kreisliga-2': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
-  'fussball/frauen/bezirksliga': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'girls' },
-  'fussball/frauen/kreisliga': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'girls' },
-  'fussball/alte-herren': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'active' },
-  'jugend/u11-e1': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
-  'jugend/u11-e2': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
-  'jugend/u11-e3': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
-  'jugend/u9-f': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'kids' },
-  'jugend/u8-f': { pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz', tone: 'kids' },
-  'jugend/u7-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
-  'jugend/u6-g': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'kids' },
-  'jugend/u19': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
-  'jugend/u17': { pitch: 'Nebenplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
-  'jugend/u15-c1': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
-  'jugend/u15-c2': { pitch: 'Hauptplatz', share: .5, shareLabel: '½ Platz', tone: 'youth' },
-  'jugend/u13-d1': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
-  'jugend/u13-d2': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
-  'jugend/u13-d3': { pitch: 'Hauptplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'youth' },
-  'jugend/juniorinnen/u17': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
-  'jugend/juniorinnen/u15': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
-  'jugend/juniorinnen/u13': { pitch: 'Nebenplatz', share: 1 / 3, shareLabel: '⅓ Platz', tone: 'girls' },
-};
-
 const timeValue = (time: string) => {
   const match = time.match(/(\d{1,2}):(\d{2})/);
   return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
 };
 const isOnTrainingPlan = (place: string) => /BSV Nordstern|Käfig am Friedrich-Hecker-Gymnasium/i.test(place);
-
-const allocationByTeamAndDay: Record<string, Partial<Allocation>> = {
-  'jugend/u11-e1|Donnerstag': { pitch: 'Käfig', share: 1, shareLabel: 'Käfig belegt' },
-  'fussball/herren/kreisliga-2|Donnerstag': { pitch: 'Nebenplatz' },
-  'jugend/u9-f|Mittwoch': { pitch: 'Nebenplatz' },
-};
 
 const allTraining = Object.entries(teamProfiles).flatMap(([path, profile]) =>
   profile.training.map((slot) => ({

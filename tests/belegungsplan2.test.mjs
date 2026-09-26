@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const proposalSource = readFileSync(new URL('../src/pages/fussball/belegungsplan2.astro', import.meta.url), 'utf8');
-const originalPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8');
+const originalPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8') + readFileSync(new URL('../src/data/trainingPlan.ts', import.meta.url), 'utf8');
 const filterComponentSource = readFileSync(new URL('../src/components/TrainingPlanFilter.astro', import.meta.url), 'utf8');
 const filterDataSource = readFileSync(new URL('../src/data/trainingPlanFilters.ts', import.meta.url), 'utf8');
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');

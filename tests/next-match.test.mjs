@@ -71,18 +71,18 @@ test('does not present old matches as upcoming', async () => {
   assert.deepEqual(result, []);
 });
 
-test('loads today’s finished game from previousMatches with its result', async () => {
+test('loads weekend results from previousMatches until Monday morning', async () => {
   const data = { props: { pageProps: { generatedAt: '2026-09-26T16:00:00Z', nextMatches: [], previousMatches: [
     { id, status: 'acknowledged', kickoff: { date: '26.09.2026' }, result: { homeResult: '2', guestResult: '0' } },
   ] } } };
   const fetcher = async (url) => new Response(url.includes('/widget/')
     ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('26.09.2026 16:00'));
-  const result = await loadNextMatches('widget', fetcher, { now: new Date('2026-09-26T21:59:00Z') });
+  const result = await loadNextMatches('widget', fetcher, { now: new Date('2026-09-28T03:59:00Z') });
   assert.equal(result.length, 1);
   assert.equal(result[0].status, 'acknowledged');
   assert.equal(result[0].homeScore, 2);
   assert.equal(result[0].awayScore, 0);
-  assert.deepEqual(await loadNextMatches('widget', fetcher, { now: new Date('2026-09-26T22:00:00Z') }), []);
+  assert.deepEqual(await loadNextMatches('widget', fetcher, { now: new Date('2026-09-28T04:00:00Z') }), []);
 });
 
 test('keeps a live game after kickoff and isolates an unreadable match page', async () => {
@@ -106,4 +106,17 @@ test('retains the same-day cancellation status instead of showing LIVE', async (
     ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('26.09.2026 16:00')),
   { now: new Date('2026-09-26T14:20:00Z') });
   assert.equal(result[0].status, 'cancelled');
+});
+
+test('a reported final result wins over a lingering live flag', async () => {
+  for (const status of ['finished', 'acknowledged']) {
+    const data = { props: { pageProps: { nextMatches: [], previousMatches: [
+      { id, status, live: true, kickoff: { date: '25.09.2026' }, result: { homeResult: '3', guestResult: '1' } },
+    ] } } };
+    const result = await loadNextMatches('widget', async (url) => new Response(url.includes('/widget/')
+      ? `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(data)}</script>` : page('25.09.2026 18:00')),
+    { now: new Date('2026-09-27T14:20:00Z') });
+    assert.equal(result[0].status, status);
+    assert.equal(result[0].homeScore, 3);
+  }
 });

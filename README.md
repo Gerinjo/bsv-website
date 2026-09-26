@@ -58,15 +58,25 @@ Der Leser verwendet die festgelegte Version von `pdfjs-dist` und lädt PDF, Work
 
 ## Spiele auf der Startseite
 
-`HomeNextMatch.astro` zeigt die Spielauswahl „Erste / Reserve / Junioren / Juniorinnen“ und den Link mit PDF-Symbol zur Stadionheftübersicht. Enthalten sind vier aktive Mannschaften, sieben Juniorenteams von D bis A sowie drei Juniorinnenteams von D bis B. Das Spiel des aktuellen Tages bleibt bis Mitternacht in `Europe/Berlin` sichtbar, einschließlich seines Endstands. Erst danach wird das nächste Spiel ausgewählt. Diese Auswahl erfolgt auch bei einer länger geöffneten Seite ohne Neuladen.
+`HomeNextMatch.astro` zeigt die Spielauswahl „Erste / Reserve / Junioren / Juniorinnen“ und den Link mit PDF-Symbol zur Stadionheftübersicht. Enthalten sind vier aktive Mannschaften, sieben Juniorenteams von D bis A sowie drei Juniorinnenteams von D bis B. Spiele von Freitag bis Sonntag bleiben einschließlich ihrer Endstände bis Montag um 06:00 Uhr in `Europe/Berlin` sichtbar. Mehrere Begegnungen einer Mannschaft am selben Wochenende werden gemeinsam angezeigt. An den übrigen Wochentagen bleibt das Tagesspiel bis Mitternacht stehen. Ohne Begegnung im aktuellen Zeitraum wird das nächste Spiel angezeigt. Diese Auswahl erfolgt auch bei einer länger geöffneten Seite ohne Neuladen.
 
 Alle Tabs nutzen dieselbe feste Höhe für die Spielanzeige; längere Listen sind darin scrollbar. Dadurch bleiben Spielfeld, Fußballer und Werteband beim Wechsel an derselben Position. Die Fußballer-Illustration ist KI-generiert und direkt am Motiv gekennzeichnet; Herkunft und Prompts sind in `design/teams-background.md` und `src/assets/fussball/README.md` dokumentiert.
 
-Die öffentlich lesbare Edge Function `home-matches` liefert die aktuellen Daten aus den 14 FUSSBALL.DE-Widgets. Gruppen und Mannschaften werden für Seite und Feed gemeinsam in `supabase/functions/_shared/home-match-groups.mjs` gepflegt. Der Feed nutzt denselben Parser wie der Seitenaufbau (`supabase/functions/_shared/football-matches.ts`), berücksichtigt sowohl kommende als auch heutige abgeschlossene Spiele und entschlüsselt Uhrzeit und Ergebnis mit der vom Widget gelieferten Schrift. Er hat keinen Datenbankzugriff. Bei Änderungen an Gruppen oder Parser die Funktion ebenfalls bereitstellen.
+Die öffentlich lesbare Edge Function `home-matches` liefert die aktuellen Daten aus den 14 FUSSBALL.DE-Widgets. Gruppen und Mannschaften werden für Seite und Feed gemeinsam in `supabase/functions/_shared/home-match-groups.mjs` gepflegt. Der Feed nutzt denselben Parser wie der Seitenaufbau (`supabase/functions/_shared/football-matches.ts`), berücksichtigt sowohl kommende als auch abgeschlossene Spiele im aktuellen Anzeigezeitraum und entschlüsselt Uhrzeit und Ergebnis mit der vom Widget gelieferten Schrift. Er hat keinen Datenbankzugriff. Bei Änderungen an Gruppen oder Parser die Funktion ebenfalls bereitstellen.
 
-Am Spieltag fragt die sichtbare Startseite minütlich neue Daten ab, sonst alle 15 Minuten. Verdeckte Tabs pausieren den Abruf; Antworten werden serverseitig eine Minute zwischengespeichert. Ein gemeldeter LIVE-Status erscheint pulsierend zwischen Spieltext und Spiel-Link; reduzierte Bewegung wird respektiert. Ohne aktuelle Statusmeldung wird kein LIVE behauptet, ohne gemeldete Tore kein Ergebnis erfunden. Nach drei Minuten ohne frische LIVE-Daten erlischt der LIVE-Hinweis. Ein gemeldeter Endstand bleibt erhalten; ohne Ergebnis erscheint nach der üblichen Spielzeit „Ergebnis folgt“.
+Am Spieltag und bei noch ausstehenden Wochenendergebnissen fragt die sichtbare Startseite minütlich neue Daten ab, sonst alle 15 Minuten. Verdeckte Tabs pausieren den Abruf; Antworten werden serverseitig eine Minute zwischengespeichert. Ab Anstoß erscheint LIVE pulsierend, auch ohne Ticker; reduzierte Bewegung wird respektiert. Die Zeitberechnung verwendet für D 60, C 70, B 80 und A sowie Aktive 90 Minuten, jeweils zuzüglich 15 Minuten Halbzeitpause. Die Spielzeiten gelten auch für Juniorinnen und werden je Team in `home-match-groups.mjs` gepflegt. Ein frischer Tickerstatus (höchstens drei Minuten alt) kann LIVE über die berechnete Dauer hinaus verlängern und einen gemeldeten Zwischenstand ergänzen. Anschließend erscheint ohne bestätigten Endstand „Warten auf Ergebnis“; ein alter Zwischenstand wird nicht zum Endstand erklärt. Gemeldete Endstände und Absagen haben Vorrang. Derselbe Anzeigezeitraum gilt beim Build, im Feed und bei der Zusammenführung der Browserdaten; vorübergehend fehlende Wochenendspiele bleiben erhalten.
 
 Tests: `node --test tests/next-match.test.mjs tests/match-presentation.test.mjs`. Der Feed kann bei Bedarf über `PUBLIC_HOME_MATCHES_URL` umgestellt werden. Details zur Bereitstellung: `supabase/functions/home-matches/README.md`.
+
+## Warnungen zum Jugendspielbetrieb
+
+Die Edge Function `football-alerts` prüft stündlich von 08:00 bis 20:00 Uhr
+Trainingskonflikte in den nächsten 14 Tagen sowie fehlende Schiedsrichter zwei
+Kalendertage vor D–A-Juniorenheimspielen; bei Juniorinnen nur im Pokal.
+Betroffene Trainer und hinterlegte Co-Trainer erhalten je unverändertem Fall
+eine E-Mail. Trainingsdaten werden zentral in `src/data/trainingPlan.ts`
+gepflegt. Nach Änderungen dort auch die Function erneut bereitstellen.
+Einrichtung und Betrieb: [football-alerts/README.md](supabase/functions/football-alerts/README.md).
 
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
 

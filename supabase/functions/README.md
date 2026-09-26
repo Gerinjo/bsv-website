@@ -1,5 +1,10 @@
 # Gemeinsame E-Mail-Konfiguration
 
+Automatische Warnungen bei Überschneidungen von Spiel und Jugendtraining sowie
+fehlenden Schiedsrichtern bei Jugendheimspielen sind in
+[football-alerts/README.md](football-alerts/README.md) dokumentiert. Sie verwenden
+dieselben Trainerempfänger und denselben zentralen Versanddienst.
+
 Die Anmeldung auf `/newsletter` zum **Newsletter des BSV Nordstern Radolfzell** verwendet denselben E-Mail-Dienst.
 Double-Opt-in, Sponsoren, Verteileraufnahme, Wiederholungen und Bereitstellung sind
 in [newsletter/README.md](newsletter/README.md) beschrieben.

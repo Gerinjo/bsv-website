@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { teamTraining } from '../src/data/trainingPlan.ts';
 
 const pageSource = readFileSync(new URL('../src/pages/[...slug].astro', import.meta.url), 'utf8');
 const teamPagesSource = readFileSync(new URL('../src/data/teamPages.ts', import.meta.url), 'utf8');
 const layoutSource = readFileSync(new URL('../src/layouts/Layout.astro', import.meta.url), 'utf8');
 const legacySource = readFileSync(new URL('../src/data/legacyContent.ts', import.meta.url), 'utf8');
-const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8');
+const trainingPlanSource = readFileSync(new URL('../src/pages/fussball/belegungsplan.astro', import.meta.url), 'utf8') + readFileSync(new URL('../src/data/trainingPlan.ts', import.meta.url), 'utf8');
 const urmelSource = readFileSync(new URL('../src/pages/erlebnis/urmel-bambini-spieltag.astro', import.meta.url), 'utf8');
 const erlebnisDataSource = readFileSync(new URL('../src/data/erlebnis.ts', import.meta.url), 'utf8');
 const erlebnisOverviewSource = readFileSync(new URL('../src/pages/erlebnis/index.astro', import.meta.url), 'utf8');
@@ -58,11 +59,14 @@ test('Marcelino Rueth teams use the updated Monday and Wednesday training times'
   const e2Section = teamSection('jugend/u11-e2', 'jugend/u11-e3');
   const u9Section = teamSection('jugend/u9-f', 'jugend/u8-f');
 
-  assert.match(e2Section, /Montag',\s*time:\s*'17:30 – 19:00 Uhr'/);
-  assert.match(e2Section, /Mittwoch',\s*time:\s*'17:30 – 19:00 Uhr'/);
-  assert.equal((e2Section.match(/place:\s*'BSV Nordstern Hauptplatz'/g) ?? []).length, 2);
-  assert.match(u9Section, /Montag',\s*time:\s*'16:00 – 17:30 Uhr'/);
-  assert.match(u9Section, /Mittwoch',\s*time:\s*'16:00 – 17:30 Uhr'/);
+  assert.deepEqual(teamTraining['jugend/u11-e2'], [
+    { day: 'Montag', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' },
+    { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern Hauptplatz' },
+  ]);
+  assert.deepEqual(teamTraining['jugend/u9-f'].map(({ day, time }) => ({ day, time })), [
+    { day: 'Montag', time: '16:00 – 17:30 Uhr' },
+    { day: 'Mittwoch', time: '16:00 – 17:30 Uhr' },
+  ]);
   assert.doesNotMatch(e2Section, /Termin folgt/);
 });
 
@@ -74,8 +78,10 @@ test('E2 is always allocated to the main pitch', () => {
 test('F2 and F3 use the training data from the 2026/27 allocation graphic', () => {
   const f2AndF3Section = teamSection('jugend/u8-f', 'jugend/u7-g');
 
-  assert.match(f2AndF3Section, /Dienstag',\s*time:\s*'17:00 – 18:30 Uhr',\s*place:\s*'BSV Nordstern Hauptplatz'/);
-  assert.match(f2AndF3Section, /Donnerstag',\s*time:\s*'17:00 – 18:30 Uhr',\s*place:\s*'BSV Nordstern Hauptplatz'/);
+  assert.deepEqual(teamTraining['jugend/u8-f'], [
+    { day: 'Dienstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz' },
+    { day: 'Donnerstag', time: '17:00 – 18:30 Uhr', place: 'BSV Nordstern Hauptplatz' },
+  ]);
   assert.match(trainingPlanSource, /'jugend\/u8-f': \{ pitch: 'Hauptplatz', share: 1, shareLabel: 'je ½ Platz'/);
   assert.match(trainingPlanSource, /'jugend\/u8-f': 'F2 \+ F3-Junioren'/);
 });
@@ -103,8 +109,11 @@ test('D1, D2 and D3 show the updated coaching teams and qualifications', () => {
 test('D2 trains Wednesday and Friday at the currently assigned times', () => {
   const d2Section = teamSection('jugend/u13-d2', 'jugend/u13-d3');
 
-  assert.match(d2Section, /training:\s*\[\{\s*day:\s*'Mittwoch',\s*time:\s*'17:30 – 19:00 Uhr',\s*place:\s*'BSV Nordstern'\s*\},\s*\{\s*day:\s*'Freitag',\s*time:\s*'16:30 – 18:00 Uhr',\s*place:\s*'BSV Nordstern'\s*\}\]/);
-  assert.doesNotMatch(d2Section, /day:\s*'Montag'/);
+  assert.match(d2Section, /training:teamTraining\['jugend\/u13-d2'\]/);
+  assert.deepEqual(teamTraining['jugend/u13-d2'], [
+    { day: 'Mittwoch', time: '17:30 – 19:00 Uhr', place: 'BSV Nordstern' },
+    { day: 'Freitag', time: '16:30 – 18:00 Uhr', place: 'BSV Nordstern' },
+  ]);
 });
 
 test('DFBnet qualifications are applied to the respective youth coaches', () => {
@@ -136,9 +145,10 @@ test('the youth section links to Stefan Gastaudo goalkeeping training', () => {
 test('A-Jugend trains Tuesday at BSV and Thursday in Markelfingen', () => {
   const u19Section = teamSection('jugend/u19', 'jugend/u17');
 
-  assert.match(u19Section, /Dienstag',\s*time:\s*'19:30 – 21:00 Uhr',\s*place:\s*'BSV Nordstern Radolfzell'/);
-  assert.match(u19Section, /Donnerstag',\s*time:\s*'19:00 – 20:30 Uhr',\s*place:\s*'SV Markelfingen'/);
-  assert.doesNotMatch(u19Section, /Montag|Mittwoch/);
+  assert.deepEqual(teamTraining['jugend/u19'], [
+    { day: 'Dienstag', time: '19:30 – 21:00 Uhr', place: 'BSV Nordstern Radolfzell' },
+    { day: 'Donnerstag', time: '19:00 – 20:30 Uhr', place: 'SV Markelfingen' },
+  ]);
 });
 
 test('the girls football day overview card uses a cover photo and names SBFV support', () => {

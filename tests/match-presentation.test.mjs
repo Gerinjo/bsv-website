@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { matchPresentation, selectHomepageMatch } from '../src/utils/matchPresentation.ts';
+import { matchPresentation, mergeHomepageMatches, selectHomepageMatch, selectHomepageMatches } from '../src/utils/matchPresentation.ts';
 import { createHomeMatchesHandler, homeMatchWidgets } from '../supabase/functions/home-matches/handler.mjs';
 import { homeMatchGroups } from '../supabase/functions/_shared/home-match-groups.mjs';
 
@@ -22,43 +22,99 @@ test('homepage groups cover all requested youth teams and each has its own feed 
   for (const team of teams) assert.match(team.teamId, /^[A-Z0-9]{32}$/);
 });
 
-test('keeps today’s fixture before, during and after kickoff through 23:59 in Berlin', () => {
-  for (const time of ['2026-09-26T10:00:00Z', '2026-09-26T14:00:00Z', '2026-09-26T21:59:59Z']) {
-    assert.equal(selectHomepageMatch([next, game], new Date(time)), game);
+test('keeps Friday through Sunday fixtures until Monday at 06:00 in Berlin', () => {
+  const friday = { ...game, dateTime: '2026-09-25T18:00' };
+  for (const time of ['2026-09-25T16:00:00Z', '2026-09-26T22:00:00Z', '2026-09-27T21:59:59Z', '2026-09-28T03:59:59Z']) {
+    assert.equal(selectHomepageMatch([next, friday], new Date(time)), friday);
   }
-  assert.equal(selectHomepageMatch([game, next], new Date('2026-09-26T22:00:00Z')), next);
+  assert.equal(selectHomepageMatch([friday, next], new Date('2026-09-28T04:00:00Z')), next);
 });
 
-test('switches at Berlin midnight in winter too', () => {
-  const winter = { ...game, dateTime: '2026-12-12T16:00' };
-  const future = { ...next, dateTime: '2026-12-19T16:00' };
-  assert.equal(selectHomepageMatch([winter, future], new Date('2026-12-12T22:59:59Z')), winter);
-  assert.equal(selectHomepageMatch([winter, future], new Date('2026-12-12T23:00:00Z')), future);
+test('keeps every game of a team on the same weekend', () => {
+  const friday = { ...game, dateTime: '2026-09-25T18:00', url: 'friday' };
+  const sunday = { ...game, dateTime: '2026-09-27T16:00', url: 'sunday' };
+  assert.deepEqual(selectHomepageMatches([next, sunday, friday, game], new Date('2026-09-27T15:00:00Z')), [friday, game, sunday]);
 });
 
-test('shows confirmed LIVE with a 0:0 score, and expires stale live status', () => {
+test('switches Monday at 06:00 in winter and across daylight saving and month boundaries', () => {
+  for (const [date, before, after] of [
+    ['2026-12-12T16:00', '2026-12-14T04:59:59Z', '2026-12-14T05:00:00Z'],
+    ['2026-10-23T16:00', '2026-10-26T04:59:59Z', '2026-10-26T05:00:00Z'],
+    ['2026-03-27T16:00', '2026-03-30T03:59:59Z', '2026-03-30T04:00:00Z'],
+    ['2026-07-31T16:00', '2026-08-03T03:59:59Z', '2026-08-03T04:00:00Z'],
+  ]) {
+    const weekend = { ...game, dateTime: date };
+    const future = { ...next, dateTime: '2099-01-01T16:00' };
+    assert.equal(selectHomepageMatch([weekend, future], new Date(before)), weekend);
+    assert.equal(selectHomepageMatch([weekend, future], new Date(after)), future);
+  }
+});
+
+test('weekday games expire at midnight; teams without a weekend game show their next match', () => {
+  const thursday = { ...game, dateTime: '2026-09-24T18:00' };
+  assert.equal(selectHomepageMatch([thursday, next], new Date('2026-09-24T21:59:59Z')), thursday);
+  assert.equal(selectHomepageMatch([thursday, next], new Date('2026-09-24T22:00:00Z')), next);
+  assert.equal(selectHomepageMatch([next], new Date('2026-09-26T14:00:00Z')), next);
+  assert.deepEqual(selectHomepageMatches([], new Date('2026-09-26T14:00:00Z')), []);
+});
+
+test('incomplete refreshes retain weekend fixtures and merge late results until Monday', () => {
+  const now = new Date('2026-09-27T14:00:00Z');
+  const final = { ...game, status: 'finished', homeScore: 2, awayScore: 0 };
+  assert.deepEqual(mergeHomepageMatches([game], [next], now), [game, next]);
+  assert.deepEqual(mergeHomepageMatches([game, next], [final], now), [final, next]);
+  assert.deepEqual(mergeHomepageMatches([final, next], [], new Date('2026-09-28T04:00:00Z')), [next]);
+});
+
+test('every team uses its age-specific playing time, including junior girls', () => {
+  for (const team of homeMatchGroups.flatMap((group) => group.teams)) {
+    const minutes = /^D/.test(team.label) ? 60 : /^C/.test(team.label) ? 70 : /^B/.test(team.label) ? 80 : 90;
+    assert.equal(team.playingMinutes, minutes, team.label);
+    const kickoff = Date.parse('2026-09-26T14:00:00Z');
+    assert.deepEqual(matchPresentation(game, new Date(kickoff - 1), minutes), { live: false, score: '', label: '' });
+    assert.deepEqual(matchPresentation(game, new Date(kickoff), minutes), { live: true, score: '', label: 'LIVE' });
+    assert.deepEqual(matchPresentation(game, new Date(kickoff + 40 * 60_000), minutes), { live: true, score: '', label: 'LIVE' });
+    assert.deepEqual(matchPresentation(game, new Date(kickoff + (minutes + 15) * 60_000 - 1), minutes), { live: true, score: '', label: 'LIVE' });
+    assert.deepEqual(matchPresentation(game, new Date(kickoff + (minutes + 15) * 60_000), minutes), { live: false, score: '', label: 'Warten auf Ergebnis' });
+  }
+});
+
+test('shows ticker scores including 0:0, and uses the clock when ticker data becomes stale', () => {
   const match = { ...game, status: 'live', homeScore: 0, awayScore: 0, observedAt: '2026-09-26T14:05:00Z' };
-  assert.deepEqual(matchPresentation(match, new Date('2026-09-26T14:06:00Z')), { live: true, score: '0 : 0', label: 'LIVE' });
-  assert.deepEqual(matchPresentation(match, new Date('2026-09-26T14:09:00Z')), { live: false, score: '0 : 0', label: 'Spielstand' });
-  assert.equal(matchPresentation(match, new Date('2026-09-27T14:06:00Z')).live, false);
+  for (const time of ['2026-09-26T14:06:00Z', '2026-09-26T14:09:00Z']) {
+    assert.deepEqual(matchPresentation(match, new Date(time)), { live: true, score: '0 : 0', label: 'LIVE' });
+  }
+  assert.deepEqual(matchPresentation(match, new Date('2026-09-26T15:45:00Z')), { live: false, score: '', label: 'Warten auf Ergebnis' });
 });
 
-test('shows final score until midnight, including nil results', () => {
-  const match = { ...game, status: 'acknowledged', homeScore: 2, awayScore: 0 };
-  const now = new Date('2026-09-26T21:59:00Z');
-  assert.equal(selectHomepageMatch([match, next], now), match);
-  assert.deepEqual(matchPresentation(match, now), { live: false, score: '2 : 0', label: 'Endstand' });
+test('fresh ticker can extend play beyond the estimate, but a final status takes precedence', () => {
+  const now = new Date('2026-09-26T16:00:00Z');
+  const match = { ...game, status: 'live', homeScore: 2, awayScore: 1, observedAt: now.toISOString() };
+  assert.deepEqual(matchPresentation(match, now, 60), { live: true, score: '2 : 1', label: 'LIVE' });
+  assert.deepEqual(matchPresentation({ ...match, status: 'finished' }, now, 60), { live: false, score: '2 : 1', label: 'Endstand' });
+  assert.deepEqual(matchPresentation({ ...match, status: 'finished', awayScore: undefined }, now, 60), { live: false, score: '', label: 'Warten auf Ergebnis' });
 });
 
-test('does not invent LIVE or a score when a result has not been reported', () => {
-  assert.deepEqual(matchPresentation(game, new Date('2026-09-26T14:01:00Z')), { live: false, score: '', label: '' });
-  assert.deepEqual(matchPresentation(game, new Date('2026-09-26T17:00:00Z')), { live: false, score: '', label: 'Ergebnis folgt' });
-  assert.equal(matchPresentation({ ...game, status: 'finished', homeScore: 1 }, new Date('2026-09-26T17:00:00Z')).score, '');
+test('shows final scores throughout the weekend, including 0:0 and games without a ticker', () => {
+  const now = new Date('2026-09-27T21:59:00Z');
+  for (const status of ['finished', 'acknowledged']) {
+    const match = { ...game, status, homeScore: 0, awayScore: 0 };
+    assert.equal(selectHomepageMatch([match, next], now), match);
+    assert.deepEqual(matchPresentation(match, now), { live: false, score: '0 : 0', label: 'Endstand' });
+  }
 });
 
-test('keeps today’s cancellation with its notice and skips future cancelled games', () => {
+test('does not fabricate a score or treat an old interim score as a final result', () => {
+  assert.deepEqual(matchPresentation({ ...game, homeScore: 0, awayScore: 0 }, new Date('2026-09-26T14:01:00Z')), { live: true, score: '', label: 'LIVE' });
+  assert.deepEqual(matchPresentation(game, new Date('2026-09-27T17:00:00Z')), { live: false, score: '', label: 'Warten auf Ergebnis' });
+  assert.deepEqual(matchPresentation({ ...game, status: 'live', observedAt: '2026-09-26T15:50:00Z' }, new Date('2026-09-26T15:45:00Z')), { live: false, score: '', label: 'Warten auf Ergebnis' });
+  assert.deepEqual(matchPresentation(undefined), { live: false, score: '', label: '' });
+});
+
+test('retains weekend cancellations, skips future cancellations, and never shows them as LIVE', () => {
   const cancelled = { ...game, status: 'cancelled', homeScore: 0, awayScore: 0 };
   assert.equal(selectHomepageMatch([cancelled, next], new Date('2026-09-26T15:00:00Z')), cancelled);
+  assert.equal(selectHomepageMatch([cancelled, next], new Date('2026-09-27T15:00:00Z')), cancelled);
   assert.equal(selectHomepageMatch([cancelled, next], new Date('2026-09-25T15:00:00Z')), next);
   assert.deepEqual(matchPresentation(cancelled), { live: false, score: '', label: 'Abgesagt' });
 });

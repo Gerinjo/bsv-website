@@ -1,4 +1,5 @@
 import { load } from 'cheerio';
+import { Buffer } from 'node:buffer';
 import { isBsvHomeTournament, parseTournamentParticipants } from './tournamentDays.ts';
 import { berlinNow } from './nextMatch.ts';
 import { addDays, bookingTimes, matchRule, matchdaySettings, matchdayTeams, timeMinutes } from './matchdayPlan.ts';
@@ -66,11 +67,15 @@ export function parseMatchLocation(html: string, fixture: MatchFixture) {
   const group = $('.stage-header a.competition[href*="/spieltag/"]').attr('href');
   const date = $('title').text().match(/(\d{2})\.(\d{2})\.(\d{4})/)?.slice(1);
   if (date && [date[2], date[1], date[0]].join('-') !== fixture.date) throw new Error('Match date changed during refresh');
+  const reportedTime = $('input[name="subject"]').attr('value')?.match(/ am \d{2}\.\d{2}\.\d{4} (\d{2}:\d{2})/)?.[1];
+  if (fixture.time && reportedTime && reportedTime !== fixture.time) throw new Error('Match time changed during refresh');
   return { venue, teams: detailTeams, groupUrl: group ? sourceUrl(group, 'spieltag') : '', groupTitle: clean($('.stage-header a.competition').text()) };
 }
 
-export async function loadMatchdaySchedule(now = new Date(), fetcher: typeof fetch = fetch): Promise<MatchdaySchedule> {
-  const from = berlinNow(now).slice(0, 10), through = addDays(from, matchdaySettings.days - 1);
+export async function loadMatchdaySchedule(now = new Date(), fetcher: typeof fetch = fetch, options: { days?: number } = {}): Promise<MatchdaySchedule> {
+  const days = options.days ?? matchdaySettings.days;
+  if (!Number.isInteger(days) || days < 1 || days > matchdaySettings.days) throw new Error('Invalid schedule range');
+  const from = berlinNow(now).slice(0, 10), through = addDays(from, days - 1);
   const deadline = AbortSignal.timeout(180000);
   const cache = new Map<string, string>();
   const fonts = new Map<string, import('fontkitten').Font>();
@@ -98,8 +103,8 @@ export async function loadMatchdaySchedule(now = new Date(), fetcher: typeof fet
     const html = await response.text(); cache.set(url, html); return html;
   };
   const fixtures = new Map<string, MatchFixture>();
-  for (let offset = 0; offset < matchdaySettings.days; offset += 7) {
-    const start = addDays(from, offset), end = addDays(from, Math.min(offset + 6, matchdaySettings.days - 1));
+  for (let offset = 0; offset < days; offset += 7) {
+    const start = addDays(from, offset), end = addDays(from, Math.min(offset + 6, days - 1));
     for (const fixture of parseClubPlan(await read(clubPlanUrl + '/max/100/datum-von/' + start + '/datum-bis/' + end))) {
       if (fixture.date < start || fixture.date > end) throw new Error('Source ignored requested dates');
       fixtures.set(fixture.id, fixture);

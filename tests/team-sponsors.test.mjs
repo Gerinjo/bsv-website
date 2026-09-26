@@ -68,7 +68,7 @@ test('the youth page shows up to four direct youth sponsors and links to the pre
   assert.match(youthSponsorsSource, /index >= 4/);
   assert.match(youthSponsorsSource, /\/werbepartner\?bereich=jugendabteilung/);
   assert.match(youthSponsorsSource, /Alle Jugendsponsoren/);
-  assert.match(headerSource, /item\.label === 'Junge Sterne' \? item\.href/);
+  assert.match(headerSource, /\['Junge Sterne', 'Fußball'\]\.includes\(item\.label\) \? item\.href/);
 });
 
 test('the youth landing keeps leadership and stories above sponsors and adds training below the team groups', () => {

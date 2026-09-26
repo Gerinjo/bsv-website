@@ -1,0 +1,133 @@
+---
+import { menu } from '../data/navigation';
+import { teamProfiles } from '../data/teamPages';
+import { withBase } from '../utils/paths';
+
+const footballMenu = menu.find((item) => item.href === '/fussball')!;
+const teamGroups = footballMenu.groups.filter((group) => ['Herren', 'Frauen', 'Alte Herren'].includes(group.title));
+const grounds = footballMenu.groups.find((group) => group.title === 'Sportstätten')!;
+const descriptions: Record<string, string> = {
+  Herren: 'Zwei Mannschaften, ein gemeinsamer Antrieb: zusammen auf dem Platz stehen und für unsere Farben spielen.',
+  Frauen: 'Gemeinsam mit Öhningen-Gaienhofen und Bankholzen-Moos bringen wir den Frauenfußball auf den Platz.',
+  'Alte Herren': 'Am Ball bleiben, Freundschaften pflegen und gemeinsam kicken. Unser Team für Fußballer ab 35.',
+};
+---
+
+<section class="football-overview" aria-labelledby="football-overview-title">
+  <div class="section-heading">
+    <div><span>Fußball beim BSV</span><h2 id="football-overview-title">Unser Platz.<br /><em>Unsere Leidenschaft.</em></h2></div>
+    <p>Ob auf dem Rasen oder am Spielfeldrand: Hier findest du alles für deinen Fußballtag beim BSV Nordstern.</p>
+  </div>
+
+  <div class="overview-grid">
+    <article class="matchday-card">
+      <small>Rund um den Spieltag</small>
+      <h3>Zusammen hin.<br />Gemeinsam mitfiebern.</h3>
+      <p>Wann spielt der BSV? Im Spielplan findest du die Begegnungen unserer Mannschaften. Das Stadionheft begleitet dich mit Einblicken ins Vereinsleben.</p>
+      <a class="primary-link" href={withBase('/fussball/spielplan')}>Zum Spielplan <span aria-hidden="true">↗</span></a>
+      <nav class="matchday-links" aria-label="Rund um den Fußballspieltag">
+        <a href={withBase('/media/stadionheft')}>Stadionheft <span aria-hidden="true">↗</span></a>
+        <a href={withBase('/fussball/spieltagsbelegung')}>Spieltagsbelegung <span aria-hidden="true">↗</span></a>
+        <a href={withBase('/gastronomie')}>Vereinsgaststätte <span aria-hidden="true">↗</span></a>
+      </nav>
+    </article>
+
+    <article class="grounds-card">
+      <img src={withBase('/images/fussball/sportplaetze/bd41b6f7d7-hauptplatz-hp.png')} alt="Der Hauptplatz des BSV Nordstern Radolfzell" width="1200" height="900" loading="lazy" />
+      <div class="grounds-copy">
+        <small>Unsere Heimat</small>
+        <h3>Zuhause<br />beim Nordstern.</h3>
+        <p>Sportplätze, Anfahrt und Trainingszeiten: So findest du den Weg zu uns und den richtigen Platz.</p>
+        <nav aria-label="Sportstätten und Platzbelegung">
+          {grounds.links.filter((link) => link.href !== '/fussball/spieltagsbelegung').map((link) => (
+            <a href={withBase(link.href)}>{link.label} <span aria-hidden="true">↗</span></a>
+          ))}
+        </nav>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="football-teams" aria-labelledby="football-teams-title">
+  <div class="section-heading">
+    <div><span>Unsere Mannschaften</span><h2 id="football-teams-title">Viele Gesichter.<br /><em>Ein Vereinsgefühl.</em></h2></div>
+    <p>Lerne unsere Teams kennen. Auf den Mannschaftsseiten findest du Training, Ansprechpersonen und Informationen zum Mitspielen.</p>
+  </div>
+  <div class="team-groups">
+    {teamGroups.map((group, index) => {
+      const profile = teamProfiles[group.links[0].href.slice(1)];
+      return (
+        <article class="team-group">
+          {profile.image ? (
+            <img src={withBase(profile.image)} alt={`Unsere ${group.title === 'Frauen' ? 'Frauenmannschaft' : 'erste Herrenmannschaft'}`} width="900" height="600" loading="lazy" />
+          ) : <div class="team-emblem" aria-hidden="true"><span>AH</span><small>Fußball & Freundschaft</small></div>}
+          <div class="team-group-copy">
+            <header><span>0{index + 1}</span><h3>{group.title}</h3></header>
+            <p>{descriptions[group.title]}</p>
+            <ul>
+              {group.links.map((link) => (
+                <li><a href={withBase(link.href)}><span class="team-mark" aria-hidden="true">{teamProfiles[link.href.slice(1)].letter}</span><strong>{link.label}</strong><b aria-hidden="true">↗</b></a></li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<aside class="youth-link" aria-labelledby="football-youth-title">
+  <div><small>Unser Nachwuchs</small><h2 id="football-youth-title">Kleine Schritte.<br /><em>Große Fußballfreude.</em></h2><p>Vom ersten Ballkontakt bis zum Jugendteam: Entdecke unsere Jungen Sterne, die Juniorinnen und das Fördertraining.</p></div>
+  <a href={withBase('/jugend')}>Zu den Jungen Sternen <span aria-hidden="true">↗</span></a>
+</aside>
+
+<style>
+  .section-heading { display:grid; grid-template-columns:1fr .75fr; gap:70px; align-items:end; margin-bottom:45px; }
+  .section-heading span,article small,.youth-link small { font-size:.67rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .section-heading span { color:#164f32; }
+  .section-heading h2 { margin:14px 0 0; color:#10251a; font-size:clamp(2.8rem,5vw,4.7rem); line-height:.92; letter-spacing:-.055em; }
+  h2 em { color:#164f32; font-family:Georgia,serif; font-weight:400; }
+  .section-heading > p { max-width:430px; margin:0; color:#65746a; line-height:1.75; }
+  .overview-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; }
+  .matchday-card { padding:48px; background:#f4d638; color:#092f20; }
+  .matchday-card h3,.grounds-card h3 { margin:20px 0 24px; font-size:clamp(2.5rem,4vw,3.65rem); line-height:.97; letter-spacing:-.055em; }
+  .matchday-card > p { color:#405144; line-height:1.7; }
+  .primary-link { width:fit-content; margin-top:28px; padding:16px 18px; display:flex; align-items:center; gap:35px; background:#092f20; color:white; font-size:.8rem; font-weight:900; text-decoration:none; }
+  .matchday-links { margin-top:36px; border-top:1px solid rgb(9 47 32 / 20%); }
+  .matchday-links a,.grounds-copy nav a { min-height:48px; padding:12px 0; display:flex; align-items:center; justify-content:space-between; gap:16px; border-bottom:1px solid rgb(9 47 32 / 20%); color:inherit; font-size:.8rem; font-weight:850; text-decoration:none; }
+  .grounds-card { position:relative; min-height:560px; display:flex; align-items:end; overflow:hidden; background:#092f20; color:white; }
+  .grounds-card > img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .grounds-card::after { content:''; position:absolute; inset:0; background:linear-gradient(rgb(5 27 18 / 12%),rgb(5 27 18 / 95%) 65%); }
+  .grounds-copy { position:relative; z-index:1; padding:40px; }
+  .grounds-copy small,.grounds-copy nav { color:#f4d638; }
+  .grounds-copy p { color:#d0e0d5; line-height:1.65; }
+  .grounds-copy nav a { border-color:rgb(255 255 255 / 25%); }
+  .football-teams { margin-top:105px; }
+  .team-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+  .team-group { min-width:0; display:flex; flex-direction:column; overflow:hidden; background:#eef2ef; border-top:5px solid #164f32; }
+  .team-group:nth-child(2) { border-color:#f4d638; }
+  .team-group > img,.team-emblem { display:block; width:100%; height:auto; aspect-ratio:3 / 2; object-fit:cover; flex-shrink:0; }
+  .team-emblem { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:#092f20; color:#f4d638; }
+  .team-emblem > span { font-size:5rem; font-weight:900; letter-spacing:-.07em; }
+  .team-emblem small { font-size:.58rem; }
+  .team-group-copy { padding:26px; display:flex; flex:1; flex-direction:column; }
+  .team-group header { display:flex; align-items:center; gap:15px; }
+  .team-group header > span { color:#164f32; font-size:.65rem; font-weight:950; }
+  .team-group h3 { margin:0; color:#10251a; font-size:1.65rem; letter-spacing:-.035em; }
+  .team-group p { margin:18px 0 25px; color:#65746a; font-size:.9rem; line-height:1.7; }
+  .team-group ul { margin:auto 0 0; padding:0; list-style:none; }
+  .team-group li { border-top:1px solid #d4ddd6; }
+  .team-group a { min-height:72px; padding:12px 0; display:grid; grid-template-columns:32px 1fr auto; align-items:center; gap:10px; color:#183024; text-decoration:none; }
+  .team-mark { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:#164f32; color:white; font-size:.61rem; font-weight:950; }
+  .team-group a strong { font-size:.75rem; line-height:1.5; }
+  .team-group a > b { color:#164f32; }
+  .youth-link { margin-top:80px; padding:45px 48px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:40px; background:#092f20; color:white; }
+  .youth-link small,.youth-link h2 em { color:#f4d638; }
+  .youth-link h2 { margin:18px 0; font-size:clamp(2.2rem,4vw,3.5rem); line-height:1; letter-spacing:-.045em; }
+  .youth-link p { max-width:550px; margin:0; color:#d0e0d5; line-height:1.7; }
+  .youth-link > a { padding:18px 20px; display:flex; justify-content:space-between; gap:25px; background:#f4d638; color:#092f20; text-decoration:none; font-size:.8rem; font-weight:900; }
+  a:hover { text-decoration:underline; text-underline-offset:4px; }
+  a:focus-visible { outline:3px solid currentColor; outline-offset:4px; }
+  @media(max-width:900px){.section-heading{grid-template-columns:1fr;gap:25px}.overview-grid{grid-template-columns:1fr}.grounds-card{min-height:510px}.team-groups{grid-template-columns:repeat(2,minmax(0,1fr))}.team-group:last-child{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}.team-emblem{height:100%;min-height:260px}.youth-link{grid-template-columns:1fr}.youth-link>a{width:fit-content}}
+  @media(max-width:600px){.matchday-card,.grounds-copy{padding:32px 25px}.grounds-card{min-height:470px}.football-teams{margin-top:75px}.team-groups{grid-template-columns:1fr}.team-group:last-child{display:flex}.team-emblem{min-height:0;height:auto;aspect-ratio:3/1}.team-emblem>span{font-size:3rem}.team-emblem small{display:none}.youth-link{margin-top:60px;padding:35px 25px}.youth-link>a{width:100%;box-sizing:border-box}}
+</style>

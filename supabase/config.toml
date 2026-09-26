@@ -13,6 +13,10 @@ verify_jwt = false
 [functions.home-matches]
 verify_jwt = false
 
+# Cron worker authenticates with its own high-entropy credential in Supabase Vault.
+[functions.football-alerts]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.

@@ -1,18 +1,18 @@
 ---
 import { teamProfiles } from '../data/teamPages';
 import { loadNextMatches } from '../utils/nextMatch';
-import { matchPresentation, selectHomepageMatch } from '../utils/matchPresentation';
+import { matchPresentation, selectHomepageMatches } from '../utils/matchPresentation';
 import { withBase } from '../utils/paths';
 import { homeMatchGroups } from '../../supabase/functions/_shared/home-match-groups.mjs';
 
-const loadTeam = async ({ path, label, widgetId, teamId }: { path: string; label: string; widgetId: string; teamId: string }) => {
+const loadTeam = async ({ path, label, widgetId, teamId, playingMinutes }: { path: string; label: string; widgetId: string; teamId: string; playingMinutes: number }) => {
   const team = teamProfiles[path];
   const matches = (await loadNextMatches(widgetId)).map((match) => ({
     ...match,
     home: teamId && match.homeTeamId === teamId ? 'BSV' : match.home,
     away: teamId && match.awayTeamId === teamId ? 'BSV' : match.away,
   }));
-  return { label, url: team.fussballDeUrl ?? `https://www.fussball.de/mannschaft/-/team-id/${teamId}`, matches, widgetId, teamId };
+  return { label, url: team.fussballDeUrl ?? `https://www.fussball.de/mannschaft/-/team-id/${teamId}`, matches, widgetId, teamId, playingMinutes };
 };
 const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...group, teams: await Promise.all(group.teams.map(loadTeam)) })));
 ---
@@ -35,11 +35,14 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
   {groups.map((group) => (
     <div class="match-panel" id={`matches-panel-${group.id}`} role="tabpanel" aria-labelledby={`matches-tab-${group.id}`} tabindex="0">
       {group.teams.map((team) => {
-        const match = selectHomepageMatch(team.matches);
-        const state = matchPresentation(match);
+        const matches = selectHomepageMatches(team.matches);
         return (
-        <div class="next-match" aria-label={`Spiel · ${team.label}`} data-widget-id={team.widgetId} data-team-id={team.teamId} data-label={team.label} data-matches={JSON.stringify(team.matches)}>
+        <div class="next-match" aria-label={`Spiel · ${team.label}`} data-widget-id={team.widgetId} data-team-id={team.teamId} data-label={team.label} data-playing-minutes={team.playingMinutes} data-matches={JSON.stringify(team.matches)}>
           <h3>{team.label}</h3>
+          <div class="match-fixtures">
+          {(matches.length ? matches : [undefined]).map((match) => {
+            const state = matchPresentation(match, new Date(), team.playingMinutes);
+            return (
             <div class="match-details" data-kickoff={match?.dateTime} hidden={!match}>
               <div class="match-copy">
                 <p class="match-teams"><span data-home>{match?.home}</span> <span class="versus">–</span> <span data-away>{match?.away}</span></p>
@@ -57,7 +60,9 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
               </a>
             </div>
-          <div class="match-fallback" hidden={Boolean(match)}>
+          )})}
+          </div>
+          <div class="match-fallback" hidden={matches.length > 0}>
             <p>Aktueller Spieltermin auf fussball.de</p>
             <a class="match-link" href={team.url} target="_blank" rel="noopener noreferrer" aria-label={`Spielplan ${team.label} auf fussball.de`} title="Spielplan auf fussball.de öffnen">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg>
@@ -132,6 +137,7 @@ const groups = await Promise.all(homeMatchGroups.map(async (group) => ({ ...grou
   .match-link { width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; color:#f4d638; border-radius:4px; text-decoration:none; }
   .match-link:hover { background:rgb(255 255 255 / 10%); } a:focus-visible { outline:2px solid #f4d638; outline-offset:2px; }
   .match-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; flex:0 0 auto; text-align:center; max-width:82px; }
+  .match-details + .match-details { margin-top:12px; padding-top:12px; border-top:1px solid rgb(255 255 255 / 14%); }
   .live-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 8px; border:1px solid #ffc8bc66; border-radius:4px; color:#fff0eb; background:#a32e25; font-size:.65rem; font-weight:850; letter-spacing:.1em; animation:live-glow 1.8s ease-in-out infinite; }
   .live-dot { width:6px; height:6px; border-radius:50%; background:#ffe0b7; box-shadow:0 0 0 3px #ffd6b722; }
   .match-score { font-size:1.25rem; line-height:1.1; font-variant-numeric:tabular-nums; color:#f4d638; white-space:nowrap; }

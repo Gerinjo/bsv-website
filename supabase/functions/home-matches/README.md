@@ -16,4 +16,6 @@ deno check --config supabase/functions/home-matches/deno.json supabase/functions
 curl -fsS https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/home-matches
 ```
 
-Die Aktualität von LIVE und Ergebnissen hängt von den Meldungen auf FUSSBALL.DE ab. `observedAt` enthält den Erzeugungszeitpunkt des Widgets. Die Website verwendet ihn, um überholte LIVE-Hinweise zu entfernen. Das ursprüngliche Spiel bleibt dennoch bis zum Ende seines Kalendertags in deutscher Ortszeit sichtbar.
+Der Feed liefert auch vergangene Wochenendspiele: Freitag bis Sonntag bleibt bis Montag 06:00 Uhr in `Europe/Berlin` erhalten, unabhängig von Sommer- und Winterzeit. An anderen Wochentagen gilt der aktuelle Kalendertag. Dieser Zeitraum wird gemeinsam für Parser und Browserauswahl in `homepageMatchWindow()` festgelegt. Ein gemeldetes Spielende oder eine Absage hat Vorrang vor einem möglicherweise noch gesetzten `live`-Flag.
+
+`observedAt` enthält den Erzeugungszeitpunkt des Widgets. Ein Tickerstatus bis drei Minuten Alter kann die LIVE-Anzeige über die berechnete Spielzeit hinaus verlängern. Ohne frischen Ticker verwendet die Website die Anstoßzeit, die Spielzeit aus `home-match-groups.mjs` (D 60, C 70, B 80, A/Aktive 90 Minuten) und 15 Minuten Pause. Danach erscheint ohne gemeldeten Endstand „Warten auf Ergebnis“. Tore werden ausschließlich aus FUSSBALL.DE übernommen; ein veralteter Zwischenstand gilt niemals automatisch als Endstand. Bei ausstehenden Ergebnissen fragt die sichtbare Seite den Feed weiterhin minütlich ab.

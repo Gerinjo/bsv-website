@@ -1,5 +1,5 @@
 import { berlinNow, type NextMatch } from '../utils/nextMatch';
-import { matchPresentation, selectHomepageMatch } from '../utils/matchPresentation';
+import { matchPresentation, mergeHomepageMatches, selectHomepageMatches } from '../utils/matchPresentation';
 
 const feedUrl = import.meta.env.PUBLIC_HOME_MATCHES_URL || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/home-matches';
 const teams = [...document.querySelectorAll<HTMLElement>('.next-match[data-widget-id]')].map((element) => ({
@@ -10,34 +10,45 @@ const setText = (element: HTMLElement, value: string) => { if (element.textConte
 
 function renderMatches(now = new Date()) {
   for (const { element, matches } of teams) {
-    const match = selectHomepageMatch(matches, now);
-    const details = element.querySelector<HTMLElement>('.match-details')!;
-    details.hidden = !match;
-    element.querySelector<HTMLElement>('.match-fallback')!.hidden = Boolean(match);
-    if (!match) continue;
-    details.dataset.kickoff = match.dateTime;
-    const home = match.homeTeamId === element.dataset.teamId ? 'BSV' : match.home;
-    const away = match.awayTeamId === element.dataset.teamId ? 'BSV' : match.away;
-    setText(element.querySelector('[data-home]')!, home);
-    setText(element.querySelector('[data-away]')!, away);
-    const time = element.querySelector('time')!;
-    time.dateTime = match.dateTime;
-    setText(time, `${match.dateLabel} · ${match.time} Uhr`);
-    element.querySelector<HTMLElement>('.competition')!.hidden = !match.competition;
-    setText(element.querySelector('[data-competition]')!, match.competition || '');
-    const link = element.querySelector<HTMLAnchorElement>('.match-details .match-link')!;
-    link.href = match.url;
-    link.setAttribute('aria-label', `${element.dataset.label}: ${home} gegen ${away} auf fussball.de`);
-    const state = matchPresentation(match, now);
-    element.querySelector<HTMLElement>('.match-state')!.hidden = !state.label;
-    element.querySelector<HTMLElement>('.live-badge')!.hidden = !state.live;
-    const score = element.querySelector<HTMLElement>('.match-score')!;
-    score.hidden = !state.score;
-    setText(score, state.score);
-    score.setAttribute('aria-label', `Ergebnis ${state.score}`);
-    const label = element.querySelector<HTMLElement>('.state-label')!;
-    label.hidden = state.live;
-    setText(label, state.label);
+    const selected = selectHomepageMatches(matches, now);
+    const fixtures = element.querySelector<HTMLElement>('.match-fixtures')!;
+    const rows = [...fixtures.querySelectorAll<HTMLElement>('.match-details')];
+    const rowCount = Math.max(1, selected.length);
+    while (rows.length < rowCount) {
+      const row = rows[0].cloneNode(true) as HTMLElement;
+      fixtures.append(row);
+      rows.push(row);
+    }
+    while (rows.length > rowCount) rows.pop()!.remove();
+    element.querySelector<HTMLElement>('.match-fallback')!.hidden = selected.length > 0;
+    rows[0].hidden = !selected.length;
+    for (const [index, match] of selected.entries()) {
+      const details = rows[index];
+      details.hidden = false;
+      details.dataset.kickoff = match.dateTime;
+      const home = match.homeTeamId === element.dataset.teamId ? 'BSV' : match.home;
+      const away = match.awayTeamId === element.dataset.teamId ? 'BSV' : match.away;
+      setText(details.querySelector('[data-home]')!, home);
+      setText(details.querySelector('[data-away]')!, away);
+      const time = details.querySelector('time')!;
+      time.dateTime = match.dateTime;
+      setText(time, `${match.dateLabel} · ${match.time} Uhr`);
+      details.querySelector<HTMLElement>('.competition')!.hidden = !match.competition;
+      setText(details.querySelector('[data-competition]')!, match.competition || '');
+      const link = details.querySelector<HTMLAnchorElement>('.match-link')!;
+      link.href = match.url;
+      link.setAttribute('aria-label', `${element.dataset.label}: ${home} gegen ${away} auf fussball.de`);
+      const state = matchPresentation(match, now, Number(element.dataset.playingMinutes) || 90);
+      details.querySelector<HTMLElement>('.match-state')!.hidden = !state.label;
+      details.querySelector<HTMLElement>('.live-badge')!.hidden = !state.live;
+      const score = details.querySelector<HTMLElement>('.match-score')!;
+      score.hidden = !state.score;
+      setText(score, state.score);
+      score.setAttribute('aria-label', `Ergebnis ${state.score}`);
+      const label = details.querySelector<HTMLElement>('.state-label')!;
+      label.hidden = state.live;
+      setText(label, state.label);
+    }
   }
 }
 
@@ -55,7 +66,10 @@ async function refreshFeed() {
   renderMatches();
   if (pending || document.hidden || !teams.length) return;
   const today = berlinNow().slice(0, 10);
-  const matchDay = teams.some(({ matches }) => matches.some((match) => match.dateTime.startsWith(today)));
+  const now = new Date();
+  const matchDay = teams.some(({ matches }) => selectHomepageMatches(matches, now).some((match) =>
+    match.dateTime.startsWith(today) || match.dateTime <= berlinNow(now)
+      && !['finished', 'acknowledged', 'cancelled'].includes(match.status ?? '')));
   const interval = matchDay ? 60_000 : 15 * 60_000;
   if (Date.now() - lastChecked < interval) return;
   pending = true;
@@ -67,11 +81,7 @@ async function refreshFeed() {
     for (const team of teams) {
       const update = feed.teams?.[team.element.dataset.widgetId!];
       if (!update?.available || !Array.isArray(update.matches)) continue;
-      // If a source temporarily omits today's game, retain it until midnight.
-      team.matches = [...new Map([
-        ...team.matches,
-        ...update.matches.filter(isMatch),
-      ].map((match) => [match.url, match])).values()].filter((match) => match.dateTime.slice(0, 10) >= today);
+      team.matches = mergeHomepageMatches(team.matches, update.matches.filter(isMatch), new Date());
     }
     renderMatches();
   } catch { /* Preserve the built-in schedule when the live feed is unavailable. */ }
