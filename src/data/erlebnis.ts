@@ -1,5 +1,8 @@
+import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
 import { getImage } from 'astro:assets';
 import bambiniLogo from '../assets/events/weihnachts-bambini-logo.png';
+import { URMEL_EVENT } from '../../supabase/functions/_shared/urmel-event.mjs';
+import { girlsCup } from './girlsCup';
 
 const bambiniLogoWeb = await getImage({ src: bambiniLogo, width: 600, format: 'webp' });
 
@@ -27,9 +30,22 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
   {
     id: 'weihnachts-bambini-spieltag', partner: 'Weihnachtlicher Bambini-Spieltag', title: 'Kleine Kicker. Große Weihnachtsfreude.', menuTitle: 'Weihnachtlicher Bambini-Spieltag', category: 'Bambini · Hallenspieltag',
     summary: 'Weihnachtlicher Hallenfußball in der Unterseesporthalle Radolfzell. Jedes Kind bekommt eine Überraschung – und vielleicht schaut der Nikolaus vorbei.',
-    facts: ['12. Dezember 2026 · Unterseesporthalle Radolfzell', 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', 'Mannschaft anmelden und Wunschzeiten auswählen'],
+    facts: [`${BAMBINI_EVENT.date} · ${BAMBINI_EVENT.venue}`, BAMBINI_EVENT.address, 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', 'Mannschaft anmelden und Wunschzeiten auswählen'],
     actionLabel: 'Mannschaft anmelden', actionHref: '/erlebnis/weihnachts-bambini-spieltag', external: false, accent: '#a7323c', symbol: '✦',
     logoSrc: bambiniLogoWeb.src, logoAlt: 'Eventlogo Weihnachtlicher Bambini-Spieltag · BSV Nordstern', logoBackground: '#0e3929', date: '12. Dezember 2026',
+  },
+  {
+    id: girlsCup.id, partner: girlsCup.title, title: 'Zwei Turniertage. Vier Altersklassen. Ein Wochenende Hallenfußball.', menuTitle: girlsCup.title, category: 'Juniorinnen · Futsalturnier',
+    summary: `Hallenfußball in der ${girlsCup.venue}: E- und D-Juniorinnen am 20. Februar, C- und B-Juniorinnen am 21. Februar 2027.`,
+    facts: [...girlsCup.days.map((day) => `${day.date}: ${day.divisions.join(' & ')}`), `${girlsCup.venue} · ${girlsCup.address}`, girlsCup.fee],
+    actionLabel: 'Teams anmelden', actionHref: `${girlsCup.href}#anmeldung`, external: false, accent: '#e4bf6a', symbol: '⚽',
+    logoSrc: girlsCup.artwork, logoAlt: girlsCup.title, logoBackground: '#0e3929', date: girlsCup.date,
+  },
+  {
+    id: 'urmel-bambini-spieltag', partner: URMEL_EVENT.title, title: 'Kids spielen für Kids – Bambini-Fußball mit Herz.', menuTitle: URMEL_EVENT.title, category: 'Bambini · Benefizturnier',
+    summary: URMEL_EVENT.charityNote, facts: [`${URMEL_EVENT.date} · ${URMEL_EVENT.venue}`, `Drei Startzeiten: ${URMEL_EVENT.timeSlots.join(', ')} Uhr`, `${URMEL_EVENT.fee} pro Mannschaft · Wunschzeiten auswählen`],
+    actionLabel: 'Mannschaft anmelden', actionHref: '/erlebnis/urmel-bambini-spieltag', external: false, accent: '#9fc900', symbol: '♥',
+    logoSrc: '/images/events/urmel/urmel-kinder-krebshilfe.webp', logoAlt: 'URMEL Kinder-Krebshilfe e.V.', logoBackground: '#ffffff', date: URMEL_EVENT.date,
   },
   {
     id: 'skechers-fussballschule',
@@ -58,12 +74,7 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     summary: 'Bewegung, Fairplay und jede Menge Spaß: Beim Tag des Mädchenfußballs können junge Spielerinnen Technik, Spielformen und gemeinsames Fußballerlebnis ohne Leistungsdruck entdecken.', facts: ['Technikstationen mit Dribbling, Passen und Schießen','Spiele in gemischten Teams und DFB-Abzeichen','Rückblick auf den Aktionstag vom 11. Mai 2025'],
     actionLabel: 'Rückblick 2025 ansehen', actionHref: '/erlebnis/tag-des-maedchenfussballs', external: false, accent: '#f4d638', symbol: '♀︎⚽', logoSrc: '/images/events/tdm/2025/01-gruppenfoto.jpg', logoAlt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025', logoBackground: '#164f32', date: '11. Mai 2025',
   },
-  {
-    id: 'urmel-bambini-spieltag', partner: 'URMEL Bambini Spieltag', title: 'Kids spielen für Kids – Bambini-Fußball mit Herz.', menuTitle: 'URMEL Bambini Spieltag', category: 'Bambini · Benefizspieltag',
-    summary: 'Ein fröhlicher Bambini-Spieltag, bei dem Fußball, Gemeinschaft und Hilfe zusammenkommen. Turniergebühren und freiwillige Spenden unterstützen die Urmel Kinder-Krebshilfe e.V.', facts: ['Kids spielen für Kids','Bambini-Teams aus der Region','Rückblick auf den Benefizspieltag vom 1. Mai 2026'],
-    actionLabel: 'Rückblick 2026 ansehen', actionHref: '/erlebnis/urmel-bambini-spieltag', external: false, accent: '#9fc900', symbol: '♥',
-    logoSrc: '/images/events/urmel/urmel-kinder-krebshilfe.webp', logoAlt: 'URMEL Kinder-Krebshilfe e.V.', logoBackground: '#ffffff', date: '1. Mai 2026',
-  },
+
   {
     id: 'mcshape-radolfzell', partner: 'MC Shape Radolfzell', title: 'Fitness und Athletik als starke Ergänzung.', menuTitle: 'MC Shape Radolfzell', category: 'Fitness & Athletik',
     summary: 'Die Kooperation verbindet Vereinsfußball mit den Möglichkeiten eines modernen Fitnessstudios in Radolfzell. Konkrete Aktionen und Vorteile werden jeweils über den Verein bekanntgegeben.', facts: ['Lokaler Fitnesspartner','Training und Athletik im Blick','Gemeinsame Aktionen nach Ankündigung'],

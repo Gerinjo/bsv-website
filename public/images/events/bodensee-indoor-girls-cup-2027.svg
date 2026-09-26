@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="title desc">
+  <title id="title">Bodensee Indoor Girls Cup 2027</title>
+  <desc id="desc">Turniermotiv in Dunkelgrün, Gold und Seeblau mit Spielfeldlinien, einem Fußball und stilisierten Wellen.</desc>
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#173f34"/><stop offset="1" stop-color="#082b21"/></linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#337d88"/><stop offset="1" stop-color="#20574f"/></linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#field)"/>
+  <g fill="none" stroke="#83a58e" stroke-opacity=".18" stroke-width="3">
+    <rect x="45" y="45" width="1110" height="710" rx="4"/>
+    <path d="M600 45v710M45 273h106v254H45m1110-254h-106v254h106"/>
+    <circle cx="600" cy="400" r="138"/>
+  </g>
+  <path d="M0 599c170-58 273 74 462 19s300-85 456-30 213 12 282-18v230H0z" fill="url(#lake)"/>
+  <path d="M0 652c170-58 273 74 462 19s300-85 456-30 213 12 282-18" fill="none" stroke="#e4bf6a" stroke-width="3" opacity=".85"/>
+  <path d="M0 700c170-58 273 74 462 19s300-85 456-30 213 12 282-18" fill="none" stroke="#9fc0ac" stroke-width="2" opacity=".3"/>
+  <rect x="91" y="93" width="7" height="31" fill="#e4bf6a"/>
+  <text x="118" y="119" fill="#d3e1d7" font-family="Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="5">BSV NORDSTERN · RADOLFZELL</text>
+  <rect x="945" y="87" width="159" height="54" rx="27" fill="#e4bf6a"/>
+  <text x="1025" y="124" text-anchor="middle" fill="#0e3929" font-family="Arial, sans-serif" font-size="32" font-weight="800" letter-spacing="3">2027</text>
+  <text x="90" y="260" fill="#fff9ec" font-family="Arial, sans-serif" font-size="83" font-weight="800" letter-spacing="3">BODENSEE</text>
+  <text x="88" y="404" fill="#fff9ec" font-family="Arial, sans-serif" font-size="147" font-weight="900" letter-spacing="-5">INDOOR</text>
+  <text x="91" y="526" fill="#e4bf6a" font-family="Georgia, serif" font-size="116" font-style="italic">Girls Cup.</text>
+  <g transform="translate(940 483) rotate(-14)">
+    <circle r="106" fill="#fff9ec"/>
+    <g fill="#123e30" stroke="#123e30" stroke-width="3" stroke-linejoin="round">
+      <path d="M0-37 35-11 22 31h-44l-13-42z"/>
+      <path d="m-29-102 29 18 29-18A107 107 0 0 0-29-102M88-59l-5 33 23 18A107 107 0 0 0 88-59M78 72l-33 3-9 25A107 107 0 0 0 78 72M-36 100l-9-25-33-3A107 107 0 0 0-36 100M-106-8l23-18-5-33A107 107 0 0 0-106-8"/>
+    </g>
+    <g fill="none" stroke="#123e30" stroke-width="4"><path d="M0-84v47m35 26 48-15M22 31l23 44M-22 31l-23 44m10-86-48-15"/></g>
+  </g>
+  <text x="94" y="724" fill="#fff9ec" font-family="Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="4">E · D · C · B JUNIORINNEN</text>
+</svg>

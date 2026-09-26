@@ -11,3 +11,9 @@ export const bambiniImages = [
   { src: ueberraschung, title: 'Eine Überraschung für jedes Kind', alt: 'Ein Trainer überreicht einem Kind ein kleines, liebevoll verpacktes Geschenk' },
   { src: vorfreude, title: 'Alles bereit für den Spieltag', alt: 'Kleine Hallenschuhe, ein grünes Trikot, ein Fußball und eine Nikolausmütze warten neben dem Spielfeld' },
 ];
+
+export const bambiniGallery = {
+  images: bambiniImages.map((image) => ({ ...image, alt: `KI-generiertes Stimmungsmotiv: ${image.alt}` })),
+  label: 'Weihnachtliche Stimmungsmotive zum Bambini-Spieltag',
+  note: 'KI-generierte Stimmungsmotive zur Vorfreude auf den Spieltag.',
+};

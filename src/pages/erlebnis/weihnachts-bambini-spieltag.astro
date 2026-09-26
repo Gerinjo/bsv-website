@@ -33,7 +33,7 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
 
     <section class="event-facts shell" aria-label="Der Spieltag auf einen Blick">
       <div><span>Wann?</span><strong><time datetime={BAMBINI_EVENT.isoDate}>{BAMBINI_EVENT.date}</time></strong></div>
-      <div><span>Wo?</span><strong>{BAMBINI_EVENT.venue}</strong></div>
+      <div><span>Wo?</span><strong>{BAMBINI_EVENT.venue}</strong><p class="venue-address">{BAMBINI_EVENT.address}</p></div>
       <div><span>Startzeiten</span><strong>9:00 · 12:00 · 15:00 Uhr</strong></div>
       <div><span>Startgebühr</span><strong>{BAMBINI_EVENT.fee}</strong></div>
     </section>
@@ -69,6 +69,7 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
 </Layout>
 
 <style>
+  .venue-address { margin: 7px 0 0; font-size: .78rem; line-height: 1.6; color: #536353; }
   .christmas-event { --forest: #0e3929; --gold: #e4bf6a; --cream: #faf6ec; --berry: #a7323c; background: var(--cream); color: #173d2b; }
   .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
   h1, h2, h3, p { margin-top: 0; }h1, h2 { letter-spacing: -.045em; }h1 em, h2 em, .card-bottom em { font-family: Georgia, serif; font-weight: 400; }

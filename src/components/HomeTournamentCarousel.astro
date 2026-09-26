@@ -1,0 +1,129 @@
+---
+import HomeTournamentCard from './HomeTournamentCard.astro';
+import { homeTournaments } from '../data/homeTournaments';
+import { withBase } from '../utils/paths';
+
+const monthLabel = (date: string) => new Intl.DateTimeFormat('de-DE', {
+  month: 'long', year: 'numeric', timeZone: 'UTC',
+}).format(new Date(`${date}T00:00:00Z`));
+---
+
+<section class="home-tournaments" id="turniere" aria-labelledby="home-tournaments-title" aria-roledescription="Karussell" data-tournament-carousel>
+  <div class="tournament-shell">
+    <div class="tournament-head">
+      <div><p class="kicker">Gemeinsam auf dem Platz</p><h2 id="home-tournaments-title">Turniere & Spieltage.</h2></div>
+      <div class="tournament-controls" data-tournament-controls hidden>
+        <span class="counter" data-tournament-counter aria-hidden="true">1 / {homeTournaments.length}</span>
+        <button type="button" data-tournament-prev aria-label="Vorheriges Turnier" aria-controls="home-tournament-track"><span aria-hidden="true">←</span></button>
+        <button type="button" data-tournament-next aria-label="Nächstes Turnier" aria-controls="home-tournament-track"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <div class="tournament-track" id="home-tournament-track" data-tournament-track tabindex="0" role="group" aria-label="Turniere durchblättern" aria-describedby="tournament-hint">
+      {homeTournaments.map((tournament, index) => (
+        <div class="tournament-slide" id={tournament.id} data-tournament-slide data-title={tournament.name} data-month={tournament.isoDate.slice(0, 7)} data-period={monthLabel(tournament.isoDate)} role="group" aria-roledescription="Folie" aria-label={`${index + 1} von ${homeTournaments.length}: ${tournament.name}`}>
+          <HomeTournamentCard tournament={tournament} />
+        </div>
+      ))}
+    </div>
+    <div class="tournament-footer">
+      <time class="tournament-period" data-tournament-period datetime={homeTournaments[0].isoDate.slice(0, 7)}>{monthLabel(homeTournaments[0].isoDate)}</time>
+      <div class="tournament-pagination" role="group" aria-label="Turnier auswählen" data-tournament-controls hidden>
+        {homeTournaments.map((tournament, index) => <button type="button" data-tournament-select={index} aria-label={tournament.name} aria-pressed={index === 0 ? 'true' : 'false'} aria-controls={tournament.id}><span aria-hidden="true"></span></button>)}
+      </div>
+      <p id="tournament-hint">Seitlich wischen oder blättern</p>
+      <a href={withBase('/erlebnis')}>Alle Events <span aria-hidden="true">↗</span></a>
+    </div>
+    <span class="sr-only" data-tournament-status role="status" aria-live="polite" aria-atomic="true"></span>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tournament-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector<HTMLElement>('[data-tournament-track]')!;
+    const slides = [...carousel.querySelectorAll<HTMLElement>('[data-tournament-slide]')];
+    const selectors = [...carousel.querySelectorAll<HTMLButtonElement>('[data-tournament-select]')];
+    const counter = carousel.querySelector<HTMLElement>('[data-tournament-counter]')!;
+    const status = carousel.querySelector<HTMLElement>('[data-tournament-status]')!;
+    const period = carousel.querySelector<HTMLTimeElement>('[data-tournament-period]')!;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let active = 0;
+    let pendingFrame = 0;
+    const offset = (index: number) => slides[index].offsetLeft - slides[0].offsetLeft;
+    const activate = (index: number, announce = true) => {
+      const changed = index !== active;
+      active = index;
+      slides.forEach((slide, position) => {
+        // Keep keyboard focus in the visible slide after swiping with a focused link.
+        if (position !== active && slide.contains(document.activeElement)) track.focus({ preventScroll: true });
+        slide.inert = position !== active;
+        slide.setAttribute('aria-hidden', String(position !== active));
+      });
+      selectors.forEach((button, position) => button.setAttribute('aria-pressed', String(position === active)));
+      counter.textContent = `${active + 1} / ${slides.length}`;
+      period.textContent = slides[active].dataset.period!;
+      period.dateTime = slides[active].dataset.month!;
+      if (changed && announce) status.textContent = `Turnier ${active + 1} von ${slides.length}: ${slides[active].dataset.title}`;
+    };
+    const show = (index: number, smooth = true) => {
+      const next = (index + slides.length) % slides.length;
+      track.scrollTo({ left: offset(next), behavior: smooth && !reducedMotion.matches ? 'smooth' : 'instant' });
+    };
+    const syncScroll = () => {
+      pendingFrame = 0;
+      const nearest = slides.reduce((best, _, index) => Math.abs(offset(index) - track.scrollLeft) < Math.abs(offset(best) - track.scrollLeft) ? index : best, 0);
+      activate(nearest);
+    };
+    track.addEventListener('scroll', () => { if (!pendingFrame) pendingFrame = requestAnimationFrame(syncScroll); }, { passive: true });
+    carousel.querySelector('[data-tournament-prev]')!.addEventListener('click', () => show(active - 1));
+    carousel.querySelector('[data-tournament-next]')!.addEventListener('click', () => show(active + 1));
+    selectors.forEach((button, index) => button.addEventListener('click', () => show(index)));
+    track.addEventListener('keydown', (event) => {
+      // The photo gallery keeps its own arrow-key controls.
+      if (event.target !== track || event.defaultPrevented) return;
+      const next = event.key === 'ArrowRight' ? active + 1 : event.key === 'ArrowLeft' ? active - 1
+        : event.key === 'Home' ? 0 : event.key === 'End' ? slides.length - 1 : null;
+      if (next === null) return;
+      event.preventDefault();
+      show(next);
+    });
+    const showHash = () => {
+      const index = slides.findIndex((slide) => `#${slide.id}` === window.location.hash);
+      if (index !== -1) { show(index, false); activate(index, false); }
+    };
+    carousel.querySelectorAll<HTMLElement>('[data-tournament-controls]').forEach((controls) => { controls.hidden = slides.length < 2; });
+    carousel.dataset.ready = 'true';
+    activate(0, false);
+    showHash();
+    window.addEventListener('hashchange', showHash);
+    // Preserve the selected event when the viewport width changes.
+    let previousWidth = track.clientWidth;
+    const resize = new ResizeObserver(() => {
+      if (track.clientWidth !== previousWidth) {
+        previousWidth = track.clientWidth;
+        show(active, false);
+      }
+    });
+    resize.observe(track);
+  });
+</script>
+
+<style>
+  .home-tournaments { padding: 46px 0 28px; background: #f4f1e8; color: #123a28; scroll-margin-top: 130px; }
+  .tournament-shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+  .tournament-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }.kicker { margin: 0 0 8px; color: #56715b; font-size: .64rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }h2 { margin: 0; font-size: clamp(1.9rem, 3.2vw, 2.7rem); line-height: 1.1; letter-spacing: -.045em; }
+  .tournament-controls { display: flex; align-items: center; gap: 9px; }.counter { margin-right: 12px; font-size: .8rem; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  button { font: inherit; cursor: pointer; }.tournament-controls button { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid #b3c2b3; border-radius: 50%; background: #fffefa; color: #123a28; font-size: 1.4rem; }.tournament-controls button:hover { background: #123a28; color: #fff9ec; border-color: #123a28; }
+  /* All slides and their cards stretch to the tallest event at the current width. */
+  .tournament-track { position: relative; display: flex; align-items: stretch; gap: 20px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #56715b #dfdfd1; }
+  [data-ready=true] .tournament-track { scrollbar-width: none; }[data-ready=true] .tournament-track::-webkit-scrollbar { display: none; }
+  .tournament-slide { position: relative; display: grid; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; scroll-margin-top: 130px; }
+  .tournament-footer { display: flex; align-items: center; gap: 17px; padding-top: 13px; }.tournament-pagination { display: flex; gap: 0; }.tournament-pagination button { display: grid; place-items: center; width: 32px; height: 44px; padding: 0; border: 0; background: none; }.tournament-pagination span { width: 8px; height: 8px; border-radius: 10px; background: #a1b39f; transition: width .18s; }.tournament-pagination button[aria-pressed=true] span { width: 24px; background: #164f32; }
+  .tournament-period { flex-shrink: 0; color: #164f32; font-size: .9rem; font-weight: 850; white-space: nowrap; }
+  .tournament-footer p { margin: 0; color: #526750; font-size: .73rem; }.tournament-footer a { margin-left: auto; color: #164f32; font-size: .78rem; font-weight: 750; text-underline-offset: 4px; white-space: nowrap; }.tournament-footer a span { margin-left: 8px; }
+  [hidden] { display: none !important; }button:focus-visible, a:focus-visible, .tournament-track:focus-visible { outline: 3px solid #a22e36; outline-offset: 4px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media(max-width: 600px) { .home-tournaments { padding-block: 30px 18px; }.tournament-head { flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 17px; }.tournament-controls { margin-left: auto; }.tournament-footer { flex-wrap: wrap; gap: 4px 12px; }.tournament-period { flex: 1 1 100%; }.tournament-footer p { order: 3; flex: 0 0 100%; font-size: .68rem; }.counter { margin-right: 7px; } }
+  @media(max-width: 480px) { .tournament-shell { width: calc(100% - 30px); }.kicker { font-size: .57rem; }h2 { font-size: 1.8rem; } }
+  @media(min-width: 601px) and (max-width: 800px) { #tournament-hint { display: none; } }
+  @media(prefers-reduced-motion: reduce) { .tournament-pagination span { transition: none; } }
+</style>

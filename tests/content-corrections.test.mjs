@@ -39,9 +39,10 @@ test('the favicon uses the filled PNG crest', () => {
   assert.doesNotMatch(layoutSource, /rel="icon"[^>]*bsv-nordstern\.gif/);
 });
 
-test('the URMEL page announces 2027 without the obsolete 2026 link', () => {
-  assert.match(urmelSource, /Wir freuen uns auf[\s\S]*Mai 2027/);
-  assert.match(urmelSource, /Den genauen Termin und alle weiteren Informationen geben wir rechtzeitig hier bekannt\./);
+test('the URMEL page offers registration while preserving the 2026 gallery', () => {
+  assert.match(urmelSource, /<BambiniRegistrationForm event=\{URMEL_EVENT\}/);
+  assert.match(urmelSource, /id="rueckblick"/);
+  assert.match(urmelSource, /Impressionen <em>2026\./);
   assert.doesNotMatch(urmelSource, /Ankündigung 2026 lesen|bsvnordstern\.de\/j4\/index\.php/);
 });
 

@@ -7,5 +7,6 @@ export const BAMBINI_EVENT = Object.freeze({
   isoDate: '2026-12-12',
   timeSlots: ['09:00', '12:00', '15:00'],
   venue: 'Unterseesporthalle Radolfzell',
+  address: 'Markelfinger Str. 12, 78315 Radolfzell am Bodensee',
   fee: '35 €',
 });

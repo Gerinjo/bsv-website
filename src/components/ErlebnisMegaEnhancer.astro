@@ -8,6 +8,8 @@ const porsche = byId('porsche-maedchencamp');
 const grundschulturnier = byId('buergerstiftung-grundschulturnier');
 const mcshape = byId('mcshape-radolfzell');
 const weihnachtsSpieltag = byId('weihnachts-bambini-spieltag');
+const urmelCup = byId('urmel-bambini-spieltag');
+const girlsCup = byId('bodensee-indoor-girls-cup');
 
 const logoPreview = (item: typeof skechers, nextEvent = '', nextTone = 'normal') => ({
   ...item,
@@ -49,7 +51,7 @@ const menuGroups = [
   },
   {
     title: 'Turniere & Aktionstage',
-    items: [logoPreview(weihnachtsSpieltag, '12. Dezember 2026 · Anmeldung offen', 'urgent'), logoPreview(grundschulturnier, 'Juli 2027')],
+    items: [logoPreview(weihnachtsSpieltag, '12. Dezember 2026 · Anmeldung offen', 'urgent'), logoPreview(girlsCup), logoPreview(urmelCup), logoPreview(grundschulturnier, 'Juli 2027')],
   },
   {
     title: 'Benefits',

@@ -1,7 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
-import { BAMBINI_ROUTING, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from './bambini-registration.mjs';
+import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
+import { GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration } from './girls-cup-registration.mjs';
+import { URMEL_EVENT } from '../_shared/urmel-event.mjs';
+import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from './bambini-registration.mjs';
+
+const registrationEvents = [BAMBINI_EVENT, URMEL_EVENT];
+const getRegistrationEvent = (topic: string) => registrationEvents.find((event) => event.topic === topic);
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -37,7 +43,10 @@ const escapeHtml = (value: unknown) => String(value ?? '')
   .replaceAll("'", '&#039;');
 
 const getRouting = (topic: string) => {
-  if (topic === BAMBINI_EVENT.topic) return BAMBINI_ROUTING;
+  if (topic === GIRLS_CUP_EVENT.topic) return GIRLS_CUP_ROUTING;
+  const event = getRegistrationEvent(topic);
+  if (event) return getBambiniRouting(event);
+  if (topic.startsWith('event-')) return null;
   if (!topic.startsWith('team--')) {
     return { routingKey: topic, requestType: 'kontakt', inquiryLabel: 'Kontaktanfrage' } as const;
   }
@@ -129,9 +138,14 @@ Deno.serve(async (request) => {
   const phone = text(body.phone, 40);
   const clubName = text(body.clubName, 160);
   const opponentTeam = text(body.opponentTeam, 100);
-  const bambini = topic === BAMBINI_EVENT.topic ? prepareBambiniRegistration(body) : null;
+  const registrationEvent = getRegistrationEvent(topic);
+  const bambini = registrationEvent ? prepareBambiniRegistration(body, registrationEvent) : null;
   if (bambini?.error) return json({ ok: false, message: bambini.error }, 422, origin);
-  const message = bambini?.message ?? text(body.message, 5000);
+  const girlsRegistration = topic === GIRLS_CUP_EVENT.topic ? prepareGirlsCupRegistration(body) : null;
+  if (girlsRegistration?.error) return json({ ok: false, message: girlsRegistration.error }, 422, origin);
+  const teamRegistration = bambini ?? girlsRegistration;
+  const registrationTitle = registrationEvent?.title ?? (girlsRegistration ? GIRLS_CUP_EVENT.title : null);
+  const message = teamRegistration?.message ?? text(body.message, 5000);
   const captchaToken = text(body.captchaToken, 80);
   const captchaAnswer = typeof body.captchaAnswer === 'number'
     ? body.captchaAnswer
@@ -230,10 +244,10 @@ Deno.serve(async (request) => {
     const emailResult = await sendEmail({
       to: recipient.email,
       reply_to: email,
-      subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : 'Kontaktanfrage'}: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
+      subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : girlsRegistration ? 'Girls-Cup-Anmeldung' : 'Kontaktanfrage'}: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
       html: `
         <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
-          <h2>${bambini ? 'Neue Mannschaftsanmeldung zum weihnachtlichen Bambini-Spieltag' : 'Neue Anfrage über bsvnordstern.de'}</h2>
+          <h2>${registrationTitle ? `Neue Mannschaftsanmeldung: ${escapeHtml(registrationTitle)}` : 'Neue Anfrage über bsvnordstern.de'}</h2>
           <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px">
             <tr><td><strong>Anliegen</strong></td><td>${escapeHtml(routing.inquiryLabel)}</td></tr>
             <tr><td><strong>Zuordnung</strong></td><td>${escapeHtml(recipient.bezeichnung)}</td></tr>
@@ -245,7 +259,7 @@ Deno.serve(async (request) => {
           <h3>Nachricht</h3>
           <p>${safeMessage}</p>
         </div>`,
-    }, bambini ? { idempotencyKey: `bambini-registration/${emailConfig.mode}/${inquiryId}`, timeoutMs: 15000 } : {});
+    }, teamRegistration ? { idempotencyKey: `${bambini ? 'bambini-registration' : 'girls-cup-registration'}/${emailConfig.mode}/${inquiryId}`, timeoutMs: 15000 } : {});
 
     const { error: updateError } = await supabase
       .from('contact_anfragen')
@@ -264,7 +278,7 @@ Deno.serve(async (request) => {
       mailMode: emailResult.mode,
       notificationStatus: 'versendet',
       inquiryId,
-      message: bambini ? BAMBINI_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.',
+      message: bambini ? BAMBINI_SUCCESS_MESSAGE : girlsRegistration ? GIRLS_CUP_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.',
     }, 201, origin);
   } catch (error) {
     const detail = error instanceof Error ? error.message.slice(0, 2000) : 'Unbekannter E-Mail-Fehler';
@@ -284,7 +298,7 @@ Deno.serve(async (request) => {
       ok: false,
       saved: true,
       notificationStatus: 'fehler',
-      message: bambini
+      message: teamRegistration
         ? 'Eure Anmeldung wurde gespeichert, aber die E-Mail an die Organisation konnte nicht versendet werden. Bitte meldet euch über den Kontakt zur Organisation. Sendet die Anmeldung nicht erneut ab.'
         : 'Deine Anfrage wurde gespeichert, die E-Mail konnte aber noch nicht versendet werden. Bitte versuche es später erneut.',
     }, 503, origin);

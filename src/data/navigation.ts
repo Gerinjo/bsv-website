@@ -121,6 +121,8 @@ export const menu: MenuItem[] = [
       ]},
       { title: 'Turniere & Aktionstage', links: [
         { label: 'Weihnachtlicher Bambini-Spieltag', href: '/erlebnis/weihnachts-bambini-spieltag' },
+        { label: 'Bodensee Indoor Girls Cup 2027', href: '/erlebnis/bodensee-indoor-girls-cup' },
+        { label: 'URMEL-Cup', href: '/erlebnis/urmel-bambini-spieltag' },
         { label: 'Bürgerstiftung · Grundschulturnier', href: '/erlebnis/buergerstiftung-grundschulturnier' },
         { label: 'Tag des Mädchenfußballs', href: '/events/tag-des-maedchenfussballs' },
         { label: 'Allianz Juniors Cup – D-Junioren', href: '/events/allianz-juniors-cup-d' },

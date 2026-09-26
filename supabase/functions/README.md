@@ -96,6 +96,28 @@ Zur Bereitstellung zuerst die aktualisierte öffentliche Edge Function
 `contact-request` deployen, danach die Website. Die Verhaltenstests laufen mit
 `node --test tests/bambini-registration.test.mjs` ohne echten E-Mail-Versand.
 
+## URMEL-Cup und Bodensee Indoor Girls Cup
+
+Die URMEL-Anmeldung auf `/erlebnis/urmel-bambini-spieltag` nutzt dieselbe
+Wunschzeitenprüfung wie der Weihnachts-Spieltag. Eigene Veranstaltungsdaten
+stehen in `_shared/urmel-event.mjs`; das Thema lautet `event-urmel-cup`.
+
+Die Girls-Cup-Anmeldung auf `/erlebnis/bodensee-indoor-girls-cup` verwendet
+`_shared/girls-cup-event.mjs` und das Thema `event-bodensee-indoor-girls-cup`.
+Ein oder beide Turniertage können gewählt werden. Teamanzahlen sind je
+Altersklasse anzugeben: E/D am 20. Februar und C/B am 21. Februar 2027.
+`contact-request/girls-cup-registration.mjs` prüft, dass ausgewählte Tage und
+Altersklassen zusammenpassen, und berechnet die Gebühr serverseitig:
+40 € für das erste Team, 30 € für jedes weitere Team, gemeinsam für beide
+Tage dieser Anmeldung. Preisangaben aus dem Browser werden nicht übernommen.
+
+Beide Themen gehen ebenfalls an `person-jerome-ernsberger` und verwenden
+die bestehenden privaten Kontakttabellen und den Spamschutz. Die E-Mail
+enthält den Trainerkontakt und alle ausgewählten Zeiten bzw. Tage und Teams;
+beim Girls Cup zusätzlich die Gesamtgebühr. Die Teilnahme bestätigt die
+Organisation persönlich. Neue Tabellen oder Migrationen sind nicht nötig.
+Auch hier zuerst `contact-request`, dann die Website veröffentlichen.
+
 ## Fördervereinsantrag
 
 `foerderverein-membership` nimmt den vollständigen Online-Antrag inklusive

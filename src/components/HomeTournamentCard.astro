@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import EventPhotoGallery from './EventPhotoGallery.astro';
+import type { HomeTournament } from '../data/homeTournaments';
+import { withBase } from '../utils/paths';
+
+interface Props { tournament: HomeTournament }
+const { tournament } = Astro.props;
+const eventPath = withBase(tournament.href);
+---
+
+<article class="event-card" aria-labelledby={`home-${tournament.id}-title`}>
+  <div class="event-photos">
+    {tournament.gallery ? <EventPhotoGallery id={`home-${tournament.id}`} {...tournament.gallery} compact /> : tournament.photo && (
+      <figure>
+        <img class:list={{ 'contain-artwork': tournament.photo.fit === 'contain' }} src={withBase(tournament.photo.src)} alt={tournament.photo.alt} width={tournament.photo.width} height={tournament.photo.height} loading="lazy" decoding="async" />
+        <figcaption>{tournament.photo.caption}</figcaption>
+      </figure>
+    )}
+  </div>
+  <div class="event-copy">
+    <div class="event-topline">
+      <div><p class="eyebrow">{tournament.category}</p>{tournament.isoDate ? <time datetime={tournament.isoDate}>{tournament.date}</time> : <span class="tournament-date">{tournament.date}</span>}</div>
+      <div class:list={['logo', { 'white-background': tournament.logo.whiteBackground }]}>
+        {typeof tournament.logo.src === 'string'
+          ? <img src={withBase(tournament.logo.src)} width="140" height="80" alt={tournament.logo.alt} loading="lazy" />
+          : <Image src={tournament.logo.src} width={160} format="webp" alt={tournament.logo.alt} loading="lazy" />}
+      </div>
+    </div>
+    <h3 id={`home-${tournament.id}-title`}>{tournament.heading}<br /><em>{tournament.emphasis}</em></h3>
+    <p class="event-intro">{tournament.intro}</p>
+    <dl>{tournament.facts.map((fact) => <div class:list={{ wide: fact.wide }}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+    <a class="event-button" href={tournament.signup ? `${eventPath}#anmeldung` : eventPath}>{tournament.actionLabel}<span aria-hidden="true">↗</span></a>
+    {tournament.signup && <a class="event-details" href={eventPath}>Alle Infos zum Spieltag <span aria-hidden="true">→</span></a>}
+  </div>
+</article>
+
+<style>
+  .event-card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); border-top: 4px solid #e4bf6a; background: #0e3929; color: #fff9ec; }
+  .event-photos { min-width: 0; align-self: center; }.event-copy { min-width: 0; padding: 29px 32px 31px; }
+  figure { margin: 0; }figure > img { display: block; width: 100%; height: auto; aspect-ratio: 1.3; object-fit: cover; object-position: 57% center; }figcaption { padding: 15px 20px; color: #c7d7c9; font-size: .68rem; line-height: 1.6; }
+  figure > img.contain-artwork { object-fit: contain; object-position: center; }
+  .event-topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 19px; }.logo { flex: 0 0 auto; width: 76px; }.logo :global(img) { display: block; width: 100%; height: 76px; object-fit: contain; }.logo.white-background { box-sizing: border-box; width: 110px; padding: 8px; background: #fff; }.white-background :global(img) { height: 54px; }
+  .eyebrow { margin: 0 0 8px; color: #e4bf6a; font-size: .65rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; line-height: 1.6; }.event-topline time, .tournament-date { font-size: 1.03rem; font-weight: 800; line-height: 1.5; }
+  h3 { margin: 0 0 18px; font-size: clamp(2rem, 3vw, 2.65rem); line-height: 1.03; letter-spacing: -.045em; }h3 em { color: #e4bf6a; font-family: Georgia, serif; font-weight: 400; }
+  .event-intro { margin: 0 0 22px; color: #d0dfd2; font-size: .9rem; line-height: 1.7; }
+  dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 25px; margin: 0 0 26px; padding: 20px 0; border-block: 1px solid #52705b; }.wide { grid-column: 1 / -1; }dt { margin-bottom: 5px; color: #b7c9ba; font-size: .59rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }dd { margin: 0; font-size: .87rem; font-weight: 750; line-height: 1.5; overflow-wrap: anywhere; }
+  .event-button { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 19px; background: #f4d638; color: #092f20; font-size: .86rem; font-weight: 850; text-decoration: none; }.event-button:hover { background: #ffe967; }
+  .event-details { display: block; margin-top: 17px; color: #e4bf6a; font-size: .75rem; line-height: 1.5; text-underline-offset: 4px; }.event-details span { margin-left: 7px; }a:focus-visible { outline: 3px solid #fff9ec; outline-offset: 4px; }
+  @media(max-width: 1000px) { .event-card { grid-template-columns: 1fr 1fr; }.event-copy { padding: 25px; }h3 { font-size: 2rem; } }
+  @media(max-width: 800px) { .event-card { grid-template-columns: 1fr; }.event-copy { grid-row: 1; padding: 26px 30px 30px; }.event-topline { margin-bottom: 14px; }h3 { font-size: clamp(2rem, 5vw, 2.7rem); }.event-intro { max-width: 590px; }.event-photos { border-top: 1px solid #52705b; }figure > img { aspect-ratio: 3 / 2; } }
+  @media(max-width: 480px) { .event-copy { padding: 22px 20px 26px; }.logo { width: 65px; }.logo :global(img) { height: 65px; }.logo.white-background { width: 83px; }.white-background :global(img) { height: 44px; }.event-topline time, .tournament-date { font-size: .92rem; }.eyebrow { font-size: .57rem; }h3 { font-size: 1.95rem; }dl { gap: 14px; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); }dd { font-size: .77rem; } }
+</style>
