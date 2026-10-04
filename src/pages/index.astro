@@ -52,6 +52,10 @@ const getEventType = (title: string) => {
           <HomeNextMatch />
         </div>
 
+        <a class="hero-foerderverein" href={withBase('/foerderverein/informationen-zielsetzungen#information-panel-activities')} aria-label="Förderverein & Freunde – Was machen wir?">
+          <img src={withBase('/images/verein/foerderverein-emblem.svg?v=2')} width="240" height="224" alt="Förderverein & Freunde des BSV Nordstern Radolfzell: Herz in einem transparenten Kreis mit dünnem gelbem Rand und vorgelagertem Pluszeichen" />
+        </a>
+
         <div class="hero-art">
           <div class="hero-field" aria-hidden="true">
             <div class="year">19<span>56</span></div>
@@ -65,9 +69,6 @@ const getEventType = (title: string) => {
             <Image class="hero-player" src={heroPlayer} widths={[360, 640, 960]} sizes="(max-width: 650px) 85vw, (max-width: 900px) 400px, 720px" format="webp" alt="KI-generierter Fußballer in grünem Trikot beim Schuss" loading="eager" fetchpriority="high" />
             <figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption>
           </figure>
-          <a class="hero-foerderverein" href={withBase('/foerderverein/informationen-zielsetzungen#information-panel-activities')} aria-label="Förderverein & Freunde – Was machen wir?">
-            <img src={withBase('/images/verein/foerderverein-emblem.svg?v=2')} width="240" height="224" alt="Förderverein & Freunde des BSV Nordstern Radolfzell: Herz in einem transparenten Kreis mit dünnem gelbem Rand und vorgelagertem Pluszeichen" />
-          </a>
         </div>
       </div>
       <div class="ticker" aria-label="Vereinswerte">
@@ -350,12 +351,16 @@ const getEventType = (title: string) => {
   .join-section { background: #fff; }.join-card { position: relative; overflow: hidden; min-height: 330px; padding: 65px 70px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 70px; background: var(--yellow); border-radius: 8px; }.join-card::after { content: ''; position: absolute; right: -80px; top: -160px; width: 380px; aspect-ratio: 1; border: 1px solid rgb(9 47 32 / 18%); border-radius: 50%; box-shadow: 0 0 0 50px rgb(9 47 32 / 5%), 0 0 0 100px rgb(9 47 32 / 4%); }.join-star { position: absolute; right: 35px; top: 25px; color: white; font-size: 3rem; }.join-card h2 em { color: var(--green); }.join-copy { position: relative; z-index: 1; }.join-copy p { margin-bottom: 28px; color: #3b4c3f; line-height: 1.6; }.button-dark { background: var(--green-dark); color: white; }
   @media (max-width: 1300px) { .hero-player-figure figcaption { top:0; } }
   @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; }.hero-art { position:relative; min-height:430px; }.hero-player-figure { height:calc(100% + 130px); max-height:none; bottom:-100px; }.promo-grid { grid-template-columns: 1fr 1fr; }.promo-card:last-child { grid-column: 1 / -1; }.dates-grid { grid-template-columns: 1fr 1fr; }.departments-grid { grid-template-columns: 1fr; gap: 55px; }.join-card { padding: 50px; } }
-  @media (max-width: 900px) { .hero-foerderverein { top:24px; right:0; left:auto; width:165px; } }
+  @media (max-width: 900px) {
+    .hero-grid { --hero-emblem-size:140px; }
+    .hero-copy h1 { width:calc(100% - var(--hero-emblem-size) - 18px); min-height:calc(var(--hero-emblem-size) * .94); }
+    .hero-foerderverein { top:100px; right:0; left:auto; width:var(--hero-emblem-size); }
+  }
   @media (max-width: 650px) { .shell { width: calc(100% - 30px); max-width: 1160px; }.hero-grid { min-height: 720px; padding-top: 65px; }.hero-art { min-height: 390px; }.pitch { inset: 10px 10px 0 30px; }.hero-badge { left: 0; }.year { display: none; }.promo-section { padding-top: 58px; }.promo-grid,.dates-grid { grid-template-columns: 1fr; }.promo-card:last-child { grid-column: auto; }.promo-card { min-height: 300px; }.match-section,.join-section,.departments-section { padding: 75px 0; }.dates-section { padding-bottom: 70px; }.dates-head,.section-head { align-items: start; flex-direction: column; }.departments-grid { gap: 40px; }.join-card { grid-template-columns: 1fr; gap: 28px; padding: 42px 28px; } }
   @media (max-width: 650px) {
-    .hero-grid { padding-top:28px; }
+    .hero-grid { --hero-emblem-size:clamp(90px,26vw,112px); padding-top:28px; }
     .hero-copy .kicker { display:none; }
-    .hero-copy h1 { font-size:clamp(2.2rem, 10.5vw, 4rem); line-height:.95; margin-bottom:18px; }
+    .hero-copy h1 { font-size:clamp(2rem, 10vw, 4rem); line-height:.95; margin-bottom:18px; }
     .hero-copy { --hero-action-gap:20px; }
     .hero-copy .intro { font-size:var(--intro-fit-size, min(3vw, .95rem)); line-height:1.5; }
     .hero-actions { gap:16px 10px; }
@@ -367,7 +372,6 @@ const getEventType = (title: string) => {
     .hero-player-figure figcaption { top:-14px; right:auto; left:0; }
     .hero-badge { top:10px; bottom:auto; left:20px; padding:14px 18px; box-shadow:8px 10px 0 rgb(9 47 32 / 55%); }
     .hero-badge strong { font-size:1.05rem; }
-    .hero-foerderverein { top:20px; right:0; width:clamp(118px,34vw,135px); }
+    .hero-foerderverein { top:22px; }
   }
-  @media (max-width:360px) { .hero-foerderverein { top:54px; } }
 </style>
