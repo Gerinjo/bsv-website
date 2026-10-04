@@ -114,6 +114,13 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                             <ul>{group.links.map((link) => (
                               <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
                             ))}</ul>
+                            {group.title === 'Förderverein' && (
+                              <a class="foerderverein-menu-cta" href={withBase('/foerderverein/informationen-zielsetzungen#information-panel-support')} data-menu-image={withBase(clubImages['/foerderverein'])} data-menu-label="Der Förderverein braucht Dich" data-menu-group="Förderverein">
+                                <span class="foerderverein-cta-icon" aria-hidden="true">✦</span>
+                                <span class="foerderverein-cta-copy"><small>Engagement gesucht</small><strong>Der Förderverein braucht Dich</strong></span>
+                                <b aria-hidden="true">↗</b>
+                              </a>
+                            )}
                           </section>
                         ))}
                       </div>
@@ -293,6 +300,18 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
   .mega-group a:hover,.mega-group a:focus { padding-left:8px; outline:none; background:#f3f6f3; color:#164f32; font-weight:750; }
   .mega-group a:hover::before,.mega-group a:focus::before { border-color:#f4d638; }
   .mega-group a:hover > span,.mega-group a:focus > span { opacity:1; transform:translateX(0); }
+  .mega-group .foerderverein-menu-cta { position:relative; min-height:116px; margin-top:16px; padding:18px; display:grid; grid-template-columns:30px minmax(0,1fr) 28px; gap:12px; overflow:hidden; background:linear-gradient(135deg,#092f20,#1c5b3b); border-bottom:4px solid #f4d638; border-radius:4px; color:white; }
+  .mega-group .foerderverein-menu-cta::before { display:none; }
+  .mega-group .foerderverein-menu-cta::after { content:''; position:absolute; right:-42px; top:-58px; width:120px; aspect-ratio:1; border:1px solid rgb(244 214 56 / 25%); border-radius:50%; box-shadow:0 0 0 22px rgb(255 255 255 / 4%); }
+  .mega-group .foerderverein-menu-cta > span { position:relative; z-index:1; margin:0; opacity:1; transform:none; color:inherit; }
+  .mega-group .foerderverein-menu-cta .foerderverein-cta-icon { color:#f4d638; font-size:2rem; }
+  .foerderverein-cta-copy small,.foerderverein-cta-copy strong { display:block; }
+  .foerderverein-cta-copy small { margin-bottom:8px; color:#c0d4c7; font-size:.53rem; font-weight:850; letter-spacing:.1em; text-transform:uppercase; }
+  .foerderverein-cta-copy strong { font-size:1.02rem; font-weight:850; line-height:1.2; }
+  .foerderverein-menu-cta b { position:relative; z-index:1; display:grid; place-items:center; width:28px; aspect-ratio:1; border-radius:50%; background:#f4d638; color:#092f20; transition:transform .16s ease; }
+  .mega-group .foerderverein-menu-cta:hover,.mega-group .foerderverein-menu-cta:focus { padding:18px; background:#1c5b3b; color:white; }
+  .mega-group .foerderverein-menu-cta:focus-visible { outline:3px solid #d7b91d; outline-offset:3px; }
+  .foerderverein-menu-cta:hover b,.foerderverein-menu-cta:focus-visible b { transform:translate(2px,-2px); }
   .club-preview { position:relative; min-height:315px; aspect-ratio:4 / 3; overflow:hidden; border-radius:7px; background:#164f32; box-shadow:10px 10px 0 #f4d638; }
   .club-preview::after { content:''; position:absolute; z-index:1; inset:38% 0 0; background:linear-gradient(transparent,rgb(6 31 21 / 94%)); }
   .club-preview img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity .2s ease; }
