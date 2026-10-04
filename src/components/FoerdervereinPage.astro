@@ -315,17 +315,26 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
     updateOrientation();
     mobileLayout.addEventListener('change', updateOrientation);
 
-    const selectTab = (index: number, focus = false) => {
+    const selectTab = (index: number, focus = false, updateHash = false) => {
       tabs.forEach((tab, tabIndex) => {
         tab.setAttribute('aria-selected', String(tabIndex === index));
         tab.tabIndex = tabIndex === index ? 0 : -1;
       });
       panels.forEach((panel, panelIndex) => { panel.hidden = panelIndex !== index; });
+      if (updateHash) history.replaceState(history.state, '', `#${panels[index].id}`);
       if (focus) tabs[index].focus();
     };
 
+    const selectFromHash = () => {
+      const index = panels.findIndex((panel) => `#${panel.id}` === window.location.hash);
+      if (index < 0) return;
+      selectTab(index);
+      panels[index].focus({ preventScroll: true });
+      requestAnimationFrame(() => tablist.scrollIntoView({ block: 'start' }));
+    };
+
     tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => selectTab(index));
+      tab.addEventListener('click', () => selectTab(index, false, true));
       tab.addEventListener('keydown', (event) => {
         const nextKey = mobileLayout.matches ? 'ArrowDown' : 'ArrowRight';
         const previousKey = mobileLayout.matches ? 'ArrowUp' : 'ArrowLeft';
@@ -336,11 +345,26 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
         else if (event.key === 'End') target = tabs.length - 1;
         else return;
         event.preventDefault();
-        selectTab(target, true);
+        selectTab(target, true, true);
       });
     });
     selectTab(0);
     tablist.hidden = false;
+    selectFromHash();
+    window.addEventListener('hashchange', selectFromHash);
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', selectFromHash, { once: true });
+    }
+    document.querySelectorAll<HTMLAnchorElement>('.foerderverein-menu-cta').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        const target = new URL(link.href);
+        if (target.origin !== location.origin || target.pathname.replace(/\/$/, '') !== location.pathname.replace(/\/$/, '')) return;
+        event.preventDefault();
+        history.replaceState(history.state, '', target.hash);
+        selectFromHash();
+      });
+    });
   });
 </script>
 
