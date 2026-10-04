@@ -41,9 +41,9 @@ export const menu: MenuItem[] = [
         { label: 'Mitgliedschaft kündigen', href: '/verein/kuendigung' },
       ]},
       { title: 'Förderverein', links: [
-        { label: 'Wer sind wir?', href: '/foerderverein#wer-sind-wir' },
-        { label: 'Was machen wir?', href: '/foerderverein#was-machen-wir' },
-        { label: 'Und Du?', href: '/foerderverein/mitglied-werden' },
+        { label: 'Vorstandschaft', href: '/foerderverein' },
+        { label: 'Informationen & Zielsetzungen', href: '/foerderverein/informationen-zielsetzungen' },
+        { label: 'Mitglied werden', href: '/foerderverein/mitglied-werden' },
       ]},
     ],
   },
