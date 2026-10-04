@@ -103,6 +103,27 @@ const supporters = [
   { name: 'Sigrid Burkhardt', role: 'Unterstützerin', image: '/images/verein/personen/sigrid-burkhardt.jpg' },
 ];
 
+const volunteerRoles = [
+  {
+    title: '1. Vorsitzende/r gesucht',
+    copy: 'Der 1. Vorsitz ist aktuell vakant. Du möchtest Verantwortung übernehmen und unseren Förderverein aktiv mitgestalten? Diese Aufgaben erwarten dich:',
+    tasks: [
+      'Den Förderverein nach außen und innen vertreten',
+      'Die Vereinsarbeit gemeinsam mit der Vorstandschaft koordinieren',
+      'Neue Ideen und Impulse einbringen',
+    ],
+  },
+  {
+    title: 'Helferinnen und Helfer gesucht',
+    copy: 'Ob regelmäßig oder bei einer einzelnen Aktion: Wir freuen uns auf Menschen, die gemeinsam mit uns anpacken. Hier kannst du mithelfen:',
+    tasks: [
+      'Bei Veranstaltungen unterstützen, etwa beim Aufbau oder in der Bewirtung',
+      'Bei Projekten und Aktionen mithelfen',
+      'Eigene Talente und Zeit einbringen – auch für kleine Aufgaben',
+    ],
+  },
+];
+
 const supportOptions = [
   { number: '01', title: 'Mitglied werden', copy: 'Ein verlässlicher Jahresbeitrag hilft uns, Förderung zu planen und gute Ideen umzusetzen. Den Mitgliedsantrag kannst du direkt online ausfüllen.', label: 'Zum Mitgliedsantrag', href: '/foerderverein/mitglied-werden' },
   { number: '02', title: 'Zusätzlich fördern', copy: 'Im Mitgliedsantrag kannst du einen zusätzlichen freiwilligen Förderbetrag angeben. Wenn du mit einer Spende ein konkretes Vorhaben unterstützen möchtest, sprich uns gerne an.', label: 'Förderung besprechen', href: '/kontakt?thema=foerderverein' },
@@ -181,18 +202,18 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
             <aside class="engagement-callout" aria-labelledby="engagement-heading">
               <p class="eyebrow dark"><span></span>Dringend Unterstützung gesucht</p>
               <h2 id="engagement-heading">Der 1. Vorsitz ist vakant.<br /><em>Dein Engagement zählt.</em></h2>
-              <p class="engagement-intro">Damit der Förderverein seine Arbeit verlässlich fortführen und neue Vorhaben angehen kann, brauchen wir dringend weitere Unterstützer. Besonders wichtig ist es, den aktuell unbesetzten 1. Vorsitz wieder zu besetzen.</p>
+              <p class="engagement-intro">Unser Förderverein unterstützt den BSV von der Jugendarbeit bis zur Vereinsentwicklung. Damit das auch in Zukunft so bleibt, suchen wir dringend Menschen, die Verantwortung übernehmen und unseren Verein aktiv mitgestalten. Besonders wichtig ist es, den aktuell unbesetzten 1. Vorsitz wieder zu besetzen.</p>
               <div class="engagement-grid">
-                <div>
-                  <h3>Den 1. Vorsitz mitgestalten</h3>
-                  <p>Du möchtest Verantwortung übernehmen? Im 1. Vorsitz geht es darum, die Arbeit des Fördervereins gemeinsam mit der übrigen Vorstandschaft zu koordinieren, Aktionen zu planen und die Förderung des BSV voranzubringen. Melde dich, wenn du mehr über die Aufgabe erfahren möchtest.</p>
-                </div>
-                <div>
-                  <h3>Unser Team unterstützen</h3>
-                  <p>Du musst nicht gleich ein Vorstandsamt übernehmen. Auch bei der Vorbereitung von Märkten, beim Aufbau, in der Bewirtung oder bei organisatorischen Aufgaben ist deine Hilfe willkommen – regelmäßig oder bei einzelnen Aktionen.</p>
-                </div>
+                {volunteerRoles.map((role) => (
+                  <div>
+                    <h3>{role.title}</h3>
+                    <p>{role.copy}</p>
+                    <ul>{role.tasks.map((task) => <li>{task}</li>)}</ul>
+                  </div>
+                ))}
               </div>
-              <a class="engagement-action" href={withBase('/kontakt?thema=foerderverein')}>Interesse am Ehrenamt? Schreib uns <span aria-hidden="true">↗</span></a>
+              <p class="engagement-intro">Du kannst auch ohne Vorstandsamt mithelfen. Mit deinem Engagement fördern wir die Jugend, stärken das Vereinsleben und erreichen gemeinsam mehr.</p>
+              <a class="engagement-action" href={withBase('/kontakt?thema=foerderverein')}>Beim Förderverein melden <span aria-hidden="true">↗</span></a>
             </aside>
           </div>
         </section>
@@ -245,6 +266,22 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
               <div><p class="eyebrow dark"><span></span>Wie kannst du uns unterstützen</p><h2>Jeder Beitrag<br /><em>hilft uns weiter.</em></h2></div>
               <p>Mitgliedschaft, ein zusätzlicher Förderbetrag oder persönliche Mithilfe: Es gibt viele Wege, den Förderverein und damit den BSV zu stärken.</p>
             </header>
+            <aside class="engagement-callout support-recruitment" aria-labelledby="support-recruitment-heading">
+              <p class="eyebrow dark"><span></span>Der Förderverein braucht Dich</p>
+              <h3 id="support-recruitment-heading">Gesucht: 1. Vorsitz und helfende Hände</h3>
+              <p class="engagement-intro">Von der Jugendarbeit bis zur Vereinsentwicklung: Dein Engagement hilft, die Arbeit unseres Fördervereins auch in Zukunft fortzuführen.</p>
+              <div class="engagement-grid">
+                {volunteerRoles.map((role) => (
+                  <div>
+                    <h4>{role.title}</h4>
+                    <p>{role.copy}</p>
+                    <ul>{role.tasks.map((task) => <li>{task}</li>)}</ul>
+                  </div>
+                ))}
+              </div>
+              <p class="engagement-intro">Du kannst auch ohne Vorstandsamt mithelfen. Mit deinem Engagement fördern wir die Jugend, stärken das Vereinsleben und erreichen gemeinsam mehr.</p>
+              <a class="engagement-action" href={withBase('/kontakt?thema=foerderverein')}>Beim Förderverein melden <span aria-hidden="true">↗</span></a>
+            </aside>
             <div class="support-options">
               {supportOptions.map((option) => (
                 <article><small>{option.number}</small><h3>{option.title}</h3><p>{option.copy}</p><a href={withBase(option.href)}>{option.label} <span aria-hidden="true">↗</span></a></article>
@@ -461,10 +498,15 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
   .engagement-callout { margin-top:65px; padding:45px; border-left:5px solid #d7b91d; background:#fff8d8; }
   .engagement-callout h2 { margin-bottom:25px; color:#173b29; font-size:clamp(2rem,3.8vw,3.4rem); line-height:1.05; }
   .engagement-callout h2 em { color:#1c5b3b; }
+  .support-recruitment { margin:0 0 30px; padding:32px; }
+  .support-recruitment > h3 { margin-bottom:20px; color:#173b29; font-size:clamp(1.6rem,2.6vw,2.2rem); line-height:1.2; }
   .engagement-intro { max-width:850px; color:#375242; font-size:1.05rem; line-height:1.75; }
   .engagement-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px; margin-block:35px; }
-  .engagement-grid h3 { margin-bottom:14px; color:#173b29; font-size:1.3rem; }
+  .engagement-grid h3, .engagement-grid h4 { margin:0 0 14px; color:#173b29; font-size:1.3rem; }
   .engagement-grid p { margin:0; color:#57675d; line-height:1.75; }
+  .engagement-grid ul { margin:18px 0 0; padding-left:22px; color:#375242; line-height:1.7; }
+  .engagement-grid li + li { margin-top:10px; }
+  .engagement-grid li::marker { color:#1c5b3b; }
   .engagement-action { display:inline-flex; align-items:center; gap:20px; padding:18px 22px; background:#164f32; color:white; font-size:.9rem; font-weight:800; text-decoration:none; }
   .engagement-action:hover { background:#0a3021; }
   .engagement-action span { color:#f4d638; }
