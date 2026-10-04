@@ -194,6 +194,32 @@
     "sourceUpdatedAt": "2026-09-09T12:48:47.33454+00:00"
   },
   {
+    "sourceId": "45b0be9c-8103-4954-8370-83a192a89c85",
+    "slug": "aptar",
+    "name": "Aptar",
+    "logoSrc": "/images/sponsors/synced/aptar.png",
+    "logoAlt": "Logo von Aptar",
+    "website": "https://aptar.com/",
+    "teamAudienceSlugs": [],
+    "teamAssignments": [],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "bandensponsor",
+          "label": "Bandensponsor",
+          "sortOrder": 60,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-10-04T15:12:41.428743+00:00"
+  },
+  {
     "sourceId": "c44c3aa2-0a27-4587-a27a-a1d247f7e3e0",
     "slug": "bauunternehmen-feuerstein",
     "name": "Bauunternehmen Feuerstein",
@@ -1029,6 +1055,178 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-04T12:27:27.923222+00:00"
+  },
+  {
+    "sourceId": "0c1653d4-768a-44d0-ac53-a5d897f4786c",
+    "slug": "physiotherapie-zimmermann-team",
+    "name": "Physiotherapie  Zimmermann & Team",
+    "logoSrc": "/images/sponsors/synced/physiotherapie-zimmermann-team.png",
+    "logoAlt": "Logo von Physiotherapie  Zimmermann & Team",
+    "website": "https://www.physiopraxis-zimmermann.de/",
+    "teamAudienceSlugs": [
+      "frauen-1",
+      "herren-1",
+      "u15-c1-junioren",
+      "u17-junioren",
+      "u17-juniorinnen",
+      "u19-junioren"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "frauen-1",
+        "sourceAudienceSlug": "frauen-1",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "herren-1",
+        "sourceAudienceSlug": "herren-1",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c1-junioren",
+        "sourceAudienceSlug": "u15-c1-junioren",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-junioren",
+        "sourceAudienceSlug": "u17-junioren",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-juniorinnen",
+        "sourceAudienceSlug": "u17-juniorinnen",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u19-junioren",
+        "sourceAudienceSlug": "u19-junioren",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "frauen-1",
+        "audienceLabel": "1. Frauen",
+        "audienceGroup": "womens_team",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "herren-1",
+        "audienceLabel": "1. Herren",
+        "audienceGroup": "mens_team",
+        "sponsorType": {
+          "slug": "trikotsponsor",
+          "label": "Trikotsponsor",
+          "sortOrder": 10,
+          "displayWeight": 2
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u15-c1-junioren",
+        "audienceLabel": "U15 · C1-Junioren",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-junioren",
+        "audienceLabel": "U17 · B-Junioren",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u17-juniorinnen",
+        "audienceLabel": "U17 · B-Juniorinnen",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
+        "audienceSlug": "u19-junioren",
+        "audienceLabel": "U19 · A-Junioren",
+        "audienceGroup": "youth_team",
+        "sponsorType": {
+          "slug": "materialsponsor",
+          "label": "Materialsponsor",
+          "sortOrder": 30,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-10-04T15:17:19.565437+00:00"
   },
   {
     "sourceId": "30cfb816-d024-4191-aac1-1ae73a80d215",
