@@ -111,7 +111,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                           <section class="mega-group" data-mega-group={group.title}>
                             <h2>{group.title}</h2>
                             <ul>{group.links.map((link) => (
-                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
+                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
                             ))}</ul>
                           </section>
                         ))}
