@@ -13,6 +13,18 @@ test('Förderverein contact actions route through the protected contact form', (
   assert.match(topics, /id: 'foerderverein'/);
 });
 
+test('Förderverein overview explains impact, funding and the current team', () => {
+  const page = read('src/components/FoerdervereinPage.astro');
+
+  assert.match(page, /03-kleinfeld\.webp/);
+  for (const fundingSource of ['Freiwillige Beiträge', 'Flohmärkte', 'Gebrauchträdermärkte', 'Feste & Bewirtung']) {
+    assert.match(page, new RegExp(fundingSource));
+  }
+  for (const member of ['Eberhard Klinkenberg', 'Sarah Hainke', 'Heike Seidel', 'Thomas Burkhardt', 'Theopolt Walz', 'Sigrid Burkhardt']) {
+    assert.match(page, new RegExp(member));
+  }
+});
+
 test('Förderverein membership is a complete online application', () => {
   const form = read('src/components/FoerdervereinApplicationForm.astro');
 
