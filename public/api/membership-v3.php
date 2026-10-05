@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $b = random_int(1, 10);
     $_SESSION['membership_captcha'] = $a + $b;
     header('Cache-Control: no-store');
-    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b, 'features' => array('foerdervereinMembership' => true)));
+    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b, 'features' => array('foerdervereinMembership' => true, 'foerdervereinGuardianMembership' => true)));
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $respond(405, array('ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.'));
@@ -151,12 +151,14 @@ if (
     $fail('Bitte prüfe die persönlichen Angaben.');
 }
 
-$birth = DateTime::createFromFormat('!Y-m-d', $birthDate);
+$today = new DateTime('today', new DateTimeZone('Europe/Berlin'));
+$birth = DateTime::createFromFormat('!Y-m-d', $birthDate, new DateTimeZone('Europe/Berlin'));
 $birthErrors = DateTime::getLastErrors();
-if (!$birth || ($birthErrors !== false && ($birthErrors['warning_count'] > 0 || $birthErrors['error_count'] > 0)) || $birth > new DateTime('today')) {
+if (!$birth || ($birthErrors !== false && ($birthErrors['warning_count'] > 0 || $birthErrors['error_count'] > 0)) || $birth > $today) {
     $fail('Bitte gib ein gültiges Geburtsdatum an.');
 }
-$age = $birth->diff(new DateTime('today'))->y;
+$age = $birth->diff($today)->y;
+$isMinor = $age < 18;
 
 $youthTeamOptions = array(
     'bambini-u6' => array('label' => 'U6 G-Junioren Spielgruppe', 'trainers' => 'M. Ernsberger, N. Friedrich, M.-L. Bulander, E. Arfa', 'routingKey' => 'team--jugend--u6-g'),
@@ -216,9 +218,47 @@ $guardianLastName = $value('guardianLastName');
 $guardianFirstName = $value('guardianFirstName');
 $guardianRelation = $value('guardianRelation');
 $guardianPhone = $value('guardianPhone');
-if ($isYouthFootball && ($length($guardianLastName) < 2 || $length($guardianFirstName) < 2)) {
+if (($isYouthFootball || $isMinor) && ($length($guardianLastName) < 2 || $length($guardianFirstName) < 2)) {
     $fail('Bitte gib die Kontaktperson für das Jugendmitglied vollständig an.');
 }
+
+// Derive the applicant from the validated age, never from a posted name or department.
+$foerdervereinForGuardian = $foerdervereinMembership && $isMinor;
+$foerdervereinBsvMember = true;
+$foerdervereinMember = array('firstName' => $firstName, 'lastName' => $lastName, 'birthDate' => $birthDate,
+    'street' => $street, 'postalCode' => $postalCode, 'city' => $city, 'phone' => $phone, 'email' => (string)$email);
+if ($foerdervereinForGuardian) {
+    // Older cached forms did not collect consent for the contact person's own membership.
+    if ($value('foerdervereinApplicant') !== 'guardian') {
+        $fail('Bei Minderjährigen tritt die Kontaktperson selbst dem Förderverein bei. Bitte lade das Formular neu und ergänze ihre eigenen Angaben und Bestätigungen.');
+    }
+    $guardianBirthDate = $value('foerdervereinGuardianBirthDate');
+    $guardianBirth = DateTime::createFromFormat('!Y-m-d', $guardianBirthDate, new DateTimeZone('Europe/Berlin'));
+    if (!$guardianBirth || $guardianBirth->format('Y-m-d') !== $guardianBirthDate || $guardianBirth > $today || $guardianBirth->diff($today)->y < 18) {
+        $fail('Bitte gib das gültige Geburtsdatum der volljährigen Kontaktperson für den Förderverein an.');
+    }
+    $guardianBsvMember = $value('foerdervereinGuardianBsvMember');
+    if (!in_array($guardianBsvMember, array('yes', 'no'), true)) $fail('Bitte gib an, ob die Kontaktperson selbst bereits BSV-Mitglied ist.');
+    $foerdervereinBsvMember = $guardianBsvMember === 'yes';
+    if (!$foerdervereinBsvMember && $foerdervereinAnnualContribution < 25) $fail('Für eine Kontaktperson ohne eigene BSV-Mitgliedschaft beträgt der Förderbeitrag mindestens 25 Euro jährlich.');
+    $foerdervereinMember = array('firstName' => $guardianFirstName, 'lastName' => $guardianLastName,
+        'birthDate' => $guardianBirthDate, 'phone' => $guardianPhone);
+    foreach (array('street' => array('foerdervereinGuardianStreet', 4, 180), 'postalCode' => array('foerdervereinGuardianPostalCode', 4, 10),
+        'city' => array('foerdervereinGuardianCity', 2, 120), 'email' => array('foerdervereinGuardianEmail', 5, 180)) as $field => $rules) {
+        $entry = $value($rules[0]);
+        if ($length($entry) < $rules[1] || $length($entry) > $rules[2]) $fail('Bitte prüfe die Anschrift und E-Mail-Adresse der Kontaktperson für den Förderverein.');
+        $foerdervereinMember[$field] = $entry;
+    }
+    if (!filter_var($foerdervereinMember['email'], FILTER_VALIDATE_EMAIL) || $length($guardianPhone) < 6) {
+        $fail('Bitte gib eine gültige E-Mail-Adresse und die Telefonnummer der Kontaktperson an.');
+    }
+} elseif ($foerdervereinMembership && $value('foerdervereinApplicant') !== '' && $value('foerdervereinApplicant') !== 'self') {
+    $fail('Bei Volljährigen gilt der Fördervereinsantrag für das neue Hauptvereinsmitglied. Bitte prüfe die Angaben und bestätige die eigene Mitgliedschaft erneut.');
+}
+$foerdervereinMemberName = $foerdervereinMember['firstName'] . ' ' . $foerdervereinMember['lastName'];
+$foerdervereinBsvStatus = $foerdervereinForGuardian
+    ? ($foerdervereinBsvMember ? 'Kontaktperson ist bereits selbst BSV-Mitglied' : 'Kontaktperson ist selbst kein BSV-Mitglied')
+    : 'gleichzeitig für dieselbe Person beantragt';
 
 $bankName = $value('bankName');
 $bic = strtoupper(preg_replace('/\s+/', '', $value('bic')));
@@ -596,11 +636,15 @@ $applicationData = array_merge($applicationData, array(
     'receivedAt' => (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))->format('d.m.Y H:i:s T'),
     'birthDate' => $birthDate, 'gender' => $gender, 'email' => (string)$email,
     'department' => $department, 'departmentLabel' => $departments[$department],
-    'isFootball' => $isFootball, 'isYouthFootball' => $isYouthFootball,
+    'isFootball' => $isFootball, 'isYouthFootball' => $isYouthFootball, 'isMinor' => $isMinor,
     'teamQuestionApplies' => $teamQuestionApplies, 'teamKnown' => $teamKnown,
     'teamSelection' => $teamSelection, 'teamLabel' => $selectedTeamLabel, 'teamTrainers' => $selectedTeamTrainers,
     'supportWilling' => $value('supportWilling') === 'yes',
     'foerdervereinMembership' => $foerdervereinMembership,
+    'foerdervereinForGuardian' => $foerdervereinForGuardian,
+    'foerdervereinMember' => $foerdervereinMember,
+    'foerdervereinBsvMember' => $foerdervereinBsvMember,
+    'foerdervereinBsvStatus' => $foerdervereinBsvStatus,
     'foerdervereinApplicationNumber' => $foerdervereinApplicationNumber,
     'foerdervereinAnnualContribution' => $foerdervereinAnnualContribution,
     'foerdervereinNotes' => $foerdervereinNotes,
@@ -826,7 +870,7 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     "ANTWORTEN AUF SÄMTLICHE CHECKBOXEN\n" .
     $checkboxSummary . "\n" .
     ($value('supportIdeas') !== '' ? "Hinweise zur angebotenen Unterstützung: " . $value('supportIdeas') . "\n\n" : '') .
-    ($isYouthFootball ? "Kontaktperson: {$guardianFirstName} {$guardianLastName}\nTelefon Kontaktperson: " . ($guardianPhone !== '' ? $guardianPhone : 'nicht angegeben') . "\n\n" : '') .
+    (($isYouthFootball || $isMinor) ? "Kontaktperson: {$guardianFirstName} {$guardianLastName}\nTelefon Kontaktperson: " . ($guardianPhone !== '' ? $guardianPhone : 'nicht angegeben') . "\n\n" : '') .
     "Bank: {$bankName}\nBIC: {$bic}\nIBAN: {$iban}\nKontoinhaber: {$accountHolder}\n\n" .
     ($isFootball ? "Spielgenehmigung: {$registrationLabels[$registrationType]}\nIdentitätsnachweis: {$proofLabels[$identityProofType]}\n\n" : '') .
     "Der vollständige Mitgliedsantrag mit allen Angaben, Einwilligungen und eingebetteter Unterschrift ist als PDF beigefügt.\n" .
@@ -835,7 +879,7 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
 
 if ($foerdervereinMembership) {
     $internalBody .= "\nZUSÄTZLICHER FÖRDERVEREINSANTRAG\n" .
-        "Antragsnummer: {$foerdervereinApplicationNumber}\nJährlicher Förderbeitrag: " . number_format($foerdervereinAnnualContribution, 2, ',', '.') . " EUR\n" .
+        "Antragsnummer: {$foerdervereinApplicationNumber}\nFördermitglied: {$foerdervereinMemberName}\nEigene BSV-Mitgliedschaft: {$foerdervereinBsvStatus}\nJährlicher Förderbeitrag: " . number_format($foerdervereinAnnualContribution, 2, ',', '.') . " EUR\n" .
         "Mitgliedschaft, eigenes Lastschriftmandat und Datenübermittlung wurden ausdrücklich bestätigt. Der separate Fördervereinsantrag mit der gemeinsamen Unterschrift ist beigefügt und wird zusätzlich an den Förderverein übermittelt.\n";
 }
 if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
@@ -846,14 +890,15 @@ $foerdervereinStatus = 'not_requested';
 if ($foerdervereinMembership) {
     $foerdervereinBody = "Neuer Fördervereinsantrag aus der Hauptvereinsanmeldung\n\n" .
         "Fördervereinsantrag: {$foerdervereinApplicationNumber}\nHauptvereinsantrag: {$applicationNumber}\n" .
-        "Name: {$firstName} {$lastName}\nGeburtsdatum: " . $displayDate($birthDate) . "\n" .
-        "Anschrift: {$street}, {$postalCode} {$city}\nE-Mail: {$email}\nTelefon: {$phone}\n" .
+        "Fördermitglied: {$foerdervereinMemberName}\nGeburtsdatum: " . $displayDate($foerdervereinMember['birthDate']) . "\n" .
+        "Anschrift: {$foerdervereinMember['street']}, {$foerdervereinMember['postalCode']} {$foerdervereinMember['city']}\nE-Mail: {$foerdervereinMember['email']}\nTelefon: {$foerdervereinMember['phone']}\n" .
         "Jährlicher Förderbeitrag: " . number_format($foerdervereinAnnualContribution, 2, ',', '.') . " EUR\n" .
-        "Mitgliedschaft im BSV: gleichzeitig beantragt\n\n" .
+        "Eigene BSV-Mitgliedschaft: {$foerdervereinBsvStatus}\n\n" .
+        ($foerdervereinForGuardian ? "Die Kontaktperson beantragt die eigene Fördermitgliedschaft. Der Hauptvereinsantrag betrifft das Kind.\n" : '') .
         "Der vollständige Fördervereinsantrag enthält die übernommene Bankverbindung, die eigene Einzugsermächtigung und die gemeinsam erfasste Unterschrift. Die Mitgliedschaft, das Lastschriftmandat und die Datenübermittlung wurden separat bestätigt.\n" .
         ($foerdervereinNotes !== '' ? "\nNachricht: {$foerdervereinNotes}\n" : '');
-    $foerdervereinStatus = $sendMail('foerderverein', '', 'Fördervereinsantrag ' . $foerdervereinApplicationNumber . ': ' . $firstName . ' ' . $lastName,
-        $foerdervereinBody, $foerdervereinAttachments, (string)$email) ? 'sent' : 'failed';
+    $foerdervereinStatus = $sendMail('foerderverein', '', 'Fördervereinsantrag ' . $foerdervereinApplicationNumber . ': ' . $foerdervereinMemberName,
+        $foerdervereinBody, $foerdervereinAttachments, $foerdervereinMember['email']) ? 'sent' : 'failed';
     if ($foerdervereinStatus === 'failed') {
         // The main application and both PDFs have already reached administration.
         // Alert them to forward the existing PDF; never ask the applicant to resubmit.
@@ -1187,7 +1232,8 @@ $linkButton('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
 
 $foerdervereinConfirmation = '';
 if ($foerdervereinMembership) {
-    $foerdervereinConfirmation = 'Dein zusätzlicher Fördervereinsantrag ' . $foerdervereinApplicationNumber . ' über ' . number_format($foerdervereinAnnualContribution, 2, ',', '.') . ' EUR jährlich ist als separates PDF mit Lastschriftmandat und gemeinsamer Unterschrift beigefügt. ' .
+    $foerdervereinConfirmation = 'Der zusätzliche Fördervereinsantrag ' . $foerdervereinApplicationNumber . ' für ' . $foerdervereinMemberName . ' über ' . number_format($foerdervereinAnnualContribution, 2, ',', '.') . ' EUR jährlich ist als separates PDF mit Lastschriftmandat und gemeinsamer Unterschrift beigefügt. ' .
+        ($foerdervereinForGuardian ? 'Die Kontaktperson wird Fördermitglied; das Kind wird ausschließlich im Hauptverein angemeldet. ' : '') .
         ($foerdervereinStatus === 'sent'
             ? 'Der Antrag wurde an den Förderverein übermittelt. Der Förderverein prüft deine Anmeldung.'
             : 'Die direkte Weiterleitung an den Förderverein ist fehlgeschlagen. Beide Anträge liegen der Mitgliederverwaltung vor; sie wurde um Weiterleitung gebeten. Bitte sende keinen zweiten Antrag. Bei Rückfragen wende dich mit der Antragsnummer an info@bsvnordstern.de.');
@@ -1197,7 +1243,7 @@ if ($foerdervereinMembership) {
 }
 $applicantSent = $sendMail(
     'applicant',
-    (string)$email,
+    $foerdervereinForGuardian ? $foerdervereinMember['email'] : (string)$email,
     $applicantSubject,
     $applicantText,
     $applicationAttachments,

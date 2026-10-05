@@ -248,7 +248,7 @@ function bsvBuildMembershipPdf($data, $signaturePng)
         $pdf->fields(array(array('Trainerteam zum Zeitpunkt des Antrags', $v('teamTrainers'))));
     }
     $pdf->section('03', 'Kontaktperson für das Jugendmitglied');
-    if ($yes('isYouthFootball')) {
+    if ($yes('isYouthFootball') || $yes('isMinor')) {
         $pdf->fields(array(array('Nachname', $v('guardianLastName')), array('Vorname', $v('guardianFirstName'))));
         $pdf->fields(array(array('Verhältnis zum Mitglied', $v('guardianRelation')), array('Telefon', $v('guardianPhone'))));
     } else {
@@ -259,6 +259,8 @@ function bsvBuildMembershipPdf($data, $signaturePng)
     if ($yes('supportWilling')) $pdf->paragraph('Ideen oder mögliche Aufgaben: ' . ($v('supportIdeas') !== '' ? $v('supportIdeas') : 'Nicht angegeben'));
     if ($yes('foerdervereinMembership')) {
         $pdf->check('Zusätzlich Mitgliedschaft im Förderverein beantragt.', true);
+        $member = $data['foerdervereinMember'];
+        $pdf->paragraph('Fördermitglied: ' . $member['firstName'] . ' ' . $member['lastName'] . ($yes('foerdervereinForGuardian') ? ' (eigene Mitgliedschaft der Kontaktperson). Das Kind wird ausschließlich im Hauptverein angemeldet.' : ' (zugleich Hauptvereinsmitglied).'));
         $pdf->paragraph('Fördervereinsantrag: ' . $v('foerdervereinApplicationNumber') . '. Jahresbeitrag: ' . number_format((float)$v('foerdervereinAnnualContribution'), 2, ',', '.') . ' EUR. Die eigenen Einwilligungen und das Lastschriftmandat stehen im separaten Fördervereins-PDF. Die gemeinsame Unterschrift gilt für beide Anträge.');
     }
 
