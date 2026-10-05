@@ -1,0 +1,66 @@
+<section id="membership-result" class="membership-result" hidden tabindex="-1" aria-labelledby="membership-result-title">
+  <h2 id="membership-result-title"></h2>
+  <p data-result-summary></p>
+  <button type="button" data-result-reopen>Bestätigung noch einmal ansehen <span aria-hidden="true">↗</span></button>
+</section>
+
+<dialog id="membership-result-dialog" class="membership-dialog" aria-labelledby="membership-dialog-title" aria-describedby="membership-dialog-intro">
+  <div class="dialog-body">
+    <button class="dialog-close" type="button" data-result-close aria-label="Dialog schließen">×</button>
+    <span class="dialog-symbol" data-result-symbol aria-hidden="true">✓</span>
+    <p class="dialog-eyebrow">Dein Online-Mitgliedsantrag</p>
+    <h2 id="membership-dialog-title" tabindex="-1" autofocus></h2>
+    <p class="dialog-next-step" data-result-next-step hidden>Bitte prüfe jetzt deine E-Mails – auch den Spam-Ordner.</p>
+    <p id="membership-dialog-intro"></p>
+    <ul class="dialog-applications" data-result-applications></ul>
+    <div class="dialog-email">
+      <h3 data-result-email-title></h3>
+      <p data-result-email-text></p>
+    </div>
+    <ul class="dialog-notes" data-result-notes hidden></ul>
+  </div>
+  <footer class="dialog-footer">
+    <p data-result-countdown aria-live="off">Schließt in <strong data-result-seconds>5</strong> Sekunden.</p>
+    <div class="dialog-actions">
+      <button class="dialog-keep-open" type="button" data-result-keep-open>Offen lassen</button>
+      <button class="dialog-done" type="button" data-result-close>Schließen</button>
+    </div>
+  </footer>
+</dialog>
+
+<style>
+  .membership-result{padding:28px;background:#edf5ec;border-left:4px solid #91c82f;scroll-margin-top:150px;color:#123b28;overflow-wrap:anywhere}
+  .membership-result[hidden]{display:none}
+  .membership-result h2{margin:0 0 10px;font-size:1.35rem;line-height:1.25}
+  .membership-result p{margin:0;font-size:.85rem;line-height:1.65}
+  .membership-result button{margin-top:16px;border:0;padding:0;background:none;color:#164f32;font:inherit;font-size:.82rem;font-weight:800;cursor:pointer;text-align:left}
+  .membership-result[data-kind="warning"]{background:#fff6df;border-color:#d59324}
+  .membership-result[data-kind="error"]{background:#fff1ed;border-color:#ac3c25}
+  .membership-dialog{position:fixed;inset:0;box-sizing:border-box;width:min(620px,calc(100% - 28px));max-width:none;max-height:calc(100dvh - 28px);margin:auto;padding:0;border:0;border-radius:14px;background:#fff;color:#173b29;font-family:inherit;box-shadow:0 24px 90px rgb(0 0 0 / 30%);overflow:auto;overscroll-behavior:contain;overflow-wrap:anywhere}
+  .membership-dialog::backdrop{background:rgb(3 25 16 / 72%);backdrop-filter:blur(4px)}
+  .dialog-body{position:relative;padding:30px 30px 24px}
+  .dialog-close{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:50%;background:#f0f4ef;color:#164f32;font:inherit;font-size:1.75rem;line-height:1;cursor:pointer}
+  .dialog-symbol{display:grid;place-items:center;width:46px;height:46px;margin-bottom:16px;border-radius:50%;background:#e6f2d6;color:#164f32;font-size:1.65rem;font-weight:900}
+  .dialog-eyebrow{margin:0 0 8px;font-size:.65rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#607568}
+  .dialog-body h2{margin:0;font-size:clamp(1.5rem,5vw,2rem);line-height:1.12;letter-spacing:-.025em}
+  .dialog-next-step{margin:14px 0 0;padding:10px 12px;border-left:3px solid #91c82f;background:#f1f5e5;font-size:.85rem;font-weight:750;line-height:1.45}.dialog-next-step[hidden]{display:none}
+  #membership-dialog-intro{margin:12px 0 0;font-size:.85rem;line-height:1.6;color:#53675b}
+  .dialog-applications{display:grid;gap:10px;list-style:none;padding:0;margin:20px 0}
+  .dialog-applications:empty{display:none}
+  .dialog-applications :global(li){padding:14px 16px;border:1px solid #d9e4d8;border-left:3px solid #91c82f;border-radius:4px;background:#f8faf7;font-size:.82rem;line-height:1.5}
+  .dialog-applications :global(strong),.dialog-applications :global(span){display:block}
+  .dialog-applications :global(strong){font-size:.92rem}.dialog-applications :global(small){display:block;color:#5d7063;line-height:1.6}
+  .dialog-email{padding:16px;background:#f1f5e5;border-radius:6px}
+  .dialog-email h3{margin:0 0 7px;font-size:.95rem}.dialog-email p{margin:0;font-size:.83rem;line-height:1.6}
+  .dialog-notes{margin:16px 0 0;padding-left:18px;font-size:.82rem;line-height:1.6}.dialog-notes[hidden]{display:none}
+  .dialog-footer{position:sticky;bottom:0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;padding:18px 30px;border-top:1px solid #dce4db;background:#fff}
+  .dialog-footer p{margin:0;color:#5e7064;font-size:.75rem}.dialog-footer p[hidden]{display:none}
+  .dialog-actions{display:flex;gap:10px;margin-left:auto;align-items:center}
+  .dialog-actions button{min-height:44px;padding:10px 14px;border:0;border-radius:4px;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer}
+  .dialog-keep-open{color:#164f32;background:#eef3ec}.dialog-keep-open[hidden]{display:none}.dialog-done{color:white;background:#164f32}
+  .membership-dialog[data-kind="warning"] .dialog-symbol{background:#fff0c8;color:#785012}
+  .membership-dialog[data-kind="error"] .dialog-symbol{background:#ffe4dc;color:#a63d29}
+  .membership-dialog[data-kind="error"] .dialog-email{background:#fff4ec}
+  button:focus-visible,.membership-result:focus-visible{outline:3px solid #91c82f;outline-offset:3px}
+  @media(max-width:500px){.dialog-body{padding:20px 18px}.dialog-footer{padding:14px 18px}.dialog-symbol{width:32px;height:32px;font-size:1.25rem;margin-bottom:12px}.dialog-eyebrow{display:none}.dialog-body h2{font-size:1.4rem;padding-right:16px}.dialog-next-step{font-size:.8rem}.membership-result{padding:22px}.dialog-actions{width:100%;justify-content:flex-end}}
+</style>

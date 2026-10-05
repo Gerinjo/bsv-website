@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import MembershipResultDialog from '../../components/MembershipResultDialog.astro';
 import { withBase } from '../../utils/paths';
 
 const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
@@ -36,6 +37,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
         </aside>
 
         <form id="membership-form" action={endpoint} method="post" enctype="multipart/form-data" novalidate>
+          <MembershipResultDialog />
           <section class="form-section">
             <div class="section-heading"><span>01</span><div><small>Persönliche Daten</small><h2>Wer möchte Mitglied werden?</h2></div></div>
             <div class="fields">
@@ -240,7 +242,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
 
             <div class="submit-row">
               <button type="submit" disabled aria-describedby="membership-requirement-text">Mitgliedsantrag absenden <span>↗</span></button>
-              <p id="form-status" role="status" aria-live="polite"></p>
+              <p id="form-status" role="status" aria-live="polite" tabindex="-1"></p>
             </div>
             <p class="mail-note">Du und die Mitgliederverwaltung erhalten den vollständigen Mitgliedsantrag als PDF mit deinen Angaben, Einwilligungen und deiner Unterschrift. Beim Fußball ist zusätzlich der Spielgenehmigungsantrag beigefügt. Hochgeladene Nachweise gehen an die zuständige Bearbeitung beim BSV.</p>
           </section>
