@@ -12,6 +12,10 @@ test('full membership application routes to administration, pass office and the 
   assert.deepEqual(getMembershipRoutingKeys('internal'), ['membership', 'passwesen', 'membership-registration-copy']);
 });
 
+test('additional Förderverein application resolves only the protected Förderverein route', () => {
+  assert.deepEqual(getMembershipRoutingKeys('foerderverein', 'membership'), ['foerderverein']);
+});
+
 test('team notifications accept only protected team routing keys', () => {
   assert.deepEqual(
     getMembershipRoutingKeys('team', 'team--jugend--u13-d2'),

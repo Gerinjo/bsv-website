@@ -7,19 +7,21 @@ class BsvMembershipPdf extends tFPDF
     private $reference;
     private $receivedAt;
     private $chapter = '';
+    private $supporters;
 
-    public function __construct($reference, $receivedAt)
+    public function __construct($reference, $receivedAt, $supporters = false)
     {
         parent::__construct('P', 'mm', 'A4');
         $this->reference = $reference;
         $this->receivedAt = $receivedAt;
+        $this->supporters = $supporters;
         $this->SetMargins(17, 45, 17);
         $this->SetAutoPageBreak(true, 20);
         $this->AliasNbPages();
         $this->AddFont('BSV', '', 'DejaVuSans.ttf', true);
         $this->AddFont('BSV', 'B', 'DejaVuSans-Bold.ttf', true);
-        $this->SetTitle('Mitgliedsantrag | ' . $reference, true);
-        $this->SetAuthor('BSV Nordstern e.V. Radolfzell', true);
+        $this->SetTitle(($supporters ? 'Fördervereinsantrag' : 'Mitgliedsantrag') . ' | ' . $reference, true);
+        $this->SetAuthor($supporters ? 'Förderverein des BSV Nordstern Radolfzell' : 'BSV Nordstern e.V. Radolfzell', true);
         $this->SetCreator('BSV Online-Mitgliedsantrag', true);
     }
 
@@ -31,7 +33,7 @@ class BsvMembershipPdf extends tFPDF
         $this->SetXY(43, 10);
         $this->SetTextColor(22, 79, 50);
         $this->SetFont('BSV', 'B', 15);
-        $this->Cell(150, 7, 'BSV NORDSTERN');
+        $this->Cell(150, 7, $this->supporters ? 'FÖRDERVEREIN DES BSV NORDSTERN' : 'BSV NORDSTERN');
         $this->SetXY(43, 19);
         $this->SetFont('BSV', '', 9);
         $this->Cell(150, 5, 'Mitgliedsantrag · ' . $this->chapter);
@@ -53,7 +55,7 @@ class BsvMembershipPdf extends tFPDF
         $this->SetXY(17, 284);
         $this->SetFont('BSV', '', 7);
         $this->SetTextColor(90, 105, 95);
-        $this->Cell(145, 4, 'BSV Nordstern e.V. Radolfzell · Schlesierstraße 43 · 78315 Radolfzell');
+        $this->Cell(145, 4, ($this->supporters ? 'Förderverein des BSV Nordstern Radolfzell' : 'BSV Nordstern e.V. Radolfzell') . ' · Schlesierstraße 43 · 78315 Radolfzell');
         $this->Cell(31, 4, 'Seite ' . $this->PageNo() . ' / {nb}', 0, 0, 'R');
         $this->SetXY(17, 289);
         $this->Cell(176, 4, $this->reference . ' · Vertrauliche Antragsunterlagen');
@@ -187,7 +189,7 @@ class BsvMembershipPdf extends tFPDF
         $this->SetXY(17, $y + $height);
     }
 
-    public function signature($png, $place, $date)
+    public function signature($png, $place, $date, $sectionNumber = '08')
     {
         $size = @getimagesizefromstring($png);
         if (!$size || $size[2] !== IMAGETYPE_PNG || $size[0] * $size[1] > 8000000) {
@@ -196,7 +198,7 @@ class BsvMembershipPdf extends tFPDF
         $this->SetFont('BSV', '', 9.5);
         $metadataLines = max(count($this->wrap($place, 82)), count($this->wrap($date, 82)));
         $this->room(56 + $metadataLines * 4.5);
-        $this->section('08', 'Ort, Datum und Unterschrift');
+        $this->section($sectionNumber, 'Ort, Datum und Unterschrift');
         $this->fields(array(array('Ort der Unterschrift', $place), array('Datum der Unterschrift', $date)));
         // Parse the PNG from memory: signed applications never become public files.
         $stream = fopen('php://memory', 'w+b');
@@ -255,6 +257,10 @@ function bsvBuildMembershipPdf($data, $signaturePng)
     $pdf->section('04', 'Unterstützung im Verein');
     $pdf->check('Ja, ich kann mir eine Unterstützung vorstellen.', $yes('supportWilling'));
     if ($yes('supportWilling')) $pdf->paragraph('Ideen oder mögliche Aufgaben: ' . ($v('supportIdeas') !== '' ? $v('supportIdeas') : 'Nicht angegeben'));
+    if ($yes('foerdervereinMembership')) {
+        $pdf->check('Zusätzlich Mitgliedschaft im Förderverein beantragt.', true);
+        $pdf->paragraph('Fördervereinsantrag: ' . $v('foerdervereinApplicationNumber') . '. Jahresbeitrag: ' . number_format((float)$v('foerdervereinAnnualContribution'), 2, ',', '.') . ' EUR. Die eigenen Einwilligungen und das Lastschriftmandat stehen im separaten Fördervereins-PDF. Die gemeinsame Unterschrift gilt für beide Anträge.');
+    }
 
     if ($yes('isFootball')) {
         $pdf->chapter('Spielgenehmigung & Unterlagen');

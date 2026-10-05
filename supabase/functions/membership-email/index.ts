@@ -64,6 +64,7 @@ Deno.serve(async (request) => {
   const applicantAddress = text(body.to, 200).toLowerCase();
   const routingKey = text(body.routingKey, 200).toLowerCase();
   let recipient: string | string[] = '';
+  let copyRecipient: string | undefined;
 
   if (messageType === 'applicant') {
     recipient = applicantAddress;
@@ -94,6 +95,9 @@ Deno.serve(async (request) => {
     const recipients = collectRecipientEmails(recipientRows ?? []);
     if (!recipients?.length) return json({ error: 'invalid_recipient_configuration' }, 503);
     recipient = recipients;
+    if (messageType === 'foerderverein' && !recipients.includes('jerome.ernsberger@gmail.com')) {
+      copyRecipient = 'jerome.ernsberger@gmail.com';
+    }
   }
 
   if (
@@ -121,6 +125,12 @@ Deno.serve(async (request) => {
     if (totalBytes > MAX_ATTACHMENT_BYTES) return json({ error: 'attachments_too_large' }, 413);
     attachments.push({ filename, content, content_type: contentType });
   }
+  // The Förderverein receives its own signed application, never football ID uploads.
+  if (messageType === 'foerderverein' && (attachments.length !== 1 ||
+    attachments[0].content_type !== 'application/pdf' ||
+    !/^Foerdervereinsantrag-FV-[0-9]{8}-[A-Z0-9]{6}\.pdf$/.test(attachments[0].filename))) {
+    return json({ error: 'invalid_attachment' }, 422);
+  }
 
   // PHP invokes the applicant message only after the application was delivered
   // to administration. Persist its opt-in before sending the applicant's copy,
@@ -140,12 +150,15 @@ Deno.serve(async (request) => {
   try {
     const result = await sendEmail({
       to: recipient,
+      bcc: copyRecipient,
       reply_to: replyTo || undefined,
       subject,
       html,
       text: plainText,
       attachments,
-    });
+    }, messageType === 'foerderverein' && /^BSV-[0-9-]+[A-F0-9]+$/.test(text(body.applicationNumber, 100))
+      ? { idempotencyKey: `membership-foerderverein/${getEmailRuntimeConfig().mode}/${body.applicationNumber}` }
+      : {});
     return json({ ok: true, mailMode: result.mode, resendId: result.id, newsletterStatus }, 201);
   } catch (error) {
     console.error('Mitgliedsantrags-Mail konnte nicht versendet werden:', error);

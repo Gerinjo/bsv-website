@@ -51,9 +51,9 @@ const sampleApplication = {
   ],
 };
 
-function render(data, name) {
+function render(data, name, kind = 'membership') {
   const result = spawnSync('php', ['tests/fixtures/membership-pdf.php'], {
-    cwd: root, input: JSON.stringify({ data, signature: signature.stdout.toString('base64') }), maxBuffer: 10 * 1024 * 1024,
+    cwd: root, input: JSON.stringify({ data, kind, signature: signature.stdout.toString('base64') }), maxBuffer: 10 * 1024 * 1024,
   });
   assert.equal(result.status, 0, result.stderr.toString());
   assert.equal(result.stdout.subarray(0, 5).toString(), '%PDF-');
@@ -122,23 +122,48 @@ test('every business field in the online form is represented in the PDF generato
   }
 });
 
+const supporters = {
+  foerdervereinMembership: 'yes', foerdervereinAnnualContribution: '35', foerdervereinApplicationNumber: 'FV-20260913-ABC123',
+  foerdervereinSepaAccepted: true, foerdervereinStatutesAccepted: true, foerdervereinPrivacyAccepted: true,
+  foerdervereinNotes: 'Ich unterstütze die Jugendarbeit. Grüße von Łukasz!',
+};
+
+test('separate Förderverein PDF includes transferred data, own mandate, annual contribution and the shared signature', () => {
+  const result = render({ ...sampleApplication, ...supporters }, 'Foerdervereinsantrag-Beispiel', 'foerderverein');
+  for (const key of ['firstName', 'lastName', 'street', 'city', 'email', 'phone', 'iban', 'accountHolder']) assert.ok(result.text.includes(sampleApplication[key]), key);
+  assert.match(result.text, /FÖRDERVEREIN DES BSV NORDSTERN/);
+  assert.match(result.text, /35,00 EUR/);
+  assert.match(result.text, /18\.03\.2014/);
+  assert.match(result.text, /13\.09\.2026/);
+  assert.match(result.text, /Ich ermächtige den Förderverein/);
+  assert.match(result.text, /Satzung und Vorstandsbeschlüsse/);
+  assert.match(result.text, /Personen- und\s+Kontodaten/);
+  assert.match(result.text, /Unterschrift bestätigt beide Mitgliedsanträge/);
+  assert.match(result.binary, /\/Width 640/);
+  assert.match(result.info, /Pages:\s+2/);
+  assert.doesNotMatch(result.text, /FC Beispielstadt|DFBnet|Ausweis-Mila|Ausweise-Eltern/);
+});
+
 test('real PHP submission sends the same complete PDF to both recipients and keeps trainer mail attachment-free', async (t) => {
   const directory = mkdtempSync(join(tmpdir(), 'bsv-membership-mail-'));
   const api = join(directory, 'api');
   mkdirSync(api);
-  for (const name of ['membership.php', 'membership-v3.php', 'membership-pdf.php', 'vendor', 'assets']) {
+  for (const name of ['membership.php', 'membership-v3.php', 'membership-pdf.php', 'foerderverein-pdf.php', 'vendor', 'assets']) {
     cpSync(join(root, 'public/api', name), join(api, name), {
       recursive: true, filter: source => !/\.(?:mtx\.php|cw\.dat|cw127\.php)$/.test(source),
     });
   }
   writeFileSync(join(api, 'membership-sponsors-cache.json'), JSON.stringify({ version: 1, sponsors: [] }));
   const messages = [];
+  let failMessageType = '';
   const bridge = createServer(async (request, response) => {
     const chunks = [];
     for await (const chunk of request) chunks.push(chunk);
-    messages.push(JSON.parse(Buffer.concat(chunks).toString()));
-    response.writeHead(201, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ ok: true }));
+    const message = JSON.parse(Buffer.concat(chunks).toString());
+    messages.push(message);
+    const fail = message.messageType === failMessageType;
+    response.writeHead(fail ? 502 : 201, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify(fail ? { error: 'email_failed' } : { ok: true }));
   });
   bridge.listen(0, '127.0.0.1');
   await once(bridge, 'listening');
@@ -191,6 +216,7 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     assert.equal(response.status, 200, await response.clone().text());
     assert.equal((await response.json()).confirmationEmailSent, true);
     const internal = messages.find(message => message.messageType === 'internal');
+    assert.ok(!messages.some(message => message.messageType === 'foerderverein'));
     const applicant = messages.find(message => message.messageType === 'applicant');
     const document = message => message.attachments.find(file => file.filename.startsWith('BSV-Mitgliedsantrag-'));
     assert.ok(document(internal));
@@ -212,6 +238,54 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
       assert.ok(internal.attachments.some(file => file.filename === 'Weitere-Unterlage-1.png'));
     }
   }
+
+  for (const failure of ['', 'foerderverein', 'applicant', 'internal']) {
+    messages.length = 0;
+    failMessageType = failure;
+    const response = await submit(supporters, 1);
+    const result = await response.json();
+    if (failure === 'internal') {
+      assert.equal(response.status, 500);
+      assert.deepEqual(messages.map(m => m.messageType), ['internal']);
+      continue;
+    }
+    assert.equal(response.status, 200, JSON.stringify(result));
+    assert.equal(result.foerdervereinStatus, failure === 'foerderverein' ? 'failed' : 'sent');
+    assert.equal(result.confirmationEmailSent, failure !== 'applicant');
+    assert.match(result.foerdervereinApplicationNumber, /^FV-\d{8}-[A-Z0-9]{6}$/);
+    const internal = messages.find(m => m.messageType === 'internal');
+    const fv = messages.find(m => m.messageType === 'foerderverein');
+    const applicant = messages.find(m => m.messageType === 'applicant');
+    assert.equal(fv.attachments.length, 1);
+    const attachment = fv.attachments[0];
+    assert.match(attachment.filename, /^Foerdervereinsantrag-FV-/);
+    assert.deepEqual(attachment, applicant.attachments.find(a => a.filename === attachment.filename));
+    assert.deepEqual(attachment, internal.attachments.find(a => a.filename === attachment.filename));
+    assert.deepEqual(messages.find(m => m.messageType === 'team').attachments, []);
+    assert.match(applicant.text, /35,00 EUR jährlich/);
+    if (failure === 'foerderverein') {
+      assert.match(applicant.text, /Bitte sende keinen zweiten Antrag/);
+      assert.equal(messages.filter(m => m.messageType === 'internal').length, 2);
+    }
+  }
+  failMessageType = '';
+  for (const overrides of [
+    { foerdervereinAnnualContribution: '10' }, { foerdervereinAnnualContribution: '10001' },
+    { foerdervereinAnnualContribution: '11.5' }, { foerdervereinAnnualContribution: '11e2' },
+    { foerdervereinSepaAccepted: false }, { foerdervereinStatutesAccepted: false }, { foerdervereinPrivacyAccepted: false },
+    { foerdervereinNotes: 'a'.repeat(2001) }, { signingDate: '2026-02-31' },
+  ]) {
+    messages.length = 0;
+    const response = await submit({ ...supporters, ...overrides });
+    assert.equal(response.status, 422, JSON.stringify(overrides));
+    assert.equal(messages.length, 0, 'Invalid extra application must prevent either application being sent');
+  }
+  messages.length = 0;
+  const optedOut = await submit({ ...supporters, foerdervereinMembership: '', foerdervereinAnnualContribution: '10' });
+  assert.equal(optedOut.status, 200);
+  assert.equal((await optedOut.json()).foerdervereinStatus, 'not_requested');
+  assert.ok(!messages.some(m => m.messageType === 'foerderverein'));
+  assert.ok(messages.every(m => m.attachments.every(a => !a.filename.startsWith('Foerdervereinsantrag-'))));
   messages.length = 0;
   const tooLong = await submit({ supportIdeas: 'a'.repeat(2001) });
   assert.equal(tooLong.status, 422);
