@@ -302,7 +302,7 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   assert.equal(mail.to, 'organizer@example.org');
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /Girls-Cup-Anmeldung/);
-  assert.match(mail.html, /20. Februar 2027[\s\S]*21. Februar 2027/);
+  assert.match(mail.html, /20\.02\.2027[\s\S]*21\.02\.2027/);
   assert.match(mail.html, /E-Juniorinnen: 2 Teams/);
   assert.match(mail.html, /B-Juniorinnen: 1 Team/);
   assert.match(mail.html, /Startgebühren insgesamt: 100 €/);

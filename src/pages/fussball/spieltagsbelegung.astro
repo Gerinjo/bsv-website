@@ -1,4 +1,5 @@
 ---
+import { formatDateTime } from '../../utils/dates.mjs';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -37,7 +38,7 @@ const pendingCount = days.reduce((sum, d) => sum + d.pending.length, 0);
 const conflictDays = days.filter((d) => d.conflicts.length).length;
 const goalConflictDays = days.filter((d) => d.goalConflicts.length).length;
 const relocationCount = plannedBookings.filter((b) => b.relocation === 'suggested').length;
-const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Berlin' }).format(new Date(schedule.checkedAt));
+const checkedAt = formatDateTime(schedule.checkedAt);
 ---
 <Layout title="Spieltagsbelegung | BSV Nordstern Radolfzell" description="Spiele und Jugend-Spieltage auf Haupt- und Nebenplatz: Belegung der Spielfeldhälften, Zeitpuffer und Platzkonflikte.">
   <Header />
@@ -67,8 +68,8 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
       </div>
       <p class="planning-note">Gleiche Teamstärke hintereinander (7er, 9er, 11er): 15 Min. Wechselzeit. Sonst 30 Min. Vorlauf und 15 Min. Nachlauf. E-Spieltage: 1 Std.; F- und G-Spieltage: 2 Std.; sonst reguläre Spielzeit + 15 Min. Halbzeitpause. Bogensport sperrt den Nebenplatz freitags 17:30–19:00 Uhr und sonntags 10:00–12:00 Uhr, ohne zusätzliche Puffer. Sonstige Trainings- und Fremdbelegungen sind nicht enthalten. Hälften rechnerisch verteilt, keine verbindliche Seitenzuweisung.</p>
       <p class="planning-note">5er-Tore: Hauptplatz 4, Nebenplatz 6. E-/F-Spieltag jeweils 4, D-Spiel jeweils 2. Der Bedarf zählt einschließlich Puffer; kein Tortransport zwischen den Plätzen eingeplant. Für andere Spielformen ist kein 5er-Torbedarf hinterlegt.</p>
-      <p class="planning-note">G1 + G2: zusätzlich erfasster Gruppenplan, Stand 15.09.2026. Gemeinsamer Heimspieltag am 11.10., 09:00–11:00 Uhr, auf dem halben Hauptplatz.</p>
-      <p class="planning-note">F1, F2 und F3: zusätzlich erfasste Gruppenpläne (Stand 10.–15.09.2026). Heimspieltage am 10.10. um 09:00, 12:00 und 15:00 Uhr; jeweils zwei Stunden zuzüglich Puffer auf einem halben Nebenplatz eingeplant. Der Hauptplatz bleibt für C1 und Herren 1 verfügbar.</p>
+      <p class="planning-note">G1 + G2: zusätzlich erfasster Gruppenplan, Stand 15.09.2026. Gemeinsamer Heimspieltag am 11.10.2026, 09:00–11:00 Uhr, auf dem halben Hauptplatz.</p>
+      <p class="planning-note">F1, F2 und F3: zusätzlich erfasste Gruppenpläne (Stand 10.09.2026–15.09.2026). Heimspieltage am 10.10.2026 um 09:00, 12:00 und 15:00 Uhr; jeweils zwei Stunden zuzüglich Puffer auf einem halben Nebenplatz eingeplant. Der Hauptplatz bleibt für C1 und Herren 1 verfügbar.</p>
       <div class="legend" aria-label="Legende"><span class="full">Ganzer Platz</span><span class="half">Halber Platz</span><span class="kids">Jugend-Spieltag</span><span class="girls">Juniorinnen 7er</span><span class="fixed">Bogensport</span><span class="conflict">Platzkonflikt</span></div>
       <div id="matchday-plans" aria-live="polite">
         {!days.length && <p class="empty">Im Planungszeitraum sind keine Spiele für das BSV-Sportgelände eingetragen.</p>}
@@ -90,7 +91,7 @@ const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle:'medium', timeSty
         <p>Bei gleicher Teamstärke auf derselben Fläche reichen 15 Minuten zwischen geplantem Spielende und nächstem Anstoß. Der Nachlauf des ersten Spiels zählt als Wechselzeit; der Vorlauf des Folgespiels wird entsprechend gekürzt. Bei anderer Teamstärke bleiben die folgenden Standardpuffer bestehen.</p>
         <dl>
           <div><dt>E-Jugend-Viererspieltag</dt><dd>½ Platz · 60 Min. + 45 Min. Puffer · 4 5er-Tore. Ein gemeinsamer Spieltag mehrerer BSV-Teams zählt einmal.</dd></div>
-          <div><dt>G- / F-Jugend-Spieltag</dt><dd>120 Min. + 45 Min. Puffer, ohne zusätzliche Halbzeitpause. Platzumfang je Veranstaltung. G1 + G2 am 11.10.: gemeinsam ½ Hauptplatz, belegt 08:30–11:15 Uhr.</dd></div>
+          <div><dt>G- / F-Jugend-Spieltag</dt><dd>120 Min. + 45 Min. Puffer, ohne zusätzliche Halbzeitpause. Platzumfang je Veranstaltung. G1 + G2 am 11.10.2026: gemeinsam ½ Hauptplatz, belegt 08:30–11:15 Uhr.</dd></div>
           <div><dt>D-Junioren / D-Juniorinnen</dt><dd>7er · ½ Platz · 2 × 30 Min. + 15 Min. Pause + 45 Min. Puffer · 2 5er-Tore.</dd></div>
           <div><dt>C- / B-Juniorinnen</dt><dd>Mindestens eine 7er-Meldung: ½ Platz; sonst ganzer Platz. Spielzeit 2 × 35 / 2 × 40 Min. + 15 Min. Pause + 45 Min. Puffer.</dd></div>
           <div><dt>C1 / C2</dt><dd>11er / 9er · ganzer Platz · 2 × 35 Min. + 15 Min. Pause + 45 Min. Puffer.</dd></div>

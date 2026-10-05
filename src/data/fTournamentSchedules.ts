@@ -12,9 +12,9 @@ function schedule({ team, group, checkedAt, participants, dates }: Group): Manua
     id: `${team.toLowerCase()}-gruppe-${group}-herbst-2026`, teamId: ownTeamId, ownTeamIds: [ownTeamId],
     label: team, category: 'F-Junioren', season: '2026-2027', checkedAt: checkedAt + 'T12:00:00+02:00',
     sourceLabel: `Gruppenplan · Gruppe ${group} · Herbstrunde`,
-    notice: 'Termine laut Gruppenplan; Änderungen vorbehalten. Noch nicht angegebene Uhrzeiten werden ergänzt. Der Heimspieltag am 10.10. ist auf einem halben Nebenplatz eingeplant.',
+    notice: 'Termine laut Gruppenplan; Änderungen vorbehalten. Noch nicht angegebene Uhrzeiten werden ergänzt. Der Heimspieltag am 10.10.2026 ist auf einem halben Nebenplatz eingeplant.',
     homePitch: 'Nebenplatz', halves: 1, pagePath: team === 'F1' ? '/jugend/u9-f' : '/jugend/u8-f',
-    homePitchNote: 'Platzplanung am 10.10.: halber Nebenplatz, damit der Hauptplatz für C1 und Herren 1 verfügbar bleibt.',
+    homePitchNote: 'Platzplanung am 10.10.2026: halber Nebenplatz, damit der Hauptplatz für C1 und Herren 1 verfügbar bleibt.',
     sectionId: 'spieltage-' + team.toLowerCase(),
     days: dates.map(({ time, venue, home = false, ...day }) => ({
       ...day, firstTeamKickoff: time, home, title: 'Fair-Play-Spieltag', url: '', teams,

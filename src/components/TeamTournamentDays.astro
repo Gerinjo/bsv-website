@@ -1,4 +1,5 @@
 ---
+import { formatDate, formatDateTime } from '../utils/dates.mjs';
 import type { TournamentSchedule } from '../utils/tournamentDays';
 import { isBsvHomeTournament, splitTournamentDays, tournamentScheduleWithFallback } from '../utils/tournamentDays';
 import { clockLabel, matchdaySettings, timeMinutes } from '../utils/matchdayPlan';
@@ -11,9 +12,9 @@ const { schedule, stale } = await tournamentScheduleWithFallback(fallback);
 const { upcoming, past } = splitTournamentDays(schedule.days);
 const date = (value: string) => new Date(`${value}T12:00:00Z`);
 const format = (value: string, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', ...options }).format(date(value));
-const checkedAt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt));
+const checkedAt = formatDateTime(schedule.checkedAt);
 const manual = Boolean(schedule.sourceLabel);
-const sourceDate = manual ? format(schedule.checkedAt.slice(0, 10), { dateStyle: 'medium' }) : checkedAt + ' Uhr';
+const sourceDate = manual ? formatDate(schedule.checkedAt) : checkedAt + ' Uhr';
 const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', days: [...past].reverse() }].map((group) => ({
   ...group, days: group.days.map((day) => ({ ...day, pitchOverride: matchdayPitchOverrides.find((entry) => entry.date === day.date && entry.teamId === schedule.teamId) })),
 }));
@@ -32,9 +33,9 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
     <div class:list={["tournament-group", { "is-past": !!group.title }]}>
       {group.title && <h3 class="past-title">{group.title}</h3>}
       {group.days.map((day) => (
-        <article class="tournament-day" aria-label={`${day.title}, ${format(day.date, { dateStyle: 'long' })}`}>
+        <article class="tournament-day" aria-label={`${day.title}, ${formatDate(day.date)}`}>
           <div class="tournament-date">
-            <time datetime={day.date}><span>{format(day.date, { weekday: 'long' })}</span><strong>{format(day.date, { day: '2-digit', month: '2-digit' })}</strong><span>{format(day.date, { year: 'numeric' })}</span></time>
+            <time datetime={day.date}><span>{format(day.date, { weekday: 'long' })}</span><strong>{formatDate(day.date)}</strong></time>
             {day.cancelled ? <p class="cancelled"><b>Abgesagt</b></p> : timeMinutes(day.firstTeamKickoff) === null ? <p><b>Uhrzeit offen</b>{manual && <small>Dauer: 2 Std.</small>}</p> : <p><b>{day.firstTeamKickoff} Uhr</b><small>{manual ? `Bis ${clockLabel(timeMinutes(day.firstTeamKickoff)! + matchdaySettings.tournament)} Uhr · 2 Std.` : `Erstes ${teamLabel}-Spiel`}</small></p>}
           </div>
           <div class="tournament-location">
@@ -46,7 +47,7 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
             <span class="field-label">Austragungsort</span>
             {day.pitchOverride && <p><strong>BSV-{day.pitchOverride.pitch} (Planung)</strong></p>}
             {day.venues.length ? day.venues.map((venue) => <p>{day.pitchOverride ? 'Gemeldet: ' : ''}{venue.name}</p>) : <p>Noch nicht angegeben</p>}
-            {day.url && <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${format(day.date, { dateStyle: 'long' })} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>}
+            {day.url && <a href={day.url} target="_blank" rel="noopener noreferrer" aria-label={`${day.title} am ${formatDate(day.date)} auf FUSSBALL.DE`}>Spieltag auf FUSSBALL.DE <span aria-hidden="true">↗</span></a>}
             {((manual && day.home) || day.pitchOverride) && <a href={withBase('/fussball/spieltagsbelegung') + '#tag-' + day.date}>Spieltagsbelegung <span aria-hidden="true">→</span></a>}
           </div>
           <div class="tournament-teams">
@@ -67,10 +68,10 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
   .tournament-heading h2 { margin:0; font-size:32px; line-height:1.15; letter-spacing:0; }
   .source-status { margin:0; color:#5c6c61; font-size:12px; line-height:1.6; }
   .schedule-notice { margin:0 0 16px; padding:12px 16px; border-left:3px solid var(--yellow); background:#f5f7f5; font-size:13px; line-height:1.6; }
-  .tournament-day { display:grid; grid-template-columns:125px minmax(0,1fr) minmax(0,1fr); gap:30px; padding:28px 0; border-bottom:1px solid #dce4de; }
+  .tournament-day { display:grid; grid-template-columns:145px minmax(0,1fr) minmax(0,1fr); gap:30px; padding:28px 0; border-bottom:1px solid #dce4de; }
   .tournament-date { padding-left:16px; border-left:3px solid var(--yellow); }
   .tournament-date time span,.tournament-date small { display:block; font-size:12px; line-height:1.5; }
-  .tournament-date time strong { display:block; margin:5px 0 0; font-size:32px; line-height:1.2; letter-spacing:0; }
+  .tournament-date time strong { display:block; margin:5px 0 0; font-size:19px; line-height:1.2; letter-spacing:0; white-space:nowrap; }
   .tournament-date p { margin:15px 0 0; }
   .tournament-date b { font-size:16px; }
   .tournament-date .cancelled { color:#9a2929; }
@@ -92,11 +93,12 @@ const groups = [{ title: '', days: upcoming }, { title: 'Vergangene Spieltage', 
   @media(max-width:760px) {
     .tournament-heading { display:block; }
     .source-status { margin-top:12px; }
-    .tournament-day { grid-template-columns:105px minmax(0,1fr); gap:20px; }
+    .tournament-day { grid-template-columns:125px minmax(0,1fr); gap:20px; }
     .tournament-teams { grid-column:2; }
   }
   @media(max-width:420px) {
-    .tournament-day { grid-template-columns:105px minmax(0,1fr); gap:16px; }
+    .tournament-day { grid-template-columns:minmax(0,1fr); gap:16px; }
+    .tournament-teams { grid-column:1; }
     .tournament-date { padding-left:10px; }
     .tournament-location h3 { font-size:18px; }
   }

@@ -73,7 +73,7 @@ export const documentPages: Record<string, DocumentProfile> = {
     type: 'Beitragsordnung',
     edition: 'Gültig ab 01.01.2026',
     readingTime: 'Beiträge & Regelungen',
-    intro: 'Die Beitragsordnung schafft Transparenz über Mitgliedsbeiträge, Zahlungswege und Ermäßigungen. Die zum 1. Januar 2026 beschlossenen Anpassungen sind hier übersichtlich zusammengefasst.',
+    intro: 'Die Beitragsordnung schafft Transparenz über Mitgliedsbeiträge, Zahlungswege und Ermäßigungen. Die zum 01.01.2026 beschlossenen Anpassungen sind hier übersichtlich zusammengefasst.',
     highlights: [
       { value: '125 €', label: 'Fußball aktiv', detail: 'Jahresbeitrag ab 2026' },
       { value: '100 €', label: 'Junge Sterne', detail: 'Jahresbeitrag ab 2026' },

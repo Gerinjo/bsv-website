@@ -16,9 +16,9 @@ export const gastronomy = {
   reservationPhone: '+49 160 92658131',
   reservationPhoneHref: 'tel:+4916092658131',
   vacation: {
-    from: '17. August 2026',
-    through: '7. September 2026',
-    reopens: '8. September 2026',
+    from: '17.08.2026',
+    through: '07.09.2026',
+    reopens: '08.09.2026',
   },
   menuPdf: 'https://bsvnordstern.de/j4/images/bsv/gastro/speisekarte/Speisekarte_BSV_JAN_2024.pdf',
   lieferandoImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/lieferando.jpg',

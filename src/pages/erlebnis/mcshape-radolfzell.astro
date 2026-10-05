@@ -108,7 +108,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
         <div class="field"><label for="mc-last-name">Nachname</label><input id="mc-last-name" name="lastName" autocomplete="family-name" minlength="2" maxlength="80" required /></div>
         <div class="field birth-field">
           <label for="mc-birth-date">Geburtsdatum</label>
-          <input id="mc-birth-date" name="birthDate" type="date" autocomplete="bday" aria-describedby="mc-birth-hint" required />
+          <input id="mc-birth-date" name="birthDate" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" maxlength="10" autocomplete="bday" aria-describedby="mc-birth-hint" required />
           <p class="field-hint" id="mc-birth-hint">Mindestalter für die Online-Anfrage aktuell: {minimumAge} Jahre.</p>
         </div>
         <div class="field"><label for="mc-email">E-Mail-Adresse</label><input id="mc-email" name="email" type="email" autocomplete="email" maxlength="160" required /></div>
@@ -143,6 +143,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
 </Layout>
 
 <script>
+  import { berlinToday, parseGermanDate, formatGermanDate } from '../../../supabase/functions/_shared/form-dates.mjs';
   const form = document.querySelector<HTMLFormElement>('#mcshape-interest-form');
   const status = document.querySelector<HTMLElement>('#mcshape-form-status');
   const success = document.querySelector<HTMLElement>('#mcshape-form-success');
@@ -156,7 +157,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
   let isSubmitting = false;
 
   const calculateAge = (value: string) => {
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(parseGermanDate(value));
     if (!match) return null;
     const year = Number(match[1]);
     const month = Number(match[2]);
@@ -164,7 +165,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
     const birth = new Date(year, month - 1, day);
     if (birth.getFullYear() !== year || birth.getMonth() !== month - 1 || birth.getDate() !== day) return null;
 
-    const today = new Date();
+    const today = new Date(`${berlinToday()}T12:00:00`);
     let age = today.getFullYear() - year;
     if (today.getMonth() < month - 1 || (today.getMonth() === month - 1 && today.getDate() < day)) age -= 1;
     return age;
@@ -183,10 +184,10 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
 
     const age = calculateAge(birthInput.value);
     if (age === null || age < 0) {
-      birthInput.setCustomValidity('Bitte ein gültiges Geburtsdatum angeben.');
+      birthInput.setCustomValidity('Bitte ein gültiges Geburtsdatum im Format TT.MM.JJJJ angeben.');
       birthInput.setAttribute('aria-invalid', 'true');
       birthHint.classList.add('is-error');
-      birthHint.textContent = 'Bitte ein gültiges Geburtsdatum angeben.';
+      birthHint.textContent = 'Bitte ein gültiges Geburtsdatum im Format TT.MM.JJJJ angeben.';
       return false;
     }
 
@@ -234,6 +235,10 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
     });
   });
 
+  birthInput?.addEventListener('change', () => {
+    const iso = parseGermanDate(birthInput.value);
+    if (iso) birthInput.value = formatGermanDate(iso);
+  });
   updateFormState();
 
   form?.addEventListener('submit', async (event) => {
@@ -252,7 +257,7 @@ const minimumAge = MCSHAPE_MINIMUM_AGE;
     const payload = {
       firstName: String(data.get('firstName') ?? ''),
       lastName: String(data.get('lastName') ?? ''),
-      birthDate: String(data.get('birthDate') ?? ''),
+      birthDate: parseGermanDate(data.get('birthDate')),
       email: String(data.get('email') ?? ''),
       phone: String(data.get('phone') ?? ''),
       interest: String(data.get('interest') ?? ''),

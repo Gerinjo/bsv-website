@@ -32,11 +32,11 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     summary: 'Weihnachtlicher Hallenfußball in der Unterseesporthalle Radolfzell. Jedes Kind bekommt eine Überraschung – und vielleicht schaut der Nikolaus vorbei.',
     facts: [`${BAMBINI_EVENT.date} · ${BAMBINI_EVENT.venue}`, BAMBINI_EVENT.address, 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', 'Mannschaft anmelden und Wunschzeiten auswählen'],
     actionLabel: 'Mannschaft anmelden', actionHref: '/erlebnis/weihnachts-bambini-spieltag', external: false, accent: '#a7323c', symbol: '✦',
-    logoSrc: bambiniLogoWeb.src, logoAlt: 'Eventlogo Weihnachtlicher Bambini-Spieltag · BSV Nordstern', logoBackground: '#0e3929', date: '12. Dezember 2026',
+    logoSrc: bambiniLogoWeb.src, logoAlt: 'Eventlogo Weihnachtlicher Bambini-Spieltag · BSV Nordstern', logoBackground: '#0e3929', date: '12.12.2026',
   },
   {
     id: girlsCup.id, partner: girlsCup.title, title: 'Zwei Turniertage. Vier Altersklassen. Ein Wochenende Hallenfußball.', menuTitle: girlsCup.title, category: 'Juniorinnen · Futsalturnier',
-    summary: `Hallenfußball in der ${girlsCup.venue}: E- und D-Juniorinnen am 20. Februar, C- und B-Juniorinnen am 21. Februar 2027.`,
+    summary: `Hallenfußball in der ${girlsCup.venue}: E- und D-Juniorinnen am 20.02.2027, C- und B-Juniorinnen am 21.02.2027.`,
     facts: [...girlsCup.days.map((day) => `${day.date}: ${day.divisions.join(' & ')}`), `${girlsCup.venue} · ${girlsCup.address}`, girlsCup.fee],
     actionLabel: 'Teams anmelden', actionHref: `${girlsCup.href}#anmeldung`, external: false, accent: '#e4bf6a', symbol: '⚽',
     logoSrc: girlsCup.artwork, logoAlt: girlsCup.title, logoBackground: '#0e3929', date: girlsCup.date,
@@ -62,7 +62,7 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     id: 'porsche-maedchencamp', partner: 'Porsche Fußballschule · Stuttgarter Kickers', title: 'Mädchenfußballcamp beim BSV Nordstern.', menuTitle: 'Porsche Mädchenfußballcamp', category: 'Mädchenfußball & Feriencamp',
     summary: 'Das Hallencamp verbindet qualifiziertes, altersgerechtes Training mit gemeinsamen Erlebnissen. Willkommen sind fußballbegeisterte Mädchen – unabhängig davon, ob sie bereits im Verein spielen.',
     facts: ['Für Mädchen von 6 bis 14 Jahren','Zwei Trainingseinheiten pro Camptag','Ausstattung und Verpflegung inklusive'], actionLabel: 'Mehr zur Kooperation', actionHref: '/erlebnis/porsche-maedchenfussballcamp', external: false, accent: '#009fe3', symbol: '★',
-    logoSrc: 'https://fussballschule.stuttgarter-kickers.de/uploads/host/logo/1/square_regular_logo_original.png', logoAlt: 'Stuttgarter Kickers', logoBackground: '#ffffff', logoLabel: 'Porsche Fußballschule · Stuttgarter Kickers', date: '26.–28. Oktober 2026',
+    logoSrc: 'https://fussballschule.stuttgarter-kickers.de/uploads/host/logo/1/square_regular_logo_original.png', logoAlt: 'Stuttgarter Kickers', logoBackground: '#ffffff', logoLabel: 'Porsche Fußballschule · Stuttgarter Kickers', date: '26.10.2026 – 28.10.2026',
   },
   {
     id: 'buergerstiftung-grundschulturnier', partner: 'Bürgerstiftung Radolfzell', title: 'Gemeinsam für das Zeller Grundschulturnier.', menuTitle: 'Bürgerstiftung Radolfzell · Grundschulturnier', category: 'Schule, Bewegung & Gemeinschaft',
@@ -71,8 +71,8 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
   },
   {
     id: 'tag-des-maedchenfussballs', partner: 'Tag des Mädchenfußballs', title: 'Ein Aktionstag des BSV Nordstern mit Unterstützung des Südbadischen Fußballverbands (SBFV).', menuTitle: 'Tag des Mädchenfußballs', category: 'Mädchenfußball · Aktionstag',
-    summary: 'Bewegung, Fairplay und jede Menge Spaß: Beim Tag des Mädchenfußballs können junge Spielerinnen Technik, Spielformen und gemeinsames Fußballerlebnis ohne Leistungsdruck entdecken.', facts: ['Technikstationen mit Dribbling, Passen und Schießen','Spiele in gemischten Teams und DFB-Abzeichen','Rückblick auf den Aktionstag vom 11. Mai 2025'],
-    actionLabel: 'Rückblick 2025 ansehen', actionHref: '/erlebnis/tag-des-maedchenfussballs', external: false, accent: '#f4d638', symbol: '♀︎⚽', logoSrc: '/images/events/tdm/2025/01-gruppenfoto.jpg', logoAlt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025', logoBackground: '#164f32', date: '11. Mai 2025',
+    summary: 'Bewegung, Fairplay und jede Menge Spaß: Beim Tag des Mädchenfußballs können junge Spielerinnen Technik, Spielformen und gemeinsames Fußballerlebnis ohne Leistungsdruck entdecken.', facts: ['Technikstationen mit Dribbling, Passen und Schießen','Spiele in gemischten Teams und DFB-Abzeichen','Rückblick auf den Aktionstag vom 11.05.2025'],
+    actionLabel: 'Rückblick 2025 ansehen', actionHref: '/erlebnis/tag-des-maedchenfussballs', external: false, accent: '#f4d638', symbol: '♀︎⚽', logoSrc: '/images/events/tdm/2025/01-gruppenfoto.jpg', logoAlt: 'Gruppenfoto vom Tag des Mädchenfußballs 2025', logoBackground: '#164f32', date: '11.05.2025',
   },
 
   {
