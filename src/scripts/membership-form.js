@@ -49,6 +49,25 @@ const guardianSection = document.querySelector('#guardian-section');
 const footballSection = document.querySelector('#football-section');
 const supportWilling = document.querySelector('#supportWilling');
 const supportDetails = document.querySelector('#support-details');
+const foerdervereinMembership = document.querySelector('#foerdervereinMembership');
+const foerdervereinDetails = document.querySelector('#foerderverein-details');
+const foerdervereinAvailability = document.querySelector('#foerderverein-availability');
+let foerdervereinAvailable = false;
+const updateFoerderverein = () => {
+  const selected = foerdervereinMembership.checked;
+  foerdervereinMembership.disabled = !foerdervereinAvailable && !selected;
+  foerdervereinMembership.setAttribute('aria-expanded', String(selected));
+  foerdervereinMembership.setCustomValidity(selected && !foerdervereinAvailable ? 'Der gemeinsame Fördervereinsantrag ist momentan nicht verfügbar. Bitte versuche es später erneut oder nutze den separaten Antrag.' : '');
+  foerdervereinDetails.hidden = !selected;
+  document.querySelector('#foerderverein-signature-hint').hidden = !selected;
+  foerdervereinDetails.querySelectorAll('input, textarea').forEach((control) => {
+    control.disabled = !selected;
+    control.required = selected && control.hasAttribute('data-fv-required');
+    if (!selected && control.type === 'checkbox') control.checked = false;
+  });
+  submitButton.firstChild.textContent = selected ? 'Beide Mitgliedsanträge absenden ' : 'Mitgliedsantrag absenden ';
+};
+foerdervereinMembership.addEventListener('change', updateFoerderverein);
 const birthDate = document.querySelector('#birthDate');
 const nationality = document.querySelector('#nationality');
 const internationalSection = document.querySelector('#international-section');
@@ -280,6 +299,10 @@ const createCaptcha = async () => {
     const response = await fetch(endpoint, { credentials: 'include', headers: { Accept: 'application/json' } });
     const result = await response.json();
     if (!response.ok || !result.ok) throw new Error();
+    foerdervereinAvailable = result.features?.foerdervereinMembership === true;
+    foerdervereinAvailability.hidden = foerdervereinAvailable;
+    foerdervereinAvailability.textContent = 'Der gemeinsame Fördervereinsantrag ist momentan nicht verfügbar. Du kannst den oben verlinkten separaten Antrag nutzen.';
+    updateFoerderverein();
     document.querySelector('#captcha-question').textContent = `${result.a} + ${result.b}`;
   } catch {
     document.querySelector('#captcha-question').textContent = '? + ?';
@@ -294,6 +317,7 @@ form.addEventListener('submit', async (event) => {
   updateInternational();
   updateRegistrationType();
   updateTeamSection();
+  updateFoerderverein();
 
   if (!contributionAccepted.checked || !statutesAccepted.checked) {
     status.textContent = 'Ohne die Bestätigung der Beitragsordnung und der Vereinssatzung ist keine Mitgliedschaft möglich.';
@@ -316,6 +340,7 @@ form.addEventListener('submit', async (event) => {
   updateMembershipEligibility();
   status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
   const newsletterRequested = form.querySelector('input[name="emailNewsletterAccepted"]').checked || form.querySelector('input[name="emailGeneralInfoAccepted"]').checked;
+  const foerdervereinRequested = foerdervereinMembership.checked;
 
   const data = new FormData(form);
   dateInputs.forEach((input) => data.set(input.name, parseGermanDate(input.value)));
@@ -337,11 +362,20 @@ form.addEventListener('submit', async (event) => {
 
     form.reset();
     updateDepartment();
+    updateFoerderverein();
     supportDetails.hidden = true;
     clearSignature.click();
     document.querySelector('#signingDate').value = formatGermanDate(berlinToday());
     await createCaptcha();
-    status.textContent = `Vielen Dank! Dein Antrag wurde unter der Nummer ${result.applicationNumber} versendet. Du erhältst eine Eingangsbestätigung mit deinem Mitgliedsantrag per E-Mail.`;
+    status.textContent = `Vielen Dank! Dein Hauptvereinsantrag wurde unter der Nummer ${result.applicationNumber} versendet.`;
+    if (foerdervereinRequested) {
+      status.textContent += result.foerdervereinStatus === 'sent'
+        ? ` Auch dein Fördervereinsantrag ${result.foerdervereinApplicationNumber} wurde versendet.`
+        : ' Die direkte Weiterleitung an den Förderverein konnte nicht bestätigt werden. Dein Fördervereinsantrag liegt der Mitgliederverwaltung vor. Bitte sende keinen zweiten Antrag; wende dich bei Rückfragen an info@bsvnordstern.de.';
+    }
+    status.textContent += result.confirmationEmailSent === false
+      ? ' Deine Eingangsbestätigung konnte leider nicht versendet werden. Bitte wende dich mit der Antragsnummer an info@bsvnordstern.de; sende den Antrag nicht erneut.'
+      : ` Du erhältst ${foerdervereinRequested ? 'beide unterschriebenen Anträge' : 'deinen unterschriebenen Antrag'} als PDF per E-Mail.`;
     if (newsletterRequested) {
       status.textContent += result.newsletterStatus === 'requested'
         ? ' Für deine ausgewählten E-Mail-Angebote erhältst du zusätzlich eine gemeinsame Verifizierungsmail, sofern sie noch nicht bestätigt sind. Ein Klick auf den Link bestätigt deine Auswahl. Prüfe auch den Spam-Ordner.'
@@ -360,5 +394,6 @@ form.addEventListener('submit', async (event) => {
 document.querySelector('#signingDate').value = formatGermanDate(berlinToday());
 resizeCanvas();
 updateDepartment();
+updateFoerderverein();
 updateMembershipEligibility();
 createCaptcha();

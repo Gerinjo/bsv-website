@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $b = random_int(1, 10);
     $_SESSION['membership_captcha'] = $a + $b;
     header('Cache-Control: no-store');
-    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b));
+    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b, 'features' => array('foerdervereinMembership' => true)));
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $respond(405, array('ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.'));
@@ -124,6 +124,21 @@ $phone = $value('phone');
 $email = filter_var($value('email'), FILTER_VALIDATE_EMAIL);
 $emailGeneralInfoAccepted = $accepted('emailGeneralInfoAccepted');
 $emailNewsletterAccepted = $accepted('emailNewsletterAccepted');
+$foerdervereinMembership = $value('foerdervereinMembership') === 'yes';
+$foerdervereinAnnualContribution = 0;
+$foerdervereinNotes = '';
+if ($foerdervereinMembership) {
+    $amount = $value('foerdervereinAnnualContribution');
+    if (!preg_match('/^\d{1,5}$/', $amount) || (int)$amount < 11 || (int)$amount > 10000) {
+        $fail('Bitte gib für den Förderverein einen jährlichen Beitrag zwischen 11 und 10.000 Euro in ganzen Euro an.');
+    }
+    foreach (array('foerdervereinSepaAccepted', 'foerdervereinStatutesAccepted', 'foerdervereinPrivacyAccepted') as $consent) {
+        if (!$accepted($consent)) $fail('Bitte bestätige für den Förderverein die Mitgliedschaft, das eigene Lastschriftmandat und die Datenübermittlung.');
+    }
+    $foerdervereinAnnualContribution = (int)$amount;
+    $foerdervereinNotes = $value('foerdervereinNotes');
+    if ($length($foerdervereinNotes) > 2000) $fail('Die Nachricht an den Förderverein darf höchstens 2.000 Zeichen enthalten.');
+}
 
 if (
     $length($lastName) < 2 || $length($firstName) < 2 ||
@@ -234,6 +249,10 @@ $signingPlace = $value('signingPlace');
 $signingDate = $value('signingDate');
 if ($length($signingPlace) < 2 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $signingDate)) {
     $fail('Bitte gib Ort und Datum der Unterschrift an.');
+}
+$signingDay = DateTime::createFromFormat('!Y-m-d', $signingDate, new DateTimeZone('Europe/Berlin'));
+if (!$signingDay || $signingDay->format('Y-m-d') !== $signingDate || $signingDate < $birthDate || $signingDay > new DateTime('today', new DateTimeZone('Europe/Berlin'))) {
+    $fail('Bitte gib ein gültiges Unterschriftsdatum zwischen Geburtsdatum und heute an.');
 }
 $signatureData = $value('signatureData');
 if (!preg_match('#^data:image/png;base64,([A-Za-z0-9+/=\r\n]+)$#', $signatureData, $signatureMatch)) {
@@ -355,6 +374,9 @@ if ($isFootball) {
 }
 
 $applicationNumber = 'BSV-' . date('Ymd-His') . '-' . strtoupper(bin2hex(random_bytes(2)));
+$foerdervereinApplicationNumber = $foerdervereinMembership
+    ? 'FV-' . (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))->format('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)))
+    : null;
 $displayDate = function ($date) {
     $parsed = DateTime::createFromFormat('!Y-m-d', $date);
     return $parsed ? $parsed->format('d.m.Y') : $date;
@@ -578,6 +600,13 @@ $applicationData = array_merge($applicationData, array(
     'teamQuestionApplies' => $teamQuestionApplies, 'teamKnown' => $teamKnown,
     'teamSelection' => $teamSelection, 'teamLabel' => $selectedTeamLabel, 'teamTrainers' => $selectedTeamTrainers,
     'supportWilling' => $value('supportWilling') === 'yes',
+    'foerdervereinMembership' => $foerdervereinMembership,
+    'foerdervereinApplicationNumber' => $foerdervereinApplicationNumber,
+    'foerdervereinAnnualContribution' => $foerdervereinAnnualContribution,
+    'foerdervereinNotes' => $foerdervereinNotes,
+    'foerdervereinSepaAccepted' => $foerdervereinMembership && $accepted('foerdervereinSepaAccepted'),
+    'foerdervereinStatutesAccepted' => $foerdervereinMembership && $accepted('foerdervereinStatutesAccepted'),
+    'foerdervereinPrivacyAccepted' => $foerdervereinMembership && $accepted('foerdervereinPrivacyAccepted'),
     'iban' => $iban, 'bic' => $bic,
     'identityProofType' => $identityProofType, 'registrationType' => $registrationType,
     'currentlySuspended' => $currentlySuspended, 'needsInternationalDocuments' => $needsInternationalDocuments,
@@ -589,6 +618,10 @@ $applicationData = array_merge($applicationData, array(
 try {
     require_once __DIR__ . '/membership-pdf.php';
     $membershipPdfBinary = bsvBuildMembershipPdf($applicationData, $signatureBinary);
+    if ($foerdervereinMembership) {
+        require_once __DIR__ . '/foerderverein-pdf.php';
+        $foerdervereinPdfBinary = bsvBuildFoerdervereinPdf($applicationData, $signatureBinary);
+    }
 } catch (Throwable $exception) {
     error_log('[membership-pdf] generation_failed reference=' . $applicationNumber);
     $respond(500, array('ok' => false, 'message' => 'Der vollständige Mitgliedsantrag konnte nicht als PDF erstellt werden. Deine Eingaben bleiben erhalten. Fehlerreferenz: ' . $applicationNumber));
@@ -597,6 +630,14 @@ $applicationAttachments = array(array(
     'name' => 'BSV-Mitgliedsantrag-' . $applicationNumber . '.pdf',
     'mime' => 'application/pdf', 'data' => $membershipPdfBinary, 'label' => 'Vollständiger Mitgliedsantrag PDF',
 ));
+$foerdervereinAttachments = array();
+if ($foerdervereinMembership) {
+    $foerdervereinAttachments[] = array(
+        'name' => 'Foerdervereinsantrag-' . $foerdervereinApplicationNumber . '.pdf',
+        'mime' => 'application/pdf', 'data' => $foerdervereinPdfBinary, 'label' => 'Fördervereinsantrag mit Lastschriftmandat und Unterschrift',
+    );
+    $applicationAttachments = array_merge($applicationAttachments, $foerdervereinAttachments);
+}
 
 if ($isFootball) {
     $pdfFilename = 'SBFV-Spielgenehmigungsantrag-' . $applicationNumber . '.pdf';
@@ -792,8 +833,33 @@ $internalBody = "Neuer Online-Mitgliedsantrag beim BSV Nordstern\n\n" .
     ($isFootball ? "Zusätzlich beigefügt: Spielgenehmigungsantrag.\n" : '') .
     "Die Unterschrift als Bild und alle hochgeladenen Unterlagen sind ebenfalls beigefügt.\n";
 
+if ($foerdervereinMembership) {
+    $internalBody .= "\nZUSÄTZLICHER FÖRDERVEREINSANTRAG\n" .
+        "Antragsnummer: {$foerdervereinApplicationNumber}\nJährlicher Förderbeitrag: " . number_format($foerdervereinAnnualContribution, 2, ',', '.') . " EUR\n" .
+        "Mitgliedschaft, eigenes Lastschriftmandat und Datenübermittlung wurden ausdrücklich bestätigt. Der separate Fördervereinsantrag mit der gemeinsamen Unterschrift ist beigefügt und wird zusätzlich an den Förderverein übermittelt.\n";
+}
 if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
     $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Deine Eingaben bleiben im Formular erhalten. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
+}
+
+$foerdervereinStatus = 'not_requested';
+if ($foerdervereinMembership) {
+    $foerdervereinBody = "Neuer Fördervereinsantrag aus der Hauptvereinsanmeldung\n\n" .
+        "Fördervereinsantrag: {$foerdervereinApplicationNumber}\nHauptvereinsantrag: {$applicationNumber}\n" .
+        "Name: {$firstName} {$lastName}\nGeburtsdatum: " . $displayDate($birthDate) . "\n" .
+        "Anschrift: {$street}, {$postalCode} {$city}\nE-Mail: {$email}\nTelefon: {$phone}\n" .
+        "Jährlicher Förderbeitrag: " . number_format($foerdervereinAnnualContribution, 2, ',', '.') . " EUR\n" .
+        "Mitgliedschaft im BSV: gleichzeitig beantragt\n\n" .
+        "Der vollständige Fördervereinsantrag enthält die übernommene Bankverbindung, die eigene Einzugsermächtigung und die gemeinsam erfasste Unterschrift. Die Mitgliedschaft, das Lastschriftmandat und die Datenübermittlung wurden separat bestätigt.\n" .
+        ($foerdervereinNotes !== '' ? "\nNachricht: {$foerdervereinNotes}\n" : '');
+    $foerdervereinStatus = $sendMail('foerderverein', '', 'Fördervereinsantrag ' . $foerdervereinApplicationNumber . ': ' . $firstName . ' ' . $lastName,
+        $foerdervereinBody, $foerdervereinAttachments, (string)$email) ? 'sent' : 'failed';
+    if ($foerdervereinStatus === 'failed') {
+        // The main application and both PDFs have already reached administration.
+        // Alert them to forward the existing PDF; never ask the applicant to resubmit.
+        $sendMail('internal', '', 'Weiterleitung an Förderverein prüfen: ' . $applicationNumber,
+            "Der Hauptvereinsantrag {$applicationNumber} ist eingegangen. Die separate Weiterleitung des Fördervereinsantrags {$foerdervereinApplicationNumber} ist fehlgeschlagen. Bitte den Fördervereinsantrag aus der bereits zugestellten Hauptvereinsanmeldung an den Förderverein weiterleiten. Es ist kein erneuter Antrag erforderlich.", array(), (string)$email);
+    }
 }
 
 $trainerNotificationSent = null;
@@ -1002,7 +1068,7 @@ $applicantText .= "DEN VEREIN KENNENLERNEN\n" .
     "FÖRDERVEREIN\n" .
     "Der Förderverein unterstützt unter anderem Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.\n" .
     $textLink('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
-    $textLink('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') . "\n" .
+    (!$foerdervereinMembership ? $textLink('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') : '') . "\n" .
     "DEINE AUSWAHL ZUR E-MAIL-KOMMUNIKATION\n" .
     $emailConsentSummary .
     ($emailSubscriptionRequested ? "Für deine ausgewählten E-Mail-Angebote erhältst du eine gemeinsame Verifizierungsmail mit einem Bestätigungslink. Ein Klick bestätigt deine Auswahl – auch wenn du Newsletter und Vereinsinformationen angekreuzt hast. Bereits bestätigte Angebote musst du nicht erneut bestätigen.\n" : '') .
@@ -1104,7 +1170,7 @@ $sponsorFooter['html'] .
 '<h2 style="margin:0 0 12px;color:#f4d638;font-size:21px;">Förderverein</h2>' .
 '<p style="margin:0 0 16px;line-height:1.65;color:#d3dfd7;">Der Förderverein unterstützt Bälle, Tore, Trainingsmaterialien, Mannschaftsveranstaltungen und weitere Projekte. Jeder Beitrag kommt dem Sport und der Vereinsgemeinschaft zugute.</p>' .
 $linkButton('Förderverein kennenlernen', $siteBase . '/foerderverein/') .
-$linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') .
+(!$foerdervereinMembership ? $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglied-werden/') : '') .
 '</td></tr>' .
 '<tr><td style="padding:28px 36px;">' .
 '<h2 style="margin:0 0 12px;color:#164f32;font-size:21px;">Deine Auswahl zur E-Mail-Kommunikation</h2>' .
@@ -1119,6 +1185,16 @@ $linkButton('Mitgliedsantrag Förderverein', $siteBase . '/foerderverein/mitglie
 '</td></tr>' .
 '</table></td></tr></table></body></html>';
 
+$foerdervereinConfirmation = '';
+if ($foerdervereinMembership) {
+    $foerdervereinConfirmation = 'Dein zusätzlicher Fördervereinsantrag ' . $foerdervereinApplicationNumber . ' über ' . number_format($foerdervereinAnnualContribution, 2, ',', '.') . ' EUR jährlich ist als separates PDF mit Lastschriftmandat und gemeinsamer Unterschrift beigefügt. ' .
+        ($foerdervereinStatus === 'sent'
+            ? 'Der Antrag wurde an den Förderverein übermittelt. Der Förderverein prüft deine Anmeldung.'
+            : 'Die direkte Weiterleitung an den Förderverein ist fehlgeschlagen. Beide Anträge liegen der Mitgliederverwaltung vor; sie wurde um Weiterleitung gebeten. Bitte sende keinen zweiten Antrag. Bei Rückfragen wende dich mit der Antragsnummer an info@bsvnordstern.de.');
+    $applicantText = $foerdervereinConfirmation . "\n\n" . $applicantText;
+    $applicantHtml = str_replace('<h2 style="margin:0 0 12px;color:#f4d638;font-size:21px;">Förderverein</h2>',
+        '<h2 style="margin:0 0 12px;color:#f4d638;font-size:21px;">Dein Fördervereinsantrag</h2><p style="line-height:1.7;color:#ffffff;">' . $htmlEscape($foerdervereinConfirmation) . '</p>', $applicantHtml);
+}
 $applicantSent = $sendMail(
     'applicant',
     (string)$email,
@@ -1136,4 +1212,6 @@ $respond(200, array(
     'confirmationEmailSent' => $applicantSent,
     'newsletterStatus' => $newsletterStatus,
     'trainerNotificationSent' => $trainerNotificationSent,
+    'foerdervereinStatus' => $foerdervereinStatus,
+    'foerdervereinApplicationNumber' => $foerdervereinApplicationNumber,
 ));

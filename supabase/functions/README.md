@@ -159,6 +159,50 @@ Optional kann er beim Website-Build mit
 
 ## Mitgliedsantrag
 
+### Optionaler Fördervereinsbeitritt im Hauptvereinsantrag
+
+Abschnitt 05 bietet neben persönlicher Unterstützung einen unabhängigen,
+standardmäßig nicht ausgewählten Fördervereinsbeitritt an. Erst bei Auswahl
+werden der jährliche Förderbeitrag (11–10.000 Euro in ganzen Euro), eine
+optionale Nachricht und drei eigene Bestätigungen für Mitgliedschaft,
+Lastschriftmandat und Datenübermittlung eingeblendet. Nicht ausgewählte
+Fördervereinsfelder sind deaktiviert und werden serverseitig ignoriert.
+
+`membership-v3.php` validiert beide Anträge vor dem ersten Versand und erstellt
+mit `foerderverein-pdf.php` ein separates Fördervereins-PDF. Dieses übernimmt
+die benötigten Personen- und Kontodaten, Ort, Datum und dieselbe Unterschrift.
+Es erhält eine eigene FV-Antragsnummer und verweist auf den Hauptvereinsantrag.
+Mitgliederverwaltung und Antragsteller erhalten beide PDFs. Die neue,
+geschützte Mailroute `foerderverein` löst ausschließlich den konfigurierten
+Fördervereinsempfänger auf; sie erlaubt genau dessen PDF, keine Ausweise oder
+Spielgenehmigungen. Eine BCC-Kopie geht stets an `jerome.ernsberger@gmail.com`,
+sofern die Adresse nicht bereits zu den Empfängern gehört.
+
+Ist die Hauptvereinszustellung erfolgreich, ein nachfolgender Versand aber
+fehlgeschlagen, bleibt die Hauptanmeldung erfolgreich. Die Antwort nennt den
+Fördervereinsstatus (`sent`, `failed`, `not_requested`) und den tatsächlichen
+Status der Bestätigungsmail. Bei fehlgeschlagener Fördervereinsweiterleitung
+erhält die Mitgliederverwaltung einen Hinweis zum Weiterleiten des bereits
+vorliegenden PDFs. Die Oberfläche fordert nicht zum erneuten Antrag auf.
+Die bestehenden Tabellen des separaten Fördervereinsformulars werden von
+diesem kombinierten Versand nicht beschrieben; Bankdaten und Unterschriften
+werden auch hierbei nicht in der Datenbank oder öffentlichen Dateien abgelegt.
+
+Bereitstellung in dieser Reihenfolge:
+
+1. `membership-email` mit den relativen Abhängigkeiten aktualisieren.
+2. Auf `api.bsvnordstern.de` zuerst `membership-pdf.php` und
+   `foerderverein-pdf.php`, anschließend `membership-v3.php` bereitstellen.
+   Die private `membership-config.php` bleibt auf dem Server.
+3. GET auf `/api/membership.php` prüfen: Die Antwort enthält
+   `features.foerdervereinMembership: true`. Erst dann die Website publizieren.
+
+Die Oberfläche aktiviert den gemeinsamen Beitritt nur, wenn der Server diese
+Fähigkeit bestätigt. So wird eine Auswahl bei einer älteren Serverversion
+nicht unbemerkt übergangen. Der separate Fördervereinsantrag bleibt verlinkt.
+
+### Geschützte Mailbrücke
+
 `membership-email` ist die geschützte Mailbrücke für den bestehenden
 PHP-Endpunkt, der PDF und Anlagen erzeugt. Zusätzlich erforderlich:
 
