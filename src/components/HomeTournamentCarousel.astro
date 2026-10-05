@@ -3,9 +3,6 @@ import HomeTournamentCard from './HomeTournamentCard.astro';
 import { homeTournaments } from '../data/homeTournaments';
 import { withBase } from '../utils/paths';
 
-const monthLabel = (date: string) => new Intl.DateTimeFormat('de-DE', {
-  month: 'long', year: 'numeric', timeZone: 'UTC',
-}).format(new Date(`${date}T00:00:00Z`));
 ---
 
 <section class="home-tournaments" id="turniere" aria-labelledby="home-tournaments-title" aria-roledescription="Karussell" data-tournament-carousel>
@@ -20,13 +17,13 @@ const monthLabel = (date: string) => new Intl.DateTimeFormat('de-DE', {
     </div>
     <div class="tournament-track" id="home-tournament-track" data-tournament-track tabindex="0" role="group" aria-label="Turniere durchblättern" aria-describedby="tournament-hint">
       {homeTournaments.map((tournament, index) => (
-        <div class="tournament-slide" id={tournament.id} data-tournament-slide data-title={tournament.name} data-month={tournament.isoDate.slice(0, 7)} data-period={monthLabel(tournament.isoDate)} role="group" aria-roledescription="Folie" aria-label={`${index + 1} von ${homeTournaments.length}: ${tournament.name}`}>
+        <div class="tournament-slide" id={tournament.id} data-tournament-slide data-title={tournament.name} data-date={tournament.isoDate} data-period={tournament.date} role="group" aria-roledescription="Folie" aria-label={`${index + 1} von ${homeTournaments.length}: ${tournament.name}`}>
           <HomeTournamentCard tournament={tournament} />
         </div>
       ))}
     </div>
     <div class="tournament-footer">
-      <time class="tournament-period" data-tournament-period datetime={homeTournaments[0].isoDate.slice(0, 7)}>{monthLabel(homeTournaments[0].isoDate)}</time>
+      <time class="tournament-period" data-tournament-period datetime={homeTournaments[0].isoDate}>{homeTournaments[0].date}</time>
       <div class="tournament-pagination" role="group" aria-label="Turnier auswählen" data-tournament-controls hidden>
         {homeTournaments.map((tournament, index) => <button type="button" data-tournament-select={index} aria-label={tournament.name} aria-pressed={index === 0 ? 'true' : 'false'} aria-controls={tournament.id}><span aria-hidden="true"></span></button>)}
       </div>
@@ -61,7 +58,7 @@ const monthLabel = (date: string) => new Intl.DateTimeFormat('de-DE', {
       selectors.forEach((button, position) => button.setAttribute('aria-pressed', String(position === active)));
       counter.textContent = `${active + 1} / ${slides.length}`;
       period.textContent = slides[active].dataset.period!;
-      period.dateTime = slides[active].dataset.month!;
+      period.dateTime = slides[active].dataset.date!;
       if (changed && announce) status.textContent = `Turnier ${active + 1} von ${slides.length}: ${slides[active].dataset.title}`;
     };
     const show = (index: number, smooth = true) => {

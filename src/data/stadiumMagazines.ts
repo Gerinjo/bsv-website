@@ -16,7 +16,7 @@ export const stadiumMagazines: StadiumMagazine[] = [
     issue: 1,
     season: '2026/27',
     date: '2026-09-26',
-    dateLabel: '26. September 2026',
+    dateLabel: '26.09.2026',
     pages: 24,
     pdf: '/dokumente/stadionheft/bsv-nordstern-stadionheft-2026-27-ausgabe-1.pdf',
     cover: '/images/stadionheft/2026-27-ausgabe-1.jpg',

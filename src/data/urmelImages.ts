@@ -7,7 +7,7 @@ import type { EventGallery } from './eventGallery';
 
 export const urmelGallery: EventGallery = {
   label: 'Fünf Eindrücke vom URMEL-Cup 2026',
-  note: 'Echte Erinnerungen an den URMEL-Cup am 1. Mai 2026.',
+  note: 'Echte Erinnerungen an den URMEL-Cup am 01.05.2026.',
   images: [
     { src: torschuss, title: 'Kleine Kicker in Aktion', alt: 'Torschuss beim URMEL Bambini Spieltag 2026' },
     { src: spielszene, title: 'Gemeinsam auf dem Platz', alt: 'Spielszene beim URMEL Bambini Spieltag 2026' },

@@ -1,3 +1,4 @@
+import { formatDate } from './dates.mjs';
 import { bookingTimes, matchdaySettings } from './matchdayPlan.ts';
 import type { Pitch, PitchBooking } from './matchdayPlan.ts';
 import type { TournamentSchedule } from './tournamentDays.ts';
@@ -26,7 +27,7 @@ export function manualTournamentBookings(schedules: ManualTournamentSchedule[], 
         url: schedule.pagePath + '#' + (schedule.sectionId ?? 'spieltage'), source: 'club', preliminary: day.preliminary,
         notes: [...(schedule.homePitch === null ? ['BSV-Heimspieltag: Haupt-/Nebenplatz und Platzumfang noch zu bestätigen.'] : []),
           ...(schedule.homePitchNote ? [schedule.homePitchNote] : []),
-          schedule.sourceLabel + ' · Stand ' + new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin' }).format(new Date(schedule.checkedAt)),
+          schedule.sourceLabel + ' · Stand ' + formatDate(schedule.checkedAt),
           (schedule.ownTeamIds.length > 1 ? 'Gemeinsamer Spieltag der BSV-Teams: ' : 'Spieltag: ') + '2 Stunden, 30 Min. Vorlauf und 15 Min. Nachlauf.'],
       });
     }

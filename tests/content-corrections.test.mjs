@@ -13,7 +13,7 @@ const erlebnisDataSource = readFileSync(new URL('../src/data/erlebnis.ts', impor
 const erlebnisOverviewSource = readFileSync(new URL('../src/pages/erlebnis/index.astro', import.meta.url), 'utf8');
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
 const sportsPagesSource = readFileSync(new URL('../src/data/sportsPages.ts', import.meta.url), 'utf8');
-const membershipSource = readFileSync(new URL('../src/pages/verein/mitglied-werden.astro', import.meta.url), 'utf8');
+const membershipSource = readFileSync(new URL('../src/scripts/membership-form.js', import.meta.url), 'utf8');
 const coachVacanciesSource = readFileSync(new URL('../src/pages/jugend/trainer-gesucht.astro', import.meta.url), 'utf8');
 
 function teamSection(path, nextPath) {

@@ -43,7 +43,7 @@ test('every selectable team has a protected routing key', () => {
 });
 
 test('membership form and PHP agree on every selectable team coaching staff', () => {
-  const formSource = readFileSync(new URL('../src/pages/verein/mitglied-werden.astro', import.meta.url), 'utf8');
+  const formSource = readFileSync(new URL('../src/scripts/membership-form.js', import.meta.url), 'utf8');
   const formTeams = [...formSource.matchAll(/value: '([^']+)', label: '[^']+', trainers: '([^']+)'/g)];
   assert.equal(formTeams.length, 21);
   for (const [, value, trainers] of formTeams) {
@@ -54,7 +54,7 @@ test('membership form and PHP agree on every selectable team coaching staff', ()
 });
 
 test('membership form and PHP endpoint name the C1 trainer consistently', () => {
-  const formSource = readFileSync(new URL('../src/pages/verein/mitglied-werden.astro', import.meta.url), 'utf8');
+  const formSource = readFileSync(new URL('../src/scripts/membership-form.js', import.meta.url), 'utf8');
   assert.match(formSource, /A\. Schäuble, S\. Bühler, T\. Parthenschlager/);
   assert.match(membershipSource, /A\. Schäuble, S\. Bühler, T\. Parthenschlager/);
   assert.doesNotMatch(formSource, /Scholpre/);

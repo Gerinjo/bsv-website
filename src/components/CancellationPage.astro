@@ -9,7 +9,7 @@ import { withBase } from '../utils/paths';
       <h2 id="cancellation-purpose-title">Ein klares Ende<br /><em>der Mitgliedschaft.</em></h2>
     </div>
     <div class="purpose-copy">
-      <strong>Mit einer wirksamen Kündigung endet deine Mitgliedschaft zum 31. Dezember des betreffenden Jahres.</strong>
+      <strong>Mit einer wirksamen Kündigung endet deine Mitgliedschaft zum Jahresende.</strong>
       <p>Bis zu diesem Zeitpunkt bleibt die Mitgliedschaft bestehen. Auch bestehende Verpflichtungen gegenüber dem Verein sind bis zum Ablauf des Kalenderjahres zu erfüllen.</p>
       <a href={withBase('/verein/satzung')}>Grundlage: § 7 der Satzung <span aria-hidden="true">→</span></a>
     </div>
@@ -68,7 +68,7 @@ import { withBase } from '../utils/paths';
       <ul>
         <li><i aria-hidden="true">✓</i><span>Vor- und Nachname des Mitglieds</span></li>
         <li><i aria-hidden="true">✓</i><span>Vollständige Anschrift</span></li>
-        <li><i aria-hidden="true">✓</i><span>Kündigung zum 31. Dezember des gewünschten Jahres</span></li>
+        <li><i aria-hidden="true">✓</i><span>Kündigung zum Ende des gewünschten Jahres</span></li>
         <li><i aria-hidden="true">✓</i><span>Datum und persönliche Unterschrift</span></li>
         <li><i aria-hidden="true">✓</i><span>Bitte um schriftliche Bestätigung</span></li>
       </ul>
@@ -103,10 +103,10 @@ import { withBase } from '../utils/paths';
     <article class="letter" aria-label="Beispiel für eine Kündigungserklärung">
       <div class="letter-sender">[Vorname Nachname]<br />[Straße und Hausnummer]<br />[PLZ Ort]</div>
       <div class="letter-recipient"><strong>BSV Nordstern Radolfzell e.V.</strong><br />Schlesierstraße 43<br />78315 Radolfzell</div>
-      <time>[Ort], [Datum]</time>
+      <time>[Ort], [TT.MM.JJJJ]</time>
       <h3>Kündigung meiner Vereinsmitgliedschaft</h3>
       <p>Sehr geehrte Damen und Herren,</p>
-      <p>hiermit kündige ich meine Mitgliedschaft im BSV Nordstern Radolfzell e.V. zum 31. Dezember [Jahreszahl] unter Einhaltung der satzungsgemäßen Kündigungsfrist von sechs Wochen zum Jahresende.</p>
+      <p>hiermit kündige ich meine Mitgliedschaft im BSV Nordstern Radolfzell e.V. zum 31.12.[Jahreszahl] unter Einhaltung der satzungsgemäßen Kündigungsfrist von sechs Wochen zum Jahresende.</p>
       <p>Bitte bestätigen Sie mir den Eingang dieser Kündigung sowie den Beendigungszeitpunkt schriftlich.</p>
       <p>Mit freundlichen Grüßen</p>
       <div class="signature"><span></span><small>[Unterschrift und Name]</small></div>

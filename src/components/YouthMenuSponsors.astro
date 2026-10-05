@@ -1,4 +1,5 @@
 ---
+import { germanDateFormat as eventDate } from '../utils/dates.mjs';
 import { advertisingPartners } from '../data/advertisingPartners';
 import { isYouthSponsorAssignment } from '../data/sponsorAreas';
 import { loadClubCalendarCached } from '../utils/calendar';
@@ -11,12 +12,6 @@ const youthSponsors = advertisingPartners.filter((partner) =>
 const { events } = await loadClubCalendarCached();
 const nextYouthEvent = events.find((event) => isYouthCalendarSource(event.source.id));
 const youthEventsHref = withBase('/jugend/termine');
-const eventDate = new Intl.DateTimeFormat('de-DE', {
-  day: '2-digit',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'Europe/Berlin',
-});
 const eventTime = new Intl.DateTimeFormat('de-DE', {
   hour: '2-digit',
   minute: '2-digit',
