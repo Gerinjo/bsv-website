@@ -122,14 +122,31 @@ Auch hier zuerst `contact-request`, dann die Website veröffentlichen.
 
 `foerderverein-membership` nimmt den vollständigen Online-Antrag inklusive
 SEPA-Mandat und digitaler Unterschrift entgegen. Der zuständige Empfänger wird
-mit dem Schlüssel `foerderverein` aus `public.contact_empfaenger` gelesen. Die
-Antragstellenden erhalten eine separate Eingangsbestätigung ohne Bankdaten.
+mit dem Schlüssel `foerderverein` aus `public.contact_empfaenger` gelesen
+(aktuell `foerderverein@bsvnordstern.de`). Jeder Antrag geht zusätzlich als
+BCC-Kopie an `jerome.ernsberger@gmail.com`, unabhängig von weiteren in der
+Verwaltung hinterlegten Empfängern. Doppelte Adressen werden vermieden. Die
+Antragstellenden erhalten eine separate Eingangsbestätigung ohne Bankdaten;
+die interne Kopie enthält den vollständigen Antrag und die Unterschrift.
+
+Das Formular zeigt Geburts- und Unterschriftsdatum als `TT.MM.JJJJ` an.
+Erst beim Absenden werden die geprüften Werte in das ISO-Format umgewandelt.
+Frontend und Versanddienst prüfen Kalendertage und verhindern zukünftige
+Daten. Das vorbelegte Unterschriftsdatum richtet sich nach `Europe/Berlin`.
 
 In `public.foerderverein_antraege` wird nur ein minimales Versandprotokoll
 gespeichert. IBAN, BIC, Anschrift, Geburtsdatum, Telefonnummer, Freitexte und
 Unterschrift werden dort ausdrücklich nicht abgelegt. Die Function verwendet
 den gemeinsamen E-Mail-Testmodus und den einmal nutzbaren Spamschutz des
 Kontaktformulars.
+
+Vor der ersten Veröffentlichung die Migration
+`20260816221827_foerderverein_online_antrag.sql` auf dem Website-Projekt
+anwenden und `foerderverein-membership` samt relativen Abhängigkeiten
+bereitstellen. Die Function ist wie das Kontaktformular öffentlich
+(`verify_jwt = false`); Origin-Prüfung und einmal verwendbarer Spamschutz
+sichern das Absenden ab. Anschließend den GET-Endpunkt sowie die privaten
+Tabellenrechte prüfen und erst dann die Website veröffentlichen.
 
 Der öffentliche Endpunkt lautet:
 

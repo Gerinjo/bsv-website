@@ -1,5 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
+import { berlinToday, isValidIsoDate, formatGermanDate as formatDate } from '../_shared/form-dates.mjs';
+import { collectRecipientEmails } from '../_shared/membership-routing.mjs';
+
+const applicationCopyRecipient = 'jerome.ernsberger@gmail.com';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -42,17 +46,6 @@ const isValidIban = (value: string) => {
     for (const digit of digits) remainder = (remainder * 10 + Number(digit)) % 97;
   }
   return remainder === 1;
-};
-
-const isValidDate = (value: string) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const parsed = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
-};
-
-const formatDate = (value: string) => {
-  const [year, month, day] = value.split('-');
-  return `${day}.${month}.${year}`;
 };
 
 const getSupabase = () => {
@@ -125,7 +118,7 @@ Deno.serve(async (request) => {
   const bankName = text(body.bankName, 120);
   const accountHolder = text(body.accountHolder, 160);
   const bic = text(body.bic, 11).replaceAll(/\s/g, '').toUpperCase();
-  const iban = normalizeIban(text(body.iban, 34));
+  const iban = normalizeIban(text(body.iban, 42));
   const signatureCity = text(body.signatureCity, 100);
   const signatureDate = text(body.signatureDate, 10);
   const signatureData = text(body.signatureData, 1_000_000);
@@ -137,8 +130,10 @@ Deno.serve(async (request) => {
   const privacyAccepted = body.privacyAccepted === true;
 
   const minimumContribution = bsvMember ? 11 : 25;
+  const today = berlinToday();
   if (
-    firstName.length < 2 || lastName.length < 2 || !isValidDate(birthDate) ||
+    firstName.length < 2 || lastName.length < 2 || !isValidIsoDate(birthDate) || birthDate > today ||
+    typeof body.bsvMember !== 'boolean' ||
     street.length < 3 || !/^\d{5}$/.test(postalCode) || city.length < 2 ||
     !/^[0-9+() /-]{6,40}$/.test(phone) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
     !Number.isFinite(annualContribution) || annualContribution < minimumContribution || annualContribution > 10000
@@ -148,7 +143,7 @@ Deno.serve(async (request) => {
   if (bankName.length < 2 || accountHolder.length < 2 || !isValidIban(iban) || (bic && !/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(bic))) {
     return json({ ok: false, message: 'Bitte prüfe die Bankverbindung. Die IBAN muss vollständig und gültig sein.' }, 422, origin);
   }
-  if (!sepaAccepted || !statutesAccepted || !privacyAccepted || signatureCity.length < 2 || !isValidDate(signatureDate)) {
+  if (!sepaAccepted || !statutesAccepted || !privacyAccepted || signatureCity.length < 2 || !isValidIsoDate(signatureDate) || signatureDate > today || signatureDate < birthDate) {
     return json({ ok: false, message: 'Bitte bestätige SEPA-Mandat, Satzung und Datenschutz und ergänze Ort und Datum.' }, 422, origin);
   }
 
@@ -174,7 +169,8 @@ Deno.serve(async (request) => {
     .eq('schluessel', 'foerderverein')
     .eq('aktiv', true)
     .maybeSingle();
-  if (recipientError || !recipient?.email) {
+  const recipients = recipient?.email ? collectRecipientEmails([recipient]) : null;
+  if (recipientError || !recipients?.length) {
     console.error('Förderverein-Empfänger fehlt:', recipientError);
     return json({ ok: false, message: 'Der Förderantrag kann momentan nicht zugestellt werden.' }, 500, origin);
   }
@@ -198,7 +194,6 @@ Deno.serve(async (request) => {
     return json({ ok: false, message: 'Der Förderantrag konnte nicht gespeichert werden.' }, 500, origin);
   }
 
-  const recipients = [recipient.email, ...(Array.isArray(recipient.weitere_emails) ? recipient.weitere_emails : [])];
   const safeNotes = notes ? escapeHtml(notes).replaceAll('\n', '<br>') : 'keine';
   const safeSupportIdeas = supportIdeas ? escapeHtml(supportIdeas).replaceAll('\n', '<br>') : 'keine';
   const contributionLabel = annualContribution.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -207,6 +202,7 @@ Deno.serve(async (request) => {
   try {
     const internalResult = await sendEmail({
       to: recipients,
+      bcc: recipients.includes(applicationCopyRecipient) ? undefined : applicationCopyRecipient,
       reply_to: email,
       subject: `Fördervereinsantrag ${applicationNumber}: ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
       html: `
@@ -284,6 +280,6 @@ Deno.serve(async (request) => {
       mail_modus: emailConfig.mode,
       benachrichtigung_fehler: detail,
     }).eq('id', application.id);
-    return json({ ok: false, saved: true, message: 'Der Antrag wurde gespeichert, konnte aber noch nicht zugestellt werden. Bitte versuche es später erneut.' }, 503, origin);
+    return json({ ok: false, message: 'Der Förderantrag konnte nicht zugestellt werden. Bitte versuche es später erneut. Deine Angaben stehen noch im Formular.' }, 503, origin);
   }
 });

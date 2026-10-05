@@ -9,19 +9,25 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
   <div class="shell form-layout">
     <aside>
       <p class="form-eyebrow"><span></span>Online-Antrag</p>
-      <h2>Direkt online<br /><em>Mitglied werden.</em></h2>
+      <h2>Ein Antrag.<br /><em>Alles digital.</em></h2>
+      <ol>
+        <li>Persönliche Angaben eintragen</li>
+        <li>Mitgliedsstatus und Förderbeitrag wählen</li>
+        <li>Bankverbindung ergänzen und unterschreiben</li>
+        <li>Antrag absenden und Eingangsbestätigung erhalten</li>
+      </ol>
       <p>Pflichtfelder sind mit einem Stern gekennzeichnet. Deine Bankverbindung und Unterschrift werden ausschließlich zur Bearbeitung dieses Antrags übermittelt.</p>
       <a href={withBase('/kontakt?thema=foerderverein')}>Noch eine Frage? Zum Kontaktformular <span>↗</span></a>
     </aside>
 
-    <form id="foerderverein-form" action={endpoint} method="post">
+    <form id="foerderverein-form" action={endpoint} method="post" novalidate>
       <section class="form-block">
         <header><span>01</span><div><small>Persönliche Angaben</small><h3>Wer möchte Mitglied werden?</h3></div></header>
         <div class="fields">
-          <div class="field"><label for="fv-first-name">Vorname *</label><input id="fv-first-name" name="firstName" autocomplete="given-name" minlength="2" maxlength="80" required /></div>
           <div class="field"><label for="fv-last-name">Nachname *</label><input id="fv-last-name" name="lastName" autocomplete="family-name" minlength="2" maxlength="80" required /></div>
-          <div class="field"><label for="fv-birth-date">Geburtsdatum *</label><input id="fv-birth-date" name="birthDate" type="date" autocomplete="bday" required /></div>
-          <div class="field"><label for="fv-phone">Telefon *</label><input id="fv-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" required /></div>
+          <div class="field"><label for="fv-first-name">Vorname *</label><input id="fv-first-name" name="firstName" autocomplete="given-name" minlength="2" maxlength="80" required /></div>
+          <div class="field"><label for="fv-birth-date">Geburtsdatum *</label><input id="fv-birth-date" name="birthDate" type="text" inputmode="numeric" autocomplete="bday" placeholder="TT.MM.JJJJ" maxlength="10" pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}" aria-describedby="fv-birth-hint" required /><small id="fv-birth-hint" class="field-hint">Tag.Monat.Jahr – zum Beispiel 18.03.1985</small></div>
+          <div class="field"><label for="fv-phone">Telefon *</label><input id="fv-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+\(\) \/\-]{6,40}" required /></div>
           <div class="field full"><label for="fv-email">E-Mail *</label><input id="fv-email" name="email" type="email" autocomplete="email" maxlength="160" required /></div>
           <div class="field full"><label for="fv-street">Straße und Hausnummer *</label><input id="fv-street" name="street" autocomplete="street-address" minlength="3" maxlength="160" required /></div>
           <div class="field"><label for="fv-postal-code">PLZ *</label><input id="fv-postal-code" name="postalCode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required /></div>
@@ -37,7 +43,7 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
           <label><input type="radio" name="bsvMember" value="no" required /><span><strong>Nein</strong><small>Mindestbeitrag 25 € pro Jahr</small></span></label>
         </fieldset>
         <div class="fields compact">
-          <div class="field"><label for="fv-contribution">Jährlicher Förderbetrag in Euro *</label><input id="fv-contribution" name="annualContribution" type="number" inputmode="decimal" min="11" step="1" value="11" required /></div>
+          <div class="field"><label for="fv-contribution">Jährlicher Förderbetrag in Euro *</label><input id="fv-contribution" name="annualContribution" type="number" inputmode="decimal" min="11" max="10000" step="1" value="11" aria-describedby="fv-contribution-hint" required /><small id="fv-contribution-hint" class="field-hint">Bitte wähle zuerst aus, ob du bereits BSV-Mitglied bist.</small></div>
           <div class="field support-choice"><label><input name="supportWilling" type="checkbox" value="yes" /><span>Ich kann mir auch persönliche Unterstützung vorstellen.</span></label></div>
           <div class="field full"><label for="fv-support-ideas">Ideen oder mögliche Unterstützung <small>(optional)</small></label><textarea id="fv-support-ideas" name="supportIdeas" rows="4" maxlength="1500" placeholder="Zum Beispiel Veranstaltungen, Platzpflege, Social Media oder Sponsoring"></textarea></div>
         </div>
@@ -49,7 +55,7 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
           <div class="field"><label for="fv-bank-name">Kreditinstitut *</label><input id="fv-bank-name" name="bankName" autocomplete="off" minlength="2" maxlength="120" required /></div>
           <div class="field"><label for="fv-account-holder">Kontoinhaber:in *</label><input id="fv-account-holder" name="accountHolder" autocomplete="name" minlength="2" maxlength="160" required /></div>
           <div class="field"><label for="fv-bic">BIC <small>(optional)</small></label><input id="fv-bic" name="bic" autocomplete="off" maxlength="11" pattern="[A-Za-z0-9]{8}([A-Za-z0-9]{3})?" /></div>
-          <div class="field"><label for="fv-iban">IBAN *</label><input id="fv-iban" name="iban" autocomplete="off" maxlength="34" pattern="[A-Za-z]{2}[0-9A-Za-z ]{13,32}" required /></div>
+          <div class="field"><label for="fv-iban">IBAN *</label><input id="fv-iban" name="iban" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="42" pattern="[A-Za-z]{2}[0-9A-Za-z ]{13,40}" placeholder="DE00 0000 0000 0000 0000 00" required /></div>
         </div>
         <label class="confirmation"><input type="checkbox" name="sepaAccepted" value="accepted" required /><span>Ich ermächtige den Förderverein des BSV Nordstern, den angegebenen Jahresbeitrag wiederkehrend mittels Lastschrift von meinem Konto einzuziehen. Zugleich weise ich mein Kreditinstitut an, die eingezogenen Lastschriften einzulösen.</span></label>
       </section>
@@ -60,28 +66,37 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
         <label class="confirmation"><input type="checkbox" name="privacy" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz')}>Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung des Antrags zu.</span></label>
         <div class="fields signature-meta">
           <div class="field"><label for="fv-sign-city">Ort *</label><input id="fv-sign-city" name="signatureCity" minlength="2" maxlength="100" required /></div>
-          <div class="field"><label for="fv-sign-date">Datum *</label><input id="fv-sign-date" name="signatureDate" type="date" required /></div>
+          <div class="field"><label for="fv-sign-date">Datum der Unterschrift *</label><input id="fv-sign-date" name="signatureDate" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" maxlength="10" pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}" aria-describedby="fv-sign-date-hint" required /><small id="fv-sign-date-hint" class="field-hint">TT.MM.JJJJ – heute ist bereits eingetragen.</small></div>
         </div>
         <div class="signature-field">
           <div class="signature-head"><label for="fv-signature-pad">Unterschrift *</label><button type="button" id="fv-clear-signature">Unterschrift löschen</button></div>
-          <canvas id="fv-signature-pad" aria-label="Feld für die Unterschrift mit Maus, Finger oder Stift"></canvas>
+          <canvas id="fv-signature-pad" tabindex="0" aria-label="Feld für die Unterschrift mit Maus, Finger oder Stift"></canvas>
           <input id="fv-signature-data" name="signatureData" type="hidden" required />
           <p>Bitte innerhalb des Feldes mit Maus, Finger oder Eingabestift unterschreiben.</p>
         </div>
         <div class="field captcha"><label for="fv-captcha-answer">Spamschutz: Wie viel ist <strong id="fv-captcha-question">wird geladen …</strong>?</label><input id="fv-captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" min="2" max="18" required /><input id="fv-captcha-token" name="captchaToken" type="hidden" /></div>
+        <button class="captcha-retry" id="fv-captcha-retry" type="button" hidden>Spamschutz erneut laden</button>
         <div class="honeypot" aria-hidden="true"><label for="fv-website">Website</label><input id="fv-website" name="website" tabindex="-1" autocomplete="off" /></div>
         <div class="field full"><label for="fv-notes">Weitere Informationen oder Fragen <small>(optional)</small></label><textarea id="fv-notes" name="notes" rows="4" maxlength="2000"></textarea></div>
-        <div class="submit-row">
-          <button type="submit" disabled><span class="button-label">Förderantrag absenden</span><span class="spinner" aria-hidden="true"></span><b>↗</b></button>
-          <div><p class="submit-hint">Der Button wird aktiv, sobald alle Pflichtfelder, Bestätigungen, Unterschrift und Spamschutz vollständig sind.</p><p id="fv-form-status" role="status" aria-live="polite"></p></div>
+        <div class="membership-requirement" id="fv-requirement" role="note">
+          <strong>Voraussetzung für die Mitgliedschaft</strong>
+          <p id="fv-submit-hint">Bitte bestätige SEPA-Mandat, Satzung und Datenschutz. Danach kannst du den Antrag absenden; fehlende Pflichtangaben werden dir angezeigt.</p>
         </div>
+        <div class="submit-row">
+          <button type="submit" disabled aria-describedby="fv-submit-hint"><span class="button-label">Mitgliedsantrag absenden</span><span class="spinner" aria-hidden="true"></span><b>↗</b></button>
+          <p id="fv-form-status" role="status" aria-live="polite" tabindex="-1"></p>
+        </div>
+        <p class="mail-note">Dein vollständiger Antrag mit Unterschrift geht an den Förderverein und in Kopie an die zuständige Bearbeitung. Du erhältst eine separate Eingangsbestätigung per E-Mail. Diese enthält keine Bankdaten.</p>
       </section>
     </form>
   </div>
 </section>
 
-<script define:vars={{ endpoint }}>
+<script>
+  import { berlinToday, parseGermanDate, formatGermanDate } from '../../supabase/functions/_shared/form-dates.mjs';
+
   const form = document.querySelector('#foerderverein-form');
+  const endpoint = form.action;
   const button = form.querySelector('button[type="submit"]');
   const status = document.querySelector('#fv-form-status');
   const contribution = document.querySelector('#fv-contribution');
@@ -92,22 +107,36 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
   const captchaAnswer = document.querySelector('#fv-captcha-answer');
   const captchaToken = document.querySelector('#fv-captcha-token');
   const captchaQuestion = document.querySelector('#fv-captcha-question');
+  const captchaRetry = document.querySelector('#fv-captcha-retry');
+  const birthDate = document.querySelector('#fv-birth-date');
+  const signatureDate = document.querySelector('#fv-sign-date');
+  const confirmations = [...form.querySelectorAll('input[name="sepaAccepted"], input[name="statutesAccepted"], input[name="privacy"]')];
   let drawing = false;
   let signed = false;
   let isSubmitting = false;
 
-  const localToday = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  signatureDate.value = formatGermanDate(berlinToday());
+
+  const validateDates = (normalize = false) => {
+    for (const input of [birthDate, signatureDate]) {
+      const iso = parseGermanDate(input.value);
+      input.setCustomValidity(input.value && !iso ? 'Bitte gib ein gültiges Datum als TT.MM.JJJJ ein.'
+        : iso > berlinToday() ? 'Das Datum darf nicht in der Zukunft liegen.' : '');
+      if (normalize && iso) input.value = formatGermanDate(iso);
+    }
+    const birth = parseGermanDate(birthDate.value);
+    const signature = parseGermanDate(signatureDate.value);
+    if (birth && signature && signature < birth) signatureDate.setCustomValidity('Das Unterschriftsdatum muss nach dem Geburtsdatum liegen.');
   };
-  document.querySelector('#fv-sign-date').value = localToday();
+  for (const input of [birthDate, signatureDate]) {
+    input.addEventListener('input', () => validateDates());
+    input.addEventListener('blur', () => validateDates(true));
+  }
 
   const updateSubmitState = () => {
-    button.disabled = isSubmitting || !signed || !signatureData.value || !captchaToken.value || !form.checkValidity();
+    button.disabled = isSubmitting || !captchaToken.value || !confirmations.every((input) => input.checked);
     button.classList.toggle('is-submitting', isSubmitting);
+    form.setAttribute('aria-busy', String(isSubmitting));
   };
 
   const resizeCanvas = () => {
@@ -131,12 +160,12 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
 
   const point = (event) => {
     const rect = canvas.getBoundingClientRect();
-    const source = event.touches?.[0] ?? event;
-    return { x: source.clientX - rect.left, y: source.clientY - rect.top };
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
   const begin = (event) => {
     event.preventDefault();
     drawing = true;
+    canvas.setPointerCapture(event.pointerId);
     const current = point(event);
     const context = canvas.getContext('2d');
     context.beginPath();
@@ -151,15 +180,17 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
     context.stroke();
     signed = true;
   };
-  const end = () => {
+  const end = (event) => {
     if (!drawing) return;
     drawing = false;
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     if (signed) signatureData.value = canvas.toDataURL('image/png');
     updateSubmitState();
   };
-  ['mousedown', 'touchstart'].forEach((name) => canvas.addEventListener(name, begin, { passive: false }));
-  ['mousemove', 'touchmove'].forEach((name) => canvas.addEventListener(name, move, { passive: false }));
-  ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach((name) => canvas.addEventListener(name, end));
+  canvas.addEventListener('pointerdown', begin);
+  canvas.addEventListener('pointermove', move);
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
   clearSignature.addEventListener('click', () => {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     signed = false;
@@ -172,16 +203,20 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
   const updateContribution = () => {
     const isMember = memberInputs.find((input) => input.checked)?.value === 'yes';
     const minimum = isMember ? 11 : 25;
+    const previousMinimum = Number(contribution.min);
     contribution.min = String(minimum);
-    if (Number(contribution.value) < minimum) contribution.value = String(minimum);
+    if (!contribution.value || Number(contribution.value) < minimum || Number(contribution.value) === previousMinimum) contribution.value = String(minimum);
+    document.querySelector('#fv-contribution-hint').textContent = `Mindestbeitrag ${minimum} € pro Jahr. Du kannst freiwillig mehr geben.`;
     updateSubmitState();
   };
   memberInputs.forEach((input) => input.addEventListener('change', updateContribution));
 
   const createCaptcha = async () => {
+    if (!captchaRetry.hidden) status.textContent = '';
     captchaAnswer.value = '';
     captchaToken.value = '';
     captchaQuestion.textContent = 'wird geladen …';
+    captchaRetry.hidden = true;
     updateSubmitState();
     try {
       const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
@@ -191,23 +226,38 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
       captchaToken.value = result.token;
     } catch {
       captchaQuestion.textContent = '? + ?';
-      status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
+      captchaRetry.hidden = false;
+      status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte versuche es mit „Spamschutz erneut laden“.';
     }
     updateSubmitState();
   };
   createCaptcha();
+  captchaRetry.addEventListener('click', createCaptcha);
   form.addEventListener('input', updateSubmitState);
   form.addEventListener('change', updateSubmitState);
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!form.reportValidity() || !signed || !signatureData.value || !captchaToken.value) return;
+    if (isSubmitting) return;
+    validateDates(true);
+    if (!form.reportValidity()) {
+      status.textContent = 'Bitte prüfe die markierten Pflichtfelder.';
+      return;
+    }
+    if (!signed || !signatureData.value) {
+      status.textContent = 'Bitte unterschreibe im Unterschriftenfeld.';
+      canvas.focus();
+      return;
+    }
+    if (!captchaToken.value) return;
     isSubmitting = true;
     updateSubmitState();
     status.textContent = 'Dein Förderantrag wird sicher übermittelt …';
     try {
       const formData = new FormData(form);
       const payload = Object.fromEntries(formData.entries());
+      payload.birthDate = parseGermanDate(formData.get('birthDate'));
+      payload.signatureDate = parseGermanDate(formData.get('signatureDate'));
       payload.bsvMember = formData.get('bsvMember') === 'yes';
       payload.supportWilling = formData.get('supportWilling') === 'yes';
       payload.sepaAccepted = formData.get('sepaAccepted') === 'accepted';
@@ -220,11 +270,14 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
       try { result = JSON.parse(responseText); } catch { throw new Error(`Der Server konnte den Antrag nicht verarbeiten (HTTP ${response.status}).`); }
       if (!response.ok || !result.ok) throw new Error(result.message || 'Der Förderantrag konnte nicht gesendet werden.');
       form.reset();
-      document.querySelector('#fv-sign-date').value = localToday();
+      signatureDate.value = formatGermanDate(berlinToday());
       contribution.value = '11';
+      contribution.min = '11';
+      document.querySelector('#fv-contribution-hint').textContent = 'Bitte wähle zuerst aus, ob du bereits BSV-Mitglied bist.';
+      validateDates();
       clearSignature.click();
       await createCaptcha();
-      status.textContent = result.message || 'Vielen Dank! Dein Förderantrag wurde erfolgreich übermittelt.';
+      status.textContent = `${result.message || 'Vielen Dank! Dein Förderantrag wurde erfolgreich übermittelt.'} Du erhältst eine Eingangsbestätigung per E-Mail.`;
       status.focus?.();
     } catch (error) {
       status.textContent = error instanceof Error ? error.message : 'Der Förderantrag konnte nicht gesendet werden.';
@@ -238,4 +291,19 @@ const endpoint = configuredEndpoint || 'https://avbkhyptztqitlgqnajn.supabase.co
 
 <style>
   .fv-form-section{padding:110px 0 125px;background:#eef3ef;color:#173b29}.shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}.form-layout{display:grid;grid-template-columns:290px 1fr;gap:65px;align-items:start}.form-layout aside{position:sticky;top:105px}.form-eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 18px;color:#1c5b3b;font-size:.68rem;font-weight:900;letter-spacing:.17em;text-transform:uppercase}.form-eyebrow>span{width:26px;height:2px;background:currentColor}.form-layout aside h2{margin:0 0 25px;font-size:clamp(2.5rem,4vw,4rem);line-height:.92;letter-spacing:-.055em}.form-layout aside h2 em{color:#d2af00;font-family:Georgia,serif;font-weight:400}.form-layout aside>p:not(.form-eyebrow){color:#617167;line-height:1.7}.form-layout aside>a{display:inline-flex;gap:12px;margin-top:15px;color:#164f32;font-size:.78rem;font-weight:850;text-decoration:none}.form-layout aside>a span{color:#d2af00}form{display:grid;gap:24px}.form-block{padding:38px;background:#fff;box-shadow:0 18px 55px rgb(9 47 32 / 7%)}.form-block>header{display:grid;grid-template-columns:48px 1fr;gap:18px;align-items:center;margin-bottom:30px;padding-bottom:22px;border-bottom:1px solid #dbe4dd}.form-block>header>span{display:grid;place-items:center;width:44px;aspect-ratio:1;border-radius:50%;background:#f4d638;color:#123b28;font-size:.68rem;font-weight:950}.form-block>header small{color:#6f8176;font-size:.62rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.form-block>header h3{margin:5px 0 0;font-size:1.55rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:21px}.fields.compact{margin-top:24px}.field{display:grid;gap:8px}.field.full{grid-column:1/-1}.field label,fieldset legend,.signature-head label{font-size:.76rem;font-weight:850}.field label small{color:#77877e;font-weight:500}input,textarea{width:100%;box-sizing:border-box;border:1px solid #cbd6ce;border-radius:0;padding:13px 14px;background:#fbfcfb;color:#17251b;font:inherit}textarea{resize:vertical;min-height:105px}input:focus,textarea:focus{outline:2px solid #91c82f;outline-offset:1px;border-color:#91c82f}.member-choice{margin:0;padding:0;border:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}.member-choice legend{margin-bottom:10px}.member-choice label{display:flex;align-items:center;gap:13px;padding:17px;border:1px solid #ccd7cf;background:#f7f9f7;cursor:pointer}.member-choice input{width:auto}.member-choice span{display:grid;gap:3px}.member-choice strong{font-size:.88rem}.member-choice small{color:#66786d;font-size:.7rem}.support-choice{display:flex;align-items:end}.support-choice label,.confirmation{display:flex;align-items:flex-start;gap:11px;color:#526158;font-size:.78rem;line-height:1.55}.support-choice label{padding:12px 0}.support-choice input,.confirmation input{width:auto;flex:0 0 auto;margin-top:3px}.confirmation{margin-top:22px;padding:16px;border-left:3px solid #91c82f;background:#f3f7ef}.confirmation a{color:#164f32;font-weight:800}.signature-meta{margin-top:24px}.signature-field{margin-top:25px}.signature-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:9px}.signature-head button{padding:7px 10px;border:1px solid #cbd6ce;background:white;color:#164f32;font:inherit;font-size:.7rem;font-weight:800;cursor:pointer}#fv-signature-pad{width:100%;height:185px;display:block;box-sizing:border-box;border:2px dashed #9cac9f;background:#fbfcfb;touch-action:none;cursor:crosshair}.signature-field>p{color:#697970;font-size:.72rem}.captcha{max-width:340px;margin-top:25px}.honeypot{position:absolute;left:-10000px}.submit-row{margin-top:28px;padding-top:25px;border-top:1px solid #dbe4dd;display:flex;align-items:center;gap:22px}.submit-row button{min-width:220px;min-height:52px;border:0;padding:0 20px;display:flex;align-items:center;justify-content:center;gap:12px;background:#91c82f;color:#0b3020;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer}.submit-row button:hover:not(:disabled){background:#f4d638}.submit-row button:disabled{opacity:.45;cursor:not-allowed}.submit-row button.is-submitting{cursor:wait}.submit-row button b{font-size:1rem}.spinner{display:none;width:15px;height:15px;border:2px solid rgb(11 48 32 / 25%);border-top-color:#0b3020;border-radius:50%;animation:spin .7s linear infinite}.is-submitting .spinner{display:block}.is-submitting .button-label,.is-submitting b{display:none}.submit-row>div{display:grid;gap:5px}.submit-row p{margin:0;font-size:.76rem;line-height:1.45}.submit-hint{color:#708078}#fv-form-status{color:#193d2a;font-weight:850}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:900px){.form-layout{grid-template-columns:1fr;gap:35px}.form-layout aside{position:static;max-width:620px}}@media(max-width:650px){.fv-form-section{padding:65px 0 80px}.shell{width:min(100% - 30px,1160px)}.form-block{padding:25px 20px}.fields,.member-choice{grid-template-columns:1fr}.field.full{grid-column:1}.form-block>header{grid-template-columns:40px 1fr;gap:13px}.form-block>header>span{width:36px}.form-block>header h3{font-size:1.3rem}.signature-head,.submit-row{align-items:flex-start;flex-direction:column}.submit-row button{width:100%}}
+  .form-layout{grid-template-columns:280px minmax(0,1fr);gap:70px}
+  .form-layout aside h2{font-family:Georgia,serif;font-size:2.15rem;line-height:1.06;letter-spacing:normal}
+  .form-layout aside ol{margin:0;padding-left:20px;color:#4e6155;line-height:1.75}
+  .form-layout aside>p:not(.form-eyebrow){margin-top:28px;padding:18px;border-left:3px solid #f4d638;background:#edf2ee;font-size:.78rem}
+  .form-block>header{align-items:start;border-bottom:0;padding-bottom:0}
+  .form-block>header h3{font-family:Georgia,serif;font-size:2rem;line-height:1.08;font-weight:400}
+  .fields{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .field{min-width:0}.field-hint,.mail-note{color:#697970;font-size:.72rem;line-height:1.55}
+  .member-choice label:has(input:checked){border-color:#91c82f;background:#f2f7ed}
+  .membership-requirement{margin-top:28px;padding:17px 18px;border-left:4px solid #d59324;background:#fff4dc;color:#69440e;font-size:.78rem;line-height:1.55}
+  .membership-requirement p{margin:6px 0 0}.submit-row{flex-wrap:wrap}.submit-row>p{flex:1 1 180px}.mail-note{margin:18px 0 0}
+  .captcha-retry{margin-top:10px;padding:10px 14px;border:1px solid #164f32;background:white;color:#164f32;font:inherit;font-size:.78rem;cursor:pointer}
+  #fv-signature-pad:focus-visible,.captcha-retry:focus-visible{outline:2px solid #91c82f;outline-offset:2px}
+  @media(max-width:900px){.form-layout{grid-template-columns:1fr;gap:35px}}
+  @media(max-width:650px){.fields{grid-template-columns:1fr}.form-block>header h3{font-size:1.55rem}.submit-row>p{flex:auto}}
 </style>
