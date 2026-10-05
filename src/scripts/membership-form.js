@@ -1,9 +1,12 @@
 import { berlinToday, parseGermanDate, formatGermanDate } from '../../supabase/functions/_shared/form-dates.mjs';
+import { membershipSuccess, membershipFailure, membershipResultText } from '../utils/membership-result.mjs';
+import { createMembershipResultDialog } from './membership-result-dialog';
 
 const form = document.querySelector('#membership-form');
 const endpoint = form.action;
 const status = document.querySelector('#form-status');
 const submitButton = form.querySelector('button[type="submit"]');
+const resultDialog = createMembershipResultDialog();
 const contributionAccepted = form.querySelector('input[name="contributionAccepted"]');
 const statutesAccepted = form.querySelector('input[name="statutesAccepted"]');
 const membershipRequirement = document.querySelector('#membership-requirement');
@@ -136,6 +139,7 @@ let formIsSending = false;
 const updateMembershipEligibility = () => {
   const eligible = contributionAccepted.checked && statutesAccepted.checked;
   submitButton.disabled = formIsSending || !eligible;
+  form.setAttribute('aria-busy', String(formIsSending));
   membershipRequirement.classList.toggle('is-complete', eligible);
   membershipRequirementText.textContent = eligible
     ? 'Beitragsordnung und Vereinssatzung wurden bestätigt. Der Mitgliedsantrag kann abgesendet werden.'
@@ -356,10 +360,11 @@ window.addEventListener('resize', () => {
   if (!signed) resizeCanvas();
 });
 
-const createCaptcha = async () => {
+const createCaptcha = async ({ reportErrors = true } = {}) => {
   document.querySelector('#captchaAnswer').value = '';
+  document.querySelector('#captcha-question').textContent = 'wird geladen …';
   try {
-    const response = await fetch(endpoint, { credentials: 'include', headers: { Accept: 'application/json' } });
+    const response = await fetch(endpoint, { credentials: 'include', headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
     const result = await response.json();
     if (!response.ok || !result.ok) throw new Error();
     foerdervereinAvailable = result.features?.foerdervereinMembership === true && result.features?.foerdervereinGuardianMembership === true;
@@ -367,14 +372,17 @@ const createCaptcha = async () => {
     foerdervereinAvailability.textContent = 'Der gemeinsame Fördervereinsantrag ist momentan nicht verfügbar. Du kannst den oben verlinkten separaten Antrag nutzen.';
     updateFoerderverein();
     document.querySelector('#captcha-question').textContent = `${result.a} + ${result.b}`;
+    return true;
   } catch {
     document.querySelector('#captcha-question').textContent = '? + ?';
-    status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
+    if (reportErrors) status.textContent = 'Der Spamschutz konnte nicht geladen werden. Bitte lade die Seite neu.';
+    return false;
   }
 };
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (formIsSending) return;
   updateDepartment();
   updateIdentityProof();
   updateInternational();
@@ -402,11 +410,28 @@ form.addEventListener('submit', async (event) => {
   formIsSending = true;
   updateMembershipEligibility();
   status.textContent = 'Antrag und Anlagen werden vorbereitet und versendet …';
-  const newsletterRequested = form.querySelector('input[name="emailNewsletterAccepted"]').checked || form.querySelector('input[name="emailGeneralInfoAccepted"]').checked;
   const foerdervereinRequested = foerdervereinMembership.checked;
 
   const data = new FormData(form);
   dateInputs.filter(input => !input.disabled).forEach((input) => data.set(input.name, parseGermanDate(input.value)));
+  const forGuardian = foerdervereinRequested && data.get('foerdervereinApplicant') === 'guardian';
+  const memberName = `${data.get('firstName')} ${data.get('lastName')}`.trim();
+  const selection = {
+    memberName,
+    department: departmentInputs.find(input => input.checked)?.closest('label').querySelector('strong').textContent ?? '',
+    team: teamSelection.value ? availableTeams().find(team => team.value === teamSelection.value)?.label ?? '' : '',
+    email: String(data.get(forGuardian ? 'foerdervereinGuardianEmail' : 'email')),
+    foerderverein: foerdervereinRequested ? {
+      name: forGuardian ? `${data.get('guardianFirstName')} ${data.get('guardianLastName')}`.trim() : memberName,
+      contribution: data.get('foerdervereinAnnualContribution'),
+    } : null,
+    emailOffers: [
+      data.has('emailNewsletterAccepted') ? 'Newsletter und digitale Vereinszeitschrift' : '',
+      data.has('emailGeneralInfoAccepted') ? 'allgemeine Vereinsinformationen' : '',
+    ].filter(Boolean),
+  };
+  let failureConfirmed = false;
+  let delivered = false;
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -421,7 +446,16 @@ form.addEventListener('submit', async (event) => {
     } catch {
       throw new Error(`Der Server konnte die Anfrage nicht verarbeiten (HTTP ${response.status}).`);
     }
-    if (!response.ok || !result.ok) throw new Error(result.message || 'Der Antrag konnte nicht versendet werden.');
+    if (!response.ok || !result.ok) {
+      failureConfirmed = result.ok === false;
+      throw new Error(result.message || 'Der Antrag konnte nicht versendet werden.');
+    }
+    if (typeof result.applicationNumber !== 'string' || !result.applicationNumber.trim()) throw new Error('Die Antragsnummer fehlt in der Serverantwort.');
+    delivered = true;
+    const outcome = membershipSuccess(result, selection);
+    status.textContent = membershipResultText(outcome);
+    form.setAttribute('aria-busy', 'false');
+    resultDialog.show(outcome);
 
     form.reset();
     updateDepartment();
@@ -429,25 +463,16 @@ form.addEventListener('submit', async (event) => {
     supportDetails.hidden = true;
     clearSignature.click();
     document.querySelector('#signingDate').value = formatGermanDate(berlinToday());
-    await createCaptcha();
-    status.textContent = `Vielen Dank! Dein Hauptvereinsantrag wurde unter der Nummer ${result.applicationNumber} versendet.`;
-    if (foerdervereinRequested) {
-      status.textContent += result.foerdervereinStatus === 'sent'
-        ? ` Auch dein Fördervereinsantrag ${result.foerdervereinApplicationNumber} wurde versendet.`
-        : ' Die direkte Weiterleitung an den Förderverein konnte nicht bestätigt werden. Dein Fördervereinsantrag liegt der Mitgliederverwaltung vor. Bitte sende keinen zweiten Antrag; wende dich bei Rückfragen an info@bsvnordstern.de.';
-    }
-    status.textContent += result.confirmationEmailSent === false
-      ? ' Deine Eingangsbestätigung konnte leider nicht versendet werden. Bitte wende dich mit der Antragsnummer an info@bsvnordstern.de; sende den Antrag nicht erneut.'
-      : ` Du erhältst ${foerdervereinRequested ? 'beide unterschriebenen Anträge' : 'deinen unterschriebenen Antrag'} als PDF per E-Mail.`;
-    if (newsletterRequested) {
-      status.textContent += result.newsletterStatus === 'requested'
-        ? ' Für deine ausgewählten E-Mail-Angebote erhältst du zusätzlich eine gemeinsame Verifizierungsmail, sofern sie noch nicht bestätigt sind. Ein Klick auf den Link bestätigt deine Auswahl. Prüfe auch den Spam-Ordner.'
-        : ' Die Anmeldung für deine E-Mail-Auswahl konnte gerade nicht gestartet werden. Dein Mitgliedsantrag ist versendet. Bitte nutze für die gewünschte E-Mail-Auswahl das Formular auf unserer Newsletter-Seite unter /newsletter.';
-    }
-    window.scrollTo({ top: form.offsetTop - 90, behavior: 'smooth' });
+    if (!await createCaptcha({ reportErrors: false })) status.textContent += ' Für einen weiteren Antrag muss die Seite neu geladen werden, da der Spamschutz nicht erreichbar ist.';
   } catch (error) {
-    status.textContent = error instanceof Error ? error.message : 'Der Antrag konnte nicht versendet werden.';
-    await createCaptcha();
+    // A later UI/reset error must never turn an already confirmed submission into a failed one.
+    if (!delivered) {
+      const outcome = membershipFailure(error instanceof Error ? error.message : 'Der Antrag konnte nicht versendet werden.', failureConfirmed);
+      status.textContent = membershipResultText(outcome);
+      form.setAttribute('aria-busy', 'false');
+      resultDialog.show(outcome);
+      if (!await createCaptcha({ reportErrors: false })) status.textContent += ' Der Spamschutz ist nicht erreichbar. Bitte sichere deine Eingaben, bevor du die Seite neu lädst.';
+    }
   } finally {
     formIsSending = false;
     updateMembershipEligibility();
