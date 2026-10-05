@@ -168,6 +168,22 @@ optionale Nachricht und drei eigene Bestätigungen für Mitgliedschaft,
 Lastschriftmandat und Datenübermittlung eingeblendet. Nicht ausgewählte
 Fördervereinsfelder sind deaktiviert und werden serverseitig ignoriert.
 
+Bei Minderjährigen wird die volljährige, sorgeberechtigte Kontaktperson aus
+Abschnitt 04 selbst Fördermitglied. Maßgeblich ist das Geburtsdatum des
+Hauptvereinsmitglieds in Europe/Berlin, unabhängig von der gewählten Abteilung.
+Das Formular ergänzt Geburtsdatum, Anschrift, E-Mail-Adresse und eigenen
+BSV-Mitgliedsstatus der Kontaktperson. Vorgefüllte Kontaktdaten sind änderbar.
+Der Mindestbeitrag beträgt für bereits selbst beim BSV gemeldete Kontaktpersonen
+11 Euro, sonst 25 Euro. Die Mitgliedschaft des Kindes begründet keinen Rabatt.
+Die gemeinsame Unterschrift gilt für den Hauptvereinsbeitritt des Kindes und den
+eigenen Fördervereinsbeitritt der Kontaktperson. Beide PDFs gehen an deren
+bestätigte E-Mail-Adresse. Das Fördervereins-PDF und die Fördervereinsmail
+enthalten die eigenen Angaben der Kontaktperson, keine Geburtsdaten des Kindes.
+Bei Volljährigen gilt der zusätzliche Antrag weiterhin für dieselbe Person.
+Ein Wechsel der Person setzt die gesonderten Bestätigungen im Formular zurück.
+Alte Kinderformulare ohne ausdrücklich bestätigte Kontaktperson werden vor
+jedem Versand mit einem Hinweis zum Neuladen zurückgewiesen.
+
 `membership-v3.php` validiert beide Anträge vor dem ersten Versand und erstellt
 mit `foerderverein-pdf.php` ein separates Fördervereins-PDF. Dieses übernimmt
 die benötigten Personen- und Kontodaten, Ort, Datum und dieselbe Unterschrift.
@@ -195,7 +211,8 @@ Bereitstellung in dieser Reihenfolge:
    `foerderverein-pdf.php`, anschließend `membership-v3.php` bereitstellen.
    Die private `membership-config.php` bleibt auf dem Server.
 3. GET auf `/api/membership.php` prüfen: Die Antwort enthält
-   `features.foerdervereinMembership: true`. Erst dann die Website publizieren.
+   `features.foerdervereinMembership: true` und
+   `features.foerdervereinGuardianMembership: true`. Erst dann die Website publizieren.
 
 Die Oberfläche aktiviert den gemeinsamen Beitritt nur, wenn der Server diese
 Fähigkeit bestätigt. So wird eine Auswahl bei einer älteren Serverversion

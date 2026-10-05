@@ -52,22 +52,75 @@ const supportDetails = document.querySelector('#support-details');
 const foerdervereinMembership = document.querySelector('#foerdervereinMembership');
 const foerdervereinDetails = document.querySelector('#foerderverein-details');
 const foerdervereinAvailability = document.querySelector('#foerderverein-availability');
+const foerdervereinGuardianDetails = document.querySelector('#foerderverein-guardian-details');
+const foerdervereinGuardianBirthDate = document.querySelector('#foerdervereinGuardianBirthDate');
+const foerdervereinGuardianBsvMember = document.querySelector('#foerdervereinGuardianBsvMember');
+const foerdervereinCopiedFields = [...foerdervereinGuardianDetails.querySelectorAll('[data-copy-from]')];
+let foerdervereinIdentity = '';
 let foerdervereinAvailable = false;
 const updateFoerderverein = () => {
   const selected = foerdervereinMembership.checked;
+  const age = calculateAge();
+  const forGuardian = age !== null && age < 18;
+  const name = [forGuardian ? 'guardianFirstName' : 'firstName', forGuardian ? 'guardianLastName' : 'lastName']
+    .map(id => document.getElementById(id).value.trim()).filter(Boolean).join(' ');
+  const identity = `${forGuardian}|${name}|${forGuardian ? foerdervereinGuardianBirthDate.value : birthDate.value}`;
+  if (foerdervereinIdentity && identity !== foerdervereinIdentity) {
+    foerdervereinDetails.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
+  }
+  foerdervereinIdentity = identity;
   foerdervereinMembership.disabled = !foerdervereinAvailable && !selected;
   foerdervereinMembership.setAttribute('aria-expanded', String(selected));
   foerdervereinMembership.setCustomValidity(selected && !foerdervereinAvailable ? 'Der gemeinsame Fördervereinsantrag ist momentan nicht verfügbar. Bitte versuche es später erneut oder nutze den separaten Antrag.' : '');
   foerdervereinDetails.hidden = !selected;
   document.querySelector('#foerderverein-signature-hint').hidden = !selected;
-  foerdervereinDetails.querySelectorAll('input, textarea').forEach((control) => {
-    control.disabled = !selected;
-    control.required = selected && control.hasAttribute('data-fv-required');
+  foerdervereinGuardianDetails.hidden = !forGuardian;
+  foerdervereinDetails.querySelectorAll('input, textarea, select').forEach((control) => {
+    const active = selected && (!foerdervereinGuardianDetails.contains(control) || forGuardian);
+    control.disabled = !active;
+    control.required = active && control.hasAttribute('data-fv-required');
     if (!selected && control.type === 'checkbox') control.checked = false;
   });
+  foerdervereinCopiedFields.forEach(input => {
+    if (!input.dataset.edited) input.value = document.getElementById(input.dataset.copyFrom).value;
+  });
+  document.querySelector('#foerdervereinApplicant').value = forGuardian ? 'guardian' : 'self';
+  document.querySelector('#foerderverein-choice-label').textContent = forGuardian
+    ? 'Ja, ich möchte als Kontaktperson selbst den Förderverein unterstützen.'
+    : 'Ja, ich kann mir eine Unterstützung über den Förderverein vorstellen.';
+  document.querySelector('#foerderverein-applicant-hint').textContent = forGuardian
+    ? `Fördermitglied wird die Kontaktperson${name ? ` ${name}` : ' aus Abschnitt 04'}. Das Kind wird ausschließlich im Hauptverein angemeldet. Bitte ergänze deine eigenen Angaben. Als sorgeberechtigte Kontaktperson unterschreibst du am Ende für das Kind im Hauptverein und für dich selbst im Förderverein. Die Bankverbindung aus Abschnitt 06 wird für beide ausdrücklich bestätigten Lastschriftmandate übernommen.`
+    : `Fördermitglied wird${name ? ` ${name}` : ' die im Hauptvereinsantrag genannte Person'}. Mit den folgenden Bestätigungen beantragst du deine zusätzliche Mitgliedschaft im Förderverein. Wir übernehmen deine Personen- und Kontodaten. Deine Unterschrift am Ende gilt für beide Anträge und die jeweils bestätigten Lastschriftmandate.`;
+  document.querySelector('#foerderverein-statutes-label').textContent = forGuardian
+    ? `Ich, ${name || 'die in Abschnitt 04 genannte Kontaktperson'}, beantrage meine eigene Mitgliedschaft im Förderverein zum angegebenen Jahresbeitrag und erkenne dessen Satzung und Vorstandsbeschlüsse an. Ich bin sorgeberechtigt und unterschreibe den Hauptvereinsantrag für das Kind sowie den Fördervereinsantrag für mich selbst. *`
+    : 'Ich beantrage meine eigene Mitgliedschaft im Förderverein des BSV Nordstern zum angegebenen Jahresbeitrag und erkenne dessen Satzung und Vorstandsbeschlüsse an. *';
+  document.querySelector('#foerderverein-signature-hint').textContent = forGuardian
+    ? `Hier unterschreibt ${name || 'die sorgeberechtigte Kontaktperson'}: für das Kind im Hauptverein und für die eigene Mitgliedschaft im Förderverein einschließlich der jeweiligen Lastschriftmandate.`
+    : 'Mit dieser Unterschrift bestätigst du auch deinen ausgewählten Fördervereinsantrag und das dort erteilte Lastschriftmandat.';
+  const amount = document.querySelector('#foerdervereinAnnualContribution');
+  const minimum = forGuardian && foerdervereinGuardianBsvMember.value !== 'yes' ? 25 : 11;
+  if (amount.min !== String(minimum) && (amount.value === amount.min || (amount.value && Number(amount.value) < minimum))) amount.value = String(minimum);
+  amount.min = String(minimum);
+  document.querySelector('#foerderverein-contribution-hint').textContent = forGuardian
+    ? 'Mindestens 11 € jährlich, wenn die Kontaktperson selbst BSV-Mitglied ist, sonst 25 €. Die Mitgliedschaft des Kindes zählt hierfür nicht. Ein höherer Betrag ist freiwillig.'
+    : 'Mindestens 11 € pro Jahr für BSV-Mitglieder. Ein höherer Betrag ist freiwillig. Der Förderbeitrag kommt zum Beitrag des Hauptvereins hinzu.';
+  updateGuardian();
   submitButton.firstChild.textContent = selected ? 'Beide Mitgliedsanträge absenden ' : 'Mitgliedsantrag absenden ';
 };
 foerdervereinMembership.addEventListener('change', updateFoerderverein);
+foerdervereinGuardianBsvMember.addEventListener('change', updateFoerderverein);
+['firstName', 'lastName', 'guardianFirstName', 'guardianLastName'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateFoerderverein);
+});
+foerdervereinCopiedFields.forEach(input => {
+  input.addEventListener('input', () => { input.dataset.edited = 'true'; });
+  document.getElementById(input.dataset.copyFrom).addEventListener('input', updateFoerderverein);
+});
+form.addEventListener('reset', () => {
+  foerdervereinIdentity = '';
+  foerdervereinCopiedFields.forEach(input => delete input.dataset.edited);
+  document.querySelector('#foerdervereinAnnualContribution').min = '11';
+});
 const birthDate = document.querySelector('#birthDate');
 const nationality = document.querySelector('#nationality');
 const internationalSection = document.querySelector('#international-section');
@@ -98,6 +151,16 @@ const setRequired = (root, required, selector = 'input, select, textarea') => {
 
 const selectedDepartment = () => departmentInputs.find((input) => input.checked)?.value ?? '';
 const isFootball = () => ['youth-football', 'adult-football'].includes(selectedDepartment());
+const updateGuardian = () => {
+  const age = calculateAge();
+  const minor = age !== null && age < 18;
+  const visible = minor || selectedDepartment() === 'youth-football';
+  guardianSection.hidden = !visible;
+  document.querySelector('#guardianFirstName').required = visible;
+  document.querySelector('#guardianLastName').required = visible;
+  document.querySelector('#guardianPhone').required = minor && foerdervereinMembership.checked;
+  document.querySelector('#guardian-phone-label').textContent = minor && foerdervereinMembership.checked ? 'Telefon *' : 'Telefon';
+};
 
 const teamAudience = () => {
   if (selectedDepartment() === 'youth-football') return 'youth';
@@ -143,9 +206,7 @@ const updateTeamSection = () => {
 };
 
 const updateDepartment = () => {
-  const youth = selectedDepartment() === 'youth-football';
-  guardianSection.hidden = !youth;
-  setRequired(guardianSection, youth);
+  updateGuardian();
   footballSection.hidden = !isFootball();
 
   identityProofInputs.forEach((input) => input.required = isFootball());
@@ -172,9 +233,9 @@ const updateIdentityProof = () => {
   setRequired(identityCardDocuments, needsId, 'input[type="file"]');
 };
 
-const calculateAge = () => {
-  if (!birthDate.value) return null;
-  const born = new Date(`${parseGermanDate(birthDate.value)}T12:00:00`);
+const calculateAge = (value = birthDate.value) => {
+  if (!value) return null;
+  const born = new Date(`${parseGermanDate(value)}T12:00:00`);
   if (Number.isNaN(born.getTime())) return null;
   const today = new Date(`${berlinToday()}T12:00:00`);
   let age = today.getFullYear() - born.getFullYear();
@@ -216,18 +277,20 @@ teamKnownInputs.forEach((input) => input.addEventListener('change', updateTeamSe
 identityProofInputs.forEach((input) => input.addEventListener('change', updateIdentityProof));
 registrationTypeInputs.forEach((input) => input.addEventListener('change', updateRegistrationType));
 currentlySuspended.addEventListener('change', updateSuspension);
-const dateInputs = [birthDate, document.querySelector('#signingDate')];
+const dateInputs = [birthDate, document.querySelector('#signingDate'), foerdervereinGuardianBirthDate];
 const validateDates = (normalize = false) => {
   dateInputs.forEach((input) => {
+    if (input.disabled) { input.setCustomValidity(''); return; }
     const iso = parseGermanDate(input.value);
     input.setCustomValidity(input.value && !iso ? 'Bitte ein gültiges Datum im Format TT.MM.JJJJ angeben.' : '');
     if (iso && iso > berlinToday()) input.setCustomValidity('Das Datum darf nicht in der Zukunft liegen.');
+    if (input === foerdervereinGuardianBirthDate && iso && calculateAge(input.value) < 18) input.setCustomValidity('Die Kontaktperson muss für diesen Fördervereinsantrag volljährig sein.');
     if (normalize && iso) input.value = formatGermanDate(iso);
   });
 };
 dateInputs.forEach((input) => {
-  input.addEventListener('input', () => { validateDates(); updateInternational(); });
-  input.addEventListener('change', () => { validateDates(true); updateInternational(); });
+  input.addEventListener('input', () => { updateFoerderverein(); validateDates(); updateInternational(); });
+  input.addEventListener('change', () => { validateDates(true); updateFoerderverein(); updateInternational(); });
 });
 nationality.addEventListener('input', updateInternational);
 contributionAccepted.addEventListener('change', updateMembershipEligibility);
@@ -299,7 +362,7 @@ const createCaptcha = async () => {
     const response = await fetch(endpoint, { credentials: 'include', headers: { Accept: 'application/json' } });
     const result = await response.json();
     if (!response.ok || !result.ok) throw new Error();
-    foerdervereinAvailable = result.features?.foerdervereinMembership === true;
+    foerdervereinAvailable = result.features?.foerdervereinMembership === true && result.features?.foerdervereinGuardianMembership === true;
     foerdervereinAvailability.hidden = foerdervereinAvailable;
     foerdervereinAvailability.textContent = 'Der gemeinsame Fördervereinsantrag ist momentan nicht verfügbar. Du kannst den oben verlinkten separaten Antrag nutzen.';
     updateFoerderverein();
@@ -343,7 +406,7 @@ form.addEventListener('submit', async (event) => {
   const foerdervereinRequested = foerdervereinMembership.checked;
 
   const data = new FormData(form);
-  dateInputs.forEach((input) => data.set(input.name, parseGermanDate(input.value)));
+  dateInputs.filter(input => !input.disabled).forEach((input) => data.set(input.name, parseGermanDate(input.value)));
   try {
     const response = await fetch(endpoint, {
       method: 'POST',

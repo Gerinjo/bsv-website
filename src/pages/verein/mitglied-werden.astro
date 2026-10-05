@@ -95,12 +95,12 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
 
           <section id="guardian-section" class="form-section conditional" hidden>
             <div class="section-heading compact"><span>04</span><div><small>Jugendmitglied</small><h2>Kontaktperson</h2></div></div>
-            <p class="section-copy">Für Mitglieder der Jugendabteilung benötigen wir eine sorgeberechtigte oder betreuende Kontaktperson.</p>
+            <p class="section-copy">Für minderjährige Mitglieder und Mitglieder der Jugendabteilung benötigen wir eine sorgeberechtigte oder betreuende Kontaktperson. Bei einem zusätzlichen Fördervereinsbeitritt für die Kontaktperson muss diese selbst volljährig und zur Unterschrift für das Kind berechtigt sein.</p>
             <div class="fields">
               <div class="field"><label for="guardianLastName">Nachname *</label><input id="guardianLastName" name="guardianLastName" maxlength="100" /></div>
               <div class="field"><label for="guardianFirstName">Vorname *</label><input id="guardianFirstName" name="guardianFirstName" maxlength="100" /></div>
               <div class="field"><label for="guardianRelation">Verhältnis zum Mitglied</label><input id="guardianRelation" name="guardianRelation" placeholder="z. B. Mutter, Vater, Betreuung" maxlength="80" /></div>
-              <div class="field"><label for="guardianPhone">Telefon</label><input id="guardianPhone" name="guardianPhone" type="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
+              <div class="field"><label for="guardianPhone" id="guardian-phone-label">Telefon</label><input id="guardianPhone" name="guardianPhone" type="tel" maxlength="40" pattern="[0-9+() /-]{6,40}" /></div>
             </div>
           </section>
 
@@ -109,18 +109,27 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
             <label class="check-card"><input type="checkbox" id="supportWilling" name="supportWilling" value="yes" /><span><strong>Ja, ich kann mir eine Unterstützung vorstellen.</strong><small>Zum Beispiel Training, Betreuung, Veranstaltungen, Platzpflege, Social Media oder Sponsoring.</small></span></label>
             <div id="support-details" class="field full conditional-block" hidden><label for="supportIdeas">Ideen oder mögliche Aufgaben</label><textarea id="supportIdeas" name="supportIdeas" rows="4" maxlength="2000"></textarea></div>
             <div class="foerderverein-choice">
-              <label class="check-card"><input type="checkbox" id="foerdervereinMembership" name="foerdervereinMembership" value="yes" aria-controls="foerderverein-details" aria-expanded="false" disabled /><span><strong>Ja, ich kann mir eine Unterstützung über den Förderverein vorstellen.</strong><small>Jugendarbeit, Trainingsmaterial und gemeinsame Projekte fördern – schon ab 11 € im Jahr bei gleichzeitiger Anmeldung beim BSV.</small></span></label>
+              <label class="check-card"><input type="checkbox" id="foerdervereinMembership" name="foerdervereinMembership" value="yes" aria-controls="foerderverein-details" aria-expanded="false" disabled /><span><strong id="foerderverein-choice-label">Ja, ich kann mir eine Unterstützung über den Förderverein vorstellen.</strong><small>Jugendarbeit, Trainingsmaterial und gemeinsame Projekte fördern. Bei Minderjährigen tritt die Kontaktperson dem Förderverein bei: ab 11 € jährlich bei eigener BSV-Mitgliedschaft, sonst ab 25 €.</small></span></label>
               <p class="foerderverein-more">Mehr über die Arbeit des <a href={withBase('/foerderverein/informationen-zielsetzungen')} target="_blank" rel="noopener">Fördervereins</a>. Du kannst den <a href={withBase('/foerderverein/mitglied-werden')} target="_blank" rel="noopener">Fördervereinsantrag auch separat ausfüllen</a>.</p>
               <p id="foerderverein-availability" class="foerderverein-more" role="status">Der gemeinsame Fördervereinsantrag wird geladen …</p>
               <div id="foerderverein-details" class="conditional-block foerderverein-details" hidden>
                 <h3>Mit einem Antrag doppelt unterstützen.</h3>
-                <p>Mit dieser Auswahl und den folgenden Bestätigungen beantragst du beim Absenden zusätzlich die Mitgliedschaft im Förderverein für dieselbe Person. Wir übernehmen die Personen- und Kontodaten aus diesem Formular. Deine Unterschrift am Ende gilt für beide Anträge und die jeweils bestätigten Einzugsermächtigungen. Bei Minderjährigen unterschreibt eine sorgeberechtigte Person.</p>
+                <p id="foerderverein-applicant-hint" aria-live="polite"></p>
+                <input type="hidden" id="foerdervereinApplicant" name="foerdervereinApplicant" value="self" disabled />
+                <div id="foerderverein-guardian-details" class="fields" hidden>
+                  <div class="field"><label for="foerdervereinGuardianBirthDate">Geburtsdatum der Kontaktperson *</label><input id="foerdervereinGuardianBirthDate" name="foerdervereinGuardianBirthDate" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" maxlength="10" data-fv-required disabled /></div>
+                  <div class="field"><label for="foerdervereinGuardianBsvMember">Ist die Kontaktperson selbst BSV-Mitglied? *</label><select id="foerdervereinGuardianBsvMember" name="foerdervereinGuardianBsvMember" data-fv-required disabled><option value="">Bitte auswählen …</option><option value="yes">Ja – Förderbeitrag ab 11 € jährlich</option><option value="no">Nein – Förderbeitrag ab 25 € jährlich</option></select></div>
+                  <div class="field full"><label for="foerdervereinGuardianStreet">Straße und Hausnummer der Kontaktperson *</label><input id="foerdervereinGuardianStreet" name="foerdervereinGuardianStreet" maxlength="180" data-copy-from="street" data-fv-required disabled /></div>
+                  <div class="field"><label for="foerdervereinGuardianPostalCode">Postleitzahl der Kontaktperson *</label><input id="foerdervereinGuardianPostalCode" name="foerdervereinGuardianPostalCode" maxlength="10" data-copy-from="postalCode" data-fv-required disabled /></div>
+                  <div class="field"><label for="foerdervereinGuardianCity">Wohnort der Kontaktperson *</label><input id="foerdervereinGuardianCity" name="foerdervereinGuardianCity" maxlength="120" data-copy-from="city" data-fv-required disabled /></div>
+                  <div class="field full"><label for="foerdervereinGuardianEmail">E-Mail-Adresse der Kontaktperson *</label><input id="foerdervereinGuardianEmail" name="foerdervereinGuardianEmail" type="email" maxlength="180" data-copy-from="email" data-fv-required disabled /><small>Hierhin senden wir beide unterschriebenen Anträge. Bitte die vorbelegten Angaben prüfen und bei Bedarf ändern. Name und Telefonnummer stammen aus Abschnitt 04.</small></div>
+                </div>
                 <div class="fields">
                   <div class="field"><label for="foerdervereinAnnualContribution">Jährlicher Förderbeitrag in Euro *</label><input id="foerdervereinAnnualContribution" name="foerdervereinAnnualContribution" type="number" inputmode="decimal" min="11" max="10000" step="1" value="11" aria-describedby="foerderverein-contribution-hint" data-fv-required disabled /><small id="foerderverein-contribution-hint">Mindestens 11 € pro Jahr für BSV-Mitglieder. Ein höherer Betrag ist freiwillig. Der Förderbeitrag kommt zum Beitrag des Hauptvereins hinzu.</small></div>
                   <div class="field full"><label for="foerdervereinNotes">Nachricht an den Förderverein <small>(optional)</small></label><textarea id="foerdervereinNotes" name="foerdervereinNotes" rows="3" maxlength="2000" disabled></textarea></div>
                 </div>
                 <div class="legal-list">
-                  <label class="legal-check"><input type="checkbox" name="foerdervereinStatutesAccepted" value="accepted" data-fv-required disabled /><span>Ich beantrage die Mitgliedschaft im Förderverein des BSV Nordstern zum angegebenen Jahresbeitrag und erkenne dessen Satzung und Vorstandsbeschlüsse an. *</span></label>
+                  <label class="legal-check"><input type="checkbox" name="foerdervereinStatutesAccepted" value="accepted" data-fv-required disabled /><span id="foerderverein-statutes-label">Ich beantrage meine eigene Mitgliedschaft im Förderverein des BSV Nordstern zum angegebenen Jahresbeitrag und erkenne dessen Satzung und Vorstandsbeschlüsse an. *</span></label>
                   <label class="legal-check"><input type="checkbox" name="foerdervereinSepaAccepted" value="accepted" data-fv-required disabled /><span>Ich ermächtige den Förderverein des BSV Nordstern, den angegebenen Jahresbeitrag wiederkehrend mittels Lastschrift von dem in Abschnitt 06 angegebenen Konto einzuziehen. Zugleich weise ich mein Kreditinstitut an, die eingezogenen Lastschriften einzulösen. *</span></label>
                   <label class="legal-check"><input type="checkbox" name="foerdervereinPrivacyAccepted" value="accepted" data-fv-required disabled /><span>Ich habe die <a href={withBase('/datenschutz')} target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und stimme zu, dass meine Personen- und Kontodaten sowie meine Unterschrift zur Bearbeitung dieses zusätzlichen Antrags an den Förderverein übermittelt werden. *</span></label>
                 </div>
@@ -260,7 +269,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
   .member-layout>aside p{margin-top:28px;padding:18px;border-left:3px solid var(--yellow);background:#edf2ee;color:#5e6e64;font-size:.78rem;line-height:1.6}
   form{display:grid;gap:25px}
   .form-section{padding:38px;background:white;box-shadow:0 18px 55px rgb(9 47 32 / 7%)}
-  .form-section.conditional[hidden],.conditional-block[hidden],#suspension-dates[hidden]{display:none}
+  .form-section.conditional[hidden],.conditional-block[hidden],#suspension-dates[hidden],#foerderverein-guardian-details[hidden]{display:none}
   .section-heading{display:grid;grid-template-columns:48px 1fr;align-items:start;gap:20px;margin-bottom:30px}
   .section-heading>span{width:42px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:var(--yellow);color:var(--dark);font-size:.65rem;font-weight:900}
   .section-heading small{display:block;color:var(--green);font-size:.65rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
@@ -275,6 +284,7 @@ const endpoint = 'https://api.bsvnordstern.de/api/membership.php';
   .foerderverein-details{margin-top:20px;padding:22px;border:1px solid var(--line);background:#f8faf6}
   .foerderverein-details h3{margin:0 0 12px;font-size:1.25rem}.foerderverein-details>p{font-size:.86rem;line-height:1.7;color:#52685a}
   .foerderverein-details .legal-list{margin-top:22px}.foerderverein-details .field>small{font-size:.72rem;line-height:1.55;color:#52685a}
+  .foerderverein-details .fields+.fields{margin-top:22px}
   #foerderverein-signature-hint{padding:12px;border-left:3px solid var(--yellow);background:#f2f7ed}
   label,legend{color:var(--ink);font-size:.77rem;font-weight:800}
   label small{color:#76837b;font-weight:500}

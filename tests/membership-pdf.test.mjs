@@ -124,24 +124,45 @@ test('every business field in the online form is represented in the PDF generato
 
 const supporters = {
   foerdervereinMembership: 'yes', foerdervereinAnnualContribution: '35', foerdervereinApplicationNumber: 'FV-20260913-ABC123',
+  foerdervereinApplicant: 'guardian', foerdervereinGuardianBirthDate: '1985-06-21', foerdervereinGuardianBsvMember: 'no',
+  foerdervereinGuardianStreet: 'Elternstraße 24', foerdervereinGuardianPostalCode: '78462', foerdervereinGuardianCity: 'Konstanz',
+  foerdervereinGuardianEmail: 'maria.muster@example.invalid',
   foerdervereinSepaAccepted: true, foerdervereinStatutesAccepted: true, foerdervereinPrivacyAccepted: true,
   foerdervereinNotes: 'Ich unterstütze die Jugendarbeit. Grüße von Łukasz!',
 };
 
 test('separate Förderverein PDF includes transferred data, own mandate, annual contribution and the shared signature', () => {
-  const result = render({ ...sampleApplication, ...supporters }, 'Foerdervereinsantrag-Beispiel', 'foerderverein');
-  for (const key of ['firstName', 'lastName', 'street', 'city', 'email', 'phone', 'iban', 'accountHolder']) assert.ok(result.text.includes(sampleApplication[key]), key);
+  const member = { firstName: 'Maria', lastName: sampleApplication.guardianLastName, birthDate: supporters.foerdervereinGuardianBirthDate,
+    street: supporters.foerdervereinGuardianStreet, postalCode: supporters.foerdervereinGuardianPostalCode,
+    city: supporters.foerdervereinGuardianCity, email: supporters.foerdervereinGuardianEmail, phone: sampleApplication.guardianPhone };
+  const result = render({ ...sampleApplication, ...supporters, foerdervereinForGuardian: true, foerdervereinBsvMember: false,
+    foerdervereinBsvStatus: 'Kontaktperson ist selbst kein BSV-Mitglied', foerdervereinMember: member }, 'Foerdervereinsantrag-Beispiel', 'foerderverein');
+  for (const key of ['firstName', 'lastName', 'street', 'city', 'email', 'phone']) assert.ok(result.text.includes(member[key]), key);
+  for (const key of ['iban', 'accountHolder']) assert.ok(result.text.includes(sampleApplication[key]), key);
   assert.match(result.text, /FÖRDERVEREIN DES BSV NORDSTERN/);
   assert.match(result.text, /35,00 EUR/);
-  assert.match(result.text, /18\.03\.2014/);
+  assert.match(result.text, /21\.06\.1985/);
+  assert.doesNotMatch(result.text, /18\.03\.2014|Mila|mila\.muster|Musterstraße 12/);
+  assert.match(result.text, /Mindestbeitrag: 25 EUR/);
+  assert.match(result.text, /eigene Mitgliedschaft/);
   assert.match(result.text, /13\.09\.2026/);
   assert.match(result.text, /Ich ermächtige den Förderverein/);
-  assert.match(result.text, /Satzung und Vorstandsbeschlüsse/);
-  assert.match(result.text, /Personen- und\s+Kontodaten/);
+  assert.match(result.text, /Satzung und\s+Vorstandsbeschlüsse/);
+  assert.match(result.text, /Personen- und\s+(?:Ja\s+)?Kontodaten/);
   assert.match(result.text, /Unterschrift bestätigt beide Mitgliedsanträge/);
   assert.match(result.binary, /\/Width 640/);
   assert.match(result.info, /Pages:\s+2/);
   assert.doesNotMatch(result.text, /FC Beispielstadt|DFBnet|Ausweis-Mila|Ausweise-Eltern/);
+});
+
+test('adult Förderverein PDF uses the adult applicant and the BSV member contribution', () => {
+  const member = { ...sampleApplication, birthDate: '1980-03-18' };
+  const result = render({ ...sampleApplication, ...supporters, foerdervereinForGuardian: false, foerdervereinBsvMember: true,
+    foerdervereinBsvStatus: 'gleichzeitig für dieselbe Person beantragt', foerdervereinMember: member }, 'Foerdervereinsantrag-Erwachsen', 'foerderverein');
+  assert.match(result.text, /Mila/);
+  assert.match(result.text, /18\.03\.1980/);
+  assert.match(result.text, /Mindestbeitrag: 11 EUR/);
+  assert.doesNotMatch(result.text, /21\.06\.1985|Elternstraße|Kontaktperson unterschreibt/);
 });
 
 test('real PHP submission sends the same complete PDF to both recipients and keeps trainer mail attachment-free', async (t) => {
@@ -256,6 +277,12 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     const internal = messages.find(m => m.messageType === 'internal');
     const fv = messages.find(m => m.messageType === 'foerderverein');
     const applicant = messages.find(m => m.messageType === 'applicant');
+    assert.match(fv.subject, /Maria Muster-Łukasz/);
+    assert.match(fv.text, /21\.06\.1985/);
+    assert.doesNotMatch(fv.text, /Mila|18\.03\.2014/);
+    assert.equal(fv.replyTo, supporters.foerdervereinGuardianEmail);
+    assert.equal(applicant.to, supporters.foerdervereinGuardianEmail);
+    assert.match(applicant.text, /für Maria Muster-Łukasz/);
     assert.equal(fv.attachments.length, 1);
     const attachment = fv.attachments[0];
     assert.match(attachment.filename, /^Foerdervereinsantrag-FV-/);
@@ -269,11 +296,58 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     }
   }
   failMessageType = '';
+  // Birth date, not sport/department or client flags, determines whose application it is.
+  const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(new Date());
+  const eighteenthBirthday = `${Number(today.slice(0, 4)) - 18}${today.slice(4)}`;
+  for (const scenario of [
+    { department: 'archery', birthDate: '2014-03-18', guardian: true, existing: 'no', amount: '25' },
+    { department: 'passive', birthDate: '2014-03-18', guardian: true, existing: 'yes', amount: '11' },
+    { department: 'adult-football', birthDate: '2014-03-18', guardian: true, existing: 'no', amount: '25', teamSelection: 'frauen-1' },
+    { department: 'youth-football', birthDate: eighteenthBirthday, guardian: false, existing: 'no', amount: '11' },
+    { department: 'passive', birthDate: '1980-03-18', guardian: false, existing: 'no', amount: '11' },
+  ]) {
+    messages.length = 0;
+    const response = await submit({ ...supporters, ...scenario, foerdervereinApplicant: scenario.guardian ? 'guardian' : 'self',
+      foerdervereinAnnualContribution: scenario.amount, foerdervereinGuardianBsvMember: scenario.existing });
+    assert.equal(response.status, 200, await response.clone().text());
+    const fv = messages.find(m => m.messageType === 'foerderverein');
+    const applicant = messages.find(m => m.messageType === 'applicant');
+    assert.equal(applicant.to, scenario.guardian ? supporters.foerdervereinGuardianEmail : sampleApplication.email);
+    const path = join(directory, 'fv-person.pdf');
+    writeFileSync(path, Buffer.from(fv.attachments[0].content, 'base64'));
+    const text = spawnSync('pdftotext', ['-layout', path, '-'], { encoding: 'utf8' }).stdout;
+    if (scenario.guardian) {
+      assert.match(text, /Maria/);
+      assert.match(text, /21\.06\.1985/);
+      assert.match(text, /Elternstraße 24/);
+      assert.doesNotMatch(text, /Mila|18\.03\.2014|mila\.muster/);
+      assert.match(fv.text, scenario.existing === 'yes' ? /bereits selbst BSV-Mitglied/ : /selbst kein BSV-Mitglied/);
+    } else {
+      assert.match(text, /Mila/);
+      assert.doesNotMatch(text, /21\.06\.1985|Elternstraße 24/);
+      assert.match(fv.text, /gleichzeitig für dieselbe Person beantragt/);
+    }
+    const mainPath = join(directory, 'main-person.pdf');
+    const main = applicant.attachments.find(a => a.filename.startsWith('BSV-Mitgliedsantrag-'));
+    writeFileSync(mainPath, Buffer.from(main.content, 'base64'));
+    const mainText = spawnSync('pdftotext', ['-layout', mainPath, '-'], { encoding: 'utf8' }).stdout;
+    assert.match(mainText, /Mila/);
+    assert.match(mainText, scenario.guardian ? /Fördermitglied: Maria/ : /Fördermitglied: Mila/);
+  }
   for (const overrides of [
     { foerdervereinAnnualContribution: '10' }, { foerdervereinAnnualContribution: '10001' },
     { foerdervereinAnnualContribution: '11.5' }, { foerdervereinAnnualContribution: '11e2' },
     { foerdervereinSepaAccepted: false }, { foerdervereinStatutesAccepted: false }, { foerdervereinPrivacyAccepted: false },
     { foerdervereinNotes: 'a'.repeat(2001) }, { signingDate: '2026-02-31' },
+    { foerdervereinApplicant: '' }, { foerdervereinApplicant: 'self' },
+    { guardianFirstName: '' }, { guardianLastName: '' }, { guardianPhone: '' },
+    { foerdervereinGuardianBirthDate: '' }, { foerdervereinGuardianBirthDate: '2014-03-18' },
+    { foerdervereinGuardianBirthDate: '1985-02-31' }, { foerdervereinGuardianBirthDate: '21.06.1985' },
+    { foerdervereinGuardianBirthDate: '2099-01-01' }, { foerdervereinGuardianBsvMember: '' },
+    { foerdervereinGuardianBsvMember: 'no', foerdervereinAnnualContribution: '11' },
+    { foerdervereinGuardianEmail: 'invalid' }, { foerdervereinGuardianStreet: '' },
+    { foerdervereinGuardianCity: 'a'.repeat(121) }, { foerdervereinGuardianPostalCode: '' },
+    { birthDate: '1980-03-18', foerdervereinApplicant: 'guardian' },
   ]) {
     messages.length = 0;
     const response = await submit({ ...supporters, ...overrides });
