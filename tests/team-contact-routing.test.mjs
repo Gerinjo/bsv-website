@@ -5,6 +5,10 @@ import test from 'node:test';
 const teamPagesSource = readFileSync(new URL('../src/data/teamPages.ts', import.meta.url), 'utf8');
 const pageSource = readFileSync(new URL('../src/pages/[...slug].astro', import.meta.url), 'utf8');
 const legacySource = readFileSync(new URL('../src/data/legacyContent.ts', import.meta.url), 'utf8');
+const oldMenEmailMigration = readFileSync(
+  new URL('../supabase/migrations/20261008120000_correct_alte_herren_contact_email.sql', import.meta.url),
+  'utf8',
+);
 
 const legacyTeamPaths = [
   'fussball/herren/kreisliga-b',
@@ -47,4 +51,10 @@ test('imported team content routes contact through the protected form', () => {
 test('coach contact action uses the selected team routing key', () => {
   assert.match(pageSource, /team--\$\{page\.path\.replaceAll\('\/', '--'\)\}--general/);
   assert.doesNotMatch(pageSource, /coach\.email/);
+});
+
+test('Alte Herren contact requests use the dotted mailbox address', () => {
+  assert.match(oldMenEmailMigration, /where schluessel = 'team--fussball--alte-herren'/);
+  assert.match(oldMenEmailMigration, /set email = 'alte\.herren@bsvnordstern\.de'/);
+  assert.doesNotMatch(oldMenEmailMigration, /set email = 'alteherren@bsvnordstern\.de'/);
 });
