@@ -79,7 +79,9 @@ Angaben und ausgewählten Erklärungen und wird in die versendete Onboarding-PDF
 eingebettet. Nichtmitglieder beantragen die Mitgliedschaft unmittelbar im
 Formular; dieselbe Unterschrift wird zusätzlich in den separaten Mitgliedsantrag
 übernommen. Bei Minderjährigen wird für beide Dokumente die sorgeberechtigte
-unterschreibende Person abgefragt. Die Kontodaten zur Vertragsvorbereitung erteilen kein SEPA-Mandat.
+unterschreibende Person abgefragt. Eine eigene, nicht vorausgewählte Einzugserklärung erlaubt den Einzug fälliger Mitgliedsbeiträge und bestätigt die Berechtigung für das Konto. Die gemeinsame Unterschrift gilt auch dafür. Kontoinhaber, Bank, IBAN und BIC stehen in beiden PDFs. Bei bestehenden Mitgliedern entsteht ein PDF „Mitgliedsdaten und Beitragseinzug“ statt eines neuen Mitgliedsantrags. Die Beitragsbefreiung endet mit der Trainertätigkeit; bei fortbestehender Mitgliedschaft werden Beiträge gemäß Beitragsordnung eingezogen, soweit keine andere Befreiung gilt. Der erste Beitragseinzug wird vorab angekündigt.
+`public/api/trainer-onboarding-membership.json` enthält die gemeinsamen Texte und die Gläubiger-Identifikationsnummer. Solange diese fehlt, markieren Formular, PDFs und Verwaltungs-Mail die Einzugserklärung ausdrücklich als Vorbereitung und als unvollständiges SEPA-Mandat. Es wird kein Beitrag durch das Onboarding abgebucht. Die Mitgliederverwaltung vervollständigt das Mandat, stimmt vorhandene Mandate ab und verwaltet Beitragspflicht und Einzüge.
+
 Ein Führungszeugnis wird nicht hochgeladen: Der Verein fordert die Vorlage an,
 die betroffene Person beantragt das Zeugnis mit dem Vereinsschreiben selbst.
 
@@ -93,9 +95,9 @@ alle Kopien zusammen höchstens 10 MB. Für Multipart-Anfragen muss PHP
 über die vorhandene PDF-Bibliothek im Arbeitsspeicher; es gibt keine öffentliche
 Ablage. Die Jugendleitung erhält die Onboarding-PDFs, Ausweiskopien und bei
 gewünschter Busnutzung die Führerscheinkopien. Bei
-Nichtmitgliedern erhält die Mitgliederverwaltung
-nur den separaten unterschriebenen Mitgliedsantrag, keine Ausweiskopien,
-Führerscheinkopien, Busangaben oder Kontodaten. Die antragstellende Person erhält
+neuen und bestehenden Mitgliedern erhält die Mitgliederverwaltung die separaten
+unterschriebenen Mitgliedschaftsunterlagen einschließlich Bankverbindung und
+Einzugserklärung, keine Ausweis- oder Führerscheinkopien oder Busangaben. Die antragstellende Person erhält
 die PDFs ohne Ausweis- oder Führerscheinkopien in einer persönlichen Begrüßungs-Mail.
 
 Nach bestätigtem Eingang der Hauptunterlagen informiert der Endpunkt Markus
@@ -104,10 +106,12 @@ Name, E-Mail, Telefon, Mannschaft und Rolle. Ab der E-Jugend und bei den aktiven
 diese Angaben zusammen mit vollständiger Anschrift, Geburtsdatum und Geburtsort
 an `dfbnet@bsvnordstern.de`, damit der Administrator den Zugang einrichten kann.
 G- und F-Jugend lösen keine DFBnet-Mail aus. `verwaltung@bsvnordstern.de` erhält
-bei jeder Anmeldung die Kontakt- und Teaminfo, bei Nichtmitgliedern zusätzlich
-den separaten Mitgliedsantrag. Diese festen Empfänger werden in der geschützten
+bei jeder Anmeldung die Kontakt- und Teaminfo sowie das gesonderte unterschriebene
+PDF mit Bankverbindung und Einzugserklärung; bei Nichtmitgliedern als Mitgliedsantrag,
+bei bestehenden Mitgliedern als Mitgliedsdaten-Aktualisierung. Diese festen Empfänger werden in der geschützten
 Mailbrücke festgelegt. Bankdaten und Ausweis-/Führerscheinkopien gehen nicht an
-Schlüsselmanagement, DFBnet oder Mitgliederverwaltung.
+Schlüsselmanagement oder DFBnet. Die Mitgliederverwaltung erhält Bankdaten
+ausschließlich im gesonderten Mitgliedschafts-PDF.
 
 Die Begrüßungs-Mail und `/onboarding/danke` verwenden gemeinsam
 `public/api/trainer-onboarding-welcome.json`: Spond für G/F, Teampunkt für E bis A
@@ -139,7 +143,7 @@ Beim Umschalten niemals öffentliche Frontend-Variablen verwenden.
 Bereitstellung: zuerst `membership-email` mit den Routen `trainer-onboarding`
 und `trainer-membership` aktualisieren, danach `trainer-onboarding.php`,
 `trainer-onboarding-access.php`, `trainer-onboarding-pdf.php`, `trainer-onboarding-teams.php`, `trainer-onboarding-welcome.php`,
-`trainer-onboarding-clothing.json`, `trainer-onboarding-bus.json` und die bestehende
+`trainer-onboarding-clothing.json`, `trainer-onboarding-membership.json`, `trainer-onboarding-bus.json` und die bestehende
 `trainer-onboarding-welcome.json` sowie die PDF-Bibliothek auf dem PHP-Antragsserver bereitstellen, anschließend die Website
 veröffentlichen. Die privaten Mailbridge-Zugangsdaten werden wie bei
 `membership-v3.php` aus der Umgebung oder `membership-config.php` gelesen;

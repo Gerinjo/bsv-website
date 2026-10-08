@@ -3,7 +3,7 @@ require_once __DIR__ . '/membership-pdf.php';
 
 function bsvBuildTrainerPdf($data, $membershipOnly = false)
 {
-    $title = $membershipOnly ? 'Mitgliedsantrag für das Trainerteam' : 'Trainer-Onboarding';
+    $title = $membershipOnly ? ($data['membership'] === 'no' ? 'Mitgliedsantrag für das Trainerteam' : 'Mitgliedsdaten und Beitragseinzug') : 'Trainer-Onboarding';
     $pdf = new BsvMembershipPdf($data['applicationNumber'], $data['receivedAt'], false, $title);
     $pdf->chapter($membershipOnly ? 'Antrag und Unterschrift' : 'Erfassung und Erklärungen');
     $date = function ($iso) { return DateTime::createFromFormat('!Y-m-d', $iso)->format('d.m.Y'); };
@@ -22,15 +22,15 @@ function bsvBuildTrainerPdf($data, $membershipOnly = false)
     $pdf->check('Beitragsordnung gelesen und akzeptiert, auch bei Beitragsbefreiung.', true);
     $pdf->check('Vereinssatzung gelesen und akzeptiert.', true);
     if ($membershipOnly) {
-        $pdf->paragraph('Die Aufnahme wird durch den Verein bearbeitet. Dieser Antrag enthält kein SEPA-Lastschriftmandat. Kontodaten zur Vertragsvorbereitung stehen in den getrennten Onboarding-Unterlagen.');
+        $pdf->paragraph($data['membership'] === 'no' ? 'Die Aufnahme wird durch den Verein bearbeitet.' : 'Bestehende Mitgliedschaft: Mit diesem Dokument werden die Bankverbindung und die Einzugserklärung aktualisiert. Es wird keine neue Mitgliedschaft beantragt.');
+        $pdf->section('03', 'Bankverbindung und Beitragseinzug');
+        bsvTrainerPaymentSection($pdf, $data);
     } else {
         $pdf->section('03', 'Identitätsunterlagen');
         $pdf->fields(array(array('Personalausweis Vorderseite', 'Kopie als separate Anlage'), array('Personalausweis Rückseite', 'Kopie als separate Anlage')));
         $pdf->check('Verarbeitung der Ausweiskopie zur Identitätsprüfung im Trainer-Onboarding akzeptiert.', true);
         $pdf->section('04', 'Vertragsdaten und Kontoverbindung');
-        $pdf->fields(array(array('Kontoinhaber', $data['accountHolder']), array('Kreditinstitut', $data['bankName'])));
-        $pdf->fields(array(array('IBAN', $data['iban']), array('BIC', $data['bic'])));
-        $pdf->paragraph('Kontodaten zur Vorbereitung des Trainervertrags; keine Erteilung eines Lastschriftmandats.');
+        bsvTrainerPaymentSection($pdf, $data);
         $pdf->section('05', 'Trainerkleidung');
         $pdf->paragraph('Der BSV stellt das JAKO Trainer-Set ' . $data['clothingSet'] . ' zur Verfügung. Gewünschte Kleidung und Größen zur Vorbereitung der Ausstattung:');
         foreach ($data['clothing'] as $item) {
@@ -58,13 +58,34 @@ function bsvBuildTrainerPdf($data, $membershipOnly = false)
     $pdf->check($membershipOnly ? 'Datenschutzhinweise gelesen und Verarbeitung der Angaben und Unterlagen für die Mitgliedschaft akzeptiert.' : 'Datenschutzhinweise gelesen und Verarbeitung der Angaben und Unterlagen für Onboarding, Vertragsvorbereitung und Trainerkleidung akzeptiert.', true);
     if (!$membershipOnly) {
         $pdf->check('Übermittlung meiner Kontaktdaten, Mannschaft und Rolle an das Schlüsselmanagement und die Mitgliederverwaltung für meinen Start im Trainerteam akzeptiert.', true);
+        $pdf->check('Übermittlung meiner unterschriebenen Mitgliedschaftsunterlagen mit Bankverbindung und Einzugserklärung an die Mitgliederverwaltung akzeptiert.', true);
         if ($data['dfbnetRequested']) $pdf->check('Übermittlung meiner Kontaktdaten, Anschrift, Geburtsdatum, Geburtsort, Mannschaft und Rolle an den DFBnet-Administrator zur Einrichtung meines Zugangs akzeptiert.', true);
     }
     $pdf->paragraph($membershipOnly
-        ? 'Mit meiner Unterschrift beantrage ich die Mitgliedschaft und bestätige die Richtigkeit meiner Angaben sowie die von mir ausgewählten Erklärungen zum Mitgliedsantrag.'
+        ? ($data['membership'] === 'no'
+            ? 'Mit meiner Unterschrift beantrage ich die Mitgliedschaft und bestätige die Richtigkeit meiner Angaben sowie die von mir ausgewählten Erklärungen zum Mitgliedsantrag.'
+            : 'Mit meiner Unterschrift bestätige ich die Richtigkeit meiner aktualisierten Mitgliedsdaten und die von mir ausgewählten Erklärungen zum Beitragseinzug.')
         : 'Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben und die von mir ausgewählten Erklärungen in diesem Formular.');
     if (!$membershipOnly && $data['membership'] === 'no') $pdf->paragraph('Diese Unterschrift gilt auch für den gesondert erstellten Mitgliedsantrag.');
     $pdf->fields(array(array($data['isMinor'] ? 'Unterschrift durch sorgeberechtigte Person' : 'Unterschrift durch', $data['isMinor'] ? $data['guardianFirstName'] . ' ' . $data['guardianLastName'] : $data['firstName'] . ' ' . $data['lastName'])));
-    $pdf->signature($data['signatureBinary'], $data['signingPlace'], $date($data['signingDate']), $membershipOnly ? '03' : '08');
+    $pdf->paragraph('Die Unterschrift gilt auch für die Einzugserklärung. Die unterschreibende Person bestätigt ihre Berechtigung für das angegebene Konto.');
+    $pdf->signature($data['signatureBinary'], $data['signingPlace'], $date($data['signingDate']), $membershipOnly ? '04' : '08');
     return $pdf->Output('S');
+}
+
+function bsvTrainerPaymentSection($pdf, $data)
+{
+    $payment = $data['membershipPayment'];
+    $pdf->fields(array(array('Kontoinhaber', $data['accountHolder']), array('Kreditinstitut', $data['bankName'])));
+    $pdf->fields(array(array('IBAN', $data['iban']), array('BIC', $data['bic'])));
+    $pdf->paragraph($payment['contributionAfterActivityText']);
+    $pdf->paragraph($payment['creditorId'] === '' ? 'SEPA-Einzugserklärung zur Vorbereitung' : 'SEPA-Lastschriftmandat für wiederkehrende Mitgliedsbeiträge');
+    $pdf->fields(array(array('Zahlungsempfänger', $payment['creditorName'])));
+    $pdf->fields(array(array('Anschrift des Zahlungsempfängers', $payment['creditorAddress'])));
+    $pdf->fields(array(array('Gläubiger-Identifikationsnummer', $payment['creditorId'] ?: 'Noch zu ergänzen – kein vollständiges SEPA-Mandat')));
+    $pdf->paragraph($payment['referenceNotice']);
+    if ($payment['creditorId'] === '') $pdf->paragraph($payment['draftNotice']);
+    $pdf->check($payment['mandateText'], true);
+    $pdf->check($payment['authorityText'], true);
+    $pdf->paragraph($payment['refundText']);
 }

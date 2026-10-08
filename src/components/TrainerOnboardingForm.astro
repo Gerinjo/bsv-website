@@ -3,6 +3,7 @@ import { contactTeams } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 import trainerClothing from '../../public/api/trainer-onboarding-clothing.json';
 import trainerBus from '../../public/api/trainer-onboarding-bus.json';
+import trainerMembership from '../../public/api/trainer-onboarding-membership.json';
 const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || 'https://api.bsvnordstern.de/api/trainer-onboarding.php';
 ---
 
@@ -33,7 +34,7 @@ const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || '
   <fieldset id="trainer-mitgliedschaft" data-entry-fields disabled>
     <legend><span>03</span> Mitgliedschaft im BSV</legend>
     <label class="full">Bist du bereits Mitglied? *<select name="membership" required><option value="">Bitte auswählen …</option><option value="yes">Ja, ich bin bereits Mitglied</option><option value="no">Nein, ich beantrage meine Mitgliedschaft</option></select></label>
-    <aside class="notice full"><strong>Als Trainer bist du vom Mitgliedsbeitrag befreit.</strong><p>Die Mitgliedschaft ist trotzdem erforderlich. Auch mit Beitragsbefreiung erkennst du die Beitragsordnung und die Satzung an. Für Betreuer klärt die Jugendleitung den Beitragsstatus.</p></aside>
+    <aside class="notice full"><strong>Als Trainer bist du vom Mitgliedsbeitrag befreit.</strong><p>Die Mitgliedschaft ist trotzdem erforderlich. Auch mit Beitragsbefreiung erkennst du die Beitragsordnung und die Satzung an. Für Betreuer klärt die Jugendleitung den Beitragsstatus.</p><p>{trainerMembership.contributionAfterActivityText}</p></aside>
     <div class="conditional full" data-membership-application hidden>
       <h3>Dein Mitgliedsantrag</h3><p>Mit diesem Antrag beantragst du deine Aufnahme in den BSV Nordstern e.V. Radolfzell. Deine persönlichen Daten und deine Aufgabe werden übernommen. Der Verein bearbeitet anschließend deine Aufnahme.</p>
       <label class="checkbox"><input name="membershipApplicationAccepted" type="checkbox" value="accepted" data-membership-required disabled /><span>Hiermit beantrage ich meine Mitgliedschaft im BSV Nordstern e.V. Radolfzell. *</span></label>
@@ -49,12 +50,15 @@ const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || '
     <label>Deine Rolle *<select name="role" required><option value="">Bitte Rolle auswählen …</option><option value="Trainer">Trainer</option><option value="Co-Trainer">Co-Trainer</option><option value="Betreuer">Betreuer</option></select></label>
   </fieldset>
   <fieldset id="trainer-vertragsdaten" data-entry-fields disabled>
-    <legend><span>05</span> Vertragsdaten · Kontoverbindung</legend>
-    <p class="full form-note">Diese Angaben benötigen wir für die Vorbereitung deines Trainervertrags.</p>
+    <legend><span>05</span> Kontoverbindung und Beitragseinzug</legend>
+    <p class="full form-note">Diese Kontoverbindung nutzen wir für deinen Trainervertrag und für fällige Mitgliedsbeiträge. Sie wird auch in deinen Mitgliedsantrag beziehungsweise deine Mitgliedsdaten übernommen.</p>
     <label>Kontoinhaber *<input name="accountHolder" autocomplete="off" minlength="2" maxlength="160" required /></label>
     <label>Kreditinstitut / Bank *<input name="bankName" autocomplete="off" minlength="2" maxlength="120" required /></label>
     <label class="full">IBAN *<input name="iban" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="42" placeholder="DE00 0000 0000 0000 0000 00" required /></label>
     <label>BIC (optional)<input name="bic" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="11" pattern="[A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?" /></label>
+    <aside class="notice full"><strong>{trainerMembership.creditorId ? 'SEPA-Lastschriftmandat' : 'SEPA-Einzugserklärung · Vorbereitung'}</strong><p>{trainerMembership.creditorName}<br />{trainerMembership.creditorAddress}</p>{trainerMembership.creditorId ? <p>Gläubiger-Identifikationsnummer: {trainerMembership.creditorId}</p> : <p>{trainerMembership.draftNotice}</p>}<p>{trainerMembership.referenceNotice}</p><p>{trainerMembership.refundText}</p></aside>
+    <label class="checkbox full"><input name="sepaAccepted" type="checkbox" value="accepted" required /><span>{trainerMembership.mandateText} {trainerMembership.authorityText} *</span></label>
+    <p class="full field-hint">Während deiner Beitragsbefreiung wird kein Mitgliedsbeitrag eingezogen. Deine Unterschrift am Ende gilt auch für diese Einzugserklärung. Unterschreibe nur, wenn du das angegebene Konto hierfür berechtigen darfst.</p>
   </fieldset>
   <fieldset id="trainer-kleidung" data-entry-fields disabled>
     <legend><span>06</span> Deine Trainerkleidung</legend>
@@ -112,11 +116,11 @@ const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || '
     <legend><span>08</span> Führungszeugnis und Erklärungen</legend>
     <aside class="notice full"><strong>Erweitertes Führungszeugnis</strong><p>Der BSV stellt dir eine schriftliche Aufforderung zur Vorlage aus. Damit beantragst du das Führungszeugnis selbst und legst es der zuständigen Person im Verein zur Einsicht vor.</p></aside>
     <label class="checkbox full"><input name="criminalRecordAccepted" type="checkbox" value="accepted" required /><span>Ich bin damit einverstanden, dass der BSV Nordstern zur Prüfung meiner Eignung für die Arbeit mit Kindern und Jugendlichen ein erweitertes Führungszeugnis von mir anfordert und die zuständige Person im Verein es einsieht. *</span></label>
-    <label class="checkbox full"><input name="privacyAccepted" type="checkbox" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz#trainer-onboarding')}>Datenschutzhinweise</a> gelesen und stimme der Verarbeitung und Übermittlung meiner Angaben und Unterlagen für das Trainer-Onboarding, die Vertragsvorbereitung und meine Ausstattung mit Trainerkleidung zu. Meine Kontaktdaten, Mannschaft und Rolle werden für die Schlüsselübergabe an das Schlüsselmanagement und für die Mitgliedschaft an die Mitgliederverwaltung übermittelt. Ab der E-Jugend und bei aktiven Mannschaften erhält der DFBnet-Administrator diese Angaben sowie meine Anschrift, mein Geburtsdatum und meinen Geburtsort zur Einrichtung meines Zugangs. Bei einem neuen Mitgliedsantrag erhält die Mitgliederverwaltung den unterschriebenen Antrag. *</span></label>
+    <label class="checkbox full"><input name="privacyAccepted" type="checkbox" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz#trainer-onboarding')}>Datenschutzhinweise</a> gelesen und stimme der Verarbeitung und Übermittlung meiner Angaben und Unterlagen für das Trainer-Onboarding, die Vertragsvorbereitung und meine Ausstattung mit Trainerkleidung zu. Meine Kontaktdaten, Mannschaft und Rolle werden für die Schlüsselübergabe an das Schlüsselmanagement und für die Mitgliedschaft an die Mitgliederverwaltung übermittelt. Die Mitgliederverwaltung erhält außerdem die unterschriebenen Mitgliedschaftsunterlagen mit meiner Bankverbindung und Einzugserklärung. Ab der E-Jugend und bei aktiven Mannschaften erhält der DFBnet-Administrator diese Angaben sowie meine Anschrift, mein Geburtsdatum und meinen Geburtsort zur Einrichtung meines Zugangs. Bei einem neuen Mitgliedsantrag erhält die Mitgliederverwaltung den unterschriebenen Antrag. *</span></label>
   </fieldset>
   <fieldset id="trainer-unterschrift" data-entry-fields disabled>
     <legend><span>09</span> Unterschrift und Versand</legend>
-    <p class="full form-note">Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben und die von mir ausgewählten Erklärungen in diesem Formular.</p>
+    <p class="full form-note">Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben und die von mir ausgewählten Erklärungen in diesem Formular einschließlich der Einzugserklärung für fällige Mitgliedsbeiträge.</p>
     <p class="full form-note" data-signature-membership-hint hidden>Deine Unterschrift gilt auch für deinen Mitgliedsantrag. Dieser wird zusätzlich als separates unterschriebenes PDF erstellt.</p>
     <div class="fields guardian full" data-guardian-fields hidden><p class="full form-note">Bei minderjährigen Trainern unterschreibt eine sorgeberechtigte Person die Trainerunterlagen und gegebenenfalls den Mitgliedsantrag.</p><label>Vorname der sorgeberechtigten Person *<input name="guardianFirstName" minlength="2" maxlength="80" data-guardian-required disabled /></label><label>Nachname der sorgeberechtigten Person *<input name="guardianLastName" minlength="2" maxlength="80" data-guardian-required disabled /></label></div>
     <label>Ort der Unterschrift *<input name="signingPlace" minlength="2" maxlength="100" required /></label>

@@ -113,6 +113,13 @@ foreach ($clothing['items'] as $item) {
     $data['clothing'][] = array('name'=>$item['name'], 'articleNumber'=>$item['articleNumber'], 'size'=>$notNeeded ? '' : $size, 'needed'=>!$notNeeded);
 }
 if (!$accepted('clothingReturnAccepted')) $fail('Bitte lies und akzeptiere die Rückgaberegel für die Trainerkleidung.');
+if (!$accepted('sepaAccepted')) $fail('Bitte bestätige die Einzugserklärung für fällige Mitgliedsbeiträge und deine Berechtigung für das angegebene Konto.');
+try {
+    $data['membershipPayment'] = json_decode(file_get_contents(__DIR__ . '/trainer-onboarding-membership.json'), true, 512, JSON_THROW_ON_ERROR);
+    if (!is_array($data['membershipPayment']) || !isset($data['membershipPayment']['creditorId'], $data['membershipPayment']['mandateText'])) throw new RuntimeException('Invalid membership payment policy');
+} catch (Throwable $error) {
+    $respond(503, array('ok'=>false, 'message'=>'Die Angaben zum Beitragseinzug konnten nicht geladen werden. Bitte kontaktiere die Mitgliederverwaltung.'));
+}
 $data['iban'] = strtoupper(preg_replace('/\s+/', '', $value('iban')));
 $data['bic'] = strtoupper($data['bic']);
 $iban = $data['iban'];
@@ -177,7 +184,7 @@ try {
     $welcomeProfile = bsvTrainerWelcomeProfile($data);
     $data['dfbnetRequested'] = $welcomeProfile['dfbnet'];
     $summary = bsvBuildTrainerPdf($data);
-    $membership = $data['membership'] === 'no' ? bsvBuildTrainerPdf($data,true) : null;
+    $membership = bsvBuildTrainerPdf($data,true);
 } catch (Throwable $error) {
     error_log('[trainer-onboarding] document_generation_failed');
     $respond(500,array('ok'=>false,'message'=>'Deine Unterlagen konnten nicht erstellt werden. Bitte kontaktiere die Jugendleitung.'));
@@ -185,7 +192,7 @@ try {
 if ($uploadedBytes + strlen($summary) + strlen($membership ?? '') > 12*1024*1024) $respond(413, array('ok'=>false, 'message'=>'Die erstellten Unterlagen und Kopien sind zusammen zu groß für den Versand. Bitte verkleinere deine Uploads.'));
 $attachment = function ($name,$pdf) { return array('filename'=>$name,'contentType'=>'application/pdf','content'=>base64_encode($pdf)); };
 $summaryAttachment = $attachment('Trainerunterlagen-' . $data['applicationNumber'] . '.pdf',$summary);
-$membershipAttachment = $membership === null ? null : $attachment('Mitgliedsantrag-' . $data['applicationNumber'] . '.pdf',$membership);
+$membershipAttachment = $attachment(($data['membership'] === 'no' ? 'Mitgliedsantrag-' : 'Mitgliedsdaten-') . $data['applicationNumber'] . '.pdf',$membership);
 $send = function ($type,$attachments,$text,$to='', $html=null, $subject=null) use ($data,$endpoint,$secret) {
     // This release always requests test delivery from the authenticated mail bridge.
     $payload = array('messageType'=>$type,'forceTestMode'=>true,'to'=>$to,'replyTo'=>$data['email'],'subject'=>$subject ?? 'BSV Trainerunterlagen ' . $data['applicationNumber'] . ': ' . $data['firstName'] . ' ' . $data['lastName'],'text'=>$text,'html'=>$html ?? '<div style="font-family:Arial,sans-serif;white-space:pre-wrap">' . htmlspecialchars($text,ENT_QUOTES,'UTF-8') . '</div>','applicationNumber'=>$data['applicationNumber'],'attachments'=>$attachments);
@@ -207,7 +214,9 @@ $dfbnetDetails = "\nStraße und Hausnummer: " . $data['street'] . "\nPostleitzah
 $pending = array();
 if (!$send('trainer-keys',array(),"Neuer Trainer – persönliche Schlüsselübergabe abstimmen.\n\n" . $contact . $assignment)) $pending[] = 'trainer-keys';
 if ($welcomeProfile['dfbnet'] && !$send('trainer-dfbnet',array(),"Neuer Trainer – DFBnet-Zugang einrichten und Kontakt aufnehmen.\n\n" . $contact . $dfbnetDetails . $assignment)) $pending[] = 'trainer-dfbnet';
-$membershipText = $membershipAttachment ? 'Neuer unterschriebener Mitgliedsantrag für das Trainerteam. Bitte Aufnahme und Beitragsbefreiung für Trainer/Co-Trainer bearbeiten.' : 'Bestehendes Mitglied übernimmt eine Aufgabe im Trainerteam. Bitte Mitgliedsdaten und Beitragsstatus prüfen.';
+$membershipText = $data['membership'] === 'no' ? 'Neuer unterschriebener Mitgliedsantrag für das Trainerteam mit Bankverbindung und Einzugserklärung. Bitte Aufnahme und Beitragsbefreiung für Trainer/Co-Trainer bearbeiten.' : 'Bestehendes Mitglied übernimmt eine Aufgabe im Trainerteam. Unterschriebene Mitgliedsdaten mit Bankverbindung und Einzugserklärung sind beigefügt. Bitte die Daten mit einem vorhandenen Mandat abstimmen und den Beitragsstatus prüfen.';
+$membershipText .= "\nBei Ende der Trainertätigkeit und fortbestehender Mitgliedschaft fällige Beiträge gemäß Beitragsordnung einziehen; andere Beitragsbefreiungen berücksichtigen und den ersten Beitragseinzug vorab ankündigen.";
+if ($data['membershipPayment']['creditorId'] === '') $membershipText .= "\nWichtig: Die Gläubiger-Identifikationsnummer fehlt noch. Das beigefügte Dokument ist bis zur Vervollständigung kein vollständiges SEPA-Mandat.";
 if (!$send('trainer-membership',$membershipAttachment ? array($membershipAttachment) : array(),$membershipText . "\n\n" . $contact . $assignment)) $pending[] = 'trainer-membership';
 $welcome = bsvTrainerWelcomeEmail($data,$pending);
 $copyResult = $send('trainer-welcome',$copyAttachments,$welcome['text'],$data['email'],$welcome['html'],$welcome['subject']);

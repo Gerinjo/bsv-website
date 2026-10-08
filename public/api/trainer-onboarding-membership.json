@@ -1,0 +1,11 @@
+{
+  "creditorName": "BSV Nordstern e.V. Radolfzell",
+  "creditorAddress": "Schlesierstraße 43, 78315 Radolfzell",
+  "creditorId": "",
+  "contributionAfterActivityText": "Die Beitragsbefreiung gilt während deiner Tätigkeit als Trainer oder Co-Trainer. Wenn diese Tätigkeit endet und du Mitglied im Verein bleibst, wird der dann geltende Mitgliedsbeitrag gemäß Beitragsordnung von deinem angegebenen Konto eingezogen. Eine andere bestehende Beitragsbefreiung wird berücksichtigt. Die Mitgliederverwaltung informiert dich vor dem ersten Beitragseinzug über Betrag und Fälligkeit.",
+  "mandateText": "Ich ermächtige den BSV Nordstern e.V. Radolfzell, fällige Mitgliedsbeiträge wiederkehrend mittels SEPA-Lastschrift von meinem angegebenen Konto einzuziehen. Zugleich weise ich mein Kreditinstitut an, die vom Verein gezogenen Lastschriften einzulösen.",
+  "authorityText": "Ich bin Kontoinhaber oder zum Erteilen dieses Mandats für das angegebene Konto berechtigt.",
+  "refundText": "Ich kann innerhalb von acht Wochen ab dem Belastungsdatum die Erstattung des belasteten Betrags verlangen. Es gelten die mit meinem Kreditinstitut vereinbarten Bedingungen.",
+  "referenceNotice": "Die Mandatsreferenz wird dir vor dem ersten Einzug separat mitgeteilt.",
+  "draftNotice": "Einzugserklärung zur Vorbereitung: Die Gläubiger-Identifikationsnummer des Vereins ist noch zu ergänzen. Bis dahin ist dies kein vollständiges SEPA-Lastschriftmandat."
+}

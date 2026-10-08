@@ -60,7 +60,7 @@ test('contact notifications reject sensitive attachments and membership receives
   for(const type of ['trainer-keys','trainer-dfbnet','trainer-membership']){
     const app=harness();assert.equal((await app.submit(type,{attachments:[pdf]})).status,422);assert.equal(app.payloads.length,0);
   }
-  const app=harness();assert.equal((await app.submit('trainer-membership',{attachments:[{...pdf,filename:`Mitgliedsantrag-${reference}.pdf`}]})).status,201);
+  const app=harness();for(const prefix of ['Mitgliedsantrag','Mitgliedsdaten'])assert.equal((await app.submit('trainer-membership',{attachments:[{...pdf,filename:`${prefix}-${reference}.pdf`}]})).status,201);
   assert.equal((await app.submit('trainer-welcome',{attachments:[{...pdf,filename:'Ausweis.png',contentType:'image/png'}]})).status,422);
 });
 

@@ -141,13 +141,13 @@ Deno.serve(async (request) => {
     !/^Foerdervereinsantrag-FV-[0-9]{8}-[A-Z0-9]{6}\.pdf$/.test(attachments[0].filename))) {
     return json({ error: 'invalid_attachment' }, 422);
   }
-  // Keys and DFBnet only receive contact data. Administration and the applicant
-  // receive PDFs, never ID or driving-licence images through these routes.
+  // Keys and DFBnet never receive attachments. Administration receives only its
+  // signed membership/payment PDF; these routes reject ID or licence images.
   if (trainerMail && (
     !/^TR-[0-9]{8}-[A-F0-9]{6}$/.test(text(body.applicationNumber, 100)) ||
     (['trainer-keys', 'trainer-dfbnet'].includes(messageType) && attachments.length !== 0) ||
     (['trainer-membership', 'trainer-welcome'].includes(messageType) && attachments.some(item => item.content_type !== 'application/pdf')) ||
-    (messageType === 'trainer-membership' && attachments.some(item => !/^Mitgliedsantrag-TR-[0-9]{8}-[A-F0-9]{6}\.pdf$/.test(item.filename)))
+    (messageType === 'trainer-membership' && attachments.some(item => !/^(Mitgliedsantrag|Mitgliedsdaten)-TR-[0-9]{8}-[A-F0-9]{6}\.pdf$/.test(item.filename)))
   )) return json({ error: 'invalid_trainer_message' }, 422);
 
   // PHP invokes the applicant message only after the application was delivered
