@@ -1,0 +1,96 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { withBase } from '../../utils/paths';
+import { contactTeams } from '../../data/contactTopics';
+import welcome from '../../../public/api/trainer-onboarding-welcome.json';
+---
+
+<Layout title="Willkommen im Trainerteam | BSV Nordstern Radolfzell" description="Deine nächsten Schritte im Trainerteam: Mannschafts-App, Schlüssel, DFBnet und Vereinsinfos." noindex>
+  <Header />
+  <main class="welcome-page" data-welcome-page data-config={JSON.stringify(welcome)} data-teams={JSON.stringify(contactTeams)} data-base={withBase('/')}>
+    <section class="welcome-hero">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">BSV Nordstern · Trainerteam</p>
+          <h1 data-welcome-heading>Schön, dass<br />du dabei bist.</h1>
+          <p class="hero-copy">Danke für dein Engagement. Gemeinsam sorgen wir für einen guten Start auf dem Platz und im Verein.</p>
+          <p class="team-badge" data-welcome-team hidden></p>
+        </div>
+        <figure><img src={withBase(welcome.photo)} alt={welcome.photoAlt} width="2560" height="1707" fetchpriority="high" /><figcaption>Gemeinsam für den Nachwuchs · Urmelturnier 2026</figcaption></figure>
+      </div>
+    </section>
+    <div class="shell welcome-content">
+      <aside class="receipt" data-welcome-receipt hidden aria-live="polite"><strong data-receipt-title></strong><p data-receipt-body></p><small data-receipt-reference></small></aside>
+      <aside class="delivery-note" data-delivery-note hidden><strong>Die Jugendleitung begleitet deinen Start.</strong><p data-delivery-note-text></p><a href={withBase('/kontakt?thema=youth-leadership')}>Jugendleitung kontaktieren ↗</a></aside>
+      <section aria-labelledby="apps-title" data-welcome-app-section>
+        <p class="eyebrow">Schon jetzt vorbereiten</p><h2 id="apps-title">Deine Apps für den Vereinsalltag.</h2>
+        <p class="section-copy" data-app-selection-note>Welche Mannschafts-App du brauchst, richtet sich nach deinem Team. TimeTree benötigst du, wenn du den Mannschaftsbus selbst fahren möchtest.</p>
+        <div class="app-grid">
+          {Object.entries(welcome.apps).map(([key, app]) => <article class="app-card" data-welcome-app={key}><span class="app-mark" aria-hidden="true">{app.name.slice(0,1)}</span><div><h3>{app.name}</h3><p>{app.description}</p><div class="app-links"><a href={app.ios} target="_blank" rel="noopener noreferrer">Für iPhone ↗</a><a href={app.android} target="_blank" rel="noopener noreferrer">Für Android ↗</a></div></div></article>)}
+        </div>
+      </section>
+      <section class="next-steps" aria-labelledby="steps-title">
+        <p class="eyebrow">Wir kümmern uns darum</p><h2 id="steps-title">So geht es weiter.</h2>
+        <div class="steps-grid">
+          {Object.entries(welcome.steps).map(([key, step]) => <article data-welcome-step={key} hidden={key === 'membershipNew' || key === 'membershipExisting'}><span class="step-dot" aria-hidden="true"></span><h3>{step.title}</h3><p>{step.body}</p></article>)}
+        </div>
+      </section>
+      <section class="homepage-links" aria-labelledby="homepage-title">
+        <p class="eyebrow">Alles an einem Ort</p><h2 id="homepage-title">Deine Mannschaft. Deine Termine.</h2>
+        <a class="team-link" href={withBase('/jugend')} data-welcome-team-link><span><strong data-team-link-title>Unsere Mannschaften</strong><small>Trainingszeiten, Spiele und – soweit für deine Altersklasse vorhanden – die Tabelle.</small></span><span aria-hidden="true">↗</span></a>
+        <div class="plan-grid">{welcome.links.map(link => <a href={withBase(link.path)}><h3>{link.title}</h3><p>{link.description}</p><span aria-hidden="true">↗</span></a>)}</div>
+      </section>
+      <p class="closing">Bis bald auf dem Platz!<br /><strong>Dein BSV Nordstern</strong></p>
+      <noscript><p>Hier findest du alle Hinweise. In deiner Begrüßungs-E-Mail sind die Informationen passend zu deiner Mannschaft zusammengestellt.</p></noscript>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { trainerWelcomeProfile } from '../../utils/trainerOnboardingWelcome.mjs';
+  const page = document.querySelector<HTMLElement>('[data-welcome-page]');
+  if (page) {
+    const config = JSON.parse(page.dataset.config!);
+    const teams = JSON.parse(page.dataset.teams!);
+    const params = new URLSearchParams(location.hash.slice(1));
+    const team = teams.find((team: { key: string }) => team.key === params.get('team'));
+    const get = (selector: string) => page.querySelector<HTMLElement>(selector)!;
+    if (team) {
+      const profile = trainerWelcomeProfile(config, team.key, params.get('bus'), params.get('membership'));
+      get('[data-welcome-app-section]').hidden = profile.apps.length === 0;
+      get('[data-welcome-team]').hidden = false;
+      get('[data-welcome-team]').textContent = team.name;
+      get('[data-app-selection-note]').textContent = 'Diese Hinweise passen zu deiner Mannschaft und deiner Auswahl zur Busnutzung. Die Einladungen und Freischaltungen stimmen wir mit dir ab.';
+      page.querySelectorAll<HTMLElement>('[data-welcome-app]').forEach(card => { card.hidden = !profile.apps.includes(card.dataset.welcomeApp); });
+      get('[data-welcome-step="dfbnet"]').hidden = !profile.dfbnet;
+      for (const key of ['membership','membershipNew','membershipExisting']) get(`[data-welcome-step="${key}"]`).hidden = profile.membershipStep !== key;
+      const teamLink = get('[data-welcome-team-link]') as HTMLAnchorElement;
+      teamLink.href = page.dataset.base + team.key.replaceAll('--', '/');
+      get('[data-team-link-title]').textContent = 'Deine Mannschaft: ' + team.name;
+    }
+    const reference = params.get('reference') ?? '';
+    if (params.get('submitted') === 'yes' && /^TR-[0-9]{8}-[A-F0-9]{6}$/.test(reference)) {
+      get('[data-welcome-heading]').textContent = 'Danke für deine Anmeldung als Trainer!';
+      get('[data-welcome-receipt]').hidden = false;
+      const test = params.get('mode') === 'test';
+      get('[data-receipt-title]').textContent = test ? 'Deine Testanmeldung wurde übermittelt.' : 'Deine Trainerunterlagen wurden übermittelt.';
+      get('[data-receipt-body]').textContent = test
+        ? 'Im Onboarding-Testmodus gehen alle E-Mails ausschließlich an jerome.ernsberger@gmail.com. Die Begrüßungs-Mail mit den unterschriebenen PDFs geht ebenfalls an diese Testadresse.'
+        : params.get('copy') === 'failed' ? 'Die Jugendleitung hat deine Trainerunterlagen erhalten.' : 'Deine Begrüßungs-E-Mail mit den unterschriebenen PDFs wurde an deine E-Mail-Adresse versendet.';
+      get('[data-receipt-reference]').textContent = 'Deine Anmeldenummer: ' + reference;
+      if (params.get('copy') === 'failed' || params.get('pending')) {
+        get('[data-delivery-note]').hidden = false;
+        get('[data-delivery-note-text]').textContent = params.get('copy') === 'failed'
+          ? 'Die Begrüßungs-E-Mail konnte noch nicht bestätigt werden. Bitte sende das Formular nicht erneut ab und melde dich bei der Jugendleitung.'
+          : 'Einzelne Benachrichtigungen konnten noch nicht bestätigt werden. Bitte sende das Formular nicht erneut ab. Die Jugendleitung klärt Schlüssel, Zugang und Mitgliedschaft mit dir.';
+      }
+    }
+  }
+</script>
+
+<style>
+  .welcome-page{background:#f3f6f2;color:#14251a}.shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}.welcome-hero{background:#092f20;color:white;padding:68px 0 72px}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.eyebrow{margin:0 0 16px;color:#17613a;font-size:.7rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.welcome-hero .eyebrow{color:#f4d638}h1{margin:0;font-size:clamp(2.8rem,5vw,4.8rem);line-height:1.05;letter-spacing:-.045em}.hero-copy{max-width:470px;color:#c9d9cf;line-height:1.8;margin:24px 0 0}.team-badge{display:inline-block;margin:22px 0 0;padding:10px 14px;border:1px solid #58856c;color:#f4d638;font-size:.85rem;font-weight:800}figure{margin:0}figure img{display:block;width:100%;height:auto;border-radius:7px}figcaption{margin-top:10px;font-size:.7rem;color:#b7cec0}.welcome-content{padding:50px 0 75px}.receipt,.delivery-note{padding:25px 28px;margin-bottom:36px;background:#e7efe5;border-left:4px solid #17613a;line-height:1.7}.receipt strong,.delivery-note strong{font-size:1.05rem;color:#164f32}.receipt p,.delivery-note p{margin:9px 0;color:#52665a}.receipt small{color:#687b6e}.delivery-note{background:#fff8dd;border-left-color:#dfc52a}.delivery-note a{color:#164f32;font-weight:800}h2{margin:0;font-size:clamp(1.8rem,3vw,2.6rem);letter-spacing:-.04em;line-height:1.15}.section-copy{color:#5f6f64;line-height:1.75;max-width:740px}.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px;margin-top:28px}.app-card{display:flex;align-items:flex-start;gap:18px;padding:26px;background:white;border:1px solid #dbe4dd}.app-mark{display:grid;place-items:center;flex:0 0 52px;height:52px;background:#17613a;border-radius:12px;color:#fff;font-size:1.5rem;font-weight:900}[data-welcome-app="teampunkt"] .app-mark{background:#092f20}[data-welcome-app="timetree"] .app-mark{background:#28a466}.app-card h3,.steps-grid h3,.plan-grid h3{margin:0 0 12px;color:#164f32;font-size:1.1rem}.app-card p,.steps-grid p,.plan-grid p{margin:0;color:#5f6f64;font-size:.88rem;line-height:1.75}.app-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.app-links a{padding:10px 13px;background:#17613a;color:white;text-decoration:none;font-size:.76rem;font-weight:800}.next-steps,.homepage-links{margin-top:58px}.steps-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:28px}.steps-grid article{position:relative;padding:26px 26px 26px 43px;border-top:1px solid #ccd8ce}.step-dot{position:absolute;left:12px;top:30px;width:10px;height:10px;border-radius:50%;background:#17613a}.team-link{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:25px 28px;background:#092f20;color:white;text-decoration:none;margin-top:28px}.team-link strong{display:block;font-size:1.12rem}.team-link small{display:block;color:#c9d9cf;margin-top:9px;line-height:1.7}.team-link>span:last-child{color:#f4d638;font-size:1.6rem}.plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}.plan-grid>a{position:relative;display:block;padding:25px 28px;background:white;color:#164f32;text-decoration:none;border:1px solid #dbe4dd}.plan-grid>a>span{display:block;margin-top:16px;font-size:1.3rem}.closing{margin:46px 0 0;color:#5f6f64;line-height:1.8}.closing strong{color:#164f32}[hidden]{display:none!important}@media(max-width:800px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-grid figure{max-width:620px}.plan-grid{grid-template-columns:1fr}}@media(max-width:640px){.shell{width:calc(100% - 30px)}.welcome-hero{padding:45px 0}.welcome-content{padding:30px 0 50px}.app-card{padding:20px 16px;gap:13px}.app-mark{flex-basis:42px;height:42px;font-size:1.2rem}.steps-grid{grid-template-columns:1fr;gap:10px}.receipt,.delivery-note{padding:20px}.team-link{padding:22px}.next-steps,.homepage-links{margin-top:42px}}
+</style>

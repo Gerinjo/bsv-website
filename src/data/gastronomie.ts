@@ -3,7 +3,7 @@ const gastronomyPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo
 export const gastronomyLinks = [
   { label: 'Über uns', href: '/gastronomie/ueber-uns', description: 'Küche, Atmosphäre und Feiern' },
   { label: 'Öffnungszeiten', href: '/gastronomie/oeffnungszeiten', description: 'Aktuelle Zeiten und Urlaub' },
-  { label: 'Speisekarte', href: '/gastronomie/speisekarte', description: 'Noch etwas Geduld' },
+  { label: 'Speisekarte', href: '/gastronomie/speisekarte', description: 'Wird aktualisiert · bald wieder verfügbar' },
   { label: 'Events', href: '/gastronomie/events', description: 'Termine und Rückblicke' },
 ] as const;
 
@@ -20,7 +20,7 @@ export const gastronomy = {
     through: '07.09.2026',
     reopens: '08.09.2026',
   },
-  menuPdf: 'https://bsvnordstern.de/j4/images/bsv/gastro/speisekarte/Speisekarte_BSV_JAN_2024.pdf',
+  menuNotice: 'Unsere Speisekarte wird derzeit aktualisiert und ist bald wieder verfügbar.',
   lieferandoImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/lieferando.jpg',
   karaokeImage: 'https://bsvnordstern.de/j4/images/bsv/gastro/events/karaoke.jpg',
   gallery: [

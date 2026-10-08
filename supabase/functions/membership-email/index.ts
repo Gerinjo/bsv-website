@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail, type EmailAttachment } from '../_shared/email-service.ts';
 import { collectRecipientEmails, getMembershipRoutingKeys } from '../_shared/membership-routing.mjs';
 import { queueMembershipNewsletter } from '../_shared/membership-newsletter.mjs';
+import { isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT } from '../_shared/trainer-onboarding-email.mjs';
 
 const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
 const MAX_ATTACHMENT_BYTES = 12 * 1024 * 1024;
@@ -65,8 +66,17 @@ Deno.serve(async (request) => {
   const routingKey = text(body.routingKey, 200).toLowerCase();
   let recipient: string | string[] = '';
   let copyRecipient: string | undefined;
+  const trainerMail = isTrainerEmail(messageType);
+  const trainerMode = trainerMail && body.forceTestMode === true
+    ? 'test'
+    : getTrainerEmailMode((name: string) => Deno.env.get(name), getEmailRuntimeConfig().mode);
+  const trainerRecipient = getTrainerEmailRecipient(messageType, applicantAddress);
 
-  if (messageType === 'applicant') {
+  if (trainerMail && trainerRecipient !== null) {
+    recipient = trainerRecipient;
+  } else if (messageType === 'trainer-onboarding' && trainerMode === 'test') {
+    recipient = TRAINER_TEST_RECIPIENT;
+  } else if (messageType === 'applicant') {
     recipient = applicantAddress;
   } else {
     const routingKeys = getMembershipRoutingKeys(messageType, routingKey);
@@ -131,6 +141,14 @@ Deno.serve(async (request) => {
     !/^Foerdervereinsantrag-FV-[0-9]{8}-[A-Z0-9]{6}\.pdf$/.test(attachments[0].filename))) {
     return json({ error: 'invalid_attachment' }, 422);
   }
+  // Keys and DFBnet only receive contact data. Administration and the applicant
+  // receive PDFs, never ID or driving-licence images through these routes.
+  if (trainerMail && (
+    !/^TR-[0-9]{8}-[A-F0-9]{6}$/.test(text(body.applicationNumber, 100)) ||
+    (['trainer-keys', 'trainer-dfbnet'].includes(messageType) && attachments.length !== 0) ||
+    (['trainer-membership', 'trainer-welcome'].includes(messageType) && attachments.some(item => item.content_type !== 'application/pdf')) ||
+    (messageType === 'trainer-membership' && attachments.some(item => !/^Mitgliedsantrag-TR-[0-9]{8}-[A-F0-9]{6}\.pdf$/.test(item.filename)))
+  )) return json({ error: 'invalid_trainer_message' }, 422);
 
   // PHP invokes the applicant message only after the application was delivered
   // to administration. Persist its opt-in before sending the applicant's copy,
@@ -156,12 +174,17 @@ Deno.serve(async (request) => {
       html,
       text: plainText,
       attachments,
-    }, messageType === 'foerderverein' && /^BSV-[0-9-]+[A-F0-9]+$/.test(text(body.applicationNumber, 100))
-      ? { idempotencyKey: `membership-foerderverein/${getEmailRuntimeConfig().mode}/${body.applicationNumber}` }
-      : {});
+    }, trainerMail
+      ? {
+        ...(trainerMode === 'test' ? { forceTestRecipient: TRAINER_TEST_RECIPIENT } : {}),
+        idempotencyKey: `${messageType}/${trainerMode}/${body.applicationNumber}`,
+      }
+      : messageType === 'foerderverein' && /^BSV-[0-9-]+[A-F0-9]+$/.test(text(body.applicationNumber, 100))
+        ? { idempotencyKey: `membership-foerderverein/${getEmailRuntimeConfig().mode}/${body.applicationNumber}` }
+        : {});
     return json({ ok: true, mailMode: result.mode, resendId: result.id, newsletterStatus }, 201);
   } catch (error) {
     console.error('Mitgliedsantrags-Mail konnte nicht versendet werden:', error);
-    return json({ error: 'email_failed', mailMode: getEmailRuntimeConfig().mode, newsletterStatus }, 502);
+    return json({ error: 'email_failed', mailMode: trainerMail ? trainerMode : getEmailRuntimeConfig().mode, newsletterStatus }, 502);
   }
 });

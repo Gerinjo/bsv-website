@@ -53,7 +53,7 @@ import { withBase } from '../utils/paths';
         <div><dt>So</dt><dd>16:00–21:00</dd></div>
       </dl>
       <p class="gastro-vacation-compact">Urlaub 17.08.2026–07.09.2026<br /><strong>Ab 08.09.2026 wieder geöffnet</strong></p>
-      <a class="gastro-menu-cta" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
+      <p class="gastro-menu-notice">{gastronomy.menuNotice}</p>
       <a class="gastro-reservation" href={gastronomy.reservationPhoneHref}><small>Reservierung</small><strong>{gastronomy.reservationPhone}</strong></a>
     </aside>
   </div>
@@ -119,7 +119,7 @@ import { withBase } from '../utils/paths';
   .gastro-mega-info dl{margin:0}.gastro-mega-info dl>div{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid rgb(255 255 255 / 12%)}
   .gastro-mega-info dt{color:#b8cbbf;font-size:.7rem;font-weight:800}.gastro-mega-info dd{margin:0;color:white;font-size:.7rem;font-weight:800}
   .gastro-vacation-compact{margin:14px 0 0;padding:10px 12px;border-left:3px solid #f4d638;background:rgb(255 255 255 / 8%);color:#cbd9d0;font-size:.66rem;line-height:1.45}.gastro-vacation-compact strong{color:white}
-  .gastro-menu-cta{margin-top:18px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;background:#f4d638;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none}
+  .gastro-menu-notice{margin:18px 0 0;padding:12px 13px;background:#fff9d9;color:#092f20;font-size:.72rem;font-weight:800;line-height:1.6}
   .gastro-reservation{margin-top:12px;padding:10px 12px;display:block;border:1px solid rgb(255 255 255 / 20%);color:white;text-decoration:none}
   .gastro-reservation small,.gastro-reservation strong{display:block}.gastro-reservation small{color:#7f9a89;font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.gastro-reservation strong{margin-top:3px;font-size:.76rem}
   @media(max-width:980px){.mega-inner.gastro-mega-enhanced{padding:0!important}.gastro-mega-layout{grid-template-columns:1fr}.gastro-mega-feature{min-height:230px}.gastro-mega-directory{padding:24px 18px}.gastro-mega-info{padding:24px 20px}.gastro-mega-links{grid-template-columns:repeat(2,minmax(0,1fr))}.gastro-ai-plate{left:34%;top:20%;width:145px}.gastro-ai-glass{right:25%;top:23%}}

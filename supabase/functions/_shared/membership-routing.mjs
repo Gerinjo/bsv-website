@@ -6,6 +6,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const getMembershipRoutingKeys = (messageType, routingKey = '') => {
   if (messageType === 'internal') return INTERNAL_MEMBERSHIP_ROUTING_KEYS;
   if (messageType === 'foerderverein') return ['foerderverein'];
+  if (messageType === 'trainer-onboarding') return ['youth-leadership'];
   if (messageType === 'team' && teamRoutingKeyPattern.test(routingKey)) return [routingKey];
   return null;
 };

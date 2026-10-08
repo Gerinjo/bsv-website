@@ -4,6 +4,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import { collectRecipientEmails, getMembershipRoutingKeys } from '../supabase/functions/_shared/membership-routing.mjs';
+import { isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT } from '../supabase/functions/_shared/trainer-onboarding-email.mjs';
 
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/membership-email/index.ts', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, ''));
 const attachment = { filename: 'Foerdervereinsantrag-FV-20261005-ABC123.pdf', contentType: 'application/pdf', content: Buffer.from('%PDF-test-only').toString('base64') };
@@ -19,7 +20,7 @@ function harness({ recipients = [{ schluessel: 'foerderverein', email: 'foerderv
     }; return chain;
   } };
   runInNewContext(source, {
-    Response, Request, console: { error() {} }, createClient: () => db, collectRecipientEmails, getMembershipRoutingKeys,
+    Response, Request, console: { error() {} }, createClient: () => db, collectRecipientEmails, getMembershipRoutingKeys, isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT,
     Deno: { env: { get: key => ({ MEMBERSHIP_EMAIL_SECRET: 'test-secret', SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'test-only' })[key] }, serve: callback => { handler = callback; } },
     getEmailRuntimeConfig: () => ({ mode: 'live' }),
     queueMembershipNewsletter: async options => { newsletter.push(options); return 'not_requested'; },

@@ -1,0 +1,199 @@
+{
+  "name": "Trainer-Set",
+  "articleNumber": "SET-2852-004",
+  "url": "https://team.jako.com/de-de/team/bsv_nordstern_radolfzell/set-2852-004-trainer-set-p7738/?color=SET",
+  "verifiedAt": "2026-10-08",
+  "notNeededOption": {
+    "value": "not-needed",
+    "label": "Benötige ich nicht"
+  },
+  "items": [
+    {
+      "key": "jersey",
+      "name": "Trikot Team kurzarm",
+      "articleNumber": "4233-06",
+      "image": "/images/onboarding/trainer-trikot.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/d/7/preview_d73ead9f3326d069077a9bd766956be8_4233_06.jpg?1753178804",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "104",
+            "116",
+            "128",
+            "140",
+            "152",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "trackJacket",
+      "name": "Polyesterjacke One",
+      "articleNumber": "9300-200",
+      "image": "/images/onboarding/trainer-polyesterjacke.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/b/b/preview_bb631ce45b5d986c37c9d748cf682727_9300_200.jpg?1768827726",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "116",
+            "128",
+            "140",
+            "152",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL",
+            "4XL"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "trackPants",
+      "name": "Polyesterhose One",
+      "articleNumber": "9200-800",
+      "image": "/images/onboarding/trainer-polyesterhose.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/b/7/preview_b7308f508079a00664c586ad88e915ce_9200_800.jpg?1768828663",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "116",
+            "122",
+            "128",
+            "134",
+            "140",
+            "146",
+            "152",
+            "158",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL",
+            "4XL"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "rainJacket",
+      "name": "Allwetterjacke Team 2.0",
+      "articleNumber": "7402-200",
+      "image": "/images/onboarding/trainer-allwetterjacke.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/4/4/preview_44cff0b898d01cd5e755759344dbf357_7402_200.jpg?1753178810",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "116",
+            "128",
+            "140",
+            "152",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL",
+            "4XL"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "coachJacket",
+      "name": "Coachjacke Team mit Kapuze",
+      "articleNumber": "7103-800",
+      "image": "/images/onboarding/trainer-coachjacke.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/7/a/preview_7a5aaf1b3aea096d976157d7ca0e82a8_7103_800.jpg?1753179197",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "128",
+            "140",
+            "152",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL",
+            "4XL"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "polo",
+      "name": "Polo One",
+      "articleNumber": "6300-800",
+      "image": "/images/onboarding/trainer-polo.jpg",
+      "sourceImage": "https://team.jako.com/userdata/dcshop/individualization/previews/6/0/preview_60922aa4d073a5005244faad452759c6_6300_800.jpg?1768827605",
+      "sizeGroups": [
+        {
+          "label": "Kinder",
+          "sizes": [
+            "140",
+            "152",
+            "164"
+          ]
+        },
+        {
+          "label": "Unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL",
+            "3XL",
+            "4XL"
+          ]
+        }
+      ]
+    }
+  ]
+}

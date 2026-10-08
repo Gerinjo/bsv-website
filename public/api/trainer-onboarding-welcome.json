@@ -1,0 +1,43 @@
+{
+  "siteUrl": "https://bsvnordstern.de",
+  "logo": "/images/verein/wappen/bsv-nordstern.png",
+  "photo": "/images/events/urmel/2026/07-trainerteam.webp",
+  "photoAlt": "Trainerinnen und Trainer beim Urmelturnier 2026",
+  "apps": {
+    "spond": {
+      "name": "Spond",
+      "description": "Unsere G- und F-Jugend organisiert Mannschaftstermine und den Austausch mit Eltern über Spond. Installiere die App schon jetzt. Die Einladung zu deiner Mannschaft erhältst du vom Verein.",
+      "ios": "https://apps.apple.com/de/app/spond/id755596884",
+      "android": "https://play.google.com/store/apps/details?id=com.spond.spond&hl=de"
+    },
+    "teampunkt": {
+      "name": "Teampunkt",
+      "description": "Unsere E-, D-, C-, B- und A-Jugend nutzt Teampunkt für die Mannschaftsorganisation. Installiere die App schon jetzt. Die Freischaltung deiner Mannschaft und den Zugang stimmen wir anschließend mit dir ab.",
+      "ios": "https://apps.apple.com/de/app/teampunkt/id1391724070",
+      "android": "https://play.google.com/store/apps/details?id=de.dfb.teampunkt&hl=de"
+    },
+    "timetree": {
+      "name": "TimeTree",
+      "description": "Wir verwalten den Mannschaftsbus mit TimeTree. Wenn du den Bus fahren möchtest, kannst du die App schon installieren. Nach der Prüfung deines Führerscheins und der Freigabe erhältst du die Einladung zum Buskalender.",
+      "ios": "https://apps.apple.com/de/app/timetree-gemeinsamer-kalender/id952578473",
+      "android": "https://play.google.com/store/apps/details?id=works.jubilee.timetree&hl=de"
+    }
+  },
+  "teamAppGroups": [
+    { "app": "spond", "teams": ["jugend--u6-g", "jugend--u7-g", "jugend--u8-f", "jugend--u9-f"] },
+    { "app": "teampunkt", "teams": ["jugend--u11-e1", "jugend--u11-e2", "jugend--u11-e3", "jugend--u13-d1", "jugend--u13-d2", "jugend--u13-d3", "jugend--u15-c1", "jugend--u15-c2", "jugend--u17", "jugend--u19", "jugend--juniorinnen--u13", "jugend--juniorinnen--u15", "jugend--juniorinnen--u17"] }
+  ],
+  "steps": {
+    "keys": { "title": "Dein persönlicher Schlüssel", "body": "Jeder Trainer erhält einen persönlichen Schlüssel. Markus Moßbrugger, unser Schlüsselverantwortlicher, wird über deine Anmeldung informiert und nimmt für die Übergabe Kontakt mit dir auf." },
+    "dfbnet": { "title": "Dein DFBnet-Zugang", "body": "Ab der E-Jugend erhältst du einen persönlichen DFBnet-Zugang. Unser Administrator erhält deine Kontaktdaten und Mannschaftsinfo und meldet sich bei dir zur Einrichtung und Einweisung." },
+    "membership": { "title": "Deine Mitgliedschaft", "body": "Die Mitgliederverwaltung wird über deine Aufgabe im Trainerteam informiert. Wenn du noch kein Mitglied bist, stellst du deinen unterschriebenen Mitgliedsantrag direkt mit der Traineranmeldung. Die Mitgliederverwaltung kümmert sich um deine Aufnahme. Als Trainer oder Co-Trainer bist du vom Mitgliedsbeitrag befreit." },
+    "membershipNew": { "title": "Deine Mitgliedschaft", "body": "Mit dieser Anmeldung beantragst du automatisch deine Mitgliedschaft im BSV. Dein unterschriebener Mitgliedsantrag wird an die Mitgliederverwaltung weitergeleitet, die deine Aufnahme für dich bearbeitet. Einen zusätzlichen Antrag musst du nicht ausfüllen. Als Trainer oder Co-Trainer bist du vom Mitgliedsbeitrag befreit." },
+    "membershipExisting": { "title": "Deine Mitgliedschaft", "body": "Du bist bereits Mitglied. Die Mitgliederverwaltung wird über deine neue Aufgabe im Trainerteam informiert. Als Trainer oder Co-Trainer bist du vom Mitgliedsbeitrag befreit; für Betreuer klären wir den Beitragsstatus gemeinsam." },
+    "next": { "title": "Dein Start auf dem Platz", "body": "Die Jugendleitung stimmt deinen Start, die Vertragsvorbereitung und deine Trainerkleidung mit dir ab. Du erhältst die schriftliche Aufforderung für dein erweitertes Führungszeugnis und legst es der zuständigen Person im Verein zur Einsicht vor." }
+  },
+  "links": [
+    { "title": "Trainingsbelegungsplan", "description": "Trainingszeiten und Platzbelegung auf einen Blick.", "path": "/fussball/belegungsplan" },
+    { "title": "Spieltagsbelegungsplan", "description": "Heimspiele und die Belegung unserer Plätze.", "path": "/fussball/spieltagsbelegung" },
+    { "title": "Vereinsspielplan", "description": "Die aktuellen Spiele unserer Mannschaften.", "path": "/fussball/spielplan" }
+  ]
+}

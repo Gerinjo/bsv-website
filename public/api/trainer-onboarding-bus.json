@@ -1,0 +1,59 @@
+{
+  "title": "Busregeln",
+  "version": "2026-10-08",
+  "minimumAge": 26,
+  "image": "/images/onboarding/mannschaftsbus-ford-transit.webp",
+  "imageSource": "https://fliphtml5.com/unede/0000971_BSV_Nordsternheft_8_Netz/Stadionheft_8_Saison_2526/#p=11",
+  "groups": [
+    {
+      "title": "Fahrberechtigung und Buchung",
+      "rules": [
+        "Alle Trainer können den Mannschaftsbus für Vereinsfahrten nutzen. Wer selbst fährt, muss älter als 25 Jahre sein, die Busregeln bestätigen und seinen Führerscheinnachweis im Verein prüfen lassen. Die Nutzung wird mit der Jugendleitung abgestimmt.",
+        "Du besitzt eine gültige Fahrerlaubnis für dieses Fahrzeug und führst den dafür gültigen Führerschein bei jeder Fahrt im Original mit. Bei Entzug, Fahrverbot oder Einschränkungen informierst du die Vorstandschaft sofort und fährst nicht.",
+        "Buche die Fahrt vorab im vereinbarten Buskalender und stimme Abholung, Rückgabe und Schlüsselübergabe ab. Gib Bus, Schlüssel und Tankkarte nicht an unberechtigte Personen weiter."
+      ]
+    },
+    {
+      "title": "Vor der Abfahrt",
+      "rules": [
+        "Prüfe den Bus vor jeder Fahrt auf vorhandene Schäden und erkennbare Mängel, insbesondere an Reifen, Beleuchtung und Sicherheitsgurten. Achte auf genügend Kraftstoff sowie Warnweste, Warndreieck und Verbandskasten. Bei Zweifeln an der Verkehrssicherheit fährst du nicht.",
+        "Alle Mitfahrenden sind angeschnallt. Sorge für geeignete Kindersitze oder Sitzerhöhungen, wenn diese erforderlich sind. Nimm nur so viele Personen mit, wie zugelassene Sitzplätze mit Gurten vorhanden sind.",
+        "Verstaue Taschen und Sportmaterial sicher, halte Ausgänge frei und beachte die zulässige Beladung. Lass Kinder nicht unbeaufsichtigt im Bus zurück."
+      ]
+    },
+    {
+      "title": "Sorgsam unterwegs",
+      "rules": [
+        "Fahre vorausschauend und sorgsam, halte dich an die Verkehrsregeln und passe Geschwindigkeit und Abstand an Wetter, Straße und Beladung an. Bediene während der Fahrt kein Handy.",
+        "Fahre nur ausgeruht und fahrtüchtig. Als Fahrer verzichtest du vor und während der Fahrt auf Alkohol und Drogen und fährst nicht unter beeinträchtigendem Medikamenteneinfluss. Lege bei Bedarf Pausen ein.",
+        "Im Bus wird nicht gegessen, geraucht oder gedampft. Behandle Fahrzeug und Einrichtung pfleglich und achte darauf, dass sich auch die Mitfahrenden daran halten."
+      ]
+    },
+    {
+      "title": "Tanken und Fahrtenbuch",
+      "rules": [
+        "Du kannst den Bus mit der Tankkarte an der Aral-Tankstelle tanken. Verwende den für den Bus vorgeschriebenen Kraftstoff, benutze die Karte ausschließlich für den Vereinsbus und bewahre den Tankbeleg zur Abrechnung auf.",
+        "Protokolliere jede Fahrt im Fahrtenbuch: Datum, Fahrer, Mannschaft oder Fahrtzweck, Strecke sowie Kilometerstand bei Abfahrt und Rückkehr. Trage auch Tankvorgänge und festgestellte Schäden ein."
+      ]
+    },
+    {
+      "title": "Saubere Rückgabe",
+      "rules": [
+        "Gib den Bus zum vereinbarten Zeitpunkt sauber zurück. Entferne Müll, persönliche Gegenstände und Sportmaterial und beseitige von der Fahrt entstandene Verschmutzungen.",
+        "Stelle den Bus nach der Fahrt wieder in der Garage ab. Schließe Fenster, verriegle den Bus, sichere die Garage und bringe Schlüssel und Tankkarte an den vereinbarten Platz zurück. Melde absehbare Verspätungen frühzeitig."
+      ]
+    },
+    {
+      "title": "Schäden, Pannen und Unfälle",
+      "rules": [
+        "Informiere die Vorstandschaft unverzüglich über jeden entstandenen oder festgestellten Schaden, auch wenn er schon vor deiner Fahrt vorhanden war. Dokumentiere Schaden und Zeitpunkt möglichst mit Fotos und im Fahrtenbuch. Bei sicherheitsrelevanten Mängeln wird der Bus nicht weiter benutzt.",
+        "Bei einer Panne oder einem Unfall sicherst du zuerst die Unfallstelle und hilfst betroffenen Personen. Verständige bei Bedarf Rettungsdienst oder Polizei über 112 beziehungsweise 110 und informiere anschließend umgehend die Vorstandschaft. Reparaturen oder Abschleppen stimmst du mit dem Verein ab, soweit keine sofortige Gefahrenabwehr nötig ist."
+      ]
+    }
+  ],
+  "sources": [
+    {"title": "Führerschein mitführen: § 4 FeV", "url": "https://www.gesetze-im-internet.de/fev_2010/__4.html"},
+    {"title": "Kindersicherung: § 21 StVO", "url": "https://www.gesetze-im-internet.de/stvo_2013/__21.html"},
+    {"title": "Sicherheitsgurte: § 21a StVO", "url": "https://www.gesetze-im-internet.de/stvo_2013/__21a.html"}
+  ]
+}

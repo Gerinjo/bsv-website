@@ -1,0 +1,26 @@
+<?php
+// Mannschaften des Onboarding-Formulars; bei Änderungen an teamProfiles mitpflegen.
+return array(
+    'jugend--u11-e1' => 'U11 E1-Junioren',
+    'jugend--u11-e2' => 'U11 E2-Junioren',
+    'jugend--u11-e3' => 'U11 E3-Junioren',
+    'jugend--u9-f' => 'U9 F-Junioren',
+    'jugend--u8-f' => 'U8 F2 + F3-Junioren',
+    'jugend--u7-g' => 'U7 G-Junioren Bambinis',
+    'jugend--u6-g' => 'U6 G-Junioren Spielgruppe',
+    'jugend--u19' => 'U19 A-Junioren',
+    'jugend--u17' => 'U17 B-Junioren',
+    'jugend--u15-c1' => 'U15 C1-Junioren',
+    'jugend--u15-c2' => 'U15 C2-Junioren',
+    'jugend--u13-d1' => 'U13 D1-Junioren',
+    'jugend--u13-d2' => 'U13 D2-Junioren',
+    'jugend--u13-d3' => 'U13 D3-Junioren',
+    'jugend--juniorinnen--u17' => 'U17 B-Juniorinnen',
+    'jugend--juniorinnen--u15' => 'U15 C-Juniorinnen',
+    'jugend--juniorinnen--u13' => 'U13 D-Juniorinnen',
+    'fussball--herren--bezirksliga' => 'BSV Nordstern Radolfzell',
+    'fussball--herren--kreisliga-2' => 'SG Herren 2',
+    'fussball--frauen--bezirksliga' => 'SG Frauen 1',
+    'fussball--frauen--kreisliga' => 'SG Frauen 2',
+    'fussball--alte-herren' => 'Ü35 Senioren',
+);

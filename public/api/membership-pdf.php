@@ -8,19 +8,21 @@ class BsvMembershipPdf extends tFPDF
     private $receivedAt;
     private $chapter = '';
     private $supporters;
+    private $documentTitle;
 
-    public function __construct($reference, $receivedAt, $supporters = false)
+    public function __construct($reference, $receivedAt, $supporters = false, $documentTitle = null)
     {
         parent::__construct('P', 'mm', 'A4');
         $this->reference = $reference;
         $this->receivedAt = $receivedAt;
         $this->supporters = $supporters;
+        $this->documentTitle = $documentTitle;
         $this->SetMargins(17, 45, 17);
         $this->SetAutoPageBreak(true, 20);
         $this->AliasNbPages();
         $this->AddFont('BSV', '', 'DejaVuSans.ttf', true);
         $this->AddFont('BSV', 'B', 'DejaVuSans-Bold.ttf', true);
-        $this->SetTitle(($supporters ? 'Fördervereinsantrag' : 'Mitgliedsantrag') . ' | ' . $reference, true);
+        $this->SetTitle(($documentTitle ?: ($supporters ? 'Fördervereinsantrag' : 'Mitgliedsantrag')) . ' | ' . $reference, true);
         $this->SetAuthor($supporters ? 'Förderverein des BSV Nordstern Radolfzell' : 'BSV Nordstern e.V. Radolfzell', true);
         $this->SetCreator('BSV Online-Mitgliedsantrag', true);
     }
@@ -36,7 +38,7 @@ class BsvMembershipPdf extends tFPDF
         $this->Cell(150, 7, $this->supporters ? 'FÖRDERVEREIN DES BSV NORDSTERN' : 'BSV NORDSTERN');
         $this->SetXY(43, 19);
         $this->SetFont('BSV', '', 9);
-        $this->Cell(150, 5, 'Mitgliedsantrag · ' . $this->chapter);
+        $this->Cell(150, 5, ($this->documentTitle ?: 'Mitgliedsantrag') . ' · ' . $this->chapter);
         $this->SetXY(43, 26);
         $this->SetTextColor(90, 105, 95);
         $this->SetFont('BSV', '', 7.5);

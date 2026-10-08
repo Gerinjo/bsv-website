@@ -1,0 +1,138 @@
+---
+import { contactTeams } from '../data/contactTopics';
+import { withBase } from '../utils/paths';
+import trainerClothing from '../../public/api/trainer-onboarding-clothing.json';
+import trainerBus from '../../public/api/trainer-onboarding-bus.json';
+const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || 'https://api.bsvnordstern.de/api/trainer-onboarding.php';
+---
+
+<form id="trainer-onboarding-form" data-endpoint={endpoint} data-thank-you-url={withBase('/onboarding/danke')} data-bus-minimum-age={trainerBus.minimumAge} action={endpoint} method="post" enctype="multipart/form-data" novalidate>
+  <header class="document-heading"><p>Erfassung & Unterlagen</p><h2>Trainerunterlagen</h2><span>Mit * markierte Angaben sind erforderlich.</span></header>
+  <fieldset id="trainer-person" data-entry-fields disabled>
+    <legend><span>01</span> Persönliche Daten</legend>
+    <label>Vorname *<input name="firstName" autocomplete="given-name" minlength="2" maxlength="80" required /></label>
+    <label>Nachname *<input name="lastName" autocomplete="family-name" minlength="2" maxlength="80" required /></label>
+    <label>Nationalität *<input name="nationality" autocomplete="off" minlength="2" maxlength="120" placeholder="Zum Beispiel deutsch" required /></label>
+    <label>Geschlecht *<select name="gender" autocomplete="sex" required><option value="">Bitte auswählen …</option><option value="weiblich">weiblich</option><option value="männlich">männlich</option><option value="divers">divers</option><option value="keine-angabe">keine Angabe</option></select></label>
+    <label>Geburtsdatum *<input name="birthDate" type="text" inputmode="numeric" autocomplete="bday" placeholder="TT.MM.JJJJ" maxlength="10" aria-describedby="trainer-birth-hint" required /><small id="trainer-birth-hint">Tag.Monat.Jahr – zum Beispiel 18.03.1985</small></label>
+    <label>Straße und Hausnummer *<input name="street" autocomplete="street-address" minlength="3" maxlength="160" required /></label>
+    <label>Postleitzahl *<input name="postalCode" autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required /></label>
+    <label>Wohnort *<input name="city" autocomplete="address-level2" minlength="2" maxlength="100" required /></label>
+    <label>Mobilnummer *<input name="phone" type="tel" autocomplete="tel" pattern="[0-9+\(\) \/\-]{6,40}" maxlength="40" required /></label>
+    <label>E-Mail-Adresse *<input name="email" type="email" autocomplete="email" maxlength="160" required /></label>
+  </fieldset>
+  <fieldset id="trainer-ausweis" data-entry-fields disabled>
+    <legend><span>02</span> Personalausweis</legend>
+    <p class="full form-note">Lade Vorder- und Rückseite als PDF, JPG oder PNG hoch, jeweils höchstens 3 MB. Die Unterlagen werden zur Identitätsprüfung an die Jugendleitung übermittelt.</p>
+    <label>Vorderseite *<input name="idFront" type="file" accept=".pdf,.jpg,.jpeg,.png" required /></label>
+    <label>Rückseite *<input name="idBack" type="file" accept=".pdf,.jpg,.jpeg,.png" required /></label>
+    <p class="full field-hint">Kennzeichne die Dateien als „Kopie“. Nicht benötigte Angaben, insbesondere Ausweisnummer und Zugangsnummer, kannst du schwärzen.</p>
+    <label class="checkbox full"><input name="idProcessingAccepted" type="checkbox" value="accepted" required /><span>Ich bin mit der Übermittlung und Verarbeitung meiner Ausweiskopie durch den BSV zur Identitätsprüfung im Trainer-Onboarding einverstanden. *</span></label>
+  </fieldset>
+  <fieldset id="trainer-mitgliedschaft" data-entry-fields disabled>
+    <legend><span>03</span> Mitgliedschaft im BSV</legend>
+    <label class="full">Bist du bereits Mitglied? *<select name="membership" required><option value="">Bitte auswählen …</option><option value="yes">Ja, ich bin bereits Mitglied</option><option value="no">Nein, ich beantrage meine Mitgliedschaft</option></select></label>
+    <aside class="notice full"><strong>Als Trainer bist du vom Mitgliedsbeitrag befreit.</strong><p>Die Mitgliedschaft ist trotzdem erforderlich. Auch mit Beitragsbefreiung erkennst du die Beitragsordnung und die Satzung an. Für Betreuer klärt die Jugendleitung den Beitragsstatus.</p></aside>
+    <div class="conditional full" data-membership-application hidden>
+      <h3>Dein Mitgliedsantrag</h3><p>Mit diesem Antrag beantragst du deine Aufnahme in den BSV Nordstern e.V. Radolfzell. Deine persönlichen Daten und deine Aufgabe werden übernommen. Der Verein bearbeitet anschließend deine Aufnahme.</p>
+      <label class="checkbox"><input name="membershipApplicationAccepted" type="checkbox" value="accepted" data-membership-required disabled /><span>Hiermit beantrage ich meine Mitgliedschaft im BSV Nordstern e.V. Radolfzell. *</span></label>
+      <p>Deine gemeinsame Unterschrift am Ende des Formulars gilt auch für diesen Mitgliedsantrag.</p>
+    </div>
+    <label class="checkbox full"><input name="contributionAccepted" type="checkbox" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/beitragsordnung')} target="_blank" rel="noopener">Beitragsordnung</a> gelesen und akzeptiere sie, auch bei Beitragsbefreiung. *</span></label>
+    <label class="checkbox full"><input name="statutesAccepted" type="checkbox" value="accepted" required /><span>Ich habe die <a href={withBase('/verein/satzung')} target="_blank" rel="noopener">Vereinssatzung</a> gelesen und akzeptiere sie. *</span></label>
+  </fieldset>
+  <fieldset id="trainer-aufgabe" data-entry-fields disabled>
+    <legend><span>04</span> Mannschaft und Rolle</legend>
+    <p class="full form-note">Wähle die Mannschaft und die Rolle, die du mit der Jugendleitung für deinen Start vereinbart hast.</p>
+    <label>Zugewiesene Mannschaft *<select name="team" required><option value="">Bitte Mannschaft auswählen …</option>{['youth-team', 'active-team'].map((group) => <optgroup label={group === 'youth-team' ? 'Jugendmannschaften' : 'Aktive Mannschaften'}>{contactTeams.filter((team) => team.group === group).map((team) => <option value={team.key}>{team.name}</option>)}</optgroup>)}</select></label>
+    <label>Deine Rolle *<select name="role" required><option value="">Bitte Rolle auswählen …</option><option value="Trainer">Trainer</option><option value="Co-Trainer">Co-Trainer</option><option value="Betreuer">Betreuer</option></select></label>
+  </fieldset>
+  <fieldset id="trainer-vertragsdaten" data-entry-fields disabled>
+    <legend><span>05</span> Vertragsdaten · Kontoverbindung</legend>
+    <p class="full form-note">Diese Angaben benötigen wir für die Vorbereitung deines Trainervertrags.</p>
+    <label>Kontoinhaber *<input name="accountHolder" autocomplete="off" minlength="2" maxlength="160" required /></label>
+    <label>Kreditinstitut / Bank *<input name="bankName" autocomplete="off" minlength="2" maxlength="120" required /></label>
+    <label class="full">IBAN *<input name="iban" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="42" placeholder="DE00 0000 0000 0000 0000 00" required /></label>
+    <label>BIC (optional)<input name="bic" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="11" pattern="[A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?" /></label>
+  </fieldset>
+  <fieldset id="trainer-kleidung" data-entry-fields disabled>
+    <legend><span>06</span> Deine Trainerkleidung</legend>
+    <p class="full form-note">Der BSV stellt dir das Trainer-Set zur Verfügung. Wähle für jedes Kleidungsstück deine passende Größe oder „Benötige ich nicht“, damit wir deine Ausstattung vorbereiten können.</p>
+    <div class="clothing-list full">
+      {trainerClothing.items.map((item) => (
+        <article class="clothing-item">
+          <img src={withBase(item.image)} alt={`JAKO ${item.name} aus dem BSV-Trainer-Set`} width="600" height="600" loading="lazy" decoding="async" />
+          <div class="clothing-details">
+            <strong>{item.name}</strong>
+            <small>JAKO · {item.articleNumber}</small>
+            <label for={`trainer-clothing-${item.key}`}>Deine Auswahl *
+              <select id={`trainer-clothing-${item.key}`} name={`clothing${item.key[0].toUpperCase()}${item.key.slice(1)}Size`} aria-label={`Größe oder Bedarf für ${item.name}`} required>
+                <option value="">Bitte wählen …</option>
+                <option value={trainerClothing.notNeededOption.value}>{trainerClothing.notNeededOption.label}</option>
+                {[...item.sizeGroups].reverse().map((group) => <optgroup label={group.label}>{group.sizes.map((size) => <option value={size}>{size}</option>)}</optgroup>)}
+              </select>
+            </label>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="full field-hint">Produktbilder: JAKO. <a href={trainerClothing.url} target="_blank" rel="noopener noreferrer">Trainer-Set und Größentabelle ansehen ↗</a></p>
+    <label class="checkbox full"><input name="clothingReturnAccepted" type="checkbox" value="accepted" required /><span>Ich habe gelesen und akzeptiere, dass ich die vom BSV gestellten Kleidungsstücke zurückgeben muss, wenn ich meine Tätigkeit als Trainer innerhalb von 12 Monaten nach Beginn beende. *</span></label>
+  </fieldset>
+  <fieldset id="trainer-bus" data-entry-fields disabled>
+    <legend><span>07</span> Unser Mannschaftsbus</legend>
+    <figure class="bus-figure full">
+      <div class="bus-photo"><img src={withBase(trainerBus.image)} alt="Unser weißer Ford Transit mit grüner BSV-Beklebung, von der Seite und von hinten" width="1556" height="2200" loading="lazy" decoding="async" /></div>
+      <figcaption>Unser Ford Transit · <a href={trainerBus.imageSource} target="_blank" rel="noopener noreferrer">Fotos aus dem BSV-Stadionheft 8 · 2025/26</a></figcaption>
+    </figure>
+    <p class="full form-note">Alle Trainer können unseren Mannschaftsbus für Vereinsfahrten nutzen. Als Fahrer musst du älter als 25 Jahre sein, also mindestens {trainerBus.minimumAge} Jahre, und die Busregeln gelesen und bestätigt haben.</p>
+    <label class="full">Möchtest du den Mannschaftsbus selbst fahren? *<select name="busUse" aria-describedby="trainer-bus-age-hint" required><option value="">Bitte auswählen …</option><option value="no">Nein, derzeit nicht</option><option value="yes">Ja, ich möchte den Bus nutzen</option></select></label>
+    <p id="trainer-bus-age-hint" class="full field-hint" data-bus-age-hint>Bei „Ja“ erscheinen direkt darunter die Uploads für beide Führerscheinseiten. Die Altersvoraussetzung prüfen wir anhand deines Geburtsdatums.</p>
+    <div class="conditional bus-application full" data-bus-application hidden>
+      <h3>Deine Angaben zur Busnutzung</h3>
+      <p>Die Jugendleitung prüft deinen Führerscheinnachweis und stimmt deine Fahrberechtigung mit dir ab. Lade beide Seiten als PDF, JPG oder PNG hoch, jeweils höchstens 3 MB. Alle Ausweis- und Führerscheinkopien zusammen dürfen höchstens 10 MB groß sein.</p>
+      <div class="fields"><label>Führerschein – Vorderseite *<input name="licenseFront" type="file" accept=".pdf,.jpg,.jpeg,.png" data-bus-required disabled /></label><label>Führerschein – Rückseite *<input name="licenseBack" type="file" accept=".pdf,.jpg,.jpeg,.png" data-bus-required disabled /></label></div>
+      <div class="bus-confirmations">
+        <label class="checkbox"><input name="busDriverAccepted" type="checkbox" value="accepted" data-bus-required disabled /><span>Ich besitze eine gültige Fahrerlaubnis für den Mannschaftsbus und führe den dafür gültigen Führerschein bei jeder Busfahrt im Original mit. Ein Fahrverbot, einen Entzug oder Einschränkungen melde ich der Vorstandschaft unverzüglich. *</span></label>
+        <label class="checkbox"><input name="busRulesAccepted" type="checkbox" value="accepted" data-bus-required disabled /><span>Ich habe die untenstehenden <a href="#trainer-bus-regeln">Busregeln</a> vom {trainerBus.version.split('-').reverse().join('.')} gelesen und bestätige, dass ich sie bei jeder Nutzung einhalte. *</span></label>
+        <label class="checkbox"><input name="busLicenseProcessingAccepted" type="checkbox" value="accepted" data-bus-required disabled /><span>Ich bin mit der Übermittlung und Verarbeitung meiner Führerscheinkopien durch den BSV zur Prüfung meiner Fahrberechtigung einverstanden. *</span></label>
+      </div>
+      <input name="busRulesVersion" type="hidden" value={trainerBus.version} disabled />
+    </div>
+    <details id="trainer-bus-regeln" class="bus-rules full">
+      <summary>Busregeln lesen <span>Stand {trainerBus.version.split('-').reverse().join('.')}</span></summary>
+      <div class="bus-rules-content">
+        {trainerBus.groups.map((group) => <section><h3>{group.title}</h3><ul>{group.rules.map((rule) => <li>{rule}</li>)}</ul></section>)}
+        <p class="field-hint">Rechtliche Grundlagen: {trainerBus.sources.map((source, index) => <Fragment>{index > 0 && ' · '}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></Fragment>)}</p>
+      </div>
+    </details>
+  </fieldset>
+  <fieldset id="trainer-erklaerungen" data-entry-fields disabled>
+    <legend><span>08</span> Führungszeugnis und Erklärungen</legend>
+    <aside class="notice full"><strong>Erweitertes Führungszeugnis</strong><p>Der BSV stellt dir eine schriftliche Aufforderung zur Vorlage aus. Damit beantragst du das Führungszeugnis selbst und legst es der zuständigen Person im Verein zur Einsicht vor.</p></aside>
+    <label class="checkbox full"><input name="criminalRecordAccepted" type="checkbox" value="accepted" required /><span>Ich bin damit einverstanden, dass der BSV Nordstern zur Prüfung meiner Eignung für die Arbeit mit Kindern und Jugendlichen ein erweitertes Führungszeugnis von mir anfordert und die zuständige Person im Verein es einsieht. *</span></label>
+    <label class="checkbox full"><input name="privacyAccepted" type="checkbox" value="accepted" required /><span>Ich habe die <a href={withBase('/datenschutz#trainer-onboarding')}>Datenschutzhinweise</a> gelesen und stimme der Verarbeitung und Übermittlung meiner Angaben und Unterlagen für das Trainer-Onboarding, die Vertragsvorbereitung und meine Ausstattung mit Trainerkleidung zu. Meine Kontaktdaten werden für die Schlüsselübergabe an das Schlüsselmanagement und zusammen mit Mannschaft und Rolle an die Mitgliederverwaltung sowie ab der E-Jugend an den DFBnet-Administrator übermittelt. Bei einem neuen Mitgliedsantrag erhält die Mitgliederverwaltung den unterschriebenen Antrag. *</span></label>
+  </fieldset>
+  <fieldset id="trainer-unterschrift" data-entry-fields disabled>
+    <legend><span>09</span> Unterschrift und Versand</legend>
+    <p class="full form-note">Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben und die von mir ausgewählten Erklärungen in diesem Formular.</p>
+    <p class="full form-note" data-signature-membership-hint hidden>Deine Unterschrift gilt auch für deinen Mitgliedsantrag. Dieser wird zusätzlich als separates unterschriebenes PDF erstellt.</p>
+    <div class="fields guardian full" data-guardian-fields hidden><p class="full form-note">Bei minderjährigen Trainern unterschreibt eine sorgeberechtigte Person die Trainerunterlagen und gegebenenfalls den Mitgliedsantrag.</p><label>Vorname der sorgeberechtigten Person *<input name="guardianFirstName" minlength="2" maxlength="80" data-guardian-required disabled /></label><label>Nachname der sorgeberechtigten Person *<input name="guardianLastName" minlength="2" maxlength="80" data-guardian-required disabled /></label></div>
+    <label>Ort der Unterschrift *<input name="signingPlace" minlength="2" maxlength="100" required /></label>
+    <label>Datum der Unterschrift *<input name="signingDate" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" maxlength="10" required /></label>
+    <div class="signature-field full"><span id="trainer-signature-label" data-signature-label>Deine Unterschrift für die Trainerunterlagen *</span><p>Unterschreibe mit Maus, Stift oder Finger.</p><canvas width="640" height="190" data-signature-pad aria-labelledby="trainer-signature-label" tabindex="0"></canvas><input name="signatureData" type="hidden" /><button type="button" data-signature-clear>Unterschrift löschen</button></div>
+    <div class="honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+    <div class="captcha-row full"><label><span data-captcha-question>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label><button type="button" data-captcha-reload>Neue Aufgabe</button></div>
+    <p class="full form-note">Beim Absenden wird das vollständige Formular mit deiner Unterschrift als PDF an die Jugendleitung versendet. Deine Ausweis- und gegebenenfalls Führerscheinkopien werden als Anlagen mitgeschickt. Du erhältst eine Kopie der unterschriebenen PDFs per E-Mail. Deine Eingaben und Dateien werden nicht im Browser gespeichert.</p>
+    <button class="submit full" type="submit" disabled><span data-submit-label>Unterschriebenes Formular senden</span><span aria-hidden="true">↗</span></button>
+  </fieldset>
+  <p class="form-status" data-form-status role="status" aria-live="polite" tabindex="-1"></p>
+  <p class="contact-help" data-contact-help hidden>Bitte melde dich bei der <a href={withBase('/kontakt?thema=youth-leadership')}>Jugendleitung</a>.</p>
+  <noscript><p>Bitte aktiviere JavaScript, um die Unterlagen zu übermitteln.</p></noscript>
+</form>
+<style>
+  .bus-figure{margin:0}.bus-photo{position:relative;overflow:hidden;aspect-ratio:1408/620;background:#edf3ee}.bus-photo img{position:absolute;width:110.5%;max-width:none;height:auto;left:-5.2%;top:-237%}.bus-figure figcaption{margin-top:9px;color:#5f6f64;font-size:.69rem;line-height:1.6}.bus-rules{border:1px solid #dbe4dd;background:#fbfcfb}.bus-rules summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:15px 18px;color:#164f32;font-size:.85rem;font-weight:800;cursor:pointer}.bus-rules summary::before{content:'+';font-size:1.1rem}.bus-rules[open] summary::before{content:'−'}.bus-rules summary>span{margin-left:auto;font-size:.69rem;font-weight:400;color:#5f6f64}.bus-rules-content{padding:0 18px 18px}.bus-rules-content section+section{margin-top:22px}.bus-rules-content h3{margin:0 0 9px;color:#164f32;font-size:.85rem}.bus-rules-content ul{margin:0;padding-left:20px;color:#5f6f64;font-size:.79rem;line-height:1.7}.bus-rules-content li+li{margin-top:9px}.bus-rules-content>.field-hint{margin-top:20px}.bus-confirmations{display:grid;gap:18px;margin-top:24px}
+  .clothing-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.clothing-item{display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;padding:14px;border:1px solid #dbe4dd;background:#fff;align-items:center}.clothing-item img{display:block;width:76px;height:112px;object-fit:contain}.clothing-details{display:grid;gap:5px;min-width:0}.clothing-details>strong{color:#164f32;font-size:.82rem;line-height:1.4}.clothing-details>small{font-size:.65rem}.clothing-details label{margin-top:5px;font-size:.73rem;gap:6px}.clothing-details select{padding:10px 8px;font-size:.78rem}@media(max-width:640px){.clothing-list{grid-template-columns:minmax(0,1fr)}}
+  form{padding:34px;color:#14251a}.document-heading{padding-bottom:28px}.document-heading p{margin:0 0 10px;color:#17613a;font-size:.68rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.document-heading h2{margin:0 0 12px;font-size:2.2rem;letter-spacing:-.04em}.document-heading>span{color:#5f6f64;font-size:.8rem}fieldset{scroll-margin-top:145px;margin:0 0 28px;padding:23px 0 0;border:0;border-top:1px solid #dbe4dd;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}legend{padding:0 12px 0 0;color:#164f32;font-size:1.04rem;font-weight:900}legend>span{margin-right:6px;color:#68846e;font-size:.75rem}label{display:grid;align-content:start;gap:8px;min-width:0;font-size:.8rem;font-weight:800}input,select{scroll-margin-top:145px;box-sizing:border-box;width:100%;min-width:0;padding:13px 14px;border:1px solid #ccd8ce;border-radius:0;background:#fbfcfb;color:#14251a;font:inherit;font-weight:400}input:focus,select:focus{outline:2px solid #17613a;outline-offset:2px}input[type=file]{font-size:.74rem;padding:12px 8px}small,.form-note,.field-hint{color:#5f6f64;font-size:.78rem;line-height:1.65}small{font-weight:400}.form-note,.field-hint{margin:0}.full{grid-column:1/-1}.checkbox{display:flex;align-items:flex-start;gap:12px;font-weight:400;line-height:1.65}.checkbox input{width:18px;height:18px;flex:0 0 auto;margin-top:3px;accent-color:#17613a}a{color:#164f32;text-underline-offset:3px}.notice{padding:18px;background:#f1f6ef;border-left:3px solid #f4d638;font-size:.83rem;line-height:1.65}.notice strong{color:#164f32}.notice p{margin:7px 0 0;color:#5f6f64}.conditional{padding:22px;background:#f4f7f3;border:1px solid #dbe4dd}.conditional[hidden],.guardian[hidden]{display:none}.conditional h3{margin:0;color:#164f32}.conditional>p{font-size:.83rem;line-height:1.65;color:#5f6f64}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:22px}.signature-field{display:grid;gap:10px;margin-top:22px}.signature-field>span{font-size:.83rem;font-weight:800}.signature-field p{margin:0;color:#5f6f64;font-size:.78rem}.signature-field canvas{box-sizing:border-box;width:100%;height:170px;border:1px solid #aabbad;background:white;touch-action:none}.signature-field button{justify-self:start;padding:9px 12px;background:white;border:1px solid #aabbad;color:#164f32}.honeypot{position:absolute;left:-10000px}.captcha-row{display:flex;align-items:end;gap:16px}.captcha-row label{max-width:280px}.captcha-row input{max-width:120px}button{font:inherit;cursor:pointer;font-size:.8rem;font-weight:900}.captcha-row button{padding:13px 15px;border:1px solid #aabbad;background:white;color:#164f32}.submit{padding:17px 20px;border:0;background:#f4d638;color:#092f20;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left}.submit:hover:not(:disabled){background:#eacf2a}button:disabled{opacity:.5;cursor:not-allowed}.form-status{margin:0;line-height:1.65;font-size:.88rem;font-weight:800;white-space:pre-line}.form-status:empty{display:none}.form-status:focus{outline:2px solid #17613a;outline-offset:6px}.contact-help{font-size:.8rem;line-height:1.65}.contact-help[hidden]{display:none}@media(max-width:640px){form{padding:25px 18px}fieldset,.fields{grid-template-columns:minmax(0,1fr);gap:18px}.conditional{padding:18px 14px}.captcha-row{align-items:start;flex-direction:column}.submit{font-size:.78rem}}
+  @media(max-width:380px){.clothing-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:12px}.clothing-item img{width:64px;height:96px}}
+</style>

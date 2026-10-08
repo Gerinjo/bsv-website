@@ -37,9 +37,10 @@ const {
         <h1 set:html={headline}></h1>
         <p>{intro}</p>
         <div class="hero-actions">
-          <a class="primary" href={withBase('/gastronomie/speisekarte')}>Speisekarte ansehen <b aria-hidden="true">↗</b></a>
+          <a class="primary" href={gastronomy.reservationPhoneHref}>Reservierung anfragen <b aria-hidden="true">↗</b></a>
           <a class="secondary" href={gastronomy.phoneHref}>Vereinsgaststätte: {gastronomy.phone}</a>
         </div>
+        {activePath !== '/gastronomie/speisekarte' && <p class="menu-update-note">{gastronomy.menuNotice}</p>}
       </div>
     </header>
 
@@ -91,6 +92,7 @@ const {
   .hero-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;text-decoration:none;font-weight:850}
   .hero-actions .primary{background:var(--gastro-yellow);color:var(--gastro-dark)}
   .hero-actions .primary b{margin-left:18px}.hero-actions .secondary{border:1px solid rgb(255 255 255 / 38%);color:white;background:rgb(255 255 255 / 7%)}
+  .gastro-hero .menu-update-note{margin-top:18px;color:var(--gastro-yellow);font-size:.85rem;line-height:1.6}
   .gastro-subnav{position:sticky;top:0;z-index:7;background:white;border-bottom:1px solid #dce3dd;box-shadow:0 8px 25px rgb(9 47 32 / 5%)}
   .gastro-subnav .shell{display:flex;gap:8px;overflow-x:auto;padding-block:11px}
   .gastro-subnav a{flex:0 0 auto;padding:10px 14px;color:#506057;text-decoration:none;font-size:.78rem;font-weight:800}

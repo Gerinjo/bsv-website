@@ -22,6 +22,7 @@ public/api/vendor/tfpdf/font/unifont/*.cw127.php
 # environment variables
 .env
 .env.production
+.env.*.local
 
 # macOS-specific files
 .DS_Store

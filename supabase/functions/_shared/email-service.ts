@@ -55,8 +55,11 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
   };
 };
 
-export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number } = {}) => {
-  const config = getEmailRuntimeConfig();
+export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number; forceTestRecipient?: string } = {}) => {
+  const runtimeConfig = getEmailRuntimeConfig();
+  const config: EmailRuntimeConfig = options.forceTestRecipient
+    ? { ...runtimeConfig, mode: 'test', testMode: true, testRecipient: options.forceTestRecipient }
+    : runtimeConfig;
   if (!config.resendApiKey) throw new Error('RESEND_API_KEY fehlt.');
   if (!config.mailFrom) throw new Error('MAIL_FROM fehlt.');
   if (config.testMode && !config.testRecipient) throw new Error('EMAIL_TEST_RECIPIENT fehlt.');

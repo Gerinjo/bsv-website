@@ -32,6 +32,155 @@ Das Tracking wird nur eingebunden, wenn `PUBLIC_UMAMI_WEBSITE_ID` beim Build ges
 
 Für GitHub Pages werden beide Werte als Repository-Variablen unter **Settings → Secrets and variables → Actions → Variables** hinterlegt. Die Website-ID ist die ID aus dem Tracking-Code der in Umami angelegten Website `bsvnordstern.de`.
 
+## Trainer-Onboarding
+
+`/onboarding` ist ein zusammenhängendes Dokument mit persönlichen Daten
+(einschließlich Nationalität und Geschlecht mit der Option „keine Angabe“),
+Personalausweis-Vorder- und Rückseite, Mitgliedsstatus, Aufgabe, Vertragskontodaten,
+Trainerkleidung, Mannschaftsbus und Erklärungen. Es gibt keine Fortschrittsanzeige und keine Browser-Speicherung.
+Satzung, Beitragsordnung, Ausweisverarbeitung, Anforderung und Einsicht des
+Führungszeugnisses sowie Datenschutz werden separat bestätigt. Trainer und
+Co-Trainer sind vom Mitgliedsbeitrag befreit; für Betreuer wird der Beitragsstatus
+mit der Jugendleitung geklärt.
+
+Für die vom Verein gestellte Trainerkleidung wird pro Teil des JAKO-Sets
+`SET-2852-004` eine Größe oder „Benötige ich nicht“ ausgewählt: Trikot, Polyesterjacke, Polyesterhose,
+Allwetterjacke, Coachjacke und Polo. Die lokalen Produktbilder stammen aus dem
+verlinkten BSV-Teamshop. Artikel und erlaubte Größen stehen gemeinsam für
+Formular und PHP-Prüfung in `public/api/trainer-onboarding-clothing.json`
+(Shopstand: 08.10.2026); Produktbilder liegen unter `public/images/onboarding`.
+Die Größen beziehungsweise „Nicht benötigt“ erscheinen in der Onboarding-PDF für Jugendleitung und Trainer,
+jedoch nicht im separaten Mitgliedsantrag.
+Eine verpflichtende Checkbox bestätigt die gelesene und akzeptierte Rückgabe
+der gestellten Kleidungsstücke, wenn die Trainertätigkeit innerhalb von 12 Monaten
+nach Beginn endet. Die Serverprüfung verlangt diese Bestätigung; sie wird in der
+unterschriebenen Onboarding-PDF dokumentiert.
+
+Im Busabschnitt wird die gewünschte Nutzung ausdrücklich mit Ja oder Nein
+abgefragt. „Ja“ ist unabhängig vom bereits eingetragenen Geburtsdatum auswählbar;
+die Uploadfelder erscheinen dann direkt darunter. Die Altersvoraussetzung wird
+beim Absenden geprüft. „Älter als 25 Jahre“ bedeutet hier ab dem 26. Geburtstag. Nur bei
+gewünschter Nutzung sind Führerschein-Vorder- und Rückseite, die Bestätigung der
+gültigen Fahrerlaubnis und des Mitführens, die Busregeln sowie die Verarbeitung
+der Führerscheinkopien erforderlich. Die Prüfung der Dokumente und die Freigabe
+erfolgen anschließend im Verein; das Formular erteilt keine Fahrberechtigung.
+Regeln, Mindestalter und Fassung stehen in `public/api/trainer-onboarding-bus.json`
+und werden gemeinsam für das Formular und die Serverprüfung verwendet. Bei
+Änderungen die Fassung anpassen und beide Seiten zusammen bereitstellen. Die
+bestätigte Regelfassung mit ihrem vollständigen Text steht in der Onboarding-PDF.
+Die Busfotos stammen aus dem BSV-Stadionheft 8, Saison 2025/26, PDF-Seite 11
+(gedruckte Seite 9). Die Original-Heftseite liegt als WebP unter
+`public/images/onboarding/mannschaftsbus-ford-transit.webp`; CSS zeigt die beiden
+Fotos am unteren Seitenrand. Der Quellenlink steht am Foto und im Regelkatalog.
+
+Alle Trainer unterschreiben am Ende des vollständigen Formulars mit Ort und
+Datum, auch wenn sie bereits Mitglied sind. Die Unterschrift bestätigt die
+Angaben und ausgewählten Erklärungen und wird in die versendete Onboarding-PDF
+eingebettet. Nichtmitglieder beantragen die Mitgliedschaft unmittelbar im
+Formular; dieselbe Unterschrift wird zusätzlich in den separaten Mitgliedsantrag
+übernommen. Bei Minderjährigen wird für beide Dokumente die sorgeberechtigte
+unterschreibende Person abgefragt. Die Kontodaten zur Vertragsvorbereitung erteilen kein SEPA-Mandat.
+Ein Führungszeugnis wird nicht hochgeladen: Der Verein fordert die Vorlage an,
+die betroffene Person beantragt das Zeugnis mit dem Vereinsschreiben selbst.
+
+`public/api/trainer-onboarding.php` prüft alle Pflichtfelder, Einwilligungen,
+IBAN-Prüfziffer, Kleidungsgrößen je Artikel, Busalter, Regelfassung,
+Ort, Datum und eine nicht leere PNG-Unterschrift für alle Trainer sowie die tatsächlichen Dateitypen. Je
+Ausweis- und Führerscheinseite sind PDF, JPEG oder PNG bis 3 MB zugelassen;
+alle Kopien zusammen höchstens 10 MB. Für Multipart-Anfragen muss PHP
+`post_max_size` von mindestens 15 MB erlauben. Der Endpunkt prüft außerdem das
+12-MB-Anhangslimit der vorhandenen Mailbrücke vor dem Versand. Dokumente entstehen
+über die vorhandene PDF-Bibliothek im Arbeitsspeicher; es gibt keine öffentliche
+Ablage. Die Jugendleitung erhält die Onboarding-PDFs, Ausweiskopien und bei
+gewünschter Busnutzung die Führerscheinkopien. Bei
+Nichtmitgliedern erhält die Mitgliederverwaltung
+nur den separaten unterschriebenen Mitgliedsantrag, keine Ausweiskopien,
+Führerscheinkopien, Busangaben oder Kontodaten. Die antragstellende Person erhält
+die PDFs ohne Ausweis- oder Führerscheinkopien in einer persönlichen Begrüßungs-Mail.
+
+Nach bestätigtem Eingang der Hauptunterlagen informiert der Endpunkt Markus
+Moßbrugger (`Markus.Mossbrugger@bsvnordstern.de`) für die Schlüsselübergabe nur mit
+Name, E-Mail und Telefon. Ab der E-Jugend und bei den aktiven Mannschaften gehen
+diese Kontaktdaten zusammen mit Mannschaft und Rolle an `dfbnet@bsvnordstern.de`.
+G- und F-Jugend lösen keine DFBnet-Mail aus. `verwaltung@bsvnordstern.de` erhält
+bei jeder Anmeldung die Kontakt- und Teaminfo, bei Nichtmitgliedern zusätzlich
+den separaten Mitgliedsantrag. Diese festen Empfänger werden in der geschützten
+Mailbrücke festgelegt. Bankdaten und Ausweis-/Führerscheinkopien gehen nicht an
+Schlüsselmanagement, DFBnet oder Mitgliederverwaltung.
+
+Die Begrüßungs-Mail und `/onboarding/danke` verwenden gemeinsam
+`public/api/trainer-onboarding-welcome.json`: Spond für G/F, Teampunkt für E bis A
+einschließlich Juniorinnen, TimeTree nur bei gewünschter Busnutzung. Die E-Mail
+enthält Vereinswappen, ein vorhandenes Trainerfoto, Installationslinks für iOS
+und Android, die nächsten Schritte und Links zur Mannschaft sowie zu Trainings-
+und Spieltagsbelegung. Die Mitgliedschaft wird mit dem bereits unterschriebenen
+Antrag automatisch beantragt und von der Mitgliederverwaltung bearbeitet;
+der Versand selbst bestätigt keine abgeschlossene Aufnahme in ein Mitgliedersystem.
+Die Dankeseite erhält nur Mannschaft, Buswahl, Mitgliedsstatus und Versandreferenz
+im URL-Fragment, keine Namen, E-Mail-Adressen, Bankdaten oder Dokumente. Ein
+direkter Aufruf ohne bestätigten Versand zeigt allgemeine Einstiegshinweise.
+Fehlgeschlagene Folge-Benachrichtigungen werden als `pendingNotifications`
+ausgewiesen, die Begrüßungs-Mail wird trotzdem versucht und die Dankeseite
+verhindert die Aufforderung zum erneuten Absenden.
+
+**Eigener Onboarding-Testmodus:** `TRAINER_ONBOARDING_MAIL_MODE` ist ein privates
+Supabase-Secret, Standard `test`. Alle fünf Trainer-Mailtypen gehen dann
+ausschließlich an `jerome.ernsberger@gmail.com`, auch Reply-To; To/Cc/Bcc können
+das nicht umgehen. Das gilt auch bei Livebetrieb anderer Vereinsmails und bei
+anders eingestelltem `EMAIL_TEST_RECIPIENT`. Für Livebetrieb müssen sowohl dieses
+Secret explizit `live` als auch der zentrale Mailbetrieb bestätigt `live` sein.
+Diese Testveröffentlichung erzwingt zusätzlich `forceTestMode: true` im
+authentifizierten PHP-Mailauftrag. Dieser serverseitige Schutz muss vor einem
+späteren Livebetrieb bewusst entfernt werden; die Secrets allein schalten die
+veröffentlichte Onboarding-Version nicht auf echte Empfänger um.
+Beim Umschalten niemals öffentliche Frontend-Variablen verwenden.
+
+Bereitstellung: zuerst `membership-email` mit den Routen `trainer-onboarding`
+und `trainer-membership` aktualisieren, danach `trainer-onboarding.php`,
+`trainer-onboarding-access.php`, `trainer-onboarding-pdf.php`, `trainer-onboarding-teams.php`, `trainer-onboarding-welcome.php`,
+`trainer-onboarding-clothing.json`, `trainer-onboarding-bus.json` und die bestehende
+`trainer-onboarding-welcome.json` sowie die PDF-Bibliothek auf dem PHP-Antragsserver bereitstellen, anschließend die Website
+veröffentlichen. Die privaten Mailbridge-Zugangsdaten werden wie bei
+`membership-v3.php` aus der Umgebung oder `membership-config.php` gelesen;
+der eigene Onboarding-Testmodus bleibt zunächst aktiv. Ohne diese Konfiguration wird
+kein Versand behauptet. `PUBLIC_TRAINER_ONBOARDING_ENDPOINT` überschreibt bei
+Bedarf die Standardadresse `https://api.bsvnordstern.de/api/trainer-onboarding.php`.
+`trainer-onboarding-teams.php` bei Änderungen an den Mannschaften mitpflegen.
+Bei Änderungen des Trainer-Sets den gemeinsamen Kleidungskatalog und die
+zugehörigen Produktbilder aktualisieren und mit bereitstellen.
+
+Zur lokalen Formularvorschau kann der PHP-Service mit
+`BSV_TRAINER_LOCAL_DEV=1 php -d upload_max_filesize=4M -d post_max_size=15M -S localhost:8808 -t public`
+gestartet werden. In der ignorierten `.env.development.local` dafür
+`PUBLIC_TRAINER_ONBOARDING_ENDPOINT="http://localhost:8808/api/trainer-onboarding.php"`
+setzen und Astro im Hintergrund neu starten. Der lokale Modus erlaubt nur die
+bekannten lokalen Ursprünge zusätzlich und verwendet ein eigenes Session-Cookie.
+Ohne Mailbridge-Zugangsdaten erfolgt kein Versand. Die automatischen Tests
+verwenden ausschließlich synthetische Unterlagen und eine abgefangene Mailbrücke.
+
+Vor dem Formular zeigt `/onboarding` das BSV-Wappen oben mittig, die zentrale
+Überschrift „Trainer Onboarding“, „Wir lieben den …“ und das gelbe kursive
+Buchstabenrätsel `F _ s _ b _ l _ !`. Die Überschrift steht mittig zwischen Wappen
+und Text. Unter dem Rätsel ist die Fußballer-Illustration der Startseite groß
+eingebunden; der Hintergrund verbindet geschwungene Flächen mit dezenten
+Spielfeld- und Balllinien. Links vom Fußballer steht „Willkommen beim BSV Nordstern
+Radolfzell“, rechts „Seit 1956“ mit einer großen gelben Jahreszahl. Auf schmalen
+Bildschirmen stehen die beiden Texte nebeneinander über der Illustration.
+Vier unterstrichene Eingabefelder
+ergänzen „Fussball“. Der Fokus startet in der ersten Lücke, Eingaben springen
+automatisch weiter; erst eine vom PHP-Service bestätigte Lösung öffnet das Formular.
+Die Freigabe gilt vier Stunden in derselben Browser-Session. Der PHP-Endpunkt
+prüft sie auch vor jeder Spamschutz- und Versand-Anfrage. Die Session verwendet
+ein HttpOnly-Cookie, eine kurzlebige Zufallsabfrage, einen Wechsel der Session-ID
+nach Freigabe und eine einminütige Sperre nach fünf Fehlversuchen pro Session.
+Bei Ablauf bleiben Formulareingaben für eine erneute Freigabe erhalten.
+Dies ist eine kleine Hürde gegen automatisierte Aufrufe, keine Anmeldung mit
+geheimem Passwort: Die statischen Formulartexte bleiben öffentlich, persönliche
+Unterlagen werden ausschließlich über den freigegebenen PHP-Service verarbeitet.
+Die Website bleibt `noindex`. Der einmalige Spamschutz, die Versandsperre und
+der Schutz vor wiederholtem Absenden nach einem bestätigten Teilversand bleiben aktiv.
+Verhaltenstests: `node --test tests/trainer-onboarding-submission.test.mjs tests/trainer-onboarding-email.test.mjs tests/trainer-bank-details.test.mjs`.
+
 ## Installierbare BSV-App
 
 Unter `/app` finden Besucher die Installationshilfe für Android und iOS. Ein Link im Footer führt dorthin. Unterstützte Browser zeigen dort zusätzlich einen Installationsbutton; iOS nutzt das Teilen-Menü. Die App startet auf der Homepage im Modus `standalone`.

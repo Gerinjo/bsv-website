@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import heroPlayer from '../assets/fussball/hero-player.png';
+import { withBase } from '../utils/paths';
+interface Props { endpoint: string }
+const { endpoint } = Astro.props;
+---
+
+<main id="trainer-onboarding-access" class="onboarding-access" data-endpoint={endpoint} aria-labelledby="access-title">
+  <div class="access-backdrop" aria-hidden="true">
+    <svg class="access-waves" viewBox="0 0 1440 1000" preserveAspectRatio="none">
+      <path d="M0 0H1440V220C1170 400 1160 80 850 155S405 435 0 250Z" fill="#164f32" fill-opacity=".45" />
+      <path d="M0 505C245 325 470 540 730 645S1150 380 1440 465V1000H0Z" fill="#061f15" fill-opacity=".6" />
+      <path d="M0 780C270 1000 475 685 790 780S1220 1065 1440 865V1000H0Z" fill="#276546" fill-opacity=".26" />
+      <path d="M-80 270C250 520 510 95 860 145S1200 435 1510 205" fill="none" stroke="#f4d638" stroke-opacity=".12" stroke-width="2" />
+      <path d="M-80 805C230 1050 505 700 815 800S1235 1060 1500 845" fill="none" stroke="#bcd3b4" stroke-opacity=".1" stroke-width="2" />
+    </svg>
+    <svg class="access-pitch" viewBox="0 0 620 390" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="20" y="20" width="580" height="350" />
+      <path d="M310 20V370M20 95H120V295H20M600 95H500V295H600M20 150H65V240H20M600 150H555V240H600" />
+      <circle cx="310" cy="195" r="60" /><circle cx="310" cy="195" r="3" fill="currentColor" />
+      <path d="M120 145A60 60 0 0 1 120 245M500 145A60 60 0 0 0 500 245" />
+    </svg>
+    <svg class="access-ball-lines" viewBox="0 0 320 320" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="160" cy="160" r="145" />
+      <path d="M160 91L225 139L200 216H120L95 139ZM160 91V15M225 139L298 116M200 216L245 277M120 216L75 277M95 139L22 116M42 75L68 107L22 116M278 75L252 107L298 116M298 205L265 205L245 277M22 205L55 205L75 277M117 298L160 273L203 298" />
+    </svg>
+  </div>
+  <div class="access-brand">
+    <img src={withBase('/images/verein/wappen/bsv-nordstern.png')} alt="Wappen des BSV Nordstern e.V. Radolfzell" width="530" height="501" decoding="async" />
+  </div>
+  <h1 id="access-title">Trainer Onboarding</h1>
+  <form class="access-puzzle" aria-label="Buchstabenrätsel für das Trainer-Onboarding" autocomplete="off" novalidate>
+    <p class="access-prompt">Wir lieben den …</p>
+    <div class="access-word" role="group" aria-label="Ergänze die fehlenden Buchstaben: F, Lücke, s, Lücke, b, Lücke, l, Lücke, Ausrufezeichen.">
+      <span aria-hidden="true">F</span>
+      <input type="text" name="letter2" aria-label="Zweiter Buchstabe" aria-describedby="access-status" maxlength="1" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" required autofocus />
+      <span aria-hidden="true">s</span>
+      <input type="text" name="letter4" aria-label="Vierter Buchstabe" aria-describedby="access-status" maxlength="1" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" required />
+      <span aria-hidden="true">b</span>
+      <input type="text" name="letter6" aria-label="Sechster Buchstabe" aria-describedby="access-status" maxlength="1" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" required />
+      <span aria-hidden="true">l</span>
+      <input type="text" name="letter8" aria-label="Achter Buchstabe" aria-describedby="access-status" maxlength="1" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" required />
+      <span class="access-punctuation" aria-hidden="true">!</span>
+    </div>
+    <p id="access-status" class="access-status" role="status" aria-live="polite"></p>
+    <button type="submit" class="access-retry" hidden>Erneut versuchen</button>
+    <noscript><p class="access-status">Bitte aktiviere JavaScript, um die Buchstaben zu ergänzen.</p></noscript>
+  </form>
+  <section class="access-identity" aria-label="Willkommen beim BSV Nordstern Radolfzell – seit 1956">
+    <div class="access-welcome">
+      <p>Willkommen beim</p>
+      <h2>BSV<br />Nordstern</h2>
+      <span>Radolfzell</span>
+    </div>
+    <figure class="access-player">
+      <Image src={heroPlayer} widths={[360,640,960]} sizes="(max-width: 640px) 85vw, 400px" format="webp" alt="KI-generierter Fußballer in grünem Trikot mit Ball aus der BSV-Startseite" loading="eager" />
+      <figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption>
+    </figure>
+    <div class="access-history">
+      <p>Seit</p>
+      <strong>1956</strong>
+    </div>
+  </section>
+</main>
+
+<style>
+  .onboarding-access{position:relative;isolation:isolate;overflow:hidden;box-sizing:border-box;min-height:100svh;display:grid;grid-template-rows:auto minmax(min-content,1fr) auto auto;justify-items:center;gap:24px;padding:32px 24px 32px;background:#092f20;color:#fff}
+  .onboarding-access[hidden]{display:none}
+  .access-backdrop{position:absolute;z-index:-1;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 50% 78%,rgb(67 121 75 / 16%),transparent 50%)}
+  .access-waves{position:absolute;width:100%;height:100%}
+  .access-pitch{position:absolute;left:-170px;bottom:10%;width:clamp(420px,48vw,690px);color:#d1e2d1;opacity:.1;transform:rotate(-22deg)}
+  .access-ball-lines{position:absolute;right:-85px;top:9%;width:350px;color:#f4d638;opacity:.08;transform:rotate(18deg)}
+  .access-brand img{display:block;width:110px;height:auto}
+  .access-puzzle{width:min(100%,700px);text-align:center}
+  h1{align-self:center;width:min(100%,1000px);margin:0;text-align:center;font-size:clamp(2.7rem,6.8vw,5.4rem);font-weight:850;line-height:1.02;letter-spacing:-.055em;text-wrap:balance}
+  .access-prompt{margin:0 0 18px;color:#c9d9cf;font-size:clamp(1.15rem,2.5vw,1.45rem);line-height:1.5}
+  .access-word{width:min(100%,700px);margin-inline:auto;display:grid;grid-template-columns:repeat(8,minmax(0,1fr)) .45fr;align-items:center;gap:clamp(2px,1vw,9px);color:#f4d638;font-family:Georgia,serif;font-size:clamp(2.4rem,10vw,5.7rem);font-style:italic;font-weight:400;line-height:1.2}
+  .access-word span{display:block}
+  .access-word input{box-sizing:border-box;width:100%;min-width:0;height:1.3em;padding:0;border:0;border-bottom:3px solid #f4d638;border-radius:0;background:transparent;color:inherit;font:inherit;line-height:inherit;text-align:center;caret-color:#f4d638;transition:background .15s,border-color .15s}
+  .access-word input:focus{outline:0;background:rgb(244 214 56 / 9%);border-bottom-color:#fff;box-shadow:0 3px 0 #fff}
+  .access-word input[aria-invalid=true]{border-bottom-color:#f3a59a;box-shadow:0 3px 0 #f3a59a}
+  .access-word input:disabled{opacity:1;-webkit-text-fill-color:#f4d638}
+  .access-status{max-width:440px;margin:25px auto 0;color:#d9e4dc;font-size:.85rem;line-height:1.6}
+  .access-status:empty{display:none}
+  .access-retry{margin-top:20px;padding:10px 16px;border:1px solid #f4d638;background:transparent;color:#f4d638;font:inherit;font-size:.85rem;cursor:pointer}
+  .access-retry[hidden]{display:none}
+  .access-retry:focus-visible{outline:2px solid #fff;outline-offset:4px}
+  .access-player{position:relative;width:min(400px,100%);margin:0;line-height:0}
+  .access-player img{display:block;width:100%;height:auto;filter:drop-shadow(0 20px 28px rgb(0 0 0 / 20%))}
+  .access-player figcaption{position:absolute;right:0;bottom:0;line-height:1.4}
+  .access-player figcaption a{display:block;padding:5px 8px;color:#b2c7b9;background:rgb(6 31 21 / 65%);font-size:.58rem;text-decoration:none;border-radius:3px}
+  .access-player figcaption a:hover{text-decoration:underline;color:#fff}
+  .access-player figcaption a:focus-visible{outline:2px solid #f4d638;outline-offset:3px}
+  .access-identity{width:min(1120px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px) minmax(0,1fr);align-items:center;gap:clamp(20px,4vw,60px)}
+  .access-welcome,.access-history{min-width:0}
+  .access-welcome::before,.access-history::before{content:'';display:block;width:42px;height:2px;margin-bottom:22px;background:#f4d638}
+  .access-welcome p,.access-history p{margin:0 0 12px;color:#f4d638;font-size:.65rem;font-weight:850;letter-spacing:.16em;text-transform:uppercase;line-height:1.5}
+  .access-welcome h2{margin:0;color:#fff;font-size:clamp(1.9rem,3vw,2.6rem);font-weight:850;line-height:1.04;letter-spacing:-.045em}
+  .access-welcome>span{display:block;margin-top:12px;color:#c9d9cf;font-size:.78rem;letter-spacing:.08em}
+  .access-history{text-align:right}
+  .access-history::before{margin-left:auto}
+  .access-history strong{display:block;color:#f4d638;font-family:Georgia,serif;font-size:clamp(4.5rem,8vw,7rem);font-style:italic;font-weight:400;letter-spacing:-.05em;line-height:1}
+  @media(max-width:900px){.access-identity{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 18px;width:min(500px,100%)}.access-welcome{grid-column:1;grid-row:1}.access-history{grid-column:2;grid-row:1}.access-player{grid-column:1/-1;grid-row:2;justify-self:center}.access-welcome::before,.access-history::before{width:32px;margin-bottom:16px}.access-welcome h2{font-size:clamp(1.45rem,6vw,2rem)}.access-history strong{font-size:clamp(3.4rem,15vw,5rem)}}
+  @media(max-width:640px){.onboarding-access{gap:22px;padding:25px 20px 22px}.access-brand img{width:85px}.access-prompt{margin-bottom:14px}.access-player{width:min(340px,100%)}.access-welcome p,.access-history p{font-size:.57rem;letter-spacing:.12em}.access-welcome>span{margin-top:9px;font-size:.7rem}.access-pitch{left:-195px;bottom:18%;width:390px}.access-ball-lines{right:-75px;top:14%;width:220px}}
+  @media(max-width:400px){.onboarding-access{padding-inline:16px}.access-word input{border-bottom-width:2px}}
+  @media(max-height:600px) and (min-width:641px){.onboarding-access{gap:20px;padding-top:24px}.access-brand img{width:75px}}
+</style>

@@ -39,6 +39,32 @@ Empfänger aus `public.contact_empfaenger` und versendet die Nachricht über
 Resend. Im Testmodus landet auch diese Nachricht ausschließlich bei
 `EMAIL_TEST_RECIPIENT`.
 
+## Trainer-Onboarding
+
+`membership-email` nimmt zusätzlich `trainer-onboarding`, `trainer-keys`,
+`trainer-dfbnet`, `trainer-membership` und `trainer-welcome` vom geschützten
+PHP-Antragsserver entgegen. Der eigene Schalter `TRAINER_ONBOARDING_MAIL_MODE`
+ist standardmäßig `test`: alle Trainer-Mails gehen ausschließlich an
+`jerome.ernsberger@gmail.com`, einschließlich Reply-To und unabhängig vom
+zentralen `EMAIL_TEST_RECIPIENT`. Der gemeinsame Maildienst unterdrückt in diesem
+Modus weitere To/Cc/Bcc-Empfänger. Für echte Trainerzustellung müssen
+`TRAINER_ONBOARDING_MAIL_MODE=live` und der oben beschriebene bestätigte zentrale
+Livebetrieb gleichzeitig aktiv sein. Änderungen des Schalters nur als privates
+Supabase-Secret vornehmen.
+Der PHP-Service dieser Testveröffentlichung sendet außerdem für alle fünf
+Nachrichtentypen `forceTestMode: true`. Die Mailbrücke priorisiert diese sichere
+Testanforderung auch bei aktivierten Live-Schaltern. Vor einem späteren
+Livebetrieb muss dieser serverseitige Schutz bewusst entfernt werden.
+
+Im Livebetrieb erhält die Jugendleitung die vollständigen Unterlagen. Die festen
+Ziele für Schlüssel, DFBnet und Mitgliederverwaltung stehen serverseitig in
+`_shared/trainer-onboarding-email.mjs`. Kontakte für Schlüssel/DFBnet erhalten
+keine Anhänge; die Mitgliederverwaltung nur den gesonderten Mitgliedsantrag.
+Die Begrüßungs-Mail enthält die PDFs des Trainers und wird bei allen Altersklassen
+an ihn adressiert. Einzelne Nachrichten verwenden je Anmeldenummer und Modus
+eigene Resend-Idempotenzschlüssel. Nach dem Versand der Hauptunterlagen gemeldete
+Teilfehler werden auf der Dankeseite angezeigt und lösen keinen Neuversand aus.
+
 ## Empfänger des Kontaktformulars bearbeiten
 
 Die Zuordnung wird im Supabase Dashboard unter **Table Editor →
