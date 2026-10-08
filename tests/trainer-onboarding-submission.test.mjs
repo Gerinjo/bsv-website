@@ -41,7 +41,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   t.after(async()=>{php.kill();if(php.exitCode===null)await once(php,'exit');await new Promise(resolve=>bridge.close(resolve));rmSync(directory,{recursive:true,force:true});});
   const endpoint=`http://127.0.0.1:${port}/api/trainer-onboarding.php`;
   for(let i=0;i<50;i++){try{const r=await fetch(endpoint+'?action=access');if(r.ok)break;}catch{}await delay(50);}
-  const base={firstName:'Mara',lastName:'Muster',nationality:'deutsch',gender:'divers',birthDate:'1985-03-18',street:'Teststraße 1',postalCode:'78315',city:'Radolfzell',phone:'+49 170 1234567',email:'trainer@example.org',membership:'yes',team:'jugend--u11-e1',role:'Trainer',accountHolder:'Mara Muster',bankName:'Testbank',iban:'de89 3704 0044 0532 0130 00',bic:'',idProcessingAccepted:'accepted',contributionAccepted:'accepted',statutesAccepted:'accepted',criminalRecordAccepted:'accepted',privacyAccepted:'accepted',membershipApplicationAccepted:'accepted',signingPlace:'Radolfzell',signingDate:berlinToday(),signatureData:'data:image/png;base64,'+signature.stdout.toString('base64')};
+  const base={firstName:'Mara',lastName:'Muster',nationality:'deutsch',gender:'divers',birthDate:'1985-03-18',birthPlace:'Konstanz',street:'Teststraße 1',postalCode:'78315',city:'Radolfzell',phone:'+49 170 1234567',email:'trainer@example.org',membership:'yes',team:'jugend--u11-e1',role:'Trainer',accountHolder:'Mara Muster',bankName:'Testbank',iban:'de89 3704 0044 0532 0130 00',bic:'',idProcessingAccepted:'accepted',contributionAccepted:'accepted',statutesAccepted:'accepted',criminalRecordAccepted:'accepted',privacyAccepted:'accepted',membershipApplicationAccepted:'accepted',signingPlace:'Radolfzell',signingDate:berlinToday(),signatureData:'data:image/png;base64,'+signature.stdout.toString('base64')};
   const clothingSizes={clothingJerseySize:'M',clothingTrackJacketSize:'L',clothingTrackPantsSize:'S',clothingRainJacketSize:'XL',clothingCoachJacketSize:'XXL',clothingPoloSize:'3XL'};
   Object.assign(base,clothingSizes);
   base.clothingReturnAccepted='accepted';
@@ -83,7 +83,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   for(const value of ['','yes','false']){
     const response=await submit({clothingReturnAccepted:value});assert.equal(response.status,422);assert.match((await response.json()).message,/Rückgaberegel/);assert.equal(messages.length,0);
   }
-  for(const overrides of [{nationality:''},{nationality:'x'.repeat(121)},{gender:''},{gender:'unknown'},{iban:'DE89370400440532013001'},{role:'Manager'},{team:'made-up'},{membership:'maybe'},{birthDate:'1985-02-31'},{membership:'no',signatureData:''},{membership:'no',membershipApplicationAccepted:''},{membership:'no',birthDate:'2012-03-18'}]){
+  for(const overrides of [{nationality:''},{nationality:'x'.repeat(121)},{birthPlace:''},{birthPlace:'K'},{birthPlace:'x'.repeat(121)},{birthPlace:'Konstanz\nInjected: value'},{gender:''},{gender:'unknown'},{iban:'DE89370400440532013001'},{role:'Manager'},{team:'made-up'},{membership:'maybe'},{birthDate:'1985-02-31'},{membership:'no',signatureData:''},{membership:'no',membershipApplicationAccepted:''},{membership:'no',birthDate:'2012-03-18'}]){
     const response=await submit(overrides);assert.equal(response.status,422,JSON.stringify(overrides));assert.equal(messages.length,0);
   }
   for(const overrides of [{signatureData:''},{signatureData:'data:image/png;base64,bm90LWFuLWltYWdl'},...[blankSignature,blankPaletteSignature].map(image=>({signatureData:'data:image/png;base64,'+image.stdout.toString('base64')})),{signingPlace:''},{signingDate:''},{signingDate:'2026-02-31'},{signingDate:'2999-01-01'},{signingDate:'1980-01-01'},{birthDate:'2012-03-18'},{birthDate:'2012-03-18',guardianFirstName:'Alex'}]){
@@ -119,8 +119,10 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   assert.ok(messages.every(x=>x.forceTestMode===true),'the PHP release forces test delivery for all trainer notifications');
   assert.equal(messages[0].attachments.length,3);assert.equal(message('trainer-welcome').attachments.length,1);
   assert.equal(message('trainer-keys').attachments.length,0);assert.equal(message('trainer-dfbnet').attachments.length,0);assert.equal(message('trainer-membership').attachments.length,0);
-  assert.match(message('trainer-keys').text,/Mara Muster/);assert.match(message('trainer-keys').text,/trainer@example.org/);assert.match(message('trainer-keys').text,/\+49 170/);assert.doesNotMatch(message('trainer-keys').text,/Mannschaft:|IBAN|Testbank|Nationalität/);
+  assert.match(message('trainer-keys').text,/Mara Muster/);assert.match(message('trainer-keys').text,/trainer@example.org/);assert.match(message('trainer-keys').text,/\+49 170/);assert.match(message('trainer-keys').text,/Mannschaft: U11 E1-Junioren/);assert.match(message('trainer-keys').text,/Rolle: Trainer/);assert.doesNotMatch(message('trainer-keys').text,/Geburtsdatum:|Geburtsort:|Straße und Hausnummer:|IBAN|Testbank|Nationalität/);
   assert.match(message('trainer-dfbnet').text,/Mannschaft: U11 E1-Junioren/);assert.match(message('trainer-dfbnet').text,/Rolle: Trainer/);assert.doesNotMatch(message('trainer-dfbnet').text,/DE8937|Testbank|Ausweis|Führerschein/);
+  for(const detail of ['Name: Mara Muster','E-Mail: trainer@example.org','Mobilnummer: +49 170 1234567','Straße und Hausnummer: Teststraße 1','Postleitzahl: 78315','Wohnort: Radolfzell','Geburtsdatum: 18.03.1985','Geburtsort: Konstanz']) assert.ok(message('trainer-dfbnet').text.includes(detail),detail);
+  for(const detail of ['Geburtsdatum:','Geburtsort:','Straße und Hausnummer:']) assert.ok(!message('trainer-membership').text.includes(detail),'contact-only membership notification remains unchanged');
   assert.match(message('trainer-welcome').subject,/Willkommen.*Mara/);assert.match(message('trainer-welcome').html,/<img[^]*?Trainerteam/);assert.match(message('trainer-welcome').html,/Teampunkt schon jetzt installieren/);assert.doesNotMatch(message('trainer-welcome').html,/Spond|TimeTree/);assert.match(message('trainer-welcome').html,/Für iPhone/);assert.match(message('trainer-welcome').html,/Für Android/);assert.match(message('trainer-welcome').html,/Trainingsbelegungsplan/);assert.match(message('trainer-welcome').html,/Spieltagsbelegungsplan/);
   const signedText=(attachment,name)=>{
     const path=join(directory,name+'.pdf');writeFileSync(path,Buffer.from(attachment.content,'base64'));
@@ -131,6 +133,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
     return output;
   };
   const existingMemberText=signedText(messages[0].attachments[0],'signed-existing-member');
+  assert.match(existingMemberText,/Geburtsdatum\s+Geburtsort\s+18\.03\.1985\s+Konstanz/);assert.match(existingMemberText,/Kontaktdaten, Anschrift, Geburtsdatum, Geburtsort, Mannschaft und Rolle/);
   assert.match(existingMemberText,/Richtigkeit meiner Angaben/);assert.match(existingMemberText,/Bereits Mitglied/);assert.match(existingMemberText,/Unterschrift durch\s+Mara Muster/);
   assert.equal(message('trainer-welcome').attachments[0].content,messages[0].attachments[0].content,'the trainer receives the same signed PDF');
   messages.length=0;
@@ -142,6 +145,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   assert.equal(message('trainer-welcome').attachments[0].content,messages[0].attachments[0].content);assert.equal(message('trainer-welcome').attachments[1].content,message('trainer-membership').attachments[0].content);
   const membershipFile=join(directory,'membership.pdf');writeFileSync(membershipFile,Buffer.from(message('trainer-membership').attachments[0].content,'base64'));
   const membershipText=spawnSync('pdftotext',['-layout',membershipFile,'-']).stdout.toString();
+  assert.match(membershipText,/Geburtsdatum\s+Geburtsort\s+18\.03\.1985\s+Konstanz/);
   assert.match(membershipText,/Mitgliedsantrag|Mitgliedschaft/);assert.match(membershipText,/Beitragsordnung/);assert.match(membershipText,/beitrag befreit|Mitgliedsbeitrag befreit/);
   assert.match(membershipText,/Nationalität/);assert.match(membershipText,/deutsch/);assert.match(membershipText,/Geschlecht/);assert.match(membershipText,/divers/);assert.match(membershipText,/Unterschrift/);assert.doesNotMatch(membershipText,/DE8937|Testbank|Personalausweis-Kopie|SET-2852|Polyesterjacke|Coachjacke|Größe:|Kleidungsstücke|12 Monaten/);
   const summaryFile=join(directory,'summary.pdf');writeFileSync(summaryFile,Buffer.from(messages[0].attachments[0].content,'base64'));

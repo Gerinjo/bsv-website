@@ -49,13 +49,14 @@ unset($_SESSION['captcha']);
 $answer = filter_var($value('captchaAnswer'), FILTER_VALIDATE_INT);
 if (!$challenge || $challenge['expires'] < time() || $answer === false || $challenge['answer'] !== $answer) $fail('Die Antwort beim Spamschutz ist nicht richtig oder abgelaufen.');
 if (isset($_SESSION['lastSubmit']) && time() - $_SESSION['lastSubmit'] < 30) $respond(429, array('ok' => false, 'message' => 'Bitte warte kurz, bevor du erneut sendest.'));
-$limits = array('firstName'=>80,'lastName'=>80,'nationality'=>120,'street'=>160,'postalCode'=>5,'city'=>100,'phone'=>40,'email'=>160,'accountHolder'=>160,'bankName'=>120,'bic'=>11,'guardianFirstName'=>80,'guardianLastName'=>80,'signingPlace'=>100);
+$limits = array('firstName'=>80,'lastName'=>80,'nationality'=>120,'birthPlace'=>120,'street'=>160,'postalCode'=>5,'city'=>100,'phone'=>40,'email'=>160,'accountHolder'=>160,'bankName'=>120,'bic'=>11,'guardianFirstName'=>80,'guardianLastName'=>80,'signingPlace'=>100);
 $data = array();
 foreach ($limits as $key => $max) {
     $data[$key] = $value($key);
     if ($length($data[$key]) > $max || preg_match('/[\r\n\x00]/', $data[$key])) $fail('Bitte prüfe die Länge und das Format deiner Angaben.');
 }
 foreach (array('firstName','lastName','nationality','street','city','accountHolder','bankName') as $key) if ($length($data[$key]) < 2) $fail('Bitte fülle die persönlichen Angaben und die Kontoverbindung vollständig aus.');
+if ($length($data['birthPlace']) < 2) $fail('Bitte gib deinen Geburtsort an.');
 $data['gender'] = $value('gender');
 if (!in_array($data['gender'], array('weiblich','männlich','divers','keine-angabe'), true)) $fail('Bitte wähle einen gültigen Eintrag für das Geschlecht.');
 if (!preg_match('/^[0-9]{5}$/', $data['postalCode']) || !preg_match('/^[0-9+() \/-]{6,40}$/', $data['phone']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) $fail('Bitte prüfe Postleitzahl, Mobilnummer und E-Mail-Adresse.');
@@ -202,9 +203,10 @@ if (!$result) $respond(502,array('ok'=>false,'message'=>'Die Übermittlung konnt
 $_SESSION['lastSubmit'] = time();
 $contact = "Name: " . $data['firstName'] . ' ' . $data['lastName'] . "\nE-Mail: " . $data['email'] . "\nMobilnummer: " . $data['phone'];
 $assignment = "\nMannschaft: " . $data['teamLabel'] . "\nRolle: " . $data['role'] . "\nAnmeldenummer: " . $reference;
+$dfbnetDetails = "\nStraße und Hausnummer: " . $data['street'] . "\nPostleitzahl: " . $data['postalCode'] . "\nWohnort: " . $data['city'] . "\nGeburtsdatum: " . $birth->format('d.m.Y') . "\nGeburtsort: " . $data['birthPlace'];
 $pending = array();
-if (!$send('trainer-keys',array(),"Neuer Trainer – persönliche Schlüsselübergabe abstimmen.\n\n" . $contact)) $pending[] = 'trainer-keys';
-if ($welcomeProfile['dfbnet'] && !$send('trainer-dfbnet',array(),"Neuer Trainer – DFBnet-Zugang einrichten und Kontakt aufnehmen.\n\n" . $contact . $assignment)) $pending[] = 'trainer-dfbnet';
+if (!$send('trainer-keys',array(),"Neuer Trainer – persönliche Schlüsselübergabe abstimmen.\n\n" . $contact . $assignment)) $pending[] = 'trainer-keys';
+if ($welcomeProfile['dfbnet'] && !$send('trainer-dfbnet',array(),"Neuer Trainer – DFBnet-Zugang einrichten und Kontakt aufnehmen.\n\n" . $contact . $dfbnetDetails . $assignment)) $pending[] = 'trainer-dfbnet';
 $membershipText = $membershipAttachment ? 'Neuer unterschriebener Mitgliedsantrag für das Trainerteam. Bitte Aufnahme und Beitragsbefreiung für Trainer/Co-Trainer bearbeiten.' : 'Bestehendes Mitglied übernimmt eine Aufgabe im Trainerteam. Bitte Mitgliedsdaten und Beitragsstatus prüfen.';
 if (!$send('trainer-membership',$membershipAttachment ? array($membershipAttachment) : array(),$membershipText . "\n\n" . $contact . $assignment)) $pending[] = 'trainer-membership';
 $welcome = bsvTrainerWelcomeEmail($data,$pending);

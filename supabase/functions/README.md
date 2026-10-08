@@ -59,7 +59,9 @@ Livebetrieb muss dieser serverseitige Schutz bewusst entfernt werden.
 Im Livebetrieb erhält die Jugendleitung die vollständigen Unterlagen. Die festen
 Ziele für Schlüssel, DFBnet und Mitgliederverwaltung stehen serverseitig in
 `_shared/trainer-onboarding-email.mjs`. Kontakte für Schlüssel/DFBnet erhalten
-keine Anhänge; die Mitgliederverwaltung nur den gesonderten Mitgliedsantrag.
+keine Anhänge; die Schlüssel-Mail enthält Kontaktdaten, Mannschaft und Rolle,
+die DFBnet-Mail zusätzlich Anschrift, Geburtsdatum und Geburtsort. Die
+Mitgliederverwaltung erhält nur den gesonderten Mitgliedsantrag als Anhang.
 Die Begrüßungs-Mail enthält die PDFs des Trainers und wird bei allen Altersklassen
 an ihn adressiert. Einzelne Nachrichten verwenden je Anmeldenummer und Modus
 eigene Resend-Idempotenzschlüssel. Nach dem Versand der Hauptunterlagen gemeldete

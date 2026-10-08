@@ -10,7 +10,7 @@ function bsvBuildTrainerPdf($data, $membershipOnly = false)
     $pdf->section('01', 'Persönliche Daten');
     $pdf->fields(array(array('Vorname', $data['firstName']), array('Nachname', $data['lastName'])));
     $pdf->fields(array(array('Nationalität', $data['nationality']), array('Geschlecht', $data['gender'] === 'keine-angabe' ? 'Keine Angabe' : $data['gender'])));
-    $pdf->fields(array(array('Geburtsdatum', $date($data['birthDate']))));
+    $pdf->fields(array(array('Geburtsdatum', $date($data['birthDate'])), array('Geburtsort', $data['birthPlace'])));
     $pdf->fields(array(array('Straße und Hausnummer', $data['street'])));
     $pdf->fields(array(array('Postleitzahl', $data['postalCode']), array('Wohnort', $data['city'])));
     $pdf->fields(array(array('Mobilnummer', $data['phone']), array('E-Mail-Adresse', $data['email'])));
@@ -56,7 +56,10 @@ function bsvBuildTrainerPdf($data, $membershipOnly = false)
         $pdf->paragraph('Der Verein stellt die schriftliche Aufforderung zur Vorlage aus. Die betroffene Person beantragt das Führungszeugnis selbst. Das Führungszeugnis ist kein Upload dieses Formulars.');
     }
     $pdf->check($membershipOnly ? 'Datenschutzhinweise gelesen und Verarbeitung der Angaben und Unterlagen für die Mitgliedschaft akzeptiert.' : 'Datenschutzhinweise gelesen und Verarbeitung der Angaben und Unterlagen für Onboarding, Vertragsvorbereitung und Trainerkleidung akzeptiert.', true);
-    if (!$membershipOnly) $pdf->check('Übermittlung meiner Kontaktdaten an das Schlüsselmanagement sowie meiner Kontaktdaten, Mannschaft und Rolle an die Mitgliederverwaltung' . ($data['dfbnetRequested'] ? ' und den DFBnet-Administrator' : '') . ' für meinen Start im Trainerteam akzeptiert.', true);
+    if (!$membershipOnly) {
+        $pdf->check('Übermittlung meiner Kontaktdaten, Mannschaft und Rolle an das Schlüsselmanagement und die Mitgliederverwaltung für meinen Start im Trainerteam akzeptiert.', true);
+        if ($data['dfbnetRequested']) $pdf->check('Übermittlung meiner Kontaktdaten, Anschrift, Geburtsdatum, Geburtsort, Mannschaft und Rolle an den DFBnet-Administrator zur Einrichtung meines Zugangs akzeptiert.', true);
+    }
     $pdf->paragraph($membershipOnly
         ? 'Mit meiner Unterschrift beantrage ich die Mitgliedschaft und bestätige die Richtigkeit meiner Angaben sowie die von mir ausgewählten Erklärungen zum Mitgliedsantrag.'
         : 'Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben und die von mir ausgewählten Erklärungen in diesem Formular.');

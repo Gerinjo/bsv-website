@@ -35,7 +35,7 @@ Für GitHub Pages werden beide Werte als Repository-Variablen unter **Settings �
 ## Trainer-Onboarding
 
 `/onboarding` ist ein zusammenhängendes Dokument mit persönlichen Daten
-(einschließlich Nationalität und Geschlecht mit der Option „keine Angabe“),
+(einschließlich Geburtsdatum, Geburtsort, Nationalität und Geschlecht mit der Option „keine Angabe“),
 Personalausweis-Vorder- und Rückseite, Mitgliedsstatus, Aufgabe, Vertragskontodaten,
 Trainerkleidung, Mannschaftsbus und Erklärungen. Es gibt keine Fortschrittsanzeige und keine Browser-Speicherung.
 Satzung, Beitragsordnung, Ausweisverarbeitung, Anforderung und Einsicht des
@@ -99,9 +99,10 @@ Führerscheinkopien, Busangaben oder Kontodaten. Die antragstellende Person erh�
 die PDFs ohne Ausweis- oder Führerscheinkopien in einer persönlichen Begrüßungs-Mail.
 
 Nach bestätigtem Eingang der Hauptunterlagen informiert der Endpunkt Markus
-Moßbrugger (`Markus.Mossbrugger@bsvnordstern.de`) für die Schlüsselübergabe nur mit
-Name, E-Mail und Telefon. Ab der E-Jugend und bei den aktiven Mannschaften gehen
-diese Kontaktdaten zusammen mit Mannschaft und Rolle an `dfbnet@bsvnordstern.de`.
+Moßbrugger (`Markus.Mossbrugger@bsvnordstern.de`) für die Schlüsselübergabe mit
+Name, E-Mail, Telefon, Mannschaft und Rolle. Ab der E-Jugend und bei den aktiven Mannschaften gehen
+diese Angaben zusammen mit vollständiger Anschrift, Geburtsdatum und Geburtsort
+an `dfbnet@bsvnordstern.de`, damit der Administrator den Zugang einrichten kann.
 G- und F-Jugend lösen keine DFBnet-Mail aus. `verwaltung@bsvnordstern.de` erhält
 bei jeder Anmeldung die Kontakt- und Teaminfo, bei Nichtmitgliedern zusätzlich
 den separaten Mitgliedsantrag. Diese festen Empfänger werden in der geschützten
