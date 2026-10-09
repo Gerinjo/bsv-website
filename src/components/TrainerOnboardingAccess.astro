@@ -54,7 +54,7 @@ const { endpoint } = Astro.props;
       <span>Radolfzell</span>
     </div>
     <figure class="access-player">
-      <Image src={heroPlayer} widths={[360,640,960]} sizes="(max-width: 640px) 85vw, 400px" format="webp" alt="KI-generierter Fußballer in grünem Trikot mit Ball aus der BSV-Startseite" loading="eager" />
+      <Image src={heroPlayer} widths={[360,640,960]} sizes="(max-width: 640px) 300px, 400px" format="webp" alt="KI-generierter Fußballer in grünem Trikot mit Ball aus der BSV-Startseite" loading="eager" />
       <figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption>
     </figure>
     <div class="access-history">
@@ -101,8 +101,8 @@ const { endpoint } = Astro.props;
   .access-history{text-align:right}
   .access-history::before{margin-left:auto}
   .access-history strong{display:block;color:#f4d638;font-family:Georgia,serif;font-size:clamp(4.5rem,8vw,7rem);font-style:italic;font-weight:400;letter-spacing:-.05em;line-height:1}
-  @media(max-width:900px){.access-identity{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 18px;width:min(500px,100%)}.access-welcome{grid-column:1;grid-row:1}.access-history{grid-column:2;grid-row:1}.access-player{grid-column:1/-1;grid-row:2;justify-self:center}.access-welcome::before,.access-history::before{width:32px;margin-bottom:16px}.access-welcome h2{font-size:clamp(1.45rem,6vw,2rem)}.access-history strong{font-size:clamp(3.4rem,15vw,5rem)}}
-  @media(max-width:640px){.onboarding-access{gap:22px;padding:25px 20px 22px}.access-brand img{width:85px}.access-prompt{margin-bottom:14px}.access-player{width:min(340px,100%)}.access-welcome p,.access-history p{font-size:.57rem;letter-spacing:.12em}.access-welcome>span{margin-top:9px;font-size:.7rem}.access-pitch{left:-195px;bottom:18%;width:390px}.access-ball-lines{right:-75px;top:14%;width:220px}}
+  @media(max-width:900px){.access-identity{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 18px;width:min(500px,100%)}.access-welcome{grid-column:1;grid-row:1}.access-history{grid-column:2;grid-row:1}.access-player{grid-column:1/-1;grid-row:2;justify-self:center;width:min(400px,100%,max(96px,calc((100svh - 650px) * 2 / 3)))}.access-player figcaption{position:static;display:flex;justify-content:center;margin-top:6px}.access-player figcaption a{padding:3px 5px;font-size:.5rem;white-space:nowrap}.access-welcome::before,.access-history::before{width:32px;margin-bottom:16px}.access-welcome h2{font-size:clamp(1.45rem,6vw,2rem)}.access-history strong{font-size:clamp(3.4rem,15vw,5rem)}}
+  @media(max-width:640px){.onboarding-access{grid-template-rows:auto auto auto auto;align-content:space-between;gap:16px;padding:20px 20px 18px}.access-brand img{width:70px}h1{font-size:clamp(1.8rem,7.4vw,2.5rem)}.access-prompt{margin-bottom:12px;font-size:1.05rem}.access-identity{gap:18px}.access-player{width:min(300px,100%,max(96px,calc((100svh - 424px) * 2 / 3)))}.access-welcome::before,.access-history::before{margin-bottom:12px}.access-welcome p,.access-history p{margin-bottom:8px;font-size:.57rem;letter-spacing:.12em}.access-welcome h2{font-size:1.45rem}.access-history strong{font-size:3.8rem}.access-welcome>span{margin-top:8px;font-size:.7rem}.access-pitch{left:-195px;bottom:18%;width:390px}.access-ball-lines{right:-75px;top:14%;width:220px}}
   @media(max-width:400px){.onboarding-access{padding-inline:16px}.access-word input{border-bottom-width:2px}}
   @media(max-height:600px) and (min-width:641px){.onboarding-access{gap:20px;padding-top:24px}.access-brand img{width:75px}}
 </style>

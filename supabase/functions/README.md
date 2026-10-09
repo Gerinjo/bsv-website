@@ -43,18 +43,19 @@ Resend. Im Testmodus landet auch diese Nachricht ausschließlich bei
 
 `membership-email` nimmt zusätzlich `trainer-onboarding`, `trainer-keys`,
 `trainer-dfbnet`, `trainer-membership` und `trainer-welcome` vom geschützten
-PHP-Antragsserver entgegen. Der eigene Schalter `TRAINER_ONBOARDING_MAIL_MODE`
-ist standardmäßig `test`: alle Trainer-Mails gehen ausschließlich an
+PHP-Antragsserver entgegen. Der authentifizierte Server kann den Modus über
+`trainerMailMode: live|test` vorgeben; die veröffentlichte PHP-Version fordert
+`live` an. Die Vorgabe stammt ausschließlich aus Servercode, nie aus
+Formularfeldern. Ohne sie ist der private Schalter `TRAINER_ONBOARDING_MAIL_MODE`
+standardmäßig `test`: alle Trainer-Mails gehen ausschließlich an
 `jerome.ernsberger@gmail.com`, einschließlich Reply-To und unabhängig vom
 zentralen `EMAIL_TEST_RECIPIENT`. Der gemeinsame Maildienst unterdrückt in diesem
-Modus weitere To/Cc/Bcc-Empfänger. Für echte Trainerzustellung müssen
-`TRAINER_ONBOARDING_MAIL_MODE=live` und der oben beschriebene bestätigte zentrale
-Livebetrieb gleichzeitig aktiv sein. Änderungen des Schalters nur als privates
-Supabase-Secret vornehmen.
-Der PHP-Service dieser Testveröffentlichung sendet außerdem für alle fünf
-Nachrichtentypen `forceTestMode: true`. Die Mailbrücke priorisiert diese sichere
-Testanforderung auch bei aktivierten Live-Schaltern. Vor einem späteren
-Livebetrieb muss dieser serverseitige Schutz bewusst entfernt werden.
+Modus weitere To/Cc/Bcc-Empfänger. Für echte Trainerzustellung müssen die
+Servervorgabe (oder ohne sie das Secret) `live` und der oben beschriebene bestätigte
+zentrale Livebetrieb gleichzeitig aktiv sein. `forceTestMode: true` hat weiterhin
+Vorrang, auch bei aktiven Live-Schaltern. Mit `dryRun: true` können authentifizierte
+Trainer-Aufträge Routing, Anhangsregeln und Versandkonfiguration prüfen; diese
+Aufträge versenden keine E-Mails und erzeugen keine Newsletter-Anmeldung.
 
 Im Livebetrieb erhält die Jugendleitung die vollständigen Unterlagen. Die festen
 Ziele für Schlüssel, DFBnet und Mitgliederverwaltung stehen serverseitig in

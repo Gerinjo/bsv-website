@@ -1,6 +1,7 @@
 {
   "siteUrl": "https://bsvnordstern.de",
   "logo": "/images/verein/wappen/bsv-nordstern.png",
+  "headerBackground": "/images/onboarding/email-header-organic.png",
   "photo": "/images/events/urmel/2026/07-trainerteam.webp",
   "photoAlt": "Trainerinnen und Trainer beim Urmelturnier 2026",
   "apps": {

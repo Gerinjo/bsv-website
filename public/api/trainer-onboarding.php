@@ -194,8 +194,9 @@ $attachment = function ($name,$pdf) { return array('filename'=>$name,'contentTyp
 $summaryAttachment = $attachment('Trainerunterlagen-' . $data['applicationNumber'] . '.pdf',$summary);
 $membershipAttachment = $attachment(($data['membership'] === 'no' ? 'Mitgliedsantrag-' : 'Mitgliedsdaten-') . $data['applicationNumber'] . '.pdf',$membership);
 $send = function ($type,$attachments,$text,$to='', $html=null, $subject=null) use ($data,$endpoint,$secret) {
-    // This release always requests test delivery from the authenticated mail bridge.
-    $payload = array('messageType'=>$type,'forceTestMode'=>true,'to'=>$to,'replyTo'=>$data['email'],'subject'=>$subject ?? 'BSV Trainerunterlagen ' . $data['applicationNumber'] . ': ' . $data['firstName'] . ' ' . $data['lastName'],'text'=>$text,'html'=>$html ?? '<div style="font-family:Arial,sans-serif;white-space:pre-wrap">' . htmlspecialchars($text,ENT_QUOTES,'UTF-8') . '</div>','applicationNumber'=>$data['applicationNumber'],'attachments'=>$attachments);
+    // Delivery mode is a server setting, never copied from browser input.
+    // The authenticated mail bridge also requires confirmed central live mode.
+    $payload = array('messageType'=>$type,'trainerMailMode'=>'live','to'=>$to,'replyTo'=>$data['email'],'subject'=>$subject ?? 'BSV Trainerunterlagen ' . $data['applicationNumber'] . ': ' . $data['firstName'] . ' ' . $data['lastName'],'text'=>$text,'html'=>$html ?? bsvTrainerNotificationEmail($text),'applicationNumber'=>$data['applicationNumber'],'attachments'=>$attachments);
     $request = curl_init($endpoint);
     curl_setopt_array($request,array(CURLOPT_POST=>true,CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>10,CURLOPT_TIMEOUT=>30,CURLOPT_HTTPHEADER=>array('Content-Type: application/json','X-BSV-Membership-Secret: ' . $secret),CURLOPT_POSTFIELDS=>json_encode($payload,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
     $body = curl_exec($request); $code=(int)curl_getinfo($request,CURLINFO_HTTP_CODE); curl_close($request);

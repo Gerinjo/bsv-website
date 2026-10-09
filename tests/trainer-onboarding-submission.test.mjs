@@ -118,7 +118,8 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   const oversizedCopies=await submit(busRequest,{content:paddedCopy});assert.equal(oversizedCopies.status,422);assert.match((await oversizedCopies.json()).message,/zusammen.*10 MB/);assert.equal(messages.length,0);
   let response=await submit();let result=await response.json();assert.equal(response.status,201,JSON.stringify(result));assert.equal(result.mailMode,'test');assert.equal(result.delivered,true);
   assert.deepEqual(messages.map(x=>x.messageType),['trainer-onboarding','trainer-keys','trainer-dfbnet','trainer-membership','trainer-welcome']);
-  assert.ok(messages.every(x=>x.forceTestMode===true),'the PHP release forces test delivery for all trainer notifications');
+  assert.ok(messages.every(x=>x.trainerMailMode==='live' && x.forceTestMode!==true),'the live PHP release selects delivery on the authenticated server');
+  assert.ok(messages.every(x=>x.html.includes('email-header-organic.png') && x.html.includes('max-width:720px')),'all onboarding mails share the organic header and responsive width');
   assert.equal(messages[0].attachments.length,4);assert.equal(message('trainer-welcome').attachments.length,2);
   assert.equal(message('trainer-keys').attachments.length,0);assert.equal(message('trainer-dfbnet').attachments.length,0);assert.equal(message('trainer-membership').attachments.length,1);
   assert.match(message('trainer-keys').text,/Mara Muster/);assert.match(message('trainer-keys').text,/trainer@example.org/);assert.match(message('trainer-keys').text,/\+49 170/);assert.match(message('trainer-keys').text,/Mannschaft: U11 E1-Junioren/);assert.match(message('trainer-keys').text,/Rolle: Trainer/);assert.doesNotMatch(message('trainer-keys').text,/Geburtsdatum:|Geburtsort:|Straße und Hausnummer:|IBAN|Testbank|Nationalität/);
@@ -144,6 +145,8 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   assert.equal(message('trainer-welcome').attachments[1].content,message('trainer-membership').attachments[0].content);
   assert.match(existingMembershipText,/Bestehende Mitgliedschaft/);assert.doesNotMatch(existingMembershipText,/beantrage ich (meine|die) Mitgliedschaft/);
   assert.match(existingMembershipText.replace(/\s+/g,' '),/Richtigkeit meiner aktualisierten Mitgliedsdaten/);
+  messages.length=0;response=await submit({trainerMailMode:'test',forceTestMode:'true'});assert.equal(response.status,201);
+  assert.ok(messages.every(x=>x.trainerMailMode==='live' && x.forceTestMode!==true),'browser fields cannot override the server delivery policy');
   for(const document of [existingMemberText,existingMembershipText]){
     assert.match(document,/DE89370400440532013000/);assert.match(document,/Testbank/);
     assert.match(document.replace(/\s+/g,' '),/Wenn diese Tätigkeit endet und du Mitglied im Verein bleibst/);

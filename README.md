@@ -128,17 +128,27 @@ Fehlgeschlagene Folge-Benachrichtigungen werden als `pendingNotifications`
 ausgewiesen, die Begrüßungs-Mail wird trotzdem versucht und die Dankeseite
 verhindert die Aufforderung zum erneuten Absenden.
 
-**Eigener Onboarding-Testmodus:** `TRAINER_ONBOARDING_MAIL_MODE` ist ein privates
-Supabase-Secret, Standard `test`. Alle fünf Trainer-Mailtypen gehen dann
+**Eigener Onboarding-Versandmodus:** Der authentifizierte PHP-Antragsserver
+übergibt `trainerMailMode`, in dieser Veröffentlichung fest `live`. Diese
+Einstellung wird niemals aus Formularfeldern oder Frontend-Variablen übernommen.
+Ohne Servervorgabe gilt das private Supabase-Secret `TRAINER_ONBOARDING_MAIL_MODE`,
+Standard `test`. Im Testmodus gehen alle fünf Trainer-Mailtypen
 ausschließlich an `jerome.ernsberger@gmail.com`, auch Reply-To; To/Cc/Bcc können
 das nicht umgehen. Das gilt auch bei Livebetrieb anderer Vereinsmails und bei
-anders eingestelltem `EMAIL_TEST_RECIPIENT`. Für Livebetrieb müssen sowohl dieses
-Secret explizit `live` als auch der zentrale Mailbetrieb bestätigt `live` sein.
-Diese Testveröffentlichung erzwingt zusätzlich `forceTestMode: true` im
-authentifizierten PHP-Mailauftrag. Dieser serverseitige Schutz muss vor einem
-späteren Livebetrieb bewusst entfernt werden; die Secrets allein schalten die
-veröffentlichte Onboarding-Version nicht auf echte Empfänger um.
-Beim Umschalten niemals öffentliche Frontend-Variablen verwenden.
+anders eingestelltem `EMAIL_TEST_RECIPIENT`. Für echte Empfänger müssen sowohl die
+Servervorgabe (oder ohne Vorgabe das Secret) als auch der zentrale, ausdrücklich
+bestätigte Mailbetrieb `live` sein. `forceTestMode: true` hat weiterhin Vorrang,
+etwa für einzelne geschützte Versandprüfungen. Authentifizierte Aufträge mit
+`dryRun: true` prüfen Routing und Anhänge, ohne E-Mails oder Anmeldungen auszulösen.
+
+Alle Onboarding-Mails nutzen einen gemeinsamen, responsiven Rahmen mit maximal
+720 Pixel Breite. Der organische Header übernimmt die Formen der Einstiegsseite;
+das öffentliche PNG hat 1440 × 840 Pixel, enthält keine Antragsdaten und wird aus
+`public/images/onboarding/email-header-organic.svg` mit `rsvg-convert` erzeugt.
+Outlook erhält einen VML-Hintergrund, bei deaktivierten Bildern bleibt der
+Header durch seine Hintergrundfarbe lesbar. Auf Mobilgeräten werden Innenabstände
+und Überschrift angepasst; die Einstiegsseite skaliert Spieler und Ball auf die
+verfügbare Bildschirmhöhe, ohne die Illustration abzuschneiden.
 
 Bereitstellung: zuerst `membership-email` mit den Routen `trainer-onboarding`
 und `trainer-membership` aktualisieren, danach `trainer-onboarding.php`,
@@ -147,7 +157,7 @@ und `trainer-membership` aktualisieren, danach `trainer-onboarding.php`,
 `trainer-onboarding-welcome.json` sowie die PDF-Bibliothek auf dem PHP-Antragsserver bereitstellen, anschließend die Website
 veröffentlichen. Die privaten Mailbridge-Zugangsdaten werden wie bei
 `membership-v3.php` aus der Umgebung oder `membership-config.php` gelesen;
-der eigene Onboarding-Testmodus bleibt zunächst aktiv. Ohne diese Konfiguration wird
+der eigene Versandmodus bleibt unabhängig von anderen Formularen. Ohne diese Konfiguration wird
 kein Versand behauptet. `PUBLIC_TRAINER_ONBOARDING_ENDPOINT` überschreibt bei
 Bedarf die Standardadresse `https://api.bsvnordstern.de/api/trainer-onboarding.php`.
 `trainer-onboarding-teams.php` bei Änderungen an den Mannschaften mitpflegen.

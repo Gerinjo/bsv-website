@@ -26,7 +26,7 @@ function harness(values={},failed=false){
   runInNewContext(stripped('supabase/functions/membership-email/index.ts'),{
     Deno:deno,Response,Request,console:{error(){}},createClient:()=>db,collectRecipientEmails,getMembershipRoutingKeys,isTrainerEmail,getTrainerEmailRecipient,getTrainerEmailMode,TRAINER_TEST_RECIPIENT,...api,queueMembershipNewsletter:async()=> 'not_requested',
   });
-  return{payloads,lookups,submit:async(type,overrides={})=>handler(new Request('https://example.org/mail',{method:'POST',headers:{'Content-Type':'application/json','x-bsv-membership-secret':'test-secret'},body:JSON.stringify({messageType:type,to:'coach@example.org',routingKey:'attacker',replyTo:'coach@example.org',subject:'Willkommen',text:'Testunterlagen',html:'<p>Testunterlagen</p>',applicationNumber:reference,attachments:type==='trainer-welcome'?[pdf]:[],...overrides})}))};
+  return{payloads,lookups,submit:async(type,overrides={},secret='test-secret')=>handler(new Request('https://example.org/mail',{method:'POST',headers:{'Content-Type':'application/json','x-bsv-membership-secret':secret},body:JSON.stringify({messageType:type,to:'coach@example.org',routingKey:'attacker',replyTo:'coach@example.org',subject:'Willkommen',text:'Testunterlagen',html:'<p>Testunterlagen</p>',applicationNumber:reference,attachments:type==='trainer-welcome'?[pdf]:[],...overrides})}))};
 }
 
 test('every onboarding email goes only to Jerome by default even if general club mail is live',async()=>{
@@ -54,6 +54,33 @@ test('live trainer routing requires both onboarding live mode and globally confi
     const response=await app.submit(type);assert.equal(response.status,201);assert.equal((await response.json()).mailMode,'live');assert.deepEqual(app.payloads.at(-1).body.to,[to]);
   }
   assert.deepEqual(app.lookups,[['youth-leadership']]);
+});
+
+test('authenticated server delivery selection respects global confirmation and explicit test overrides',async()=>{
+  for(const values of [{},{TRAINER_ONBOARDING_MAIL_MODE:'test'}]){
+    const app=harness(values);
+    const response=await app.submit('trainer-welcome',{trainerMailMode:'live'});
+    assert.equal(response.status,201);assert.equal((await response.json()).mailMode,'live');assert.deepEqual(app.payloads[0].body.to,['coach@example.org']);
+  }
+  for(const values of [{EMAIL_DELIVERY_MODE:'test'},{EMAIL_LIVE_CONFIRMATION:''}]){
+    const app=harness(values);const response=await app.submit('trainer-welcome',{trainerMailMode:'live'});
+    assert.equal((await response.json()).mailMode,'test');assert.deepEqual(app.payloads[0].body.to,[TRAINER_TEST_RECIPIENT]);
+  }
+  for(const overrides of [{trainerMailMode:'test'},{trainerMailMode:'live',forceTestMode:true}]){
+    const app=harness({TRAINER_ONBOARDING_MAIL_MODE:'live'});const response=await app.submit('trainer-welcome',overrides);
+    assert.equal((await response.json()).mailMode,'test');assert.deepEqual(app.payloads[0].body.to,[TRAINER_TEST_RECIPIENT]);
+  }
+});
+
+test('routing preview is authenticated and validates recipients without sending emails',async()=>{
+  const app=harness();
+  for(const[type,to]of [['trainer-onboarding','jugend@bsvnordstern.de'],['trainer-keys','Markus.Mossbrugger@bsvnordstern.de'],['trainer-dfbnet','dfbnet@bsvnordstern.de'],['trainer-membership','verwaltung@bsvnordstern.de'],['trainer-welcome','coach@example.org']]){
+    const response=await app.submit(type,{trainerMailMode:'live',dryRun:true});assert.equal(response.status,200);
+    assert.deepEqual(await response.json(),{ok:true,dryRun:true,mailMode:'live',to:[to],senderConfigured:true,attachmentCount:type==='trainer-welcome'?1:0});
+  }
+  assert.equal((await app.submit('trainer-welcome',{trainerMailMode:'live',dryRun:true},'wrong-secret')).status,401);
+  assert.equal((await app.submit('trainer-keys',{trainerMailMode:'live',dryRun:true,attachments:[pdf]})).status,422);
+  assert.equal(app.payloads.length,0);
 });
 
 test('contact notifications reject sensitive attachments and membership receives only its separate PDF',async()=>{

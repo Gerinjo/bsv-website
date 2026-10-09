@@ -69,7 +69,7 @@ Deno.serve(async (request) => {
   const trainerMail = isTrainerEmail(messageType);
   const trainerMode = trainerMail && body.forceTestMode === true
     ? 'test'
-    : getTrainerEmailMode((name: string) => Deno.env.get(name), getEmailRuntimeConfig().mode);
+    : getTrainerEmailMode((name: string) => Deno.env.get(name), getEmailRuntimeConfig().mode, text(body.trainerMailMode, 4));
   const trainerRecipient = getTrainerEmailRecipient(messageType, applicantAddress);
 
   if (trainerMail && trainerRecipient !== null) {
@@ -149,6 +149,18 @@ Deno.serve(async (request) => {
     (['trainer-membership', 'trainer-welcome'].includes(messageType) && attachments.some(item => item.content_type !== 'application/pdf')) ||
     (messageType === 'trainer-membership' && attachments.some(item => !/^(Mitgliedsantrag|Mitgliedsdaten)-TR-[0-9]{8}-[A-F0-9]{6}\.pdf$/.test(item.filename)))
   )) return json({ error: 'invalid_trainer_message' }, 422);
+
+  // Authenticated deployment checks validate routing and attachments without
+  // delivering mail or recording an application/newsletter request.
+  if (trainerMail && body.dryRun === true) {
+    const runtime = getEmailRuntimeConfig();
+    return json({
+      ok: true, dryRun: true, mailMode: trainerMode,
+      to: trainerMode === 'test' ? [TRAINER_TEST_RECIPIENT] : (Array.isArray(recipient) ? recipient : [recipient]),
+      senderConfigured: Boolean(runtime.mailFrom && runtime.resendApiKey),
+      attachmentCount: attachments.length,
+    }, 200);
+  }
 
   // PHP invokes the applicant message only after the application was delivered
   // to administration. Persist its opt-in before sending the applicant's copy,

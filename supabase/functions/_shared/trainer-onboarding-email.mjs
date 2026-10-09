@@ -10,5 +10,10 @@ export const getTrainerEmailRecipient = (type, applicantAddress = '') => ({
   'trainer-welcome': applicantAddress,
 })[type] ?? null;
 
-export const getTrainerEmailMode = (readValue, globalMode) =>
-  readValue('TRAINER_ONBOARDING_MAIL_MODE')?.trim().toLowerCase() === 'live' && globalMode === 'live' ? 'live' : 'test';
+export const getTrainerEmailMode = (readValue, globalMode, serverMode = '') => {
+  // Only the authenticated PHP server supplies this override. Browser fields
+  // never select delivery mode. The central live confirmation still applies.
+  const requested = ['live', 'test'].includes(serverMode)
+    ? serverMode : readValue('TRAINER_ONBOARDING_MAIL_MODE')?.trim().toLowerCase();
+  return requested === 'live' && globalMode === 'live' ? 'live' : 'test';
+};

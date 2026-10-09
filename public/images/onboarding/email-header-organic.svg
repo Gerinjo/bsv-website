@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="840" viewBox="0 0 1440 1000" preserveAspectRatio="none">
+  <rect width="1440" height="1000" fill="#092f20"/>
+  <path d="M0 0H1440V220C1170 400 1160 80 850 155S405 435 0 250Z" fill="#164f32" fill-opacity=".45"/>
+  <path d="M0 505C245 325 470 540 730 645S1150 380 1440 465V1000H0Z" fill="#061f15" fill-opacity=".6"/>
+  <path d="M0 780C270 1000 475 685 790 780S1220 1065 1440 865V1000H0Z" fill="#276546" fill-opacity=".26"/>
+  <path d="M-80 270C250 520 510 95 860 145S1200 435 1510 205" fill="none" stroke="#f4d638" stroke-opacity=".12" stroke-width="2"/>
+  <path d="M-80 805C230 1050 505 700 815 800S1235 1060 1500 845" fill="none" stroke="#bcd3b4" stroke-opacity=".1" stroke-width="2"/>
+  <g transform="translate(-190 630) rotate(-22 310 195)" fill="none" stroke="#d1e2d1" stroke-opacity=".1" stroke-width="2">
+    <rect x="20" y="20" width="580" height="350"/>
+    <path d="M310 20V370M20 95H120V295H20M600 95H500V295H600M20 150H65V240H20M600 150H555V240H600"/>
+    <circle cx="310" cy="195" r="60"/>
+    <path d="M120 145A60 60 0 0 1 120 245M500 145A60 60 0 0 0 500 245"/>
+  </g>
+  <g transform="translate(1040 90) rotate(18 160 160) scale(1.3)" fill="none" stroke="#f4d638" stroke-opacity=".08" stroke-width="2">
+    <circle cx="160" cy="160" r="145"/>
+    <path d="M160 91L225 139L200 216H120L95 139ZM160 91V15M225 139L298 116M200 216L245 277M120 216L75 277M95 139L22 116M42 75L68 107L22 116M278 75L252 107L298 116M298 205L265 205L245 277M22 205L55 205L75 277M117 298L160 273L203 298"/>
+  </g>
+</svg>
