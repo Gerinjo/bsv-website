@@ -157,7 +157,7 @@ const { allowTopicSelection = false } = Astro.props;
   button:disabled { cursor: wait; opacity: .6; }
   .reload { padding: 12px 0; border: 0; background: none; color: var(--bsv-green, #164f32); font-size: .8rem; text-decoration: underline; }
   .subscribe { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 12px 18px; border: 0; border-radius: 3px; background: var(--bsv-yellow, #f4d638); color: var(--bsv-ink, #10251a); font-weight: 850; }
-  .subscribe:hover:not(:disabled) { background: #ffe65e; }
+  .subscribe:hover:not(:disabled) { background: color-mix(in srgb, var(--bsv-yellow, #f4d638) 80%, white); }
   .hint { margin: 15px 0 0; font-size: .75rem; line-height: 1.55; color: #506459; }
   .status { margin: 16px 0 0; font-size: .85rem; line-height: 1.6; }
   .status:empty { display: none; }

@@ -85,7 +85,7 @@ import { withBase } from '../utils/paths';
   .gastro-ai-badge{position:absolute;z-index:5;top:16px;right:16px;padding:7px 10px;border-radius:999px;background:var(--bsv-yellow, #f4d638);color:var(--bsv-green-dark, #092f20);font-size:.58rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 6px 18px rgb(0 0 0 / 20%)}
   .gastro-ai-visual{position:absolute;inset:0;display:block;transition:transform .35s ease}
   .gastro-mega-feature:hover .gastro-ai-visual,.gastro-mega-feature:focus .gastro-ai-visual{transform:scale(1.035)}
-  .gastro-ai-glow{position:absolute;right:-60px;top:-70px;width:270px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgb(244 214 56 / 34%),rgb(244 214 56 / 4%) 55%,transparent 72%)}
+  .gastro-ai-glow{position:absolute;right:-60px;top:-70px;width:270px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgb(var(--bsv-accent-rgb, 244 214 56) / 34%),rgb(var(--bsv-accent-rgb, 244 214 56) / 4%) 55%,transparent 72%)}
   .gastro-ai-table{position:absolute;left:-12%;right:-12%;bottom:38px;height:42%;transform:rotate(-4deg);background:linear-gradient(160deg,#bf8b51,#6c4024);box-shadow:0 -13px 28px rgb(0 0 0 / 20%)}
   .gastro-ai-table::before{content:'';position:absolute;inset:0;opacity:.22;background:repeating-linear-gradient(92deg,transparent 0 38px,rgb(255 255 255 / 18%) 39px 41px)}
   .gastro-ai-plate{position:absolute;z-index:2;left:24%;top:30%;width:165px;aspect-ratio:1;border:13px solid #f5f1e7;border-radius:50%;background:#d8ded8;transform:rotate(-9deg);box-shadow:0 20px 35px rgb(0 0 0 / 36%),inset 0 0 0 4px #fff}
@@ -93,7 +93,7 @@ import { withBase } from '../utils/paths';
   .gastro-ai-food.food-one{left:24px;top:34px;width:58px;height:43px;transform:rotate(18deg);background:linear-gradient(145deg,#d9a442,#9f5e25)}
   .gastro-ai-food.food-two{right:22px;top:45px;width:48px;height:54px;background:linear-gradient(145deg,#75a544,#315c2d)}
   .gastro-ai-food.food-three{left:43px;bottom:22px;width:66px;height:34px;transform:rotate(-12deg);background:linear-gradient(145deg,#c9583d,#7d261e)}
-  .gastro-ai-glass{position:absolute;z-index:3;right:17%;top:31%;width:42px;height:94px;border:3px solid rgb(255 255 255 / 76%);border-radius:5px 5px 16px 16px;background:linear-gradient(to top,rgb(244 214 56 / 75%) 0 48%,rgb(255 255 255 / 10%) 49%);transform:rotate(6deg);box-shadow:0 13px 25px rgb(0 0 0 / 25%)}
+  .gastro-ai-glass{position:absolute;z-index:3;right:17%;top:31%;width:42px;height:94px;border:3px solid rgb(255 255 255 / 76%);border-radius:5px 5px 16px 16px;background:linear-gradient(to top,rgb(var(--bsv-accent-rgb, 244 214 56) / 75%) 0 48%,rgb(255 255 255 / 10%) 49%);transform:rotate(6deg);box-shadow:0 13px 25px rgb(0 0 0 / 25%)}
   .gastro-ai-glass::after{content:'';position:absolute;left:50%;bottom:-35px;width:3px;height:35px;background:rgb(255 255 255 / 72%);transform:translateX(-50%);box-shadow:-14px 35px 0 7px rgb(255 255 255 / 65%)}
   .gastro-ai-spark{position:absolute;z-index:4;color:var(--bsv-yellow, #f4d638);text-shadow:0 5px 15px rgb(0 0 0 / 30%)}
   .gastro-ai-spark.spark-one{left:13%;top:20%;font-size:1.5rem}.gastro-ai-spark.spark-two{right:12%;top:17%;font-size:.9rem}
@@ -119,7 +119,7 @@ import { withBase } from '../utils/paths';
   .gastro-mega-info dl{margin:0}.gastro-mega-info dl>div{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid rgb(255 255 255 / 12%)}
   .gastro-mega-info dt{color:#b8cbbf;font-size:.7rem;font-weight:800}.gastro-mega-info dd{margin:0;color:white;font-size:.7rem;font-weight:800}
   .gastro-vacation-compact{margin:14px 0 0;padding:10px 12px;border-left:3px solid var(--bsv-yellow, #f4d638);background:rgb(255 255 255 / 8%);color:#cbd9d0;font-size:.66rem;line-height:1.45}.gastro-vacation-compact strong{color:white}
-  .gastro-menu-notice{margin:18px 0 0;padding:12px 13px;background:#fff9d9;color:var(--bsv-green-dark, #092f20);font-size:.72rem;font-weight:800;line-height:1.6}
+  .gastro-menu-notice{margin:18px 0 0;padding:12px 13px;background:color-mix(in srgb, var(--bsv-yellow, #f4d638) 15%, white);color:var(--bsv-green-dark, #092f20);font-size:.72rem;font-weight:800;line-height:1.6}
   .gastro-reservation{margin-top:12px;padding:10px 12px;display:block;border:1px solid rgb(255 255 255 / 20%);color:white;text-decoration:none}
   .gastro-reservation small,.gastro-reservation strong{display:block}.gastro-reservation small{color:#7f9a89;font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.gastro-reservation strong{margin-top:3px;font-size:.76rem}
   @media(max-width:980px){.mega-inner.gastro-mega-enhanced{padding:0!important}.gastro-mega-layout{grid-template-columns:1fr}.gastro-mega-feature{min-height:230px}.gastro-mega-directory{padding:24px 18px}.gastro-mega-info{padding:24px 20px}.gastro-mega-links{grid-template-columns:repeat(2,minmax(0,1fr))}.gastro-ai-plate{left:34%;top:20%;width:145px}.gastro-ai-glass{right:25%;top:23%}}

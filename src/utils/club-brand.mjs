@@ -10,7 +10,7 @@ export function clubBrandColors(value){
 export function clubBrandVariables(colors){
  const c=clubBrandColors(colors)||CLUB_BRAND_DEFAULT;
  const mix=(hex,t)=>'#'+[1,3,5].map(i=>Math.round(parseInt(hex.slice(i,i+2),16)*(1-t)).toString(16).padStart(2,'0')).join('');
- return {'--bsv-green':c.panel,'--bsv-green-dark':mix(c.panel,.4),'--bsv-green-light':c.panel,'--bsv-background':c.background,'--bsv-primary':c.primary,'--bsv-yellow':c.accent,'--bsv-muted':c.muted,'--bsv-cream':c.surface,'--bsv-ink':c.ink};
+ return {'--bsv-green':c.panel,'--bsv-green-dark':mix(c.panel,.4),'--bsv-green-light':c.panel,'--bsv-background':c.background,'--bsv-primary':c.primary,'--bsv-yellow':c.accent,'--bsv-accent-rgb':[1,3,5].map(i=>parseInt(c.accent.slice(i,i+2),16)).join(' '),'--bsv-accent-dark':mix(c.accent,.23),'--bsv-muted':c.muted,'--bsv-cream':c.surface,'--bsv-ink':c.ink};
 }
 export function clubBrandSettings(value){
  const colors=clubBrandColors(value?.color_scheme)||CLUB_BRAND_DEFAULT;

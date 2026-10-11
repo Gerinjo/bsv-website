@@ -9,6 +9,8 @@ test('public brand accepts only the seven color fields',()=>{
 test('website variables respond to the central club identity',()=>{
  const variables=clubBrandVariables({...CLUB_BRAND_DEFAULT,panel:'#204830',accent:'#aabbcc'});
  assert.equal(variables['--bsv-green'],'#204830');assert.equal(variables['--bsv-yellow'],'#aabbcc');
+ assert.equal(variables['--bsv-accent-rgb'],'170 187 204');
+ assert.equal(variables['--bsv-accent-dark'],'#83909d');
  assert.notEqual(variables['--bsv-green-dark'],variables['--bsv-green']);
  assert.equal(clubBrandVariables(null)['--bsv-green'],CLUB_BRAND_DEFAULT.panel);
 });

@@ -78,7 +78,7 @@ const { endpoint } = Astro.props;
   .access-word{width:min(100%,700px);margin-inline:auto;display:grid;grid-template-columns:repeat(8,minmax(0,1fr)) .45fr;align-items:center;gap:clamp(2px,1vw,9px);color:var(--bsv-yellow, #f4d638);font-family:Georgia,serif;font-size:clamp(2.4rem,10vw,5.7rem);font-style:italic;font-weight:400;line-height:1.2}
   .access-word span{display:block}
   .access-word input{box-sizing:border-box;width:100%;min-width:0;height:1.3em;padding:0;border:0;border-bottom:3px solid var(--bsv-yellow, #f4d638);border-radius:0;background:transparent;color:inherit;font:inherit;line-height:inherit;text-align:center;caret-color:var(--bsv-yellow, #f4d638);transition:background .15s,border-color .15s}
-  .access-word input:focus{outline:0;background:rgb(244 214 56 / 9%);border-bottom-color:#fff;box-shadow:0 3px 0 #fff}
+  .access-word input:focus{outline:0;background:rgb(var(--bsv-accent-rgb, 244 214 56) / 9%);border-bottom-color:#fff;box-shadow:0 3px 0 #fff}
   .access-word input[aria-invalid=true]{border-bottom-color:#f3a59a;box-shadow:0 3px 0 #f3a59a}
   .access-word input:disabled{opacity:1;-webkit-text-fill-color:var(--bsv-yellow, #f4d638)}
   .access-status{max-width:440px;margin:25px auto 0;color:#d9e4dc;font-size:.85rem;line-height:1.6}
