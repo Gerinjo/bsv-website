@@ -199,10 +199,10 @@ const availableSponsorAreaOptions = sponsorAreaOptions.filter((area) =>
 </Layout>
 
 <style>
-  :global(:root){--green:#164f32;--dark:#071f16;--yellow:#f4d638;--ink:#14251a}
+  :global(:root){--green:var(--bsv-green, #164f32);--dark:var(--bsv-background, #071f16);--yellow:var(--bsv-yellow, #f4d638);--ink:#14251a}
   .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
   .partners-page{background:#f5f7f4;color:var(--ink)}
-  .partners-hero{position:relative;overflow:hidden;padding:96px 0 105px;background:linear-gradient(120deg,#061f15,#0d3b27 68%,#164f32);color:white}
+  .partners-hero{position:relative;overflow:hidden;padding:96px 0 105px;background:linear-gradient(120deg,#061f15,#0d3b27 68%,var(--bsv-green, #164f32));color:white}
   .partners-hero::after{content:'';position:absolute;right:-210px;top:-350px;width:700px;aspect-ratio:1;border:1px solid rgb(244 214 56 / 15%);border-radius:50%;box-shadow:0 0 0 85px rgb(255 255 255 / 2%),0 0 0 170px rgb(255 255 255 / 1.5%)}
   .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:end}
   .hero-copy>span,.section-head span,.partner-cta>div>span{color:var(--yellow);font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}

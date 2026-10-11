@@ -110,11 +110,11 @@ const { sources, total } = Astro.props;
 
 <style is:inline>
   .calendar-filter{display:grid;grid-template-columns:205px 1fr;gap:20px;align-items:center;margin-bottom:32px;padding:21px 23px;border:1px solid #d9e2da;background:white;box-shadow:0 10px 28px rgb(9 47 32 / 6%)}
-  .filter-copy>span{display:block;color:#164f32;font-size:.64rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+  .filter-copy>span{display:block;color:var(--bsv-green, #164f32);font-size:.64rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
   .filter-copy>strong{display:block;margin-top:3px;color:#082f20;font-family:Georgia,serif;font-size:1.22rem}
   .filter-copy p{margin:5px 0 0;color:#6b776f;font-size:.75rem}
   .filter-buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-  .filter-buttons button{--source-color:#164f32;--source-soft:#edf3ee;display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 9px;border:1px solid #cbd7cd;border-radius:3px;background:#f3f7f4;color:#082f20;font:inherit;font-size:.74rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease}
+  .filter-buttons button{--source-color:var(--bsv-green, #164f32);--source-soft:#edf3ee;display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 9px;border:1px solid #cbd7cd;border-radius:3px;background:#f3f7f4;color:#082f20;font:inherit;font-size:.74rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease}
   .filter-buttons button:hover,.filter-buttons button:focus-visible{border-color:var(--source-color);transform:translateY(-1px)}
   .filter-buttons button i{width:9px;height:9px;border-radius:50%;background:var(--source-color)}
   .filter-buttons button b{display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--source-soft);color:var(--source-color);font-size:.68rem}

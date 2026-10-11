@@ -128,7 +128,7 @@ const showroomImage = withBase('/images/shop/Showroom_2024_820x370px.jpg');
 </Layout>
 
 <style>
-  :global(:root){--green:#164f32;--green-dark:#092f20;--yellow:#f4d638;--cream:#f4f1e8;--ink:#10251a}
+  :global(:root){--green:var(--bsv-green, #164f32);--green-dark:var(--bsv-green-dark, #092f20);--yellow:var(--bsv-yellow, #f4d638);--cream:var(--bsv-cream, #f4f1e8);--ink:var(--bsv-ink, #10251a)}
   .shell{width:min(1160px,calc(100% - 48px));margin-inline:auto}
   .shop-hero{overflow:hidden;background:var(--green-dark);color:white}
   .hero-grid{min-height:590px;padding:82px 0 90px;display:grid;grid-template-columns:.92fr 1.08fr;align-items:center;gap:64px}

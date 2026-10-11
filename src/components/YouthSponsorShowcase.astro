@@ -53,19 +53,19 @@ const youthSponsors = advertisingPartners.filter((partner) =>
 </script>
 
 <style>
-  .youth-sponsors{margin-top:85px;padding:58px;background:#092f20;color:white}
+  .youth-sponsors{margin-top:85px;padding:58px;background:var(--bsv-green-dark, #092f20);color:white}
   .youth-sponsors-head{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:end;margin-bottom:42px}
-  .youth-sponsors-head span{color:#f4d638;font-size:.67rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+  .youth-sponsors-head span{color:var(--bsv-yellow, #f4d638);font-size:.67rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
   .youth-sponsors-head h2{margin:14px 0 0;color:white;font-size:clamp(2.8rem,5vw,4.6rem);line-height:.92;letter-spacing:-.055em}
-  .youth-sponsors-head h2 em{color:#f4d638;font-family:Georgia,serif;font-weight:400}
+  .youth-sponsors-head h2 em{color:var(--bsv-yellow, #f4d638);font-family:Georgia,serif;font-weight:400}
   .youth-sponsors-head p{margin:0;color:#bfd0c5;line-height:1.7}
-  .youth-sponsors-head a{width:max-content;margin-top:23px;padding:13px 15px;display:flex;align-items:center;gap:24px;background:#f4d638;color:#092f20;font-size:.72rem;font-weight:900;text-decoration:none}
+  .youth-sponsors-head a{width:max-content;margin-top:23px;padding:13px 15px;display:flex;align-items:center;gap:24px;background:var(--bsv-yellow, #f4d638);color:var(--bsv-green-dark, #092f20);font-size:.72rem;font-weight:900;text-decoration:none}
   .youth-sponsor-grid{display:grid;grid-template-columns:repeat(var(--sponsor-columns),minmax(0,1fr));gap:13px}
-  .youth-sponsor-grid>a,.youth-sponsor-grid>article{position:relative;min-width:0;min-height:180px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;border-top:4px solid #f4d638;background:white;color:#164f32;text-decoration:none}
+  .youth-sponsor-grid>a,.youth-sponsor-grid>article{position:relative;min-width:0;min-height:180px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;border-top:4px solid var(--bsv-yellow, #f4d638);background:white;color:var(--bsv-green, #164f32);text-decoration:none}
   .youth-sponsor-grid [hidden]{display:none}
   .youth-sponsor-grid img{width:100%;max-width:270px;height:105px;margin:auto;object-fit:contain}
   .youth-sponsor-grid strong{font-size:.76rem;line-height:1.35}
-  .youth-sponsor-grid>a>span{position:absolute;right:14px;bottom:13px;color:#092f20;font-weight:900}
+  .youth-sponsor-grid>a>span{position:absolute;right:14px;bottom:13px;color:var(--bsv-green-dark, #092f20);font-weight:900}
   .youth-sponsor-grid>a{transition:transform .2s ease,box-shadow .2s ease}
   .youth-sponsor-grid>a:hover,.youth-sponsor-grid>a:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 15px 35px rgb(0 0 0 / 24%)}
   @media(max-width:900px){.youth-sponsors-head{grid-template-columns:1fr;gap:28px}.youth-sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

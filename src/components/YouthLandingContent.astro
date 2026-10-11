@@ -103,57 +103,57 @@ const featuredStory = storyGroup.links[0];
 <style>
   .youth-overview { margin-top: 10px; }
   .section-heading { display:grid; grid-template-columns:1fr .75fr; gap:70px; align-items:end; margin-bottom:45px; }
-  .section-heading span { color:#164f32; font-size:.67rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
-  .section-heading h2 { margin:14px 0 0; color:#10251a; font-size:clamp(2.8rem,5vw,4.7rem); line-height:.92; letter-spacing:-.055em; }
-  .section-heading h2 em { color:#164f32; font-family:Georgia,serif; font-weight:400; }
+  .section-heading span { color:var(--bsv-green, #164f32); font-size:.67rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+  .section-heading h2 { margin:14px 0 0; color:var(--bsv-ink, #10251a); font-size:clamp(2.8rem,5vw,4.7rem); line-height:.92; letter-spacing:-.055em; }
+  .section-heading h2 em { color:var(--bsv-green, #164f32); font-family:Georgia,serif; font-weight:400; }
   .section-heading > p { max-width:430px; margin:0; color:#65746a; line-height:1.75; }
   .overview-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; }
-  .leadership-card { position:relative; min-height:590px; padding:48px; overflow:hidden; background:#f4d638; color:#092f20; }
+  .leadership-card { position:relative; min-height:590px; padding:48px; overflow:hidden; background:var(--bsv-yellow, #f4d638); color:var(--bsv-green-dark, #092f20); }
   .leadership-card::after { position:absolute; right:-30px; top:-60px; color:rgb(255 255 255 / 42%); font-size:12rem; line-height:1; content:'✦'; }
   .leadership-card > * { position:relative; z-index:1; }
-  .card-number { position:absolute; right:35px; top:27px; color:#164f32; font-size:.72rem; font-weight:950; }
-  .leadership-card > small,.story-copy > small { display:block; color:#164f32; font-size:.66rem; font-weight:950; letter-spacing:.15em; text-transform:uppercase; }
+  .card-number { position:absolute; right:35px; top:27px; color:var(--bsv-green, #164f32); font-size:.72rem; font-weight:950; }
+  .leadership-card > small,.story-copy > small { display:block; color:var(--bsv-green, #164f32); font-size:.66rem; font-weight:950; letter-spacing:.15em; text-transform:uppercase; }
   .leadership-card h3,.story-card h3 { margin:17px 0 22px; font-size:clamp(2.5rem,4vw,4rem); line-height:.93; letter-spacing:-.055em; }
   .leadership-card > p { max-width:570px; color:#405144; line-height:1.7; }
-  .primary-link { width:max-content; margin-top:28px; padding:15px 17px; display:flex; align-items:center; gap:35px; background:#092f20; color:white; font-size:.75rem; font-weight:900; text-decoration:none; }
+  .primary-link { width:max-content; margin-top:28px; padding:15px 17px; display:flex; align-items:center; gap:35px; background:var(--bsv-green-dark, #092f20); color:white; font-size:.75rem; font-weight:900; text-decoration:none; }
   .department-links { margin-top:42px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid rgb(9 47 32 / 20%); }
-  .department-links a { min-width:0; padding:13px 8px 13px 0; display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid rgb(9 47 32 / 20%); color:#092f20; font-size:.68rem; font-weight:850; text-decoration:none; }
+  .department-links a { min-width:0; padding:13px 8px 13px 0; display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid rgb(9 47 32 / 20%); color:var(--bsv-green-dark, #092f20); font-size:.68rem; font-weight:850; text-decoration:none; }
   .department-links a:nth-child(odd) { margin-right:18px; }
-  .story-card { position:relative; min-height:590px; overflow:hidden; background:#092f20; color:white; text-decoration:none; }
+  .story-card { position:relative; min-height:590px; overflow:hidden; background:var(--bsv-green-dark, #092f20); color:white; text-decoration:none; }
   .story-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 25%; transition:transform .45s ease; }
   .story-shade { position:absolute; inset:18% 0 0; background:linear-gradient(transparent,rgb(5 27 18 / 95%)); }
   .story-copy { position:absolute; z-index:1; inset:auto 42px 40px; }
-  .story-copy > small { color:#f4d638; }
+  .story-copy > small { color:var(--bsv-yellow, #f4d638); }
   .story-copy h3 { color:white; font-size:clamp(2.35rem,3.6vw,3.55rem); }
   .story-copy p { max-width:470px; color:#c4d4ca; line-height:1.65; }
-  .story-copy strong { margin-top:24px; display:flex; justify-content:space-between; color:#f4d638; font-size:.75rem; }
+  .story-copy strong { margin-top:24px; display:flex; justify-content:space-between; color:var(--bsv-yellow, #f4d638); font-size:.75rem; }
   .story-mobile-link { display:none; }
   .story-card:hover img,.story-card:focus-visible img { transform:scale(1.035); }
-  .story-card:focus-visible,.primary-link:focus-visible,.department-links a:focus-visible,.team-group a:focus-visible { outline:3px solid #164f32; outline-offset:3px; }
+  .story-card:focus-visible,.primary-link:focus-visible,.department-links a:focus-visible,.team-group a:focus-visible { outline:3px solid var(--bsv-green, #164f32); outline-offset:3px; }
   .youth-teams { margin-top:105px; }
   .teams-heading { margin-bottom:48px; }
   .team-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:start; }
   .team-group-column { min-width:0; display:grid; gap:16px; align-content:start; }
-  .team-group { overflow:hidden; border-top:5px solid #164f32; background:#eef2ef; }
-  .team-group.group-2 { border-top-color:#f4d638; }
-  .team-group.group-3 { border-top-color:#092f20; }
+  .team-group { overflow:hidden; border-top:5px solid var(--bsv-green, #164f32); background:#eef2ef; }
+  .team-group.group-2 { border-top-color:var(--bsv-yellow, #f4d638); }
+  .team-group.group-3 { border-top-color:var(--bsv-green-dark, #092f20); }
   .team-group.group-4 { border-top-color:#88a994; }
   .team-group header { min-height:105px; padding:22px 24px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:15px; background:white; border-bottom:1px solid #d4ddd6; }
-  .team-group header > span { color:#164f32; font-size:.65rem; font-weight:950; }
+  .team-group header > span { color:var(--bsv-green, #164f32); font-size:.65rem; font-weight:950; }
   .team-group header small { display:block; color:#74837a; font-size:.55rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
-  .team-group header h3 { margin:4px 0 0; color:#10251a; font-size:1.35rem; }
+  .team-group header h3 { margin:4px 0 0; color:var(--bsv-ink, #10251a); font-size:1.35rem; }
   .team-group header > b { color:#a3aea7; font-size:1.4rem; }
   .team-group ul { margin:0; padding:8px 18px 18px; list-style:none; }
   .team-group li { border-bottom:1px solid #d4ddd6; }
   .team-group li:last-child { border-bottom:0; }
   .team-group a { min-height:62px; padding:8px 4px; display:grid; grid-template-columns:38px 1fr auto; align-items:center; gap:11px; color:#183024; text-decoration:none; }
-  .team-mark { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:#164f32; color:white; font-size:.61rem; font-weight:950; }
-  .group-2 .team-mark { background:#f4d638; color:#092f20; }
-  .group-3 .team-mark { background:#092f20; color:#f4d638; }
-  .group-4 .team-mark { background:#88a994; color:#092f20; }
+  .team-mark { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--bsv-green, #164f32); color:white; font-size:.61rem; font-weight:950; }
+  .group-2 .team-mark { background:var(--bsv-yellow, #f4d638); color:var(--bsv-green-dark, #092f20); }
+  .group-3 .team-mark { background:var(--bsv-green-dark, #092f20); color:var(--bsv-yellow, #f4d638); }
+  .group-4 .team-mark { background:#88a994; color:var(--bsv-green-dark, #092f20); }
   .team-group a strong { font-size:.72rem; line-height:1.3; }
-  .team-group a > b { color:#164f32; }
-  .team-group a:hover { color:#164f32; }
+  .team-group a > b { color:var(--bsv-green, #164f32); }
+  .team-group a:hover { color:var(--bsv-green, #164f32); }
   @media(max-width:900px){.section-heading,.overview-grid{grid-template-columns:1fr}.section-heading{gap:25px}.story-card{min-height:540px}.team-groups{grid-template-columns:1fr 1fr}.team-group-column:last-child{grid-column:1/-1}}
-  @media(max-width:600px){.leadership-card{min-height:0;padding:35px 25px}.department-links{grid-template-columns:1fr}.department-links a:nth-child(odd){margin-right:0}.story-card{min-height:0;background:#092f20}.story-card>img,.story-shade,.story-copy{display:none}.story-mobile-link{min-height:78px;padding:16px 18px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:18px}.story-mobile-link small,.story-mobile-link strong{display:block}.story-mobile-link small{margin-bottom:5px;color:#f4d638;font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.story-mobile-link strong{color:white;font-size:.9rem;line-height:1.25}.story-mobile-link>b{width:34px;aspect-ratio:1;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#f4d638;color:#092f20}.team-groups{grid-template-columns:1fr}.youth-teams{margin-top:75px}}
+  @media(max-width:600px){.leadership-card{min-height:0;padding:35px 25px}.department-links{grid-template-columns:1fr}.department-links a:nth-child(odd){margin-right:0}.story-card{min-height:0;background:var(--bsv-green-dark, #092f20)}.story-card>img,.story-shade,.story-copy{display:none}.story-mobile-link{min-height:78px;padding:16px 18px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:18px}.story-mobile-link small,.story-mobile-link strong{display:block}.story-mobile-link small{margin-bottom:5px;color:var(--bsv-yellow, #f4d638);font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.story-mobile-link strong{color:white;font-size:.9rem;line-height:1.25}.story-mobile-link>b{width:34px;aspect-ratio:1;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:var(--bsv-yellow, #f4d638);color:var(--bsv-green-dark, #092f20)}.team-groups{grid-template-columns:1fr}.youth-teams{margin-top:75px}}
 </style>

@@ -47,19 +47,19 @@ const { magazine } = Astro.props;
 </script>
 
 <style>
-  .magazine-reader{max-width:1240px;margin:auto;background:#163c2c;border:1px solid #163c2c;color:#fff;box-shadow:0 12px 40px #092f2018}
+  .magazine-reader{max-width:1240px;margin:auto;background:#163c2c;border:1px solid #163c2c;color:#fff;box-shadow:0 12px 40px var(--bsv-green-dark, #092f20)18}
   .magazine-reader *{box-sizing:border-box}.magazine-reader [hidden]{display:none!important}
-  .toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#092f20;border-bottom:2px solid #f4d638}
+  .toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--bsv-green-dark, #092f20);border-bottom:2px solid var(--bsv-yellow, #f4d638)}
   .page-controls,.view-controls,form{display:flex;align-items:center;gap:8px}form{margin:0;font-size:.8rem;white-space:nowrap}
   button{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:6px;border:1px solid #ffffff35;border-radius:3px;background:#ffffff0d;color:#fff;font:inherit;font-size:1.25rem;cursor:pointer}
-  button:hover:not(:disabled){background:#f4d638;color:#092f20;border-color:#f4d638}button:disabled{opacity:.4;cursor:default}.fit{min-width:105px;font-size:.75rem;font-weight:700}.jump{min-width:32px;font-size:1rem}
-  button:focus-visible,input:focus-visible,a:focus-visible,.stage:focus-visible{outline:3px solid #f4d638;outline-offset:3px}
+  button:hover:not(:disabled){background:var(--bsv-yellow, #f4d638);color:var(--bsv-green-dark, #092f20);border-color:var(--bsv-yellow, #f4d638)}button:disabled{opacity:.4;cursor:default}.fit{min-width:105px;font-size:.75rem;font-weight:700}.jump{min-width:32px;font-size:1rem}
+  button:focus-visible,input:focus-visible,a:focus-visible,.stage:focus-visible{outline:3px solid var(--bsv-yellow, #f4d638);outline-offset:3px}
   input{width:52px;height:44px;border:1px solid #ffffff55;border-radius:3px;text-align:center;background:#fff;color:#102b1d;font:inherit;font-weight:700;appearance:textfield;-moz-appearance:textfield}input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   .stage{height:clamp(400px,72svh,1000px);overflow:auto;overscroll-behavior:contain;padding:16px;background:radial-gradient(ellipse at top,#315642,#163c2c);outline-offset:-4px!important}
   .paper{position:relative;width:fit-content;margin-inline:auto;background:#fff;box-shadow:0 6px 24px #0005;--scale-round-x:1px;--scale-round-y:1px}
   .paper :global(canvas){display:block}.initial-cover{display:block;max-width:100%;max-height:calc(72svh - 32px);width:auto;height:auto;object-fit:contain}
-  .reader-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:#092f20;font-size:.75rem}
-  .reader-footer p{margin:0;line-height:1.6;color:#d6e3db}.pdf-links{display:flex;flex-wrap:wrap;gap:20px}.pdf-links a{color:#f4d638;font-weight:750;text-underline-offset:4px}
+  .reader-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:var(--bsv-green-dark, #092f20);font-size:.75rem}
+  .reader-footer p{margin:0;line-height:1.6;color:#d6e3db}.pdf-links{display:flex;flex-wrap:wrap;gap:20px}.pdf-links a{color:var(--bsv-yellow, #f4d638);font-weight:750;text-underline-offset:4px}
   .no-script{padding:0 18px 18px;margin:0;line-height:1.6;font-size:.85rem}
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
   .magazine-reader:fullscreen{width:100%;max-width:none;height:100dvh;display:flex;flex-direction:column;border:0}.magazine-reader:fullscreen .stage{flex:1;min-height:0;height:auto}.magazine-reader:fullscreen .toolbar,.magazine-reader:fullscreen .reader-footer{flex-shrink:0}

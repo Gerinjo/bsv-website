@@ -178,21 +178,21 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   .full { grid-column: 1 / -1; }
   .field-hint { margin: -6px 0 0; font-size: .76rem; }
   .day-option { padding: 18px; border: 1px solid #b0c1b4; background: #f3f6f1; }
-  .day-option:has(.day-choice input:checked) { border-color: #164f32; box-shadow: inset 0 -3px #164f32; }
+  .day-option:has(.day-choice input:checked) { border-color: var(--bsv-green, #164f32); box-shadow: inset 0 -3px var(--bsv-green, #164f32); }
   .day-choice { flex-direction: row; align-items: center; gap: 12px; cursor: pointer; }
-  .day-choice input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; accent-color: #164f32; }
+  .day-choice input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; accent-color: var(--bsv-green, #164f32); }
   .day-choice strong, .day-choice small { display: block; }.day-choice small { margin-top: 4px; color: #52665a; font-weight: 400; }
   .team-counts { margin: 18px 0 0; padding: 0; border: 0; }.team-counts legend { margin-bottom: 12px; font-size: .72rem; font-weight: 550; color: #52665a; }.team-counts:disabled { opacity: .55; }
-  .fee-summary { padding: 18px; background: #e7f0e6; border-left: 3px solid #164f32; }.fee-summary strong { font-size: 1rem; }.fee-summary p { margin: 9px 0 0; font-size: .76rem; line-height: 1.6; color: #52665a; }
+  .fee-summary { padding: 18px; background: #e7f0e6; border-left: 3px solid var(--bsv-green, #164f32); }.fee-summary strong { font-size: 1rem; }.fee-summary p { margin: 9px 0 0; font-size: .76rem; line-height: 1.6; color: #52665a; }
   .finish { display: flex; flex-direction: column; gap: 19px; padding: 0; margin-bottom: 0; border: 0; }
   .checkbox { display: flex; flex-direction: row; align-items: flex-start; gap: 11px; font-weight: 400; font-size: .78rem; line-height: 1.6; }
-  .checkbox input { flex: 0 0 auto; width: 18px; height: 18px; margin: 3px 0 0; accent-color: #164f32; }
+  .checkbox input { flex: 0 0 auto; width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--bsv-green, #164f32); }
   .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
   .captcha-row { display: flex; align-items: end; gap: 20px; }.captcha-row label { flex: 1; }.captcha-row input { max-width: 100px; }
-  button { font: inherit; cursor: pointer; }.reload { border: 0; padding: 12px 0; background: none; color: #164f32; font-size: .78rem; text-decoration: underline; }
-  .submit { display: flex; justify-content: space-between; gap: 15px; padding: 17px 20px; border: 0; border-radius: 3px; background: #f4d638; color: #092f20; font-weight: 850; text-align: left; }
+  button { font: inherit; cursor: pointer; }.reload { border: 0; padding: 12px 0; background: none; color: var(--bsv-green, #164f32); font-size: .78rem; text-decoration: underline; }
+  .submit { display: flex; justify-content: space-between; gap: 15px; padding: 17px 20px; border: 0; border-radius: 3px; background: var(--bsv-yellow, #f4d638); color: var(--bsv-green-dark, #092f20); font-weight: 850; text-align: left; }
   .submit:hover:not(:disabled) { background: #ffe967; }button:disabled { opacity: .6; cursor: default; }
-  a { color: #164f32; text-decoration: underline; }input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #a22e36; outline-offset: 3px; }
+  a { color: var(--bsv-green, #164f32); text-decoration: underline; }input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #a22e36; outline-offset: 3px; }
   .form-status { margin: 20px 0 0; font-size: .86rem; line-height: 1.65; }.form-status:empty { display: none; }.form-status[data-success=true] { padding: 16px; background: #e6f2e8; }.form-status[data-success=false] { color: #9a2530; }
   .contact-help { margin: 15px 0 0; font-size: .82rem; line-height: 1.6; }.contact-help[hidden] { display: none; }
   @media(max-width: 560px) { fieldset { grid-template-columns: 1fr; }form { box-shadow: 5px 5px 0 #061f16; }.captcha-row { gap: 12px; }.day-option { padding: 15px; }.team-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

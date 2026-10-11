@@ -59,7 +59,7 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
 </section>
 <style>
   .matchday-pitch { min-width:0; }
-  header { display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:3px solid #164f32; padding:18px 0; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:3px solid var(--bsv-green, #164f32); padding:18px 0; }
   h3 { margin:0; font-size:22px; }
   header>span { font-size:12px; color:#52625a; }
   .lane-head { display:grid; grid-template-columns:66px minmax(0,1fr) minmax(0,1fr); gap:4px; min-height:40px; }
@@ -70,12 +70,12 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
   .pitch-timeline { display:grid; grid-template-columns:66px repeat(var(--columns),minmax(0,1fr)); gap:4px; min-width:var(--minimum); }
   .time-label,.end-time { grid-column:1; font-size:12px; color:#52625a; }
   .end-time { padding-top:4px; }
-  .slot { min-width:0; min-height:0; z-index:1; display:flex; flex-direction:column; justify-content:safe center; gap:5px; padding:10px; text-decoration:none; overflow-wrap:anywhere; overflow:auto; background:#e5eee8; color:#164f32; border-left:3px solid #287847; }
+  .slot { min-width:0; min-height:0; z-index:1; display:flex; flex-direction:column; justify-content:safe center; gap:5px; padding:10px; text-decoration:none; overflow-wrap:anywhere; overflow:auto; background:#e5eee8; color:var(--bsv-green, #164f32); border-left:3px solid #287847; }
   .slot strong { font-size:14px; }
   .slot span { font-size:11px; }
   .slot:hover { background:#d3e4d9; }
-  .slot:focus-visible { outline:3px solid #164f32; outline-offset:1px; }
-  .slot.full { background:#164f32; color:white; }
+  .slot:focus-visible { outline:3px solid var(--bsv-green, #164f32); outline-offset:1px; }
+  .slot.full { background:var(--bsv-green, #164f32); color:white; }
   .slot.full:hover { background:#0b3923; }
   .slot.kids { background:#fff3ab; border-color:#cfac00; color:#443d14; }
   .slot.girls { background:#e1eff1; border-color:#277481; color:#184d56; }
@@ -99,7 +99,7 @@ const bookingId = (booking: PitchBooking) => 'belegung-' + date + '-' + bookings
   .booking-time { color:#18362b; font-weight:700; }
   .note { border-left:3px solid #d9ac24; padding-left:10px; color:#685016; }
   .preliminary { display:block; color:#806020; margin:8px 0; }
-  .source-link { font-size:12px; color:#164f32; font-weight:700; text-underline-offset:3px; }
+  .source-link { font-size:12px; color:var(--bsv-green, #164f32); font-weight:700; text-underline-offset:3px; }
   .empty { padding:24px 0; }
   @media(max-width:420px) { .lane-head { grid-template-columns:48px minmax(0,1fr) minmax(0,1fr); } .pitch-timeline { grid-template-columns:48px repeat(var(--columns),minmax(0,1fr)); } .slot { padding:8px; } .slot strong { font-size:12px; } h3 { font-size:20px; } }
 </style>

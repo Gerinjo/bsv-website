@@ -1,0 +1,20 @@
+---
+import { loadClubBrand, clubBrandVariables } from '../utils/club-brand.mjs';
+const colors=await loadClubBrand();
+const css=Object.entries(clubBrandVariables(colors)).map(([key,value])=>`${key}:${value}`).join(';');
+---
+<style is:inline set:html={`:root{${css}}`}></style>
+<script>
+ import {CLUB_BRAND_URL,CLUB_BRAND_PUBLIC_KEY,clubBrandColors,clubBrandVariables} from '../utils/club-brand.mjs';
+ const apply=(value:unknown)=>{
+  const colors=clubBrandColors(value);
+  if(!colors)return;
+  for(const [key,color] of Object.entries(clubBrandVariables(colors)))document.documentElement.style.setProperty(key,color);
+  const theme=document.querySelector('meta[name="theme-color"]');
+  theme?.setAttribute('content',colors.panel);
+  try{localStorage.setItem('bsv-public-brand-v1',JSON.stringify(colors));}catch{}
+ };
+ try{apply(JSON.parse(localStorage.getItem('bsv-public-brand-v1')||'null'));}catch{}
+ fetch(CLUB_BRAND_URL,{headers:{apikey:CLUB_BRAND_PUBLIC_KEY},cache:'no-store',signal:AbortSignal.timeout(4000)})
+  .then(async response=>{if(response.ok)apply((await response.json())[0]?.color_scheme);}).catch(()=>{});
+</script>

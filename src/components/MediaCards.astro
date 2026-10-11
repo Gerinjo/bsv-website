@@ -22,16 +22,16 @@ const { compact = false } = Astro.props;
 
 <style>
   .media-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
-  .media-card{box-sizing:border-box;display:grid;grid-template-columns:1fr;gap:28px;padding:38px;background:#fff;border-top:4px solid #164f32;color:#102b1d;text-decoration:none;box-shadow:0 12px 35px rgb(9 47 32 / 6%)}
-  .media-card:last-child{background:#eef4ee;border-color:#f4d638}
-  .media-symbol{display:grid;place-items:center;width:72px;height:72px;background:#164f32;color:#f4d638}
+  .media-card{box-sizing:border-box;display:grid;grid-template-columns:1fr;gap:28px;padding:38px;background:#fff;border-top:4px solid var(--bsv-green, #164f32);color:#102b1d;text-decoration:none;box-shadow:0 12px 35px rgb(9 47 32 / 6%)}
+  .media-card:last-child{background:#eef4ee;border-color:var(--bsv-yellow, #f4d638)}
+  .media-symbol{display:grid;place-items:center;width:72px;height:72px;background:var(--bsv-green, #164f32);color:var(--bsv-yellow, #f4d638)}
   .media-symbol svg{width:44px;height:44px}
-  .eyebrow{color:#164f32;font-size:.65rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+  .eyebrow{color:var(--bsv-green, #164f32);font-size:.65rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
   h2{margin:12px 0 16px;font-family:Georgia,serif;font-size:2.5rem;line-height:1.05;letter-spacing:-.035em}
   p{margin:0;max-width:490px;color:#52665a;line-height:1.65;font-size:.95rem}
-  strong{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:26px;font-size:.85rem;color:#164f32}
-  strong span{display:grid;place-items:center;flex:0 0 auto;width:30px;height:30px;background:#f4d638;border-radius:50%}
-  .media-card:hover,.media-card:focus-visible{outline:2px solid #164f32;outline-offset:3px}
+  strong{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:26px;font-size:.85rem;color:var(--bsv-green, #164f32)}
+  strong span{display:grid;place-items:center;flex:0 0 auto;width:30px;height:30px;background:var(--bsv-yellow, #f4d638);border-radius:50%}
+  .media-card:hover,.media-card:focus-visible{outline:2px solid var(--bsv-green, #164f32);outline-offset:3px}
   .compact .media-card{padding:24px;grid-template-columns:56px minmax(0,1fr);gap:22px;box-shadow:none}
   .compact .media-symbol{width:56px;height:56px}.compact .media-symbol svg{width:34px;height:34px}
   .compact h2{font-size:1.75rem}.compact p{font-size:.85rem}.compact strong{margin-top:20px;font-size:.8rem}

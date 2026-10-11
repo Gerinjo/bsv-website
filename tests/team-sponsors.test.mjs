@@ -140,5 +140,5 @@ test('Sponsoring opens the partner overview and packages remain explicitly selec
   assert.match(sponsoringMenuSource, /data-sponsor-pane="packages" hidden/);
   assert.match(sponsoringMenuSource, /selectPane\('partners'\)/);
   assert.match(sponsoringMenuSource, /pane\.hidden = pane\.dataset\.sponsorPane !== target/);
-  assert.match(sponsoringMenuSource, /sponsor-mega-tab\.active\{background:#f4d638/);
+  assert.match(sponsoringMenuSource, /sponsor-mega-tab\.active\{background:var\(--bsv-yellow, #f4d638\)/);
 });

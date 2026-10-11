@@ -245,7 +245,7 @@ const getEventType = (title: string) => {
 </script>
 
 <style>
-  :global(:root) { --green: #164f32; --green-dark: #092f20; --green-light: #1e6b43; --yellow: #f4d638; --cream: #f4f1e8; --ink: #10251a; }
+  :global(:root) { --green: var(--bsv-green, #164f32); --green-dark: var(--bsv-green-dark, #092f20); --green-light: var(--bsv-green-light, #1e6b43); --yellow: var(--bsv-yellow, #f4d638); --cream: var(--bsv-cream, #f4f1e8); --ink: var(--bsv-ink, #10251a); }
   main { width: 100%; overflow-x: clip; }
   .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
   .newsletter-teaser { padding: 38px 0 0; scroll-margin-top: 130px; background: var(--cream); }

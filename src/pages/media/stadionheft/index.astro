@@ -42,8 +42,8 @@ import { withBase } from '../../../utils/paths';
 
 <style>
   .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}
-  .hero{padding:48px 0 62px;background:#092f20;color:#fff;border-bottom:5px solid #f4d638}
-  .back{color:#f4d638;text-decoration:none;font-size:.8rem;font-weight:750}
+  .hero{padding:48px 0 62px;background:var(--bsv-green-dark, #092f20);color:#fff;border-bottom:5px solid var(--bsv-yellow, #f4d638)}
+  .back{color:var(--bsv-yellow, #f4d638);text-decoration:none;font-size:.8rem;font-weight:750}
   h1{margin:28px 0 20px;font-size:clamp(3rem,6vw,5.5rem);line-height:1;letter-spacing:-.045em}
   .hero p{max-width:630px;margin:0;color:#d6e3db;line-height:1.8}
   .archive{padding:50px 0 80px}.archive-heading{margin-bottom:30px}.archive-heading h2{margin:0 0 12px;font-size:1.6rem;color:#102b1d}.archive-heading p{max-width:650px;margin:0;color:#52665a;line-height:1.65}
@@ -51,12 +51,12 @@ import { withBase } from '../../../utils/paths';
   .issue{max-width:352px;background:#fff;box-shadow:0 10px 30px rgb(9 47 32 / 7%)}
   .cover{display:block;position:relative;background:#e5ece6;padding:22px 30px 0;overflow:hidden}
   .cover img{display:block;width:100%;height:auto;box-shadow:0 6px 20px rgb(9 47 32 / 22%);transition:transform .2s}
-  .cover-link{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:16px;padding:10px 14px;background:#f4d638;color:#102b1d;font-size:.8rem;font-weight:800;box-shadow:0 2px 12px #0002}
-  .cover:hover img{transform:translateY(-5px)}.cover:focus-visible{outline:3px solid #164f32;outline-offset:4px}
-  .issue-info{padding:26px}.season{font-size:.65rem;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#164f32}
+  .cover-link{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:16px;padding:10px 14px;background:var(--bsv-yellow, #f4d638);color:#102b1d;font-size:.8rem;font-weight:800;box-shadow:0 2px 12px #0002}
+  .cover:hover img{transform:translateY(-5px)}.cover:focus-visible{outline:3px solid var(--bsv-green, #164f32);outline-offset:4px}
+  .issue-info{padding:26px}.season{font-size:.65rem;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:var(--bsv-green, #164f32)}
   h3{font-family:Georgia,serif;font-size:2rem;margin:10px 0 12px;color:#102b1d}.issue-info p{color:#52665a;font-size:.8rem;margin:0;line-height:1.6}
   .read,.download{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;font-weight:800;text-decoration:none}
-  .read{margin-top:22px;padding:14px 16px;background:#164f32;color:#fff}.read:hover{background:#092f20}.download{padding:16px 0 0;color:#164f32}.download:hover{text-decoration:underline}
+  .read{margin-top:22px;padding:14px 16px;background:var(--bsv-green, #164f32);color:#fff}.read:hover{background:var(--bsv-green-dark, #092f20)}.download{padding:16px 0 0;color:var(--bsv-green, #164f32)}.download:hover{text-decoration:underline}
   @media(max-width:600px){.shell{width:calc(100% - 30px)}.hero{padding:32px 0 42px}.archive{padding:32px 0 55px}.issue{max-width:none}.issues{gap:24px}}
   @media(prefers-reduced-motion:reduce){.cover img{transition:none}}
 </style>

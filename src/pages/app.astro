@@ -70,21 +70,21 @@ import { withBase } from '../utils/paths';
 <style>
   [hidden] { display:none !important; }
   .shell { width:min(1120px, calc(100% - 40px)); margin-inline:auto; }
-  .app-hero { padding:85px 0; background:#092f20; color:white; }
+  .app-hero { padding:85px 0; background:var(--bsv-green-dark, #092f20); color:white; }
   .hero-grid { display:grid; grid-template-columns:minmax(0, 1.4fr) minmax(0, 1fr); gap:70px; align-items:center; }
   .eyebrow { margin:0 0 20px; color:#17613a; font-size:.7rem; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
-  .app-hero .eyebrow { color:#f4d638; }
+  .app-hero .eyebrow { color:var(--bsv-yellow, #f4d638); }
   h1 { margin:0; font-size:clamp(3rem, 6vw, 5.3rem); line-height:1.02; letter-spacing:-.05em; }
-  h1 em { color:#f4d638; font-family:Georgia, serif; font-weight:400; }
+  h1 em { color:var(--bsv-yellow, #f4d638); font-family:Georgia, serif; font-weight:400; }
   .lead { max-width:540px; margin:28px 0; color:#c4d8cb; font-size:1.08rem; line-height:1.75; }
   .app-actions { display:flex; flex-wrap:wrap; align-items:center; gap:20px; }
   .primary-action, .guide-action { display:inline-flex; align-items:center; justify-content:space-between; gap:24px; min-height:48px; font:inherit; font-size:.86rem; font-weight:850; text-decoration:none; }
-  .primary-action { padding:15px 20px; border:0; border-radius:6px; background:#f4d638; color:#092f20; cursor:pointer; }
+  .primary-action { padding:15px 20px; border:0; border-radius:6px; background:var(--bsv-yellow, #f4d638); color:var(--bsv-green-dark, #092f20); cursor:pointer; }
   .primary-action:disabled { opacity:.65; cursor:wait; }
-  .guide-action { color:#f4d638; }
+  .guide-action { color:var(--bsv-yellow, #f4d638); }
   .install-status { margin:18px 0 0; color:#c4d8cb; font-size:.8rem; line-height:1.6; }
   .app-preview { position:relative; min-height:390px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:50px 24px; border:1px solid rgb(255 255 255 / 18%); border-radius:30px; background:linear-gradient(145deg,#1d6543,#0c3525); text-align:center; box-shadow:16px 20px 0 rgb(0 0 0 / 12%); }
-  .preview-star { position:absolute; top:20px; right:24px; color:#f4d638; font-size:1.5rem; }
+  .preview-star { position:absolute; top:20px; right:24px; color:var(--bsv-yellow, #f4d638); font-size:1.5rem; }
   .app-preview img { width:128px; height:128px; border-radius:28px; box-shadow:0 12px 30px rgb(0 0 0 / 20%); }
   .app-preview > strong { margin:18px 0 8px; font-size:1.12rem; }
   .app-preview > span:not(.preview-star) { max-width:230px; color:#c4d8cb; font-size:.8rem; line-height:1.5; }
@@ -94,9 +94,9 @@ import { withBase } from '../utils/paths';
   .installation > h2 { margin:0 0 24px; font-size:clamp(2.1rem, 4vw, 3.5rem); line-height:1.08; letter-spacing:-.04em; }
   .section-intro, .browser-note { max-width:760px; color:#52665a; line-height:1.75; }
   .installation-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:35px 0 24px; }
-  .device-card { padding:32px; border:1px solid #dce5de; border-top:4px solid #f4d638; border-radius:8px; background:white; }
+  .device-card { padding:32px; border:1px solid #dce5de; border-top:4px solid var(--bsv-yellow, #f4d638); border-radius:8px; background:white; }
   .device-label { margin:0 0 10px; color:#17613a; font-size:.65rem; font-weight:850; text-transform:uppercase; letter-spacing:.1em; }
-  .device-card h3 { margin:0 0 26px; color:#092f20; font-size:1.7rem; }
+  .device-card h3 { margin:0 0 26px; color:var(--bsv-green-dark, #092f20); font-size:1.7rem; }
   .device-card ol { display:grid; gap:22px; padding:0; margin:0; list-style:none; counter-reset:step; }
   .device-card li { display:flex; align-items:flex-start; gap:14px; color:#52665a; font-size:.92rem; line-height:1.65; counter-increment:step; }
   .device-card li::before { content:counter(step); display:grid; place-items:center; width:28px; height:28px; flex:0 0 auto; border-radius:50%; background:#edf4ee; color:#17613a; font-size:.75rem; font-weight:850; }
@@ -108,8 +108,8 @@ import { withBase } from '../utils/paths';
   .app-details h2 { margin:16px 0 12px; font-size:1.25rem; }
   .app-details p { color:#52665a; font-size:.9rem; line-height:1.75; }
   .back-link { padding-bottom:75px; }
-  .back-link a { display:inline-flex; gap:28px; color:#164f32; font-weight:850; text-decoration:none; }
-  a:focus-visible, button:focus-visible { outline:3px solid #f4d638; outline-offset:5px; }
+  .back-link a { display:inline-flex; gap:28px; color:var(--bsv-green, #164f32); font-weight:850; text-decoration:none; }
+  a:focus-visible, button:focus-visible { outline:3px solid var(--bsv-yellow, #f4d638); outline-offset:5px; }
   @media(max-width:800px) { .hero-grid { gap:35px; } .app-preview { min-height:350px; padding-inline:16px; } .installation-grid { grid-template-columns:1fr; } .app-details { grid-template-columns:1fr; gap:12px; } }
   @media(max-width:600px) { .shell { width:calc(100% - 32px); } .app-hero { padding:55px 0; } .hero-grid { grid-template-columns:1fr; gap:40px; } .app-preview { min-height:320px; max-width:340px; width:100%; margin-inline:auto; box-shadow:8px 10px 0 rgb(0 0 0 / 12%); } .device-card { padding:25px 20px; } .installation { padding-top:55px; } }
 </style>

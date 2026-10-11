@@ -10,11 +10,11 @@ html:root body [data-profile-portrait] {
   min-height: 0;
   overflow: hidden;
   border: 0;
-  border-bottom: 4px solid #f4d638;
+  border-bottom: 4px solid var(--bsv-yellow, #f4d638);
   border-radius: 6px;
-  background: #164f32;
+  background: var(--bsv-green, #164f32);
   box-shadow: 0 8px 22px rgb(9 47 32 / 10%);
-  color: #f4d638;
+  color: var(--bsv-yellow, #f4d638);
   font-size: 2rem;
   font-weight: 850;
 }
@@ -49,7 +49,7 @@ html:root body a.contact-action {
   border: 1px solid #b7c8bc;
   border-radius: 6px;
   background: white;
-  color: #164f32;
+  color: var(--bsv-green, #164f32);
   text-decoration: none;
   line-height: 1;
   box-shadow: none;
@@ -57,5 +57,5 @@ html:root body a.contact-action {
 }
 html:root body a.contact-action svg { display: block; width: 20px; height: 20px; flex-shrink: 0; }
 html:root body a.contact-action::before, html:root body a.contact-action::after { display: none; }
-html:root body a.contact-action:hover { background: #f4d638; border-color: #f4d638; color: #092f20; }
-html:root body a.contact-action:focus-visible { outline: 3px solid #164f32; outline-offset: 3px; background: #f4d638; }
+html:root body a.contact-action:hover { background: var(--bsv-yellow, #f4d638); border-color: var(--bsv-yellow, #f4d638); color: var(--bsv-green-dark, #092f20); }
+html:root body a.contact-action:focus-visible { outline: 3px solid var(--bsv-green, #164f32); outline-offset: 3px; background: var(--bsv-yellow, #f4d638); }
