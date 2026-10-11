@@ -1,20 +1,24 @@
 ---
-import { loadClubBrand, clubBrandVariables } from '../utils/club-brand.mjs';
-const colors=await loadClubBrand();
-const css=Object.entries(clubBrandVariables(colors)).map(([key,value])=>`${key}:${value}`).join(';');
+import { loadClubBrandSettings, clubBrandVariables } from '../utils/club-brand.mjs';
+const brand=await loadClubBrandSettings();
+const css=Object.entries(clubBrandVariables(brand.color_scheme)).map(([key,value])=>`${key}:${value}`).join(';');
 ---
 <style is:inline set:html={`:root{${css}}`}></style>
 <script>
- import {CLUB_BRAND_URL,CLUB_BRAND_PUBLIC_KEY,clubBrandColors,clubBrandVariables} from '../utils/club-brand.mjs';
+ import {CLUB_BRAND_URL,CLUB_BRAND_PUBLIC_KEY,clubBrandSettings,clubBrandVariables} from '../utils/club-brand.mjs';
+ import {brandThemeSvg} from '../utils/brand-themes.mjs';
  const apply=(value:unknown)=>{
-  const colors=clubBrandColors(value);
-  if(!colors)return;
+  const brand=clubBrandSettings(value),colors=brand.color_scheme;
   for(const [key,color] of Object.entries(clubBrandVariables(colors)))document.documentElement.style.setProperty(key,color);
-  const theme=document.querySelector('meta[name="theme-color"]');
-  theme?.setAttribute('content',colors.panel);
-  try{localStorage.setItem('bsv-public-brand-v1',JSON.stringify(colors));}catch{}
+  document.documentElement.dataset.bsvTheme=brand.theme_key;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',colors.panel);
+  const football=document.querySelector<HTMLElement>('[data-bsv-hero-football]');
+  const seasonal=document.querySelector<HTMLElement>('[data-bsv-hero-seasonal]');
+  if(football)football.hidden=brand.theme_key!=='football';
+  if(seasonal){seasonal.hidden=brand.theme_key==='football';const art=seasonal.querySelector('[data-bsv-theme-art]');if(art)art.innerHTML=brandThemeSvg(brand.theme_key,colors);}
+  try{localStorage.setItem('bsv-public-brand-v2',JSON.stringify(brand));}catch{}
  };
- try{apply(JSON.parse(localStorage.getItem('bsv-public-brand-v1')||'null'));}catch{}
+ try{const stored=localStorage.getItem('bsv-public-brand-v2');if(stored)apply(JSON.parse(stored));}catch{}
  fetch(CLUB_BRAND_URL,{headers:{apikey:CLUB_BRAND_PUBLIC_KEY},cache:'no-store',signal:AbortSignal.timeout(4000)})
-  .then(async response=>{if(response.ok)apply((await response.json())[0]?.color_scheme);}).catch(()=>{});
+  .then(async response=>{if(response.ok)apply((await response.json())[0]);}).catch(()=>{});
 </script>
