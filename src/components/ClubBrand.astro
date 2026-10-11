@@ -6,7 +6,8 @@ const css=Object.entries(clubBrandVariables(brand.color_scheme)).map(([key,value
 <style is:inline set:html={`:root{${css}}`}></style>
 <script>
  import {CLUB_BRAND_URL,CLUB_BRAND_PUBLIC_KEY,clubBrandSettings,clubBrandVariables} from '../utils/club-brand.mjs';
- import {brandThemeSvg} from '../utils/brand-themes.mjs';
+ import {brandThemeArtwork} from '../utils/brand-themes.mjs';
+ import {withBase} from '../utils/paths';
  const apply=(value:unknown)=>{
   const brand=clubBrandSettings(value),colors=brand.color_scheme;
   for(const [key,color] of Object.entries(clubBrandVariables(colors)))document.documentElement.style.setProperty(key,color);
@@ -15,7 +16,7 @@ const css=Object.entries(clubBrandVariables(brand.color_scheme)).map(([key,value
   const football=document.querySelector<HTMLElement>('[data-bsv-hero-football]');
   const seasonal=document.querySelector<HTMLElement>('[data-bsv-hero-seasonal]');
   if(football)football.hidden=brand.theme_key!=='football';
-  if(seasonal){seasonal.hidden=brand.theme_key==='football';const art=seasonal.querySelector('[data-bsv-theme-art]');if(art)art.innerHTML=brandThemeSvg(brand.theme_key,colors);}
+  if(seasonal){seasonal.hidden=brand.theme_key==='football';const art=seasonal.querySelector<HTMLImageElement>('[data-bsv-theme-art]');if(art&&brand.theme_key!=='football'){const artwork=brandThemeArtwork(brand.theme_key),src=withBase(artwork.src);if(art.getAttribute('src')!==src)art.src=src;art.alt=artwork.alt;}}
   try{localStorage.setItem('bsv-public-brand-v2',JSON.stringify(brand));}catch{}
  };
  try{const stored=localStorage.getItem('bsv-public-brand-v2');if(stored)apply(JSON.parse(stored));}catch{}
