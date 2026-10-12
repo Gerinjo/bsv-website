@@ -1,3 +1,4 @@
+import {prepareTrainerOnboarding,acceptTrainerOnboarding} from '../supabase/functions/_shared/trainer-suite-onboarding.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {stripTypeScriptTypes} from 'node:module';
@@ -17,16 +18,16 @@ const pdf={filename:`Trainerunterlagen-${reference}.pdf`,contentType:'applicatio
 
 function harness(values={},failed=false){
   const env={EMAIL_DELIVERY_MODE:'live',EMAIL_LIVE_CONFIRMATION:LIVE_EMAIL_CONFIRMATION,EMAIL_TEST_RECIPIENT:'unrelated-test@example.org',RESEND_API_KEY:'test-only',MAIL_FROM:'BSV <test@example.org>',MEMBERSHIP_EMAIL_SECRET:'test-secret',SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'test-only',...values};
-  const payloads=[],lookups=[];let handler;
+  const payloads=[],lookups=[],imports=[];let handler;
   const deno={env:{get:key=>env[key]},serve:callback=>{handler=callback;}};
   const api=runInNewContext(stripped('supabase/functions/_shared/email-service.ts')+'\n({sendEmail,getEmailRuntimeConfig});',{
     Deno:deno,resolveEmailMode,console:{error(){}},fetch:async(url,options)=>{assert.equal(url,'https://api.resend.com/emails');payloads.push({body:JSON.parse(options.body),headers:options.headers});return new Response(JSON.stringify(failed?{error:'test-failure'}:{id:'test-resend'}),{status:failed?502:201});},
   });
-  const db={from(){const chain={select(){return chain;},in(field,keys){lookups.push(Array.from(keys));return chain;},eq(){return Promise.resolve({data:[{schluessel:'youth-leadership',email:'jugend@bsvnordstern.de',weitere_emails:[]}],error:null});}};return chain;}};
+  const db={rpc:async(name,args)=>{imports.push(args.payload);return {data:{ok:true}};},from(){const chain={select(){return chain;},in(field,keys){lookups.push(Array.from(keys));return chain;},eq(){return Promise.resolve({data:[{schluessel:'youth-leadership',email:'jugend@bsvnordstern.de',weitere_emails:[]}],error:null});}};return chain;}};
   runInNewContext(stripped('supabase/functions/membership-email/index.ts'),{
-    Deno:deno,Response,Request,console:{error(){}},createClient:()=>db,collectRecipientEmails,getMembershipRoutingKeys,isTrainerEmail,getTrainerEmailRecipient,getTrainerEmailMode,TRAINER_TEST_RECIPIENT,...api,queueMembershipNewsletter:async()=> 'not_requested',
+    Deno:deno,Response,Request,console:{error(){}},createClient:()=>db,collectRecipientEmails,getMembershipRoutingKeys,isTrainerEmail,getTrainerEmailRecipient,getTrainerEmailMode,TRAINER_TEST_RECIPIENT,...api,prepareTrainerOnboarding,acceptTrainerOnboarding,queueMembershipNewsletter:async()=> 'not_requested',
   });
-  return{payloads,lookups,submit:async(type,overrides={},secret='test-secret')=>handler(new Request('https://example.org/mail',{method:'POST',headers:{'Content-Type':'application/json','x-bsv-membership-secret':secret},body:JSON.stringify({messageType:type,to:'coach@example.org',routingKey:'attacker',replyTo:'coach@example.org',subject:'Willkommen',text:'Testunterlagen',html:'<p>Testunterlagen</p>',applicationNumber:reference,attachments:type==='trainer-welcome'?[pdf]:[],...overrides})}))};
+  return{payloads,lookups,imports,submit:async(type,overrides={},secret='test-secret')=>handler(new Request('https://example.org/mail',{method:'POST',headers:{'Content-Type':'application/json','x-bsv-membership-secret':secret},body:JSON.stringify({messageType:type,to:'coach@example.org',routingKey:'attacker',replyTo:'coach@example.org',subject:'Willkommen',text:'Testunterlagen',html:'<p>Testunterlagen</p>',applicationNumber:reference,attachments:type==='trainer-welcome'?[pdf]:[],...overrides})}))};
 }
 
 test('every onboarding email goes only to Jerome by default even if general club mail is live',async()=>{
@@ -106,4 +107,14 @@ test('thank-you page and welcome email agree on apps and DFBnet for every select
 test('personalized welcome HTML escapes user input and contains no bank data outside the PDF',()=>{
   const php=spawnSync('php',['-r',`require 'public/api/trainer-onboarding-welcome.php';echo json_encode(bsvTrainerWelcomeEmail(['teamKey'=>'jugend--u11-e1','teamLabel'=>'E1 & Team','firstName'=>'<img src=x onerror=alert(1)>','role'=>'Trainer','applicationNumber'=>'${reference}','membership'=>'no','busUse'=>'no','iban'=>'DE89370400440532013000']));`],{cwd:new URL('../',import.meta.url).pathname});
   assert.equal(php.status,0,php.stderr.toString());const mail=JSON.parse(php.stdout.toString());assert.doesNotMatch(mail.html,/<img src=x/);assert.match(mail.html,/&lt;img/);assert.match(mail.html,/E1 &amp; Team/);assert.doesNotMatch(mail.html,/DE89370400440532013000/);assert.match(mail.html,/<table role="presentation"/);assert.match(mail.html,/<img src="https:\/\/bsvnordstern.de/);
+});
+
+
+test('mail bridge queues structured onboarding only after live main mail succeeds',async()=>{
+ const trainerProfile={firstName:'Lea Marie',lastName:'Nordstern',birthDate:'1990-03-18',email:'lea@example.org',mobile:'+49 170 1234567',street:'Teststraße 1',postcode:'78315',city:'Radolfzell',teamKey:'jugend--u15-c1',role:'Co-Trainer'};
+ const app=harness({TRAINER_ONBOARDING_MAIL_MODE:'live'});
+ let response=await app.submit('trainer-onboarding',{trainerProfile});assert.equal(response.status,201);assert.equal((await response.json()).trainerDirectoryStatus,'queued');assert.deepEqual(app.imports.map(p=>p.action),['prepare','accept']);
+ const failed=harness({TRAINER_ONBOARDING_MAIL_MODE:'live'},true);response=await failed.submit('trainer-onboarding',{trainerProfile});assert.equal(response.status,502);assert.deepEqual(failed.imports.map(p=>p.action),['prepare']);
+ const dry=harness({TRAINER_ONBOARDING_MAIL_MODE:'live'});await dry.submit('trainer-onboarding',{trainerProfile,dryRun:true});assert.equal(dry.imports.length,0);
+ const testMode=harness();await testMode.submit('trainer-onboarding',{trainerProfile});assert.equal(testMode.imports.length,0);
 });

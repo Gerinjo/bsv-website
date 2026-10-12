@@ -197,6 +197,10 @@ $send = function ($type,$attachments,$text,$to='', $html=null, $subject=null) us
     // Delivery mode is a server setting, never copied from browser input.
     // The authenticated mail bridge also requires confirmed central live mode.
     $payload = array('messageType'=>$type,'trainerMailMode'=>'live','to'=>$to,'replyTo'=>$data['email'],'subject'=>$subject ?? 'BSV Trainerunterlagen ' . $data['applicationNumber'] . ': ' . $data['firstName'] . ' ' . $data['lastName'],'text'=>$text,'html'=>$html ?? bsvTrainerNotificationEmail($text),'applicationNumber'=>$data['applicationNumber'],'attachments'=>$attachments);
+    if ($type === 'trainer-onboarding') {
+        // Only validated directory fields; never account, ID, licence or signature documents.
+        $payload['trainerProfile'] = array('firstName'=>$data['firstName'],'lastName'=>$data['lastName'],'birthDate'=>$data['birthDate'],'email'=>$data['email'],'mobile'=>$data['phone'],'street'=>$data['street'],'postcode'=>$data['postalCode'],'city'=>$data['city'],'teamKey'=>$data['teamKey'],'role'=>$data['role']);
+    }
     $request = curl_init($endpoint);
     curl_setopt_array($request,array(CURLOPT_POST=>true,CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>10,CURLOPT_TIMEOUT=>30,CURLOPT_HTTPHEADER=>array('Content-Type: application/json','X-BSV-Membership-Secret: ' . $secret),CURLOPT_POSTFIELDS=>json_encode($payload,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
     $body = curl_exec($request); $code=(int)curl_getinfo($request,CURLINFO_HTTP_CODE); curl_close($request);

@@ -4,6 +4,8 @@ import { collectRecipientEmails, getMembershipRoutingKeys } from '../_shared/mem
 import { queueMembershipNewsletter } from '../_shared/membership-newsletter.mjs';
 import { isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT } from '../_shared/trainer-onboarding-email.mjs';
 
+import {prepareTrainerOnboarding,acceptTrainerOnboarding} from '../_shared/trainer-suite-onboarding.mjs';
+
 const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
 const MAX_ATTACHMENT_BYTES = 12 * 1024 * 1024;
 const allowedMimeTypes = new Set([
@@ -162,6 +164,10 @@ Deno.serve(async (request) => {
     }, 200);
   }
 
+  let trainerPrepared=false;
+  try{trainerPrepared=await prepareTrainerOnboarding({db:getSupabase(),body,mode:trainerMode});}
+  catch{return json({error:'trainer_queue_failed'},503);}
+
   // PHP invokes the applicant message only after the application was delivered
   // to administration. Persist its opt-in before sending the applicant's copy,
   // so a failure of that copy does not lose the newsletter request.
@@ -194,7 +200,8 @@ Deno.serve(async (request) => {
       : messageType === 'foerderverein' && /^BSV-[0-9-]+[A-F0-9]+$/.test(text(body.applicationNumber, 100))
         ? { idempotencyKey: `membership-foerderverein/${getEmailRuntimeConfig().mode}/${body.applicationNumber}` }
         : {});
-    return json({ ok: true, mailMode: result.mode, resendId: result.id, newsletterStatus }, 201);
+    const trainerDirectoryStatus=await acceptTrainerOnboarding({db:getSupabase(),body,prepared:trainerPrepared});
+    return json({ ok: true, mailMode: result.mode, resendId: result.id, newsletterStatus,trainerDirectoryStatus }, 201);
   } catch (error) {
     console.error('Mitgliedsantrags-Mail konnte nicht versendet werden:', error);
     return json({ error: 'email_failed', mailMode: trainerMail ? trainerMode : getEmailRuntimeConfig().mode, newsletterStatus }, 502);

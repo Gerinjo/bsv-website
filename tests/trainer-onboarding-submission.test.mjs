@@ -31,6 +31,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   paymentPolicy.creditorId='';writeFileSync(join(directory,'api/trainer-onboarding-membership.json'),JSON.stringify(paymentPolicy));
   const messages=[]; let failType='';
   const message=type=>messages.find(message=>message.messageType===type);
+  const assertProfile=()=>{const m=message('trainer-onboarding');assert.deepEqual(m.trainerProfile,{firstName:'Mara',lastName:'Muster',birthDate:'1985-03-18',email:'trainer@example.org',mobile:'+49 170 1234567',street:'Teststraße 1',postcode:'78315',city:'Radolfzell',teamKey:'jugend--u11-e1',role:'Trainer'});assert.ok(messages.filter(m=>m.messageType!=='trainer-onboarding').every(m=>m.trainerProfile===undefined));assert.ok(!JSON.stringify(m.trainerProfile).includes('DE893704')&&!Object.hasOwn(m.trainerProfile,'signatureData'));};
   const bridge=createServer(async(req,res)=>{
     const chunks=[];for await(const chunk of req) chunks.push(chunk);
     const message=JSON.parse(Buffer.concat(chunks).toString()); messages.push(message);
@@ -145,7 +146,7 @@ test('PHP onboarding requires all trainers to sign and sends complete signed doc
   assert.equal(message('trainer-welcome').attachments[1].content,message('trainer-membership').attachments[0].content);
   assert.match(existingMembershipText,/Bestehende Mitgliedschaft/);assert.doesNotMatch(existingMembershipText,/beantrage ich (meine|die) Mitgliedschaft/);
   assert.match(existingMembershipText.replace(/\s+/g,' '),/Richtigkeit meiner aktualisierten Mitgliedsdaten/);
-  messages.length=0;response=await submit({trainerMailMode:'test',forceTestMode:'true'});assert.equal(response.status,201);
+  messages.length=0;response=await submit({trainerMailMode:'test',forceTestMode:'true'});assert.equal(response.status,201);assertProfile();
   assert.ok(messages.every(x=>x.trainerMailMode==='live' && x.forceTestMode!==true),'browser fields cannot override the server delivery policy');
   for(const document of [existingMemberText,existingMembershipText]){
     assert.match(document,/DE89370400440532013000/);assert.match(document,/Testbank/);

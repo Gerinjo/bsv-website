@@ -1,3 +1,4 @@
+import {prepareTrainerOnboarding,acceptTrainerOnboarding} from '../supabase/functions/_shared/trainer-suite-onboarding.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
@@ -23,7 +24,7 @@ function harness({ recipients = [{ schluessel: 'foerderverein', email: 'foerderv
     Response, Request, console: { error() {} }, createClient: () => db, collectRecipientEmails, getMembershipRoutingKeys, isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT,
     Deno: { env: { get: key => ({ MEMBERSHIP_EMAIL_SECRET: 'test-secret', SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'test-only' })[key] }, serve: callback => { handler = callback; } },
     getEmailRuntimeConfig: () => ({ mode: 'live' }),
-    queueMembershipNewsletter: async options => { newsletter.push(options); return 'not_requested'; },
+    prepareTrainerOnboarding,acceptTrainerOnboarding,queueMembershipNewsletter: async options => { newsletter.push(options); return 'not_requested'; },
     sendEmail: async (mail, options) => { mails.push({ mail, options }); if (fails) throw new Error('test failure'); return { id: 'test-message', mode: 'live' }; },
   });
   return { mails, lookups, newsletter, submit: (overrides = {}, secret = 'test-secret') => handler(new Request('https://example.org/membership-email', {
