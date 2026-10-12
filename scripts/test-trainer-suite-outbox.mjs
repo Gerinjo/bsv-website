@@ -2,7 +2,7 @@ import {execFile} from 'node:child_process';import {promisify} from 'node:util';
 const exec=promisify(execFile),name='bsv-trainer-outbox-test-'+process.pid;
 const sql=text=>new Promise((resolve,reject)=>{const p=execFile('docker',['exec','-i',name,'psql','-X','-q','-t','-A','-v','ON_ERROR_STOP=1','-U','postgres'],{maxBuffer:1048576},(error,stdout,stderr)=>error?reject(new Error(stderr)):resolve(stdout.trim()));p.stdin.end(text);});
 try{await exec('docker',['run','--rm','-d','--name',name,'-e','POSTGRES_PASSWORD=isolated-only','postgres:17-alpine']);for(let i=0;;i++){try{await exec('docker',['exec',name,'pg_isready','-h','127.0.0.1','-U','postgres']);break;}catch{if(i>30)throw new Error('Database unavailable');await delay(300);}}
- await sql(`create role anon;create role authenticated;create role service_role bypassrls;create schema net;create schema cron;
+ await sql(`create role anon;create role authenticated;create role service_role bypassrls;create schema extensions;create extension pgcrypto with schema extensions;grant usage on schema extensions to service_role;create schema net;create schema cron;
  create table net._http_response(id bigint primary key,status_code int,content text);
  create table net.http_request_queue(id bigint primary key);
  create table net.test_requests(id bigint generated always as identity,url text,body jsonb,headers jsonb);
@@ -11,12 +11,14 @@ try{await exec('docker',['run','--rm','-d','--name',name,'-e','POSTGRES_PASSWORD
  create function cron.schedule(text,text,text) returns bigint language sql as 'select 1::bigint';`);
  await sql(await readFile(new URL('../supabase/migrations/20261012074318_trainer_onboarding_outbox.sql',import.meta.url),'utf8'));
  await sql(await readFile(new URL('../supabase/migrations/20261012075725_trainer_onboarding_network_privileges.sql',import.meta.url),'utf8'));
+ await sql(await readFile(new URL('../supabase/migrations/20261012080110_trainer_onboarding_request_signatures.sql',import.meta.url),'utf8'));
  await sql(`create function pg_temp.check_test(ok boolean,label text) returns void language plpgsql as $$begin if ok is not true then raise exception 'Outbox: %',label;end if;end $$;
  insert into private.trainer_suite_bridge(secret) values(repeat('a',64));set role service_role;
  select pg_temp.check_test((public.trainer_suite_onboarding_queue('{"action":"prepare","applicationNumber":"TR-20261012-ABCDEF","profile":{"applicationNumber":"TR-20261012-ABCDEF","firstName":"Lea"}}')->>'ok')::boolean,'prepare');
  select pg_temp.check_test((select count(*)=0 from net.test_requests),'no import before successful mail');
  select public.trainer_suite_onboarding_queue('{"action":"accept","applicationNumber":"TR-20261012-ABCDEF"}');
  select pg_temp.check_test((select count(*)=1 from net.test_requests),'accepted mail dispatches immediately');
+ select pg_temp.check_test((select not headers ? 'X-BSV-Onboarding-Secret' and headers->>'X-BSV-Onboarding-Signature'=encode(extensions.hmac(body::text,encode(extensions.digest(repeat('a',64),'sha256'),'hex'),'sha256'),'hex') from net.test_requests where id=1),'transport carries a payload signature, never the reusable key');
  reset role;insert into net._http_response values(1,502,'{"error":"temporarily_unavailable"}');set role service_role;
  update private.trainer_suite_outbox set next_attempt_at=now()-interval '1 minute';select private.dispatch_trainer_suite_outbox();
  select pg_temp.check_test((select count(*)=2 from net.test_requests),'failed import retried');
