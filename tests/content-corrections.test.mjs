@@ -49,7 +49,7 @@ test('the URMEL page offers registration while preserving the 2026 gallery', () 
 test('the old men team names Christian Stielow as contact instead of a coach', () => {
   assert.match(teamPagesSource, /Christian Stielow',\s*role:\s*'Ansprechperson Alte Herren'/);
   assert.doesNotMatch(teamPagesSource, /Torben Schmidt/);
-  assert.match(pageSource, /isOldMenTeam \? 'Ansprechperson\.' : 'Das Trainerteam\.'/);
+  assert.match(readFileSync(new URL('../src/components/TeamStaff.astro',import.meta.url),'utf8'), /isOldMenTeam \? 'Ansprechperson\.' : 'Das Trainerteam\.'/);
 });
 
 test('Torben Altenburg remains co-coach of the first men team', () => {

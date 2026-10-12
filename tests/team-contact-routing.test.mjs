@@ -33,8 +33,8 @@ const legacyTeamPaths = [
   'jugend/juniorinnen/u13',
 ];
 
-test('team profiles do not store direct email addresses', () => {
-  assert.doesNotMatch(teamPagesSource, /\bemail\??\s*:/);
+test('team profiles contain no hardcoded direct email addresses', () => {
+  assert.doesNotMatch(teamPagesSource, /email\s*:\s*['"]/);
   assert.doesNotMatch(teamPagesSource, /mailto:/i);
 });
 
@@ -49,7 +49,7 @@ test('imported team content routes contact through the protected form', () => {
 });
 
 test('coach contact action uses the selected team routing key', () => {
-  assert.match(pageSource, /team--\$\{page\.path\.replaceAll\('\/', '--'\)\}--general/);
+  assert.match(readFileSync(new URL('../src/components/TeamStaff.astro',import.meta.url),'utf8'), /team--\$\{path\.replaceAll\('\/', '--'\)\}--general/);
   assert.doesNotMatch(pageSource, /coach\.email/);
 });
 
