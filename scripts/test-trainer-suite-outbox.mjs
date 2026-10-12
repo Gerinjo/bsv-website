@@ -4,11 +4,13 @@ const sql=text=>new Promise((resolve,reject)=>{const p=execFile('docker',['exec'
 try{await exec('docker',['run','--rm','-d','--name',name,'-e','POSTGRES_PASSWORD=isolated-only','postgres:17-alpine']);for(let i=0;;i++){try{await exec('docker',['exec',name,'pg_isready','-h','127.0.0.1','-U','postgres']);break;}catch{if(i>30)throw new Error('Database unavailable');await delay(300);}}
  await sql(`create role anon;create role authenticated;create role service_role bypassrls;create schema net;create schema cron;
  create table net._http_response(id bigint primary key,status_code int,content text);
+ create table net.http_request_queue(id bigint primary key);
  create table net.test_requests(id bigint generated always as identity,url text,body jsonb,headers jsonb);
  grant all on net.test_requests to service_role;grant usage,select on all sequences in schema net to service_role;
  create function net.http_post(url text,body jsonb default '{}',params jsonb default '{}',headers jsonb default '{}',timeout_milliseconds int default 2000) returns bigint language sql as 'insert into net.test_requests(url,body,headers) values(url,body,headers) returning id';
  create function cron.schedule(text,text,text) returns bigint language sql as 'select 1::bigint';`);
  await sql(await readFile(new URL('../supabase/migrations/20261012074318_trainer_onboarding_outbox.sql',import.meta.url),'utf8'));
+ await sql(await readFile(new URL('../supabase/migrations/20261012075725_trainer_onboarding_network_privileges.sql',import.meta.url),'utf8'));
  await sql(`create function pg_temp.check_test(ok boolean,label text) returns void language plpgsql as $$begin if ok is not true then raise exception 'Outbox: %',label;end if;end $$;
  insert into private.trainer_suite_bridge(secret) values(repeat('a',64));set role service_role;
  select pg_temp.check_test((public.trainer_suite_onboarding_queue('{"action":"prepare","applicationNumber":"TR-20261012-ABCDEF","profile":{"applicationNumber":"TR-20261012-ABCDEF","firstName":"Lea"}}')->>'ok')::boolean,'prepare');
@@ -23,6 +25,7 @@ try{await exec('docker',['run','--rm','-d','--name',name,'-e','POSTGRES_PASSWORD
  select pg_temp.check_test((select delivered_at is not null from private.trainer_suite_outbox),'positive reply acknowledges delivery');
  select public.trainer_suite_onboarding_queue('{"action":"accept","applicationNumber":"TR-20261012-ABCDEF"}');
  select pg_temp.check_test((select count(*)=2 from net.test_requests),'repeat acceptance does not duplicate delivery');reset role;
+ select pg_temp.check_test(not has_table_privilege('anon','net.http_request_queue','SELECT') and not has_table_privilege('authenticated','net.http_request_queue','SELECT'),'private transport headers');
  select pg_temp.check_test(not has_function_privilege('anon','public.trainer_suite_onboarding_queue(jsonb)','EXECUTE') and not has_table_privilege('authenticated','private.trainer_suite_bridge','SELECT'),'no browser access to queue or key');`);
  console.log('Outbox verified: accepted-mail gate, immediate dispatch, failed-delivery retry, acknowledgement, idempotency and private keys.');
 }finally{await exec('docker',['rm','-f',name]);}
