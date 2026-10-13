@@ -7,8 +7,7 @@ import MobileTeamsMenu from './MobileTeamsMenu.astro';
 import MediaCards from './MediaCards.astro';
 
 const teamMenuImages = Object.fromEntries(Object.values(teamProfiles)
-  .filter((team) => team.image)
-  .map((team) => [`/${team.path}`, team.image]));
+  .map((team) => [`/${team.path}`, team.image || '']));
 
 const clubImages: Record<string, string> = {
   '/verein': '/images/verein/bereiche/verein.jpeg',
@@ -43,7 +42,7 @@ const clubImages: Record<string, string> = {
 const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
 ---
 
-<header class="site-header">
+<header class="site-header" data-base-path={import.meta.env.BASE_URL}>
   <div class="topbar">
     <div class="shell topbar-inner">
       <div class="topbar-contact">
@@ -112,7 +111,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                           <section class="mega-group" data-mega-group={group.title}>
                             <h2>{group.title}</h2>
                             <ul>{group.links.map((link) => (
-                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '')} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
+                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '')} data-menu-team-path={teamProfiles[link.href.split(/[?#]/, 1)[0].replace(/^\//,'')] ? link.href.split(/[?#]/, 1)[0].replace(/^\//,'') : undefined} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
                             ))}</ul>
                           </section>
                         ))}
@@ -161,6 +160,15 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
 </header>
 
 <script>
+  import {fetchTeamStaff} from '../utils/team-staff.mjs';
+  import {updateTeamMenuImages} from '../utils/team-menu-images.mjs';
+  const refreshMenuImages=async()=>{
+    const header=document.querySelector<HTMLElement>('.site-header');if(!header)return;
+    const feed=await fetchTeamStaff();if(!feed)return;
+    updateTeamMenuImages(header,feed);
+    header.querySelectorAll<HTMLElement>('[data-menu-team-path]:hover,[data-menu-team-path]:focus').forEach(link=>link.dispatchEvent(new Event('mouseenter')));
+  };
+  refreshMenuImages();document.addEventListener('astro:page-load',refreshMenuImages);window.addEventListener('pageshow',event=>{if(event.persisted)refreshMenuImages();});
   const header = document.querySelector<HTMLElement>('.site-header');
   if (header) {
     const updateHeaderHeight = () => {
