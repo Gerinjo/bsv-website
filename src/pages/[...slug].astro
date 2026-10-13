@@ -469,7 +469,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
     <section class:list={["page-hero", { "referee-hero": isRefereePage, "girls-team-hero": isTeamPage, "department-hero": isDepartmentPage }]}>
       <div class="shell hero-grid">
         <div class="hero-copy"><a class="back" href={withBase(section.href)}>← {section.label}</a><p class="eyebrow">{page.eyebrow}</p><h1 class={heroTitleClass}>{page.title}</h1><p class="lead">{page.intro}</p></div>
-        <div class:list={["hero-image", { "is-team-placeholder": isTeamPage && !heroImage }]}>
+        <div class:list={["hero-image", { "is-team-placeholder": isTeamPage && !heroImage }]} data-team-photo-path={isTeamPage ? page.path : undefined} data-team-photo-title={isTeamPage ? page.title : undefined} data-team-photo-letter={teamProfile?.letter} data-base-path={import.meta.env.BASE_URL}>
           {heroImage
             ? <img class:list={{ 'is-portrait': isPortraitHero }} src={withBase(heroImage)} alt={isTeamPage ? `Mannschaftsbild ${page.title}` : ''} width="900" height="650" />
             : <div class="team-image-placeholder" aria-label={`Für ${page.title} ist noch kein Mannschaftsbild vorhanden`}><small>BSV Nordstern</small><strong>{teamProfile?.letter}</strong><b>Teambild folgt</b></div>}
@@ -1221,7 +1221,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   @media(max-width:600px){.history-opening{padding-bottom:70px}.history-numbers{margin-bottom:85px}.history-numbers>div{padding:24px 14px}.history-chronicle{margin-bottom:80px}.history-head{margin-bottom:55px}.history-track::before,.history-marker{display:none}.history-chapter,.history-chapter.is-reverse{margin-bottom:80px;grid-template-columns:minmax(0,1fr);gap:0}.history-visual,.history-chapter.is-reverse .history-visual{grid-column:1;grid-row:1}.history-story,.history-chapter.is-reverse .history-story{grid-column:1;grid-row:2;padding:28px 0 0}.history-visual figure,.history-chapter.is-reverse .history-visual figure{transform:none}.history-fact{min-height:270px;padding:30px}.history-date{align-items:flex-start;flex-direction:column;gap:7px}.history-story h3{font-size:2.35rem}.history-finale{padding:45px 28px}.history-finale>a{width:100%;min-width:0}.history-finale::after{font-size:7rem}}
 
   .girls-team-hero .hero-image { aspect-ratio:8 / 5; }
-  .girls-team-hero .hero-image img { object-position:center; }
+  .girls-team-hero .hero-image img { object-position:center; object-fit:contain; background:#0b3825; }
   .hero-image.is-team-placeholder { background:#0b3825; }
   .team-image-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:repeating-linear-gradient(120deg,transparent 0 38px,rgb(255 255 255 / 4%) 39px 40px),#0d3d29; }
   .team-image-placeholder::before { content:'✦'; position:absolute; right:10%; top:8%; color:rgb(var(--bsv-accent-rgb, 244 214 56) / 18%); font-size:8rem; }
