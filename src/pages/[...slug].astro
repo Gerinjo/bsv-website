@@ -1,6 +1,7 @@
 ---
 import StaffRoster from '../components/StaffRoster.astro';
 import TeamStaff from '../components/TeamStaff.astro';
+import TeamHeaderPhoto from '../components/TeamHeaderPhoto.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DocumentPage from '../components/DocumentPage.astro';
@@ -256,6 +257,8 @@ const section = page.path.startsWith('fussball')
 const heroTitleClass = page.title.length >= 20 ? 'is-extra-long' : page.title.length >= 16 ? 'is-long' : undefined;
 const isPortraitHero = page.image.includes('/personen/');
 const heroImage = teamProfile?.image ?? (isTeamPage ? undefined : page.image);
+const usesTeamHeader = !isHistoryPage && !isRefereePage && (isTeamPage || /^(verein|jugend|fussball)(\/|$)/.test(page.path));
+const headerTeamScope = /^(jugend|fussball)(\/|$)/.exec(page.path)?.[1] || '';
 
 const conceptPrinciples = [
   { title: 'Sportliche Angebote', text: 'Wir bieten eine breite Palette von Fußballaktivitäten und Programmen, die auf die Bedürfnisse und Interessen unserer jugendlichen Mitglieder zugeschnitten sind. Von Trainingseinheiten über Turniere bis hin zu Freundschaftsspielen – bei uns ist für alle etwas dabei, um das fußballerische Können zu verbessern und Spaß zu haben.', image: '/images/jugend/konzept/95a716aa54-BSV2023-71.jpg' },
@@ -470,12 +473,12 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
     <section class:list={["page-hero", { "referee-hero": isRefereePage, "girls-team-hero": isTeamPage, "department-hero": isDepartmentPage }]}>
       <div class="shell hero-grid">
         <div class="hero-copy"><a class="back" href={withBase(section.href)}>← {section.label}</a><p class="eyebrow">{page.eyebrow}</p><h1 class={heroTitleClass}>{page.title}</h1><p class="lead">{page.intro}</p></div>
-        <div class:list={["hero-image", { "is-team-placeholder": isTeamPage && !heroImage }]} data-team-photo-path={isTeamPage ? page.path : undefined} data-team-photo-title={isTeamPage ? page.title : undefined} data-team-photo-letter={teamProfile?.letter} data-base-path={import.meta.env.BASE_URL}>
+        {usesTeamHeader ? <TeamHeaderPhoto teamPath={isTeamPage ? page.path : ''} scope={headerTeamScope} /> : <div class:list={["hero-image", { "is-team-placeholder": isTeamPage && !heroImage }]} data-team-photo-path={isTeamPage ? page.path : undefined} data-team-photo-title={isTeamPage ? page.title : undefined} data-team-photo-letter={teamProfile?.letter} data-base-path={import.meta.env.BASE_URL}>
           {heroImage
             ? <img class:list={{ 'is-portrait': isPortraitHero }} src={withBase(heroImage)} alt={isTeamPage ? `Mannschaftsbild ${page.title}` : ''} width="900" height="650" />
             : <div class="team-image-placeholder" aria-label={`Für ${page.title} ist noch kein Mannschaftsbild vorhanden`}><small>BSV Nordstern</small><strong>{teamProfile?.letter}</strong><b>Teambild folgt</b></div>}
           <span>BSV · 1956</span>
-        </div>
+        </div>}
       </div>
     </section>
 

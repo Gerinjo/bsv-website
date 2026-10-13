@@ -1,0 +1,70 @@
+---
+import {teamProfiles} from '../data/teamPages';
+import {sportsPages} from '../data/sportsPages';
+import {chooseHeaderPhoto} from '../utils/header-team-photos.mjs';
+import {optimizedImageUrl} from '../utils/optimized-images.mjs';
+import {withBase} from '../utils/paths';
+const {teamPath='',scope=''}=Astro.props;
+const profiles=Object.values(teamProfiles).map(team=>({path:team.path,name:sportsPages.find(page=>page.path===team.path)?.title||team.kicker,image:team.image||''}));
+const initial=chooseHeaderPhoto(profiles,null,{teamPath,scope,random:()=>0});
+const own=!!teamPath&&initial.path===teamPath;
+---
+<div class="hero-image team-header-photo" data-team-header-photo data-team-photo-path={teamPath||undefined} data-header-team-path={teamPath} data-header-scope={scope} data-header-profiles={JSON.stringify(profiles)} data-current-team-path={own?teamPath:undefined} data-base-path={import.meta.env.BASE_URL}>
+ <img data-header-image src={own?withBase(optimizedImageUrl(initial.image)):undefined} data-original-src={own?initial.image:undefined} data-team-photo-fallback={String(initial.fallback)} alt={own?`Mannschaftsbild ${initial.name}`:''} width="1181" height="800" decoding="async" fetchpriority="high" />
+ <noscript><img src={withBase(optimizedImageUrl(initial.image))} alt={`Mannschaftsbild ${initial.name}`} width="1181" height="800" /></noscript>
+ <span class="team-header-label" data-header-label>{own?initial.name:'BSV Nordstern'}</span>
+ <button class="team-header-open" data-header-photo-open type="button" aria-label="Mannschaftsbild vergrößern"><span aria-hidden="true">⤢</span></button>
+</div>
+<dialog class="team-photo-dialog" data-team-photo-dialog aria-label="Mannschaftsbild in Großansicht">
+ <button class="team-photo-close" type="button" aria-label="Bildansicht schließen" autofocus>×</button>
+ <figure><img data-team-photo-large alt="" decoding="async" /><figcaption></figcaption></figure>
+</dialog>
+
+<script>
+ import {fetchTeamStaff} from '../utils/team-staff.mjs';
+ import {chooseHeaderPhoto,applyHeaderPhoto} from '../utils/header-team-photos.mjs';
+ import {imageKey} from '../utils/optimized-images.mjs';
+ const initialize=()=>document.querySelectorAll<HTMLElement>('[data-team-header-photo]').forEach(root=>{
+  if(root.dataset.headerInitialized)return;root.dataset.headerInitialized='true';
+  const profiles=JSON.parse(root.dataset.headerProfiles||'[]');
+  const failed:string[]=[];let feed=null;
+  const show=()=>applyHeaderPhoto(root,chooseHeaderPhoto(profiles,feed,{teamPath:root.dataset.headerTeamPath,scope:root.dataset.headerScope,currentPath:root.dataset.currentTeamPath,exclude:failed}));
+  show();
+  root.querySelector<HTMLImageElement>('[data-header-image]')?.addEventListener('error',event=>{
+   const image=event.currentTarget as HTMLImageElement;
+   const key=imageKey(image.getAttribute('src'));if(failed.includes(key))return;failed.push(key);show();
+  });
+  const refresh=async()=>{const latest=await fetchTeamStaff();if(latest){feed=latest;show();}};
+  refresh();window.addEventListener('pageshow',event=>{if(event.persisted)refresh();});
+  const dialog=root.parentElement?.querySelector<HTMLDialogElement>('[data-team-photo-dialog]');
+  const large=dialog?.querySelector<HTMLImageElement>('[data-team-photo-large]');
+  let previousOverflow='';
+  root.querySelector('[data-header-photo-open]')?.addEventListener('click',()=>{
+   if(!dialog||!large||!root.dataset.fullImage)return;
+   large.src=root.dataset.fullImage;large.alt='Mannschaftsbild '+root.dataset.headerLabel;
+   dialog.querySelector('figcaption').textContent=root.dataset.headerLabel;
+   previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();
+  });
+  dialog?.querySelector('.team-photo-close')?.addEventListener('click',()=>dialog.close());
+  dialog?.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+  dialog?.addEventListener('close',()=>{document.body.style.overflow=previousOverflow;});
+ });
+ initialize();document.addEventListener('astro:page-load',initialize);
+</script>
+
+<style>
+ .team-header-photo{position:relative;width:100%;aspect-ratio:8/5;min-width:0;transform:rotate(2deg);box-shadow:18px 18px 0 var(--bsv-yellow,#f4d638);background:#0b3825}
+ .team-header-photo>img,.team-header-photo :global(noscript img){display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+ .team-header-label{position:absolute;z-index:2;left:12px;bottom:12px;max-width:calc(100% - 68px);padding:8px 12px;border-radius:4px;background:rgb(255 255 255 / 90%);color:#123f2b;font-size:.75rem;font-weight:800;line-height:1.35;pointer-events:none}
+ .team-header-open{position:absolute;z-index:3;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+ .team-header-open>span{position:absolute;right:12px;bottom:12px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:rgb(255 255 255 / 90%);color:#123f2b;font-size:1.35rem}
+ .team-header-open:focus-visible{outline:3px solid white;outline-offset:5px}
+ .team-photo-dialog{width:min(1600px,calc(100vw - 32px));max-width:none;height:min(92dvh,1100px);max-height:calc(100dvh - 32px);padding:0;overflow:hidden;border:1px solid rgb(255 255 255 / 20%);border-radius:10px;background:#071f16;color:white;box-shadow:0 30px 90px rgb(0 0 0 / 50%)}
+ .team-photo-dialog::backdrop{background:rgb(0 0 0 / 85%);backdrop-filter:blur(5px)}
+ .team-photo-dialog figure{width:100%;height:100%;margin:0;padding:54px 24px 20px;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:14px;box-sizing:border-box}
+ .team-photo-dialog figure img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+ .team-photo-dialog figcaption{text-align:center;font-size:.9rem;font-weight:750;line-height:1.4}
+ .team-photo-close{position:absolute;z-index:2;right:12px;top:10px;width:38px;height:38px;padding:0;border:0;border-radius:50%;background:white;color:#123f2b;font-size:1.6rem;cursor:pointer}
+ .team-photo-close:focus-visible{outline:3px solid var(--bsv-yellow,#f4d638);outline-offset:3px}
+ @media(max-width:600px){.team-header-photo{width:calc(100% - 14px)}.team-header-label{font-size:.65rem;padding:6px 8px}.team-photo-dialog figure{padding:54px 10px 18px}.team-photo-dialog{width:calc(100vw - 20px);height:88dvh}}
+</style>

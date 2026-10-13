@@ -9,8 +9,8 @@ const contactPath=withBase(`/kontakt?thema=team--${path.replaceAll('/', '--')}--
  <div class:list={['coach-grid',{'is-single':coaches.length===1}]} set:html={teamStaffMarkup(coaches,{contactPath,withBase})}></div>
 </section>
 <script>
- import {fetchTeamStaff,updateTeamStaff,updateTeamPhoto} from '../utils/team-staff.mjs';
- const refresh=async()=>{const roots=document.querySelectorAll<HTMLElement>('[data-trainer-path]');if(!roots.length)return;const feed=await fetchTeamStaff();if(feed){roots.forEach(root=>updateTeamStaff(root,feed));document.querySelectorAll<HTMLElement>('[data-team-photo-path]').forEach(root=>updateTeamPhoto(root,feed));}};
+ import {fetchTeamStaff,updateTeamStaff} from '../utils/team-staff.mjs';
+ const refresh=async()=>{const roots=document.querySelectorAll<HTMLElement>('[data-trainer-path]');if(!roots.length)return;const feed=await fetchTeamStaff();if(feed)roots.forEach(root=>updateTeamStaff(root,feed));};
  refresh();document.addEventListener('astro:page-load',refresh);window.addEventListener('pageshow',event=>{if(event.persisted)refresh();});
 </script>
 <style>
