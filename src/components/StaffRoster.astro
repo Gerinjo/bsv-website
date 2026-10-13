@@ -1,0 +1,24 @@
+---
+import {loadTeamStaff} from '../utils/team-staff.mjs';
+import {employeeRosterEntries,employeeRosterMarkup} from '../utils/employee-roster.mjs';
+import fallbackGroups from '../data/employeeFallback.json';
+import {withBase} from '../utils/paths';
+const {group,title,excludeExecutive=false}=Astro.props;
+const feed=await loadTeamStaff();
+const fallback=fallbackGroups[group]||[];
+const entries=employeeRosterEntries(feed,group,excludeExecutive)??(excludeExecutive?fallback.filter(a=>!fallbackGroups.executive.some(e=>e.name===a.name&&e.role===a.role)):fallback);
+const contactPath=withBase('/kontakt?thema='+({executive:'board',board:'board',youth:'youth',supporters:'foerderverein'}[group]||'general'));
+---
+<section class="staff-roster" data-staff-group={group} data-exclude-executive={String(excludeExecutive)} data-contact-path={contactPath} data-base-path={import.meta.env.BASE_URL}>
+ <h2>{title}</h2>
+ <div class="staff-roster-grid" set:html={employeeRosterMarkup(entries,{withBase,contactPath})}></div>
+</section>
+<script>
+ import {fetchTeamStaff} from '../utils/team-staff.mjs';
+ import {updateEmployeeRoster} from '../utils/employee-roster.mjs';
+ const refresh=async()=>{const roots=document.querySelectorAll<HTMLElement>('[data-staff-group]');if(!roots.length)return;const feed=await fetchTeamStaff();if(feed)roots.forEach(root=>updateEmployeeRoster(root,feed));};
+ refresh();document.addEventListener('astro:page-load',refresh);window.addEventListener('pageshow',event=>{if(event.persisted)refresh();});
+</script>
+<style>
+.staff-roster{margin:0 0 65px}.staff-roster h2{font-size:clamp(1.7rem,3vw,2.8rem);color:var(--ink,#10251a);letter-spacing:-.04em;margin-bottom:25px}.staff-roster-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.staff-roster-grid :global(.staff-roster-card){background:#edf2ee;overflow:hidden;border-radius:9px}.staff-roster-grid :global(.staff-roster-portrait){height:245px;background:#dce6df;display:grid;place-items:center}.staff-roster-grid :global(.staff-roster-portrait img){width:100%;height:100%;object-fit:cover;object-position:center 22%}.staff-roster-grid :global(.staff-roster-portrait>span){font-size:48px;color:#165c3d;font-weight:800}.staff-roster-grid :global(.staff-roster-copy){padding:18px}.staff-roster-grid :global(.staff-roster-copy small){color:#45634f;font-size:12px}.staff-roster-grid :global(.staff-roster-copy h3){margin:7px 0 15px;color:#10251a;font-size:18px;overflow-wrap:anywhere}.staff-roster-grid :global(.staff-roster-copy a){display:inline-grid;place-items:center;width:35px;height:35px;background:#165c3d;color:#fff;border-radius:50%;text-decoration:none}@media(max-width:1000px){.staff-roster-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.staff-roster-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.staff-roster-grid :global(.staff-roster-portrait){height:190px}}@media(max-width:380px){.staff-roster-grid{grid-template-columns:1fr}}
+</style>

@@ -1,4 +1,5 @@
 ---
+import StaffRoster from './StaffRoster.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Layout from '../layouts/Layout.astro';
@@ -175,32 +176,7 @@ const initials = (name: string) => name.split(' ').map((part) => part[0]).join('
               <div><p class="eyebrow dark"><span></span>Vorstandschaft & Unterstützer</p><h2>Gemeinsam<br /><em>Verantwortung tragen.</em></h2></div>
               <p>Die Vorstandschaft kümmert sich um die Mittel und entscheidet gemeinsam, wo Unterstützung ankommt. Unsere Unterstützer helfen bei Aktionen und Veranstaltungen mit.</p>
             </header>
-            <section class="team-group" aria-labelledby="vorstandschaft-heading">
-              <h3 id="vorstandschaft-heading">Vorstandschaft des Fördervereins</h3>
-              <div class="team-grid board-grid">
-                {boardMembers.map((member) => (
-                  <article class:list={{ 'vacant-card': member.vacant }}>
-                    <div class="team-portrait">
-                      {member.image ? <img src={member.image} alt={member.name} loading="lazy" /> : <span aria-hidden="true">{member.vacant ? '?' : initials(member.name)}</span>}
-                    </div>
-                    <div><small>{member.role}</small><h4>{member.name}</h4></div>
-                  </article>
-                ))}
-              </div>
-            </section>
-            <section class="team-group supporters-group" aria-labelledby="unterstuetzer-heading">
-              <h3 id="unterstuetzer-heading">Unterstützer</h3>
-              <div class="team-grid supporters-grid">
-                {supporters.map((member) => (
-                  <article>
-                    <div class="team-portrait">
-                      {member.image ? <img src={member.image} alt={member.name} loading="lazy" /> : <span aria-hidden="true">{initials(member.name)}</span>}
-                    </div>
-                    <div><small>{member.role}</small><h4>{member.name}</h4></div>
-                  </article>
-                ))}
-              </div>
-            </section>
+            <StaffRoster group="supporters" title="Vorstandschaft & Unterstützer des Fördervereins" />
             <aside class="engagement-callout" aria-labelledby="engagement-heading">
               <p class="eyebrow dark"><span></span>Dringend Unterstützung gesucht</p>
               <h2 id="engagement-heading">Der 1. Vorsitz ist vakant.<br /><em>Dein Engagement zählt.</em></h2>

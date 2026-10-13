@@ -1,0 +1,265 @@
+{
+  "executive": [
+    {
+      "name": "Sandra Fuchs",
+      "role": "1. Vorstand",
+      "image": "/images/verein/personen/sandra-fuchs.jpg"
+    },
+    {
+      "name": "Felix Schüle",
+      "role": "2. Vorstand",
+      "image": "/images/verein/personen/felix-schuele.jpg"
+    },
+    {
+      "name": "Claudia Gastaudo",
+      "role": "Kassiererin",
+      "image": "/images/verein/personen/claudia-gastaudo.jpg"
+    },
+    {
+      "name": "Michaela Auer",
+      "role": "Schriftführerin",
+      "image": "/images/verein/personen/michaela-auer.jpg"
+    }
+  ],
+  "board": [
+    {
+      "name": "Sandra Fuchs",
+      "role": "1. Vorstand",
+      "image": "/images/verein/personen/sandra-fuchs.jpg"
+    },
+    {
+      "name": "Felix Schüle",
+      "role": "2. Vorstand",
+      "image": "/images/verein/personen/felix-schuele.jpg"
+    },
+    {
+      "name": "Claudia Gastaudo",
+      "role": "Kassiererin",
+      "image": "/images/verein/personen/claudia-gastaudo.jpg"
+    },
+    {
+      "name": "Michaela Auer",
+      "role": "Schriftführerin",
+      "image": "/images/verein/personen/michaela-auer.jpg"
+    },
+    {
+      "name": "Felix Schüle",
+      "role": "Sportlicher Leiter Herren",
+      "image": "/images/verein/personen/felix-schuele.jpg"
+    },
+    {
+      "name": "Ann-Kathrin Sugg",
+      "role": "Sportliche Leitung Frauen",
+      "image": "/images/verein/personen/ann-kathrin-sugg.jpg"
+    },
+    {
+      "name": "Karsten Grammel",
+      "role": "Sportliche Leitung Alte Herren",
+      "image": ""
+    },
+    {
+      "name": "Oliver Schillinger",
+      "role": "Spielbetrieb",
+      "image": ""
+    },
+    {
+      "name": "Manuel Schellhammer",
+      "role": "Passwesen",
+      "image": "/images/verein/personen/manuel-schellhammer.jpg"
+    },
+    {
+      "name": "Konrad Mauz",
+      "role": "Abteilungsleiter Bogensport",
+      "image": "/images/verein/personen/konrad-mauz.jpg"
+    },
+    {
+      "name": "Sigrid Burkhardt",
+      "role": "Abteilungsleitung: Gymnastik",
+      "image": "/images/verein/personen/sigrid-burkhardt.jpg"
+    },
+    {
+      "name": "Thomas Graf",
+      "role": "Abteilungsleiter Wandern",
+      "image": ""
+    },
+    {
+      "name": "Noch nicht besetzt",
+      "role": "Förderung & Qualifizierung",
+      "image": ""
+    },
+    {
+      "name": "Sigrid Burkhardt",
+      "role": "Mitgliederbestandspflege",
+      "image": "/images/verein/personen/sigrid-burkhardt.jpg"
+    },
+    {
+      "name": "Noch nicht besetzt",
+      "role": "Ehrung",
+      "image": ""
+    },
+    {
+      "name": "Jérôme Ernsberger",
+      "role": "IT & Administration",
+      "image": "/images/verein/personen/jerome-ernsberger.jpg"
+    },
+    {
+      "name": "Stefan Gastaudo",
+      "role": "Datenschutzbeauftragter",
+      "image": "/images/verein/personen/stefan-gastaudo.jpg"
+    },
+    {
+      "name": "Markus Sawicki",
+      "role": "Einkauf Organisation",
+      "image": "/images/verein/personen/markus-sawicki.jpg"
+    },
+    {
+      "name": "Ole Schmal",
+      "role": "Marketing & Social Media",
+      "image": ""
+    },
+    {
+      "name": "Julian Kemmer",
+      "role": "Presse",
+      "image": "/images/verein/personen/julian-kemmer.jpg"
+    },
+    {
+      "name": "Mario Jost",
+      "role": "Platzwart",
+      "image": "/images/verein/personen/mario-jost.jpg"
+    },
+    {
+      "name": "Eberhard Klinkenberg",
+      "role": "Hausmeister",
+      "image": "/images/verein/personen/eberhard-klinkenberg.jpg"
+    },
+    {
+      "name": "Markus Moßbrugger",
+      "role": "Schlüsselmanagement",
+      "image": ""
+    },
+    {
+      "name": "Jérôme Ernsberger",
+      "role": "Jugendleiter",
+      "image": "/images/verein/personen/jerome-ernsberger.jpg"
+    },
+    {
+      "name": "Ole Schmal",
+      "role": "Stellvertretender Jugendleiter",
+      "image": ""
+    }
+  ],
+  "youth": [
+    {
+      "name": "Jérôme Ernsberger",
+      "role": "Jugendleiter",
+      "image": "/images/verein/personen/jerome-ernsberger.jpg"
+    },
+    {
+      "name": "Ole Schmal",
+      "role": "Stellvertretender Jugendleiter",
+      "image": ""
+    },
+    {
+      "name": "Wiebke Baronner-Dieterle",
+      "role": "Jugendkassiererin",
+      "image": "/images/verein/personen/wiebke-baronner-dieterle.jpg"
+    },
+    {
+      "name": "Sarah Klumpp",
+      "role": "Elternvertretung",
+      "image": ""
+    },
+    {
+      "name": "Monika Peglau",
+      "role": "Jugendschutzbeauftragte",
+      "image": ""
+    },
+    {
+      "name": "Laila Goldhagen",
+      "role": "Jugendvertretung C–B-Juniorinnen",
+      "image": "/images/verein/personen/laila-goldhagen.jpeg"
+    },
+    {
+      "name": "Samuel Auer",
+      "role": "Jugendvertretung B–A-Junioren",
+      "image": "/images/verein/personen/samuel-auer.jpg"
+    },
+    {
+      "name": "Ella Kramer",
+      "role": "Jugendvertretung G–D-Junioren & Juniorinnen",
+      "image": "/images/verein/personen/ella-kramer.jpeg"
+    },
+    {
+      "name": "Susi Eisner",
+      "role": "Organisation",
+      "image": ""
+    },
+    {
+      "name": "Wiebke Baronner-Dieterle",
+      "role": "Organisation (Rechte Hand)",
+      "image": "/images/verein/personen/wiebke-baronner-dieterle.jpg"
+    },
+    {
+      "name": "Tobias Messmer",
+      "role": "Sport Events",
+      "image": ""
+    },
+    {
+      "name": "Manuel Schellhammer",
+      "role": "Passwesen",
+      "image": "/images/verein/personen/manuel-schellhammer.jpg"
+    },
+    {
+      "name": "Oliver Schillinger",
+      "role": "Spielbetrieb",
+      "image": ""
+    }
+  ],
+  "supporters": [
+    {
+      "name": "Noch nicht besetzt",
+      "role": "1. Vorsitz",
+      "image": ""
+    },
+    {
+      "name": "Eberhard Klinkenberg",
+      "role": "2. Vorsitz",
+      "image": "/images/verein/personen/eberhard-klinkenberg.jpg"
+    },
+    {
+      "name": "Heike Seidel",
+      "role": "Kasse",
+      "image": "/images/verein/personen/heike-seidel.jpg"
+    },
+    {
+      "name": "Sarah Hainke",
+      "role": "Schriftführerin",
+      "image": ""
+    },
+    {
+      "name": "Thomas Burkhardt",
+      "role": "Unterstützer",
+      "image": "/images/verein/personen/thomas-burkhardt.jpg"
+    },
+    {
+      "name": "Theopolt Walz",
+      "role": "Unterstützer",
+      "image": ""
+    },
+    {
+      "name": "Sigrid Burkhardt",
+      "role": "Unterstützerin",
+      "image": "/images/verein/personen/sigrid-burkhardt.jpg"
+    },
+    {
+      "name": "Hardy Seidel",
+      "role": "Unterstützer",
+      "image": "/images/verein/personen/hardy-seidel.jpg"
+    },
+    {
+      "name": "Janet Nohl",
+      "role": "Unterstützerin",
+      "image": "/images/verein/personen/janet-nohl.jpg"
+    }
+  ]
+}

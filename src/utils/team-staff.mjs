@@ -2,12 +2,19 @@ export const TRAINER_FEED_URL='https://maejihwjzxkmthjavgnx.supabase.co/function
 const escaped=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const imageUrl=value=>typeof value==='string'&&(/^(https:\/\/)/.test(value)||/^\/(?!\/)/.test(value))?value:'';
 export function normalizeTeamStaffFeed(value){
- if(!value||!Array.isArray(value.teams))return null;const teams=Object.assign(new Map(),{photos:new Map()});
+ if(!value||!Array.isArray(value.teams))return null;const teams=Object.assign(new Map(),{photos:new Map(),employees:new Map()});
  for(const t of value.teams){if(!t||typeof t.path!=='string'||!Array.isArray(t.coaches)||teams.has(t.path))return null;const coaches=[];
   for(const c of t.coaches){if(!c||typeof c.name!=='string'||!c.name.trim()||typeof c.role!=='string')return null;coaches.push({name:c.name.trim(),role:c.role,qualification:String(c.qualification||''),club:String(c.club||''),image:imageUrl(c.image),phone:typeof c.phone==='string'&&/^[+\d ()/.-]{3,50}$/.test(c.phone)?c.phone:''});}
   teams.set(t.path,coaches);
   if(Object.hasOwn(t,'photo')){if(t.photo===null)teams.photos.set(t.path,null);else if(imageUrl(t.photo?.image))teams.photos.set(t.path,{image:imageUrl(t.photo.image)});}
- }return teams;
+ }
+ if(Array.isArray(value.employeeGroups))for(const g of value.employeeGroups){
+  if(!g||!['executive','board','youth','supporters'].includes(g.groupKey)||typeof g.name!=='string'||typeof g.role!=='string')return null;
+  if(!teams.employees.has(g.groupKey))teams.employees.set(g.groupKey,[]);
+  teams.employees.get(g.groupKey).push({name:g.name,role:g.role,image:imageUrl(g.image)});
+ }
+ if(Array.isArray(value.employeeGroups))for(const key of ['executive','board','youth','supporters'])if(!teams.employees.has(key))teams.employees.set(key,[]);
+ return teams;
 }
 export async function fetchTeamStaff({fetcher=fetch,signal=AbortSignal.timeout(4000)}={}){try{const response=await fetcher(TRAINER_FEED_URL,{cache:'no-store',signal});return response.ok?normalizeTeamStaffFeed(await response.json()):null;}catch{return null;}}
 let feedPromise;
