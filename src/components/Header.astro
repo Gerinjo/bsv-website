@@ -166,7 +166,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     const header=document.querySelector<HTMLElement>('.site-header');if(!header)return;
     const feed=await fetchTeamStaff();if(!feed)return;
     updateTeamMenuImages(header,feed);
-    header.querySelectorAll<HTMLElement>('[data-menu-team-path]:hover,[data-menu-team-path]:focus').forEach(link=>link.dispatchEvent(new Event('mouseenter')));
+    header.querySelectorAll<HTMLElement>('.club-mega').forEach(menu=>menu.dispatchEvent(new Event('team-menu-images-updated')));
   };
   refreshMenuImages();document.addEventListener('astro:page-load',refreshMenuImages);window.addEventListener('pageshow',event=>{if(event.persisted)refreshMenuImages();});
   const header = document.querySelector<HTMLElement>('.site-header');
@@ -190,6 +190,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     const preview = menu.querySelector<HTMLImageElement>('.club-preview-image');
     const previewGroup = menu.querySelector<HTMLElement>('[data-preview-group]');
     const previewLabel = menu.querySelector<HTMLElement>('[data-preview-label]');
+    let activeLink: HTMLAnchorElement | null = null;
 
     const showPreview = (image: string, group: string, label: string) => {
       if (previewGroup) previewGroup.textContent = group;
@@ -206,6 +207,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     };
 
     const resetPreview = () => {
+      activeLink = null;
       showPreview(
         preview?.dataset.defaultImage ?? '',
         previewCard?.dataset.defaultGroup ?? '',
@@ -219,11 +221,12 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     });
 
     menu.querySelectorAll<HTMLAnchorElement>('a[data-menu-image]').forEach((link) => {
-      const update = () => showPreview(link.dataset.menuImage ?? '', link.dataset.menuGroup ?? '', link.dataset.menuLabel ?? '');
+      const update = () => {activeLink=link;showPreview(link.dataset.menuImage ?? '', link.dataset.menuGroup ?? '', link.dataset.menuLabel ?? '');};
       link.addEventListener('mouseenter', update);
       link.addEventListener('focus', update);
     });
 
+    menu.addEventListener('team-menu-images-updated',()=>{if(activeLink)showPreview(activeLink.dataset.menuImage ?? '',activeLink.dataset.menuGroup ?? '',activeLink.dataset.menuLabel ?? '');});
     menu.addEventListener('mouseleave', resetPreview);
     menu.addEventListener('focusout', (event) => {
       if (!menu.contains(event.relatedTarget as Node | null)) resetPreview();
