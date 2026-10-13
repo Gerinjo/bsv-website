@@ -7,6 +7,7 @@ test('local photos use display-sized WebP while SVG, GIF and external images kee
  assert.equal(optimizedImageUrl('/images/photo.png',900),'/images/optimized/photo.png.w900.webp');assert.equal(optimizedImageUrl('/bsv/images/photo.JPG'),'/bsv/images/optimized/photo.JPG.w1800.webp');
  for(const src of ['/images/logo.svg','/images/animated.gif','https://other.example/images/photo.jpg'])assert.equal(optimizedImageUrl(src),src);
  assert.equal(optimizedImageUrl('/images/optimized/photo.png.w900.webp'),'/images/optimized/photo.png.w900.webp');
+ for(const src of ['https://gerinjo.github.io/bsv-website/images/photo.jpg','https://www.bsvnordstern.de/images/photo.jpg','https://bsvnordstern.de/images/photo.jpg'])assert.equal(optimizedImageUrl(src,900),'https://bsvnordstern.de/images/optimized/photo.jpg.w900.webp');
 });
 test('signed image identity ignores token renewal but detects a new upload and token expiry',()=>{
  const a=signed('bucket/a.jpg',5000,10),b=signed('bucket/a.jpg',6000,20),c=signed('bucket/b.jpg',6000,20);
