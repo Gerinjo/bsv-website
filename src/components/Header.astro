@@ -1,4 +1,6 @@
 ---
+import {optimizedImageUrl} from '../utils/optimized-images.mjs';
+import {loadTeamStaff} from '../utils/team-staff.mjs';
 import { allContentPaths, menu } from '../data/navigation';
 import { teamProfiles } from '../data/teamPages';
 import { withBase } from '../utils/paths';
@@ -6,8 +8,9 @@ import YouthMenuSponsors from './YouthMenuSponsors.astro';
 import MobileTeamsMenu from './MobileTeamsMenu.astro';
 import MediaCards from './MediaCards.astro';
 
+const menuFeed=await loadTeamStaff();
 const teamMenuImages = Object.fromEntries(Object.values(teamProfiles)
-  .map((team) => [`/${team.path}`, team.image || '']));
+  .map((team) => [`/${team.path}`, menuFeed?.photos?.get(team.path)?.previewImage || team.image || '']));
 
 const clubImages: Record<string, string> = {
   '/verein': '/images/verein/bereiche/verein.jpeg',
@@ -111,7 +114,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                           <section class="mega-group" data-mega-group={group.title}>
                             <h2>{group.title}</h2>
                             <ul>{group.links.map((link) => (
-                              <li><a href={withBase(link.href)} data-menu-image={withBase(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '')} data-menu-team-path={teamProfiles[link.href.split(/[?#]/, 1)[0].replace(/^\//,'')] ? link.href.split(/[?#]/, 1)[0].replace(/^\//,'') : undefined} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
+                              <li><a href={withBase(link.href)} data-menu-image={withBase(optimizedImageUrl(clubImages[link.href.split(/[?#]/, 1)[0]] ?? '',900))} data-menu-team-path={teamProfiles[link.href.split(/[?#]/, 1)[0].replace(/^\//,'')] ? link.href.split(/[?#]/, 1)[0].replace(/^\//,'') : undefined} data-menu-label={link.label} data-menu-group={group.title}>{link.label}<span aria-hidden="true">↗</span></a></li>
                             ))}</ul>
                           </section>
                         ))}
@@ -120,11 +123,11 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
                     <div class:list={["club-rail", { "verein-rail": item.label === 'Verein' }]}>
                       <aside class="club-preview" data-default-group={item.label} data-default-label={item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}>
                         <div class="club-placeholder" aria-hidden="true"><small>Teambild folgt</small></div>
-                        <img class="club-preview-image" src={withBase(clubImages[item.href])} data-default-image={withBase(clubImages[item.href])} alt="" width="520" height="390" />
+                        <img class="club-preview-image" loading="lazy" decoding="async" data-default-image={withBase(optimizedImageUrl(clubImages[item.href],900))} alt="" width="520" height="390" />
                         <div class="club-preview-copy"><span data-preview-group>{item.label}</span><strong data-preview-label>{item.label === 'Verein' ? 'Gemeinsam seit 1956.' : item.label === 'Fußball' ? 'Leidenschaft auf dem Platz.' : 'Gemeinsam wachsen.'}</strong></div>
                       </aside>
                       {item.label === 'Verein' && (
-                        <a class="foerderverein-menu-cta" href={withBase('/foerderverein/informationen-zielsetzungen#information-panel-support')} data-menu-image={withBase(clubImages['/foerderverein'])} data-menu-label="Der Förderverein braucht Dich" data-menu-group="Förderverein">
+                        <a class="foerderverein-menu-cta" href={withBase('/foerderverein/informationen-zielsetzungen#information-panel-support')} data-menu-image={withBase(optimizedImageUrl(clubImages['/foerderverein'],900))} data-menu-label="Der Förderverein braucht Dich" data-menu-group="Förderverein">
                           <span class="foerderverein-cta-icon" aria-hidden="true">✦</span>
                           <span class="foerderverein-cta-copy"><small>Engagement gesucht</small><strong>Der Förderverein braucht Dich</strong></span>
                           <b aria-hidden="true">↗</b>
@@ -198,7 +201,7 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
 
       if (preview && image) {
         preview.hidden = false;
-        preview.src = image;
+        if(preview.getAttribute('src')!==image)preview.src = image;
         previewCard?.classList.remove('is-placeholder');
       } else {
         if (preview) preview.hidden = true;
@@ -227,7 +230,8 @@ const visualMenus = ['Verein', 'Fußball', 'Junge Sterne'];
     });
 
     menu.addEventListener('team-menu-images-updated',()=>{if(activeLink)showPreview(activeLink.dataset.menuImage ?? '',activeLink.dataset.menuGroup ?? '',activeLink.dataset.menuLabel ?? '');});
-    menu.addEventListener('mouseleave', resetPreview);
+    const trigger=menu.closest('.menu-item')?.querySelector('.menu-link');trigger?.addEventListener('mouseenter',resetPreview);trigger?.addEventListener('focus',resetPreview);
+    menu.addEventListener('mouseleave',()=>{activeLink=null;if(preview)preview.hidden=true;});
     menu.addEventListener('focusout', (event) => {
       if (!menu.contains(event.relatedTarget as Node | null)) resetPreview();
     });

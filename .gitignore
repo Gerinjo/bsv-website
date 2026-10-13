@@ -29,3 +29,6 @@ public/api/vendor/tfpdf/font/unifont/*.cw127.php
 
 # jetbrains setting folder
 .idea/
+
+# Generated high-quality website derivatives; rebuilt before Astro.
+/public/images/optimized/
