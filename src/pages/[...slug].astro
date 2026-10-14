@@ -864,7 +864,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           {hasTeamGallery && <dialog class="gallery-dialog" aria-label="Vergrößerte Galerieansicht"><button class="gallery-close" type="button" aria-label="Galerie schließen">×</button><button class="gallery-nav gallery-prev" type="button" aria-label="Vorheriges Bild">‹</button><figure><img src="" alt="" /><figcaption></figcaption></figure><button class="gallery-nav gallery-next" type="button" aria-label="Nächstes Bild">›</button></dialog>}
         </div>
       )}
-      {page.path === 'verein/vorstandschaft' ? <><StaffRoster group="executive" title="Geschäftsführende Vorstandschaft" /><StaffRoster group="board" title="Vorstandschaft & Vereinsaufgaben" excludeExecutive={true} /></> : page.path === 'jugend/vorstandschaft' ? <StaffRoster group="youth" title="Der Jugendausschuss" /> : migratedBody && <article class="legacy-content" set:html={migratedBody} />}
+      {page.path === 'verein/vorstandschaft' ? <><StaffRoster group="executive" title="Geschäftsführung" /><StaffRoster group="board" title="Die erweiterte Vorstandschaft" excludeExecutive={true} structured={true} /></> : page.path === 'jugend/vorstandschaft' ? <StaffRoster group="youth" title="Der Jugendausschuss" structured={true} /> : migratedBody && <article class="legacy-content" set:html={migratedBody} />}
       {isDocumentPage && <DocumentPage document={documentProfile} />}
       {isCancellationPage && <CancellationPage />}
       {isYouthBoard && (

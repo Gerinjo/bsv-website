@@ -12,7 +12,7 @@ export function normalizeTeamStaffFeed(value){
  if(Array.isArray(value.employeeGroups))for(const g of value.employeeGroups){
   if(!g||!['executive','board','youth','supporters'].includes(g.groupKey)||typeof g.name!=='string'||typeof g.role!=='string')return null;
   if(!teams.employees.has(g.groupKey))teams.employees.set(g.groupKey,[]);
-  teams.employees.get(g.groupKey).push({name:g.name,role:g.role,image:imageUrl(g.image)});
+  teams.employees.get(g.groupKey).push({name:g.name,role:g.role,image:imageUrl(g.image),...(typeof g.phone==='string'&&/^[+\d ()/.-]{3,50}$/.test(g.phone)?{phone:g.phone}:{}),...(typeof g.contactKey==='string'&&/^person-[a-z0-9-]{1,150}$/.test(g.contactKey)?{contactKey:g.contactKey}:{})});
  }
  if(Array.isArray(value.employeeGroups))for(const key of ['executive','board','youth','supporters'])if(!teams.employees.has(key))teams.employees.set(key,[]);
  return teams;

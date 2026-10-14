@@ -1,9 +1,16 @@
 import { menu } from './navigation';
 import { teamProfiles } from './teamPages';
 import { contactPeople } from './contactPeople.server.mjs';
+import {loadTeamStaff} from '../utils/team-staff.mjs';
 
-export const personContactTopics = contactPeople.map(({ id, label, description }) => ({ id, label, description }))
-  .sort((a, b) => a.label.localeCompare(b.label, 'de'));
+const currentStaff=await loadTeamStaff();
+const staffTopics=new Map<string,{id:string;label:string;description:string}>();
+for(const entries of currentStaff?.employees?.values()||[])for(const person of entries){
+ if(!person.contactKey)continue;
+ const existing=staffTopics.get(person.contactKey);
+ staffTopics.set(person.contactKey,{id:person.contactKey,label:person.name+(existing?'':' · '+person.role),description:`Deine Kontaktanfrage wird an ${person.name} weitergeleitet.`});
+}
+export const personContactTopics = [...new Map([...contactPeople.map(({id,label,description})=>({id,label,description})),...staffTopics.values()].map(topic=>[topic.id,topic])).values()].sort((a,b)=>a.label.localeCompare(b.label,'de'));
 
 export type ContactTopic = {
   id: string;
