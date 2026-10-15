@@ -199,7 +199,7 @@
     "name": "Aptar",
     "logoSrc": "/images/sponsors/synced/aptar.png",
     "logoAlt": "Logo von Aptar",
-    "website": "https://aptar.com/",
+    "website": "https://aptar.com/pharmaceutical/",
     "teamAudienceSlugs": [],
     "teamAssignments": [],
     "audienceAssignments": [
@@ -217,7 +217,7 @@
       }
     ],
     "sortOrder": 100,
-    "sourceUpdatedAt": "2026-10-04T15:12:41.428743+00:00"
+    "sourceUpdatedAt": "2026-10-14T10:04:28.922282+00:00"
   },
   {
     "sourceId": "c44c3aa2-0a27-4587-a27a-a1d247f7e3e0",
@@ -847,6 +847,46 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-09T14:46:05.263606+00:00"
+  },
+  {
+    "sourceId": "88b8fa84-9cf9-4252-b337-7bad92834714",
+    "slug": "il-barbiere-by-spektacoolhair",
+    "name": "Il Barbiere by SpektaCoolHair",
+    "logoSrc": "/images/sponsors/synced/il-barbiere-by-spektacoolhair.png",
+    "logoAlt": "Logo von Il Barbiere by SpektaCoolHair",
+    "website": "https://www.instagram.com/il_barbiere_by_spektacoolhair_/",
+    "teamAudienceSlugs": [
+      "herren-1"
+    ],
+    "teamAssignments": [
+      {
+        "audienceSlug": "herren-1",
+        "sourceAudienceSlug": "herren-1",
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "herren-1",
+        "audienceLabel": "1. Herren",
+        "audienceGroup": "mens_team",
+        "sponsorType": {
+          "slug": "teamsponsor",
+          "label": "Teamsponsor",
+          "sortOrder": 40,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-10-15T05:43:21.480686+00:00"
   },
   {
     "sourceId": "0d880308-a41b-4079-837a-42956c7bd479",
