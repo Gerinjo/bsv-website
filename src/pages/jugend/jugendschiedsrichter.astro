@@ -1,4 +1,5 @@
 ---
+import {personCardMarkup} from '../../utils/person-presentation.mjs';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Layout from '../../layouts/Layout.astro';
@@ -36,14 +37,8 @@ const referees = [
 
     <section class="team shell">
       <div class="team-head"><div><span>Unser Team</span><h2>Die Menschen<br />mit der Pfeife.</h2></div><p>Unterschiedliche Wege, eine gemeinsame Aufgabe: Fußball fair und verlässlich möglich machen.</p></div>
-      <div class="grid">
-        {referees.map((referee, index) => (
-          <article class:list={["card", { highlight: referee.highlight }]}>
-            <span class="number">0{index + 1}</span>
-            <div class="portrait"><img src={withBase(referee.image)} alt={referee.name} loading="lazy" /></div>
-            <div class="info"><h3>{referee.name}</h3><p>{referee.role}</p></div>
-          </article>
-        ))}
+      <div class="grid" data-person-grid>
+        <Fragment set:html={referees.map(person => personCardMarkup(person, {withBase})).join('')} />
       </div>
     </section>
 

@@ -1,4 +1,5 @@
 ---
+import {personCardMarkup} from '../../utils/person-presentation.mjs';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Layout from '../../layouts/Layout.astro';
@@ -84,7 +85,6 @@ const qualifiedCoaches = [...qualifiedByName.values()]
   .filter((coach) => !upcomingNames.has(coach.name))
   .sort((a, b) => a.name.localeCompare(b.name, 'de'));
 const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
-const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join('');
 ---
 
 <Layout
@@ -129,15 +129,7 @@ const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join
     <section class="coaches-section shell">
       <div class="section-head"><div><span>Unsere Jugendtrainer:innen</span><h2>Qualifiziert.<br /><em>Und immer in Entwicklung.</em></h2></div><p>Die Übersicht zeigt alle in den aktuellen Jugendteam-Daten hinterlegten Aus- und Weiterbildungen sowie die unmittelbar bevorstehenden Ausbildungsstarts.</p></div>
       <div class="coach-grid">
-        {allCoaches.map((coach) => (
-          <article class:list={["coach-card", { upcoming: coach.upcoming }]}>
-            <div class="portrait">
-              {coach.image ? <img src={withBase(coach.image)} alt={coach.name} width="420" height="520" loading="lazy" /> : <span>{initials(coach.name)}</span>}
-              {coach.upcoming && <b>Start steht bevor</b>}
-            </div>
-            <div class="coach-info"><h3>{coach.name}</h3><strong>{coach.qualification}</strong><p>{coach.teams.join(' · ')}</p></div>
-          </article>
-        ))}
+        <Fragment set:html={allCoaches.map(coach => personCardMarkup({...coach, role: 'Jugendtrainer:in'}, {withBase})).join('')} />
       </div>
     </section>
 

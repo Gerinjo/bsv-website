@@ -1,14 +1,16 @@
 import {optimizedImageUrl,imageKey,imagesFresh} from './optimized-images.mjs';
 import {employeeStructuredMarkup} from './employee-structure.mjs';
-const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const safeImage=value=>typeof value==='string'&&(/^(https:\/\/)/.test(value)||/^\/(?!\/)/.test(value))?value:'';
+import {personCardMarkup} from './person-presentation.mjs';
 export function employeeRosterEntries(feed,group,excludeExecutive=false){
  const entries=feed?.employees?.get(group);if(!entries)return null;
  const executive=feed.employees.get('executive')||[];
  return excludeExecutive?entries.filter(a=>!executive.some(e=>e.name===a.name&&e.role===a.role)):entries;
 }
 export function employeeRosterMarkup(entries,{withBase=value=>value,contactPath='/kontakt?thema=general'}={}){
- return entries.map(a=>{const image=optimizedImageUrl(safeImage(a.image),900),contact=/^person-[a-z0-9-]{1,150}$/.test(a.contactKey||'')?withBase('/kontakt?thema='+a.contactKey):contactPath,phone=/^[+\d ()/.-]{3,50}$/.test(a.phone||'')?a.phone:'';return '<article class="staff-roster-card"><div class="staff-roster-portrait">'+(image?'<img src="'+escape(withBase(image))+'" alt="'+escape(a.name)+'" width="480" height="640" loading="lazy" decoding="async">':'<span aria-hidden="true">'+escape(a.name==='Noch nicht besetzt'?'?':a.name.split(' ').map(n=>n[0]).join('').slice(0,2))+'</span>')+'</div><div class="staff-roster-copy"><small>'+escape(a.role)+'</small><h3>'+escape(a.name)+'</h3><div class="staff-contact-icons"><a href="'+escape(contact)+'" aria-label="Kontakt zu '+escape(a.name)+' aufnehmen">✉</a>'+(phone?'<a href="tel:'+escape(phone.replace(/[^+\d]/g,''))+'" aria-label="'+escape(a.name)+' anrufen">☎</a>':'')+'</div></div></article>';}).join('');
+ return entries.map(person=>personCardMarkup(person,{
+  withBase,contactPath:/^person-[a-z0-9-]{1,150}$/.test(person.contactKey||'')?withBase('/kontakt?thema='+person.contactKey):contactPath,
+  cardClass:'staff-roster-card',portraitClass:'staff-roster-portrait',detailsClass:'staff-roster-copy',
+ })).join('');
 }
 export function employeeRosterKey(entries){return JSON.stringify(entries.map(a=>[a.name,a.role,imageKey(optimizedImageUrl(a.image||'',900)),a.phone||'',a.contactKey||'']));}
 export function updateEmployeeRoster(root,feed){

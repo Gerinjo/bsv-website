@@ -1,4 +1,5 @@
 ---
+import {personCardMarkup} from '../utils/person-presentation.mjs';
 import StaffRoster from '../components/StaffRoster.astro';
 import TeamStaff from '../components/TeamStaff.astro';
 import TeamHeaderPhoto from '../components/TeamHeaderPhoto.astro';
@@ -493,20 +494,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           <section class="referee-team">
             <div class="referee-head"><div><span>Unser Team</span><h2>Die Menschen<br />mit der Pfeife.</h2></div><p>Fünf Persönlichkeiten, ein gemeinsames Ziel: Fußball fair und verlässlich möglich machen.</p></div>
             <div class="referee-grid">
-              {youthReferees.map((referee, index) => (
-                <article class:list={["referee-card", { coordinator: index === 0 }]}>
-                  <span class="referee-number">0{index + 1}</span>
-                  <div class:list={["referee-portrait", { "is-balanced": referee.balancedPortrait }]} style={referee.balancedPortrait ? `--portrait-image:url('${withBase(referee.image)}');--portrait-scale:${referee.portraitScale}` : undefined}>
-                    {referee.image ? <img src={withBase(referee.image)} alt={referee.name} width="500" height="650" loading="lazy" /> : <span>{referee.name.split(' ').map((part) => part[0]).join('')}</span>}
-                  </div>
-                  <div class="referee-info"><h3>{referee.name}</h3><p>{referee.role}</p>
-                    {(referee.email || referee.phone) && <div class="contact-icons">
-                      {referee.email && <a href={`mailto:${referee.email}`} aria-label={`E-Mail an ${referee.name}`}></a>}
-                      {referee.phone && <a href={`tel:${referee.phone}`} aria-label={`${referee.name} anrufen`}></a>}
-                    </div>}
-                  </div>
-                </article>
-              ))}
+              <Fragment set:html={youthReferees.map(person => personCardMarkup(person, {withBase, contactPath: person.email ? `mailto:${person.email}` : ''})).join('')} />
             </div>
           </section>
 
@@ -637,12 +625,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
           <section class="department-people">
             <div class="department-section-head"><div><span>Direkter Kontakt</span><h2>{departmentPage.people.length > 1 ? 'Unsere Wanderführung.' : 'Deine Ansprechperson.'}</h2></div><p>Fragen zum Angebot, zum Einstieg oder zum nächsten Termin beantworten wir gerne persönlich.</p></div>
             <div class:list={["department-people-grid", { "is-single": departmentPage.people.length === 1 }]}>
-              {departmentPage.people.map((person) => (
-                <article class="department-person">
-                  {person.image ? <div class="department-portrait"><img src={withBase(person.image)} alt={person.name} width="667" height="1000" loading="lazy" /></div> : <div class="department-portrait is-placeholder" aria-hidden="true">{person.name.split(' ').map((part) => part[0]).join('')}</div>}
-                  <div><small>{person.role}</small><h3>{person.name}</h3><div class="contact-icons">{person.email && <a href={`mailto:${person.email}`} aria-label={`E-Mail an ${person.name}`}>✉</a>}{person.phone && <a href={`tel:${person.phone}`} aria-label={`${person.name} anrufen`}>☎</a>}</div></div>
-                </article>
-              ))}
+              <Fragment set:html={departmentPage.people.map(person => personCardMarkup(person, {withBase, contactPath: person.email ? `mailto:${person.email}` : ''})).join('')} />
             </div>
           </section>
 
@@ -884,7 +867,7 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
       {!migratedBody && page.kind === 'events' && <div class="event-list"><article><time><b>11</b> JUL</time><div><small>07:00 – 14:00 Uhr</small><h2>Gebrauchträdermarkt</h2><p>Mit Zweirad Mees und dem Förderverein BSV Nordstern.</p></div></article><article><time><b>11</b> JUL</time><div><small>08:00 – 16:00 Uhr</small><h2>Flohmarkt</h2><p>Auf dem Gelände des BSV Nordstern, Schlesierstraße 43.</p></div></article></div>}
 
-      {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid">{page.people.map((person) => <article>{person.image ? <img src={withBase(person.image)} alt={person.name} width="500" height="650" loading="lazy" /> : <div class="placeholder">{person.name.split(' ').map((part) => part[0]).join('')}</div>}<div><h3>{person.name}</h3><p>{person.role}</p></div></article>)}</div></div>}
+      {!migratedBody && !isDepartmentPage && page.people && <div class="people"><div class="section-title"><p>Menschen im BSV</p><h2>{page.kind === 'board' ? 'Unser Team.' : 'Ansprechpersonen.'}</h2></div><div class="people-grid"><Fragment set:html={page.people.map(person => personCardMarkup(person, {withBase})).join('')} /></div></div>}
 
       {page.kind === 'document' && !isDocumentPage && !isCancellationPage && <aside class="document-cta"><div><small>Dokument & Auskunft</small><h2>Noch Fragen?</h2><p>Die Vorstandschaft hilft dir bei verbindlichen oder persönlichen Anliegen gerne weiter.</p></div><a href={withBase('/kontakt?thema=general')}>Kontakt aufnehmen ↗</a></aside>}
 
@@ -1304,25 +1287,6 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-section-head { margin-bottom:50px; display:flex; align-items:end; justify-content:space-between; gap:45px; }
   .d-girls-section-head h2 { font-size:clamp(3rem,5vw,4.5rem); }
   .d-girls-section-head > p { max-width:350px; margin:0; color:#687970; line-height:1.65; }
-  .coach-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; }
-  .coach-grid.is-single .coach-card { grid-column:span 2; }
-  .coach-card { min-height:310px; padding:38px; display:grid; grid-template-columns:185px 1fr; align-items:center; gap:34px; border-radius:8px; background:#edf2ee; }
-  .coach-card:nth-child(even) { background:var(--green); }
-  .coach-portrait { width:185px; aspect-ratio:1; overflow:hidden; display:grid; place-items:center; border:5px solid white; border-radius:50%; background:var(--dark); box-shadow:0 12px 35px rgb(9 47 32 / 14%); }
-  .coach-portrait img { width:100%; height:100%; object-fit:cover; object-position:center 22%; }
-  .coach-placeholder { color:var(--yellow); font-size:3rem; font-weight:900; }
-  .coach-details small { color:var(--green); font-size:.67rem; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
-  .coach-details h3 { margin:10px 0 7px; color:var(--ink); font-size:1.55rem; letter-spacing:-.035em; }
-  .coach-details > p { margin:0; color:#6a7a70; font-size:.8rem; }
-  .coach-card:nth-child(even) .coach-details small { color:var(--yellow); }
-  .coach-card:nth-child(even) .coach-details h3 { color:white; }
-  .coach-card:nth-child(even) .coach-details > p { color:#b8cabf; }
-  .coach-details .coach-club { margin-top:15px; padding-top:12px; border-top:1px solid rgb(9 47 32 / 14%); }
-  .coach-club small,.coach-club strong { display:block; }
-  .coach-club small { margin-bottom:4px; font-size:.53rem; }
-  .coach-club strong { color:var(--ink); font-size:.72rem; line-height:1.45; }
-  .coach-card:nth-child(even) .coach-club { border-top-color:rgb(255 255 255 / 16%); }
-  .coach-card:nth-child(even) .coach-club strong { color:white; }
   :global(.d-girls-page .contact-icons) { min-height:70px; margin-top:20px; display:flex; align-items:flex-start; flex-wrap:wrap; gap:8px; }
   :global(.d-girls-page .team-contact-link) { width:40px; height:40px; display:grid; place-items:center; border:1px solid rgb(9 47 32 / 22%); border-radius:50%; background:white; color:var(--green); text-decoration:none; }
   :global(.d-girls-page .team-contact-link:hover),:global(.d-girls-page .team-contact-link:focus-visible) { background:var(--yellow); color:var(--dark); }
@@ -1377,9 +1341,9 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .d-girls-cta p { max-width:650px; margin:18px 0 0; color:#425346; line-height:1.65; }
   .d-girls-cta > a { min-width:230px; padding:16px 18px; display:flex; justify-content:space-between; gap:28px; background:var(--dark); color:white; font-size:.8rem; font-weight:900; text-decoration:none; }
   .d-girls-cta > a span { color:var(--yellow); }
-  @media(max-width:900px){.d-girls-opening,.d-girls-training,.team-sponsors{grid-template-columns:1fr;gap:45px}.coach-card{grid-template-columns:145px 1fr;padding:30px}.coach-portrait{width:145px}.d-girls-cta{grid-template-columns:1fr}.d-girls-cta>a{justify-self:start}}
-  @media(max-width:700px){.d-girls-section-head{align-items:flex-start;flex-direction:column}.coach-grid{grid-template-columns:1fr}.coach-grid.is-single .coach-card{grid-column:1}.d-girls-gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:230px}.gallery-tile,.gallery-tile:nth-child(1),.gallery-tile:nth-child(2){grid-column:span 1;grid-row:span 1}.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:span 2;grid-row:span 1}.gallery-tile:nth-child(6) img{object-position:center 22%}}
-  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-matches-widget{margin:-30px 0 80px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.team-sponsors{margin-bottom:80px;padding:42px 26px}.team-sponsor-grid{grid-template-columns:1fr}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.coach-card{grid-template-columns:1fr;text-align:center}.coach-portrait{margin:auto}.coach-details :global(.contact-icons){justify-content:center}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}.gallery-nav{width:44px;height:62px;background:rgb(3 19 12 / 78%)}.gallery-prev{left:7px}.gallery-next{right:7px}}
+  @media(max-width:900px){.d-girls-opening,.d-girls-training,.team-sponsors{grid-template-columns:1fr;gap:45px}.d-girls-cta{grid-template-columns:1fr}.d-girls-cta>a{justify-self:start}}
+  @media(max-width:700px){.d-girls-section-head{align-items:flex-start;flex-direction:column}.d-girls-gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:230px}.gallery-tile,.gallery-tile:nth-child(1),.gallery-tile:nth-child(2){grid-column:span 1;grid-row:span 1}.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:span 2;grid-row:span 1}.gallery-tile:nth-child(6) img{object-position:center 22%}}
+  @media(max-width:500px){.d-girls-opening{padding-bottom:75px}.team-matches-widget{margin:-30px 0 80px}.d-girls-training{margin-bottom:80px;padding:42px 26px}.training-days>article{grid-template-columns:38px 1fr;gap:14px}.training-days strong{font-size:1.05rem}.team-notice{margin:-45px 0 80px;padding:24px 20px;grid-template-columns:38px 1fr;gap:15px}.team-notice>span{width:36px}.team-sponsors{margin-bottom:80px;padding:42px 26px}.team-sponsor-grid{grid-template-columns:1fr}.d-girls-coaches,.d-girls-gallery-section{margin-bottom:80px}.d-girls-gallery{grid-template-columns:1fr;grid-auto-rows:240px}.gallery-tile,.gallery-tile:first-child,.gallery-tile:nth-child(6),.d-girls-gallery.is-single .gallery-tile{grid-column:1;grid-row:span 1}.d-girls-cta{padding:45px 28px}.d-girls-cta>a{width:100%;min-width:0}.gallery-dialog{width:calc(100% - 20px)}.gallery-nav{width:44px;height:62px;background:rgb(3 19 12 / 78%)}.gallery-prev{left:7px}.gallery-next{right:7px}}
 
   .referee-hero .hero-grid { grid-template-columns:minmax(0,1fr) minmax(360px,390px); gap:50px; }
   .referee-hero h1 { font-size:clamp(3.2rem,4.6vw,4.15rem); }

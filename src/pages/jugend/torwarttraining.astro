@@ -1,4 +1,5 @@
 ---
+import {personCardMarkup} from '../../utils/person-presentation.mjs';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -87,13 +88,9 @@ const skills = [
     </section>
 
     <section class="coach-section" aria-labelledby="coach-title">
-      <div class="shell coach-grid">
-        <div class="coach-portrait"><img src={withBase('/images/verein/personen/stefan-gastaudo.jpg')} width="667" height="1000" alt="Stefan Gastaudo, Torwarttrainer beim BSV Nordstern" loading="lazy" /></div>
+      <div class="shell keeper-coach-layout">
+        <Fragment set:html={personCardMarkup({name:'Stefan Gastaudo',role:'Torwarttrainer',qualification:'C-Lizenz',image:'/images/verein/personen/stefan-gastaudo.jpg',phone:'+491795111126'}, {withBase,contactPath:contactUrl})} />
         <div class="coach-copy"><span class="eyebrow">Dein Trainer. Dein Ansprechpartner.</span><h2 id="coach-title">Stefan Gastaudo</h2><p class="coach-role">Torwarttrainer · C-Lizenz · BSV Nordstern</p><p>Stefan begleitet dich auf deinem Weg zwischen den Pfosten. Mit gezieltem Training hilft er dir, deine Technik zu verbessern, sicherer zu entscheiden und deine Stärken weiterzuentwickeln.</p><p>Du möchtest mitmachen oder hast eine Frage zur passenden Gruppe? Melde dich direkt bei ihm.</p>
-          <div class="coach-contacts">
-            <a href={contactUrl} aria-label="Nachricht an Stefan Gastaudo">Nachricht schreiben</a>
-            <a href="tel:+491795111126" aria-label="Stefan Gastaudo anrufen">Anrufen</a>
-          </div>
         </div>
       </div>
     </section>
@@ -169,17 +166,15 @@ const skills = [
   .skills-grid h3 { font-size:1.2rem; letter-spacing:-.02em; margin:17px 0 10px; }
   .skills-grid p { color:#5c6b60; line-height:1.8; font-size:.88rem; margin:0; }
   .coach-section { background:#e8eede; padding:75px 0; }
-  .coach-grid { display:grid; grid-template-columns:185px minmax(0,1fr); gap:38px; align-items:center; padding:38px; background:white; border-top:3px solid var(--green); }
-  .coach-portrait { width:185px; }
+  .keeper-coach-layout { display:grid; grid-template-columns:minmax(0,265px) minmax(0,1fr); gap:38px; align-items:center; }
   .coach-copy h2 { font-size:clamp(1.7rem,3vw,2.2rem); }
   .coach-role { font-size:.79rem; font-weight:800; color:var(--green); margin:18px 0 24px; }
   .coach-copy>p:not(.coach-role) { color:#53674f; line-height:1.8; font-size:.9rem; }
-  .coach-contacts { margin-top:25px; }
   .join-section { padding:80px 0 90px; text-align:center; }
   .join-section h2 { font-size:clamp(2.7rem,5vw,4.5rem); }
   .join-section p { max-width:485px; margin:24px auto; line-height:1.8; color:#5c6b60; font-size:.92rem; }
-  @media (max-width:1000px) { .hero-grid { gap:30px; } .hero-facts { max-width:350px; } .hero-facts span+span::before { display:none; } .coach-grid { gap:45px; } .training-card { padding:26px; } }
-  @media (max-width:760px) { .hero-grid,.section-heading,.coach-grid { grid-template-columns:1fr; } .hero-grid { margin-top:38px; gap:40px; } h1 { font-size:clamp(3.5rem,10vw,5.7rem); } .goal-visual { max-width:470px; width:100%; margin:auto; } .section-heading { gap:20px; } .section-heading>p { max-width:500px; } .coach-portrait { width:185px; max-width:100%; margin:auto; } .skills-grid { gap:20px; } .training-time { font-size:1.7rem; gap:6px; } }
-  @media (max-width:540px) { .shell { width:calc(100% - 36px); } .keeper-hero { padding:26px 0 40px; } .hero-copy>p { font-size:.95rem; } .hero-actions { gap:22px; } .hero-facts { margin-top:26px; font-size:.62rem; } .hero-grid { gap:35px; } .goal-visual { padding:30px 22px 20px; border-radius:100px 100px 4px 4px; } .visual-top { font-size:.52rem; padding-inline:12px; } .training-grid,.skills-grid { grid-template-columns:1fr; } .training-section { padding:55px 0; } .training-card { padding:25px; } .training-time { font-size:2.1rem; gap:9px; } .skills-section { padding:0 0 55px; } .skills-grid { gap:25px; } .coach-section { padding:40px 0 45px; } .coach-grid { gap:32px; } .join-section { padding:55px 0 60px; } }
+  @media (max-width:1000px) { .hero-grid { gap:30px; } .hero-facts { max-width:350px; } .hero-facts span+span::before { display:none; } .keeper-coach-layout { gap:45px; } .training-card { padding:26px; } }
+  @media (max-width:760px) { .hero-grid,.section-heading,.keeper-coach-layout { grid-template-columns:1fr; } .hero-grid { margin-top:38px; gap:40px; } h1 { font-size:clamp(3.5rem,10vw,5.7rem); } .goal-visual { max-width:470px; width:100%; margin:auto; } .section-heading { gap:20px; } .section-heading>p { max-width:500px; } .skills-grid { gap:20px; } .training-time { font-size:1.7rem; gap:6px; } }
+  @media (max-width:540px) { .shell { width:calc(100% - 36px); } .keeper-hero { padding:26px 0 40px; } .hero-copy>p { font-size:.95rem; } .hero-actions { gap:22px; } .hero-facts { margin-top:26px; font-size:.62rem; } .hero-grid { gap:35px; } .goal-visual { padding:30px 22px 20px; border-radius:100px 100px 4px 4px; } .visual-top { font-size:.52rem; padding-inline:12px; } .training-grid,.skills-grid { grid-template-columns:1fr; } .training-section { padding:55px 0; } .training-card { padding:25px; } .training-time { font-size:2.1rem; gap:9px; } .skills-section { padding:0 0 55px; } .skills-grid { gap:25px; } .coach-section { padding:40px 0 45px; } .keeper-coach-layout { gap:32px; } .join-section { padding:55px 0 60px; } }
   @media (prefers-reduced-motion:reduce) { .button { transition:none; } }
 </style>
