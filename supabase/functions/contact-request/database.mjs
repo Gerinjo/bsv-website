@@ -70,11 +70,11 @@ async function contactQuery(sql, { table, operation, values, columns, filters })
   }
   if (table === 'contact_anfragen') {
     if (operation === 'insert' && columns === 'id') {
-      const payload = JSON.stringify({ ...values, empfaenger_emails: values.empfaenger_emails ?? [values.empfaenger_email] });
+      const payload = { ...values, empfaenger_emails: values.empfaenger_emails ?? [values.empfaenger_email] };
       const rows = await sql`insert into public.contact_anfragen
         (thema, routing_schluessel, anfrageart, empfaenger_email, empfaenger_emails, vorname, nachname, email, telefon, gegner_verein, gegner_mannschaft, nachricht, datenschutz_bestaetigt)
         select thema, routing_schluessel, anfrageart, empfaenger_email, empfaenger_emails, vorname, nachname, email, telefon, gegner_verein, gegner_mannschaft, nachricht, datenschutz_bestaetigt
-        from jsonb_populate_record(null::public.contact_anfragen, ${payload}::jsonb) returning id`;
+        from jsonb_populate_record(null::public.contact_anfragen, ${sql.json(payload)}::jsonb) returning id`;
       return rows[0];
     }
     if (operation === 'update' && filters.id && !columns) {

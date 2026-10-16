@@ -16,6 +16,7 @@ function adapters({error=clockError,rows=[{id:'challenge-id'}],fail=false}={}){
   if(fail)throw Object.assign(new Error('native unavailable'),{code:'08006'});
   return text==='set local role service_role'?[]:rows;
  },{});
+ native.json=value=>{assert.equal(typeof value,'object');return JSON.stringify(value)};
  const connect=()=>({begin:fn=>fn(native)});
  const db=withContactDatabase({from:()=>query,rpc:()=>query},connect);
  return {db,connect,calls,rest:{from:()=>query,rpc:()=>query}};
