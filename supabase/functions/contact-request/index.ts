@@ -1,3 +1,5 @@
+import postgres from 'npm:postgres@3.4.7';
+import { withContactDatabase } from './database.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
@@ -62,14 +64,19 @@ const getRouting = (topic: string) => {
   } as const;
 };
 
+let nativeConnection;
 const getSupabase = () => {
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!supabaseUrl || !serviceRoleKey) return null;
 
-  return createClient(supabaseUrl, serviceRoleKey, {
+  const client = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  const databaseUrl = Deno.env.get('SUPABASE_DB_URL');
+  return databaseUrl ? withContactDatabase(client, () => nativeConnection ??= postgres(databaseUrl, {
+    prepare: false, max: 1, idle_timeout: 5, connect_timeout: 5,
+  })) : client;
 };
 
 Deno.serve(async (request) => {
