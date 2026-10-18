@@ -8,6 +8,7 @@ import { GIRLS_CUP_EVENT, calculateGirlsCupFee } from '../supabase/functions/_sh
 import { GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration } from '../supabase/functions/contact-request/girls-cup-registration.mjs';
 import { URMEL_EVENT } from '../supabase/functions/_shared/urmel-event.mjs';
 import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from '../supabase/functions/contact-request/bambini-registration.mjs';
+import { resolveContactRecipients } from '../supabase/functions/contact-request/recipients.mjs';
 
 const valid = (overrides = {}) => ({
   topic: BAMBINI_EVENT.topic, clubName: 'FC Testverein',
@@ -23,10 +24,14 @@ const request = (body) => new Request('https://example.org/contact-request', {
 // No production secrets, network calls, registrations or messages are needed.
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/contact-request/index.ts', import.meta.url), 'utf8')
   .replace(/^import .*;\r?\n/gm, ''));
-function harness({ emailFails = false, captchaExpired = false, insertFails = false } = {}) {
+function harness({ emailFails = false, captchaExpired = false, insertFails = false, trainerEmails = ['current@example.org','co@example.org'], bridgeFails = false } = {}) {
   const operations = [], mails = [], challenges = new Map();
   challenges.set(valid().captchaToken, { antwort: 7, expires_at: new Date(Date.now() + (captchaExpired ? -60000 : 60000)).toISOString() });
   const db = {
+    rpc: async (name, { routing_key }) => {
+      assert.equal(name, 'prepare_trainer_contact_lookup');
+      return { data: { payload: { purpose: 'trainer-contact', routingKey: routing_key, requestedAt: new Date().toISOString() }, signature: 'a'.repeat(64) } };
+    },
     from(table) {
       const state = { table, operation: 'select', filters: {} };
       const chain = {
@@ -58,6 +63,10 @@ function harness({ emailFails = false, captchaExpired = false, insertFails = fal
   runInNewContext(source, {
     Request, Response, crypto, console: { error() {} }, createClient: () => db,
     Deno: { env: { get: (key) => ({ SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'fake-server-key', ALLOWED_ORIGINS: 'https://bsvnordstern.de' })[key] }, serve: (callback) => { handle = callback; } },
+    resolveContactRecipients: (options) => resolveContactRecipients({ ...options, fetcher: async () => {
+      if (bridgeFails) throw new Error('simulated bridge outage');
+      return Response.json({ ok: true, managed: true, label: 'Trainerteam', emails: trainerEmails });
+    } }),
     getEmailRuntimeConfig: () => ({ mode: 'test' }),
     sendEmail: async (mail, options) => {
       mails.push({ mail, options });
@@ -119,7 +128,7 @@ test('a registration stores all wishes and emails the private organizer with tra
   assert.match(saved.nachricht, /09:00 Uhr, 15:00 Uhr/);
   assert.equal(app.mails.length, 1);
   const { mail, options } = app.mails[0];
-  assert.equal(mail.to, 'organizer@example.org');
+  assert.deepEqual(mail.to, ['organizer@example.org']);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /Bambini-Anmeldung/);
   assert.match(mail.html, /09:00 Uhr, 15:00 Uhr/);
@@ -207,7 +216,7 @@ test('URMEL registrations use their own event facts and charity purpose with the
   assert.ok(saved.nachricht.includes(URMEL_EVENT.charityNote));
   assert.match(saved.nachricht, /09:00 Uhr, 12:00 Uhr, 15:00 Uhr/);
   const { mail } = app.mails[0];
-  assert.equal(mail.to, 'organizer@example.org');
+  assert.deepEqual(mail.to, ['organizer@example.org']);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /URMEL-Cup/);
   assert.match(mail.html, /Neue Mannschaftsanmeldung: URMEL-Cup/);
@@ -299,7 +308,7 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   })));
   assert.equal(response.status, 201);
   const { mail, options } = app.mails[0];
-  assert.equal(mail.to, 'organizer@example.org');
+  assert.deepEqual(mail.to, ['organizer@example.org']);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /Girls-Cup-Anmeldung/);
   assert.match(mail.html, /20\.02\.2027[\s\S]*21\.02\.2027/);
@@ -327,4 +336,22 @@ test('Girls Cup preserves saved registrations on email failure and rejects reuse
   const insertFailure = harness({ insertFails: true });
   assert.equal((await insertFailure.handle(request(girlsValid()))).status, 500);
   assert.equal(insertFailure.mails.length, 0);
+});
+
+test('a team contact submission sends to current Suite recipients, records them privately and ignores browser recipients', async () => {
+  const app = harness({trainerEmails:['New@Example.org','co@example.org','new@example.org']});
+  const response = await app.handle(request(valid({topic:'team--jugend--u15-c1--general',message:'Bitte um Informationen zum Training.',to:'attacker@example.org',recipients:['attacker@example.org']})));
+  assert.equal(response.status,201);
+  assert.deepEqual(app.mails[0].mail.to,['new@example.org','co@example.org']);
+  const saved=app.operations.find(op=>op.table==='contact_anfragen'&&op.operation==='insert').values;
+  assert.equal(saved.empfaenger_email,'new@example.org');assert.deepEqual(saved.empfaenger_emails,['new@example.org','co@example.org']);
+  assert.equal(app.operations.some(op=>op.table==='contact_empfaenger'),false);
+  assert.doesNotMatch(JSON.stringify(await response.json()),/new@example|co@example|attacker@example/);
+});
+test('empty trainer assignments and bridge outages prevent storage and outgoing email', async () => {
+  for(const [options,status] of [[{trainerEmails:[]},422],[{bridgeFails:true},503]]){
+    const app=harness(options);
+    const response=await app.handle(request(valid({topic:'team--jugend--u15-c1--general',message:'Bitte um Informationen zum Training.'})));
+    assert.equal(response.status,status);assert.equal(app.mails.length,0);assert.equal(app.operations.some(op=>op.table==='contact_anfragen'),false);assert.equal(app.operations.some(op=>op.table==='contact_empfaenger'),false);
+  }
 });

@@ -271,3 +271,11 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Aktuelle Trainerkontakte im Kontaktformular
+
+Beim Absenden einer Mannschafts- oder Personenanfrage liest `contact-request` die aktuellen Empfänger über die private Verbindung zur Club Suite. `prepare_trainer_contact_lookup` signiert den Zweck, den Routing-Schlüssel und einen kurzlebigen Zeitstempel mit dem bestehenden Onboarding-Brückenschlüssel. `trainer-contact-recipients` prüft diese Signatur und liest aktive, öffentlich zugeordnete Trainer sowie zusätzliche Mannschaftskontakte. Die Adressen werden ausschließlich zwischen den Servern verarbeitet. Änderungen an Trainerprofilen und Zuordnungen gelten bei der nächsten Anfrage, ohne Website-Build oder zweiten Adressabgleich.
+
+Leere, passive oder gelöschte Trainerkontakte verwenden keine veraltete Empfängerliste. Bei einer Störung wird die Anfrage vor Speicherung und Versand mit einem erneuten Versuchshinweis abgewiesen. Andere Vereinsbereiche behalten ihre konfigurierten Empfänger einschließlich zusätzlicher Adressen. Die beim Absenden ermittelten Empfänger stehen im privaten Anfrageprotokoll.
+
+Bereitstellung: Suite-Migrationen `trainer_email_contact_form`, `trainer_contact_directory` und `trainer_contact_email_import` anwenden, `trainer-contact-recipients` und die Admin-API bereitstellen; anschließend die Website-Migration `trainer_contact_lookup` anwenden und `contact-request` bereitstellen. Tests: `node --test tests/contact-recipients.test.mjs` und `node scripts/test-trainer-contact-lookup.mjs`; die Suite-Datenbanktests prüfen Adressänderungen, Freigaben, Passivschaltungen, Löschung, zusätzliche Kontakte und fehlende Browserrechte.

@@ -2,6 +2,7 @@ import postgres from 'npm:postgres@3.4.7';
 import { withContactDatabase } from './database.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
+import { resolveContactRecipients } from './recipients.mjs';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
 import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
 import { GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration } from './girls-cup-registration.mjs';
@@ -201,15 +202,10 @@ Deno.serve(async (request) => {
     return json({ ok: false, message: 'Die Antwort beim Spamschutz ist nicht richtig oder abgelaufen.' }, 422, origin);
   }
 
-  const { data: recipient, error: recipientError } = await supabase
-    .from('contact_empfaenger')
-    .select('email, bezeichnung')
-    .eq('schluessel', routing.routingKey)
-    .eq('aktiv', true)
-    .maybeSingle();
-
-  if (recipientError || !recipient?.email) {
-    console.error('Kontakt-Empfänger nicht gefunden:', routing.routingKey, recipientError);
+  let recipient;
+  try { recipient = await resolveContactRecipients({ db: supabase, routingKey: routing.routingKey, trainerLookup: !teamRegistration }); }
+  catch { return json({ ok: false, message: 'Die Kontaktzuordnung ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.' }, 503, origin); }
+  if (!recipient.emails.length) {
     return json({ ok: false, message: 'Für dieses Anliegen ist momentan keine Kontaktadresse hinterlegt.' }, 422, origin);
   }
 
@@ -219,7 +215,8 @@ Deno.serve(async (request) => {
       thema: topic,
       routing_schluessel: routing.routingKey,
       anfrageart: routing.requestType,
-      empfaenger_email: recipient.email,
+      empfaenger_email: recipient.emails[0],
+      empfaenger_emails: recipient.emails,
       vorname: firstName,
       nachname: lastName,
       email,
@@ -249,7 +246,7 @@ Deno.serve(async (request) => {
 
   try {
     const emailResult = await sendEmail({
-      to: recipient.email,
+      to: recipient.emails,
       reply_to: email,
       subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : girlsRegistration ? 'Girls-Cup-Anmeldung' : 'Kontaktanfrage'}: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
       html: `
