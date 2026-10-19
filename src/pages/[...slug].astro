@@ -59,7 +59,7 @@ const pages: Page[] = [
   { path: 'verein/beitragsordnung', eyebrow: 'Transparent & fair', title: 'Beitragsordnung', intro: 'Mitgliedsbeiträge sichern Trainingsbetrieb, Anlagen und eine verlässliche Vereinsarbeit.', image: '/images/verein/bereiche/verein.jpeg', kind: 'document', body: ['Die Beitragsordnung regelt Beitragshöhen, Fälligkeiten und Ermäßigungen. Zum 01.01.2026 wurde die Beitragsordnung durch die Mitgliederversammlung angepasst.', 'Die vollständige, rechtsverbindliche Fassung bleibt maßgeblich. Bei Fragen hilft die Vorstandschaft gerne weiter.'] },
   { path: 'verein/mitglied-werden', eyebrow: 'Willkommen beim BSV', title: 'Mitglied werden', intro: 'Lebe deinen Sport, lerne neue Menschen kennen und werde Teil unserer lebendigen Gemeinschaft.', image: '/images/verein/bereiche/verein.jpeg', body: ['Als Mitglied kannst du in unseren Mannschaften und Abteilungen trainieren, an Veranstaltungen teilnehmen oder dich ehrenamtlich engagieren.', 'Unsere Trainerinnen, Trainer und Verantwortlichen begleiten dich beim Einstieg und finden gemeinsam mit dir das passende Angebot.'] },
   { path: 'verein/kuendigung', eyebrow: 'Mitgliedschaft beenden', title: 'Mitgliedschaft kündigen', intro: 'Hier erfährst du, wie eine wirksame Austrittserklärung eingereicht wird und zu welchem Zeitpunkt deine Mitgliedschaft endet.', image: '/images/verein/bereiche/geschichte.jpg', kind: 'document' },
-  { path: 'abteilungen/gymnastik', eyebrow: 'Beweglich & gemeinsam', title: 'Gymnastik', intro: 'Fitness erhalten und gemeinsam Spaß an der Bewegung haben.', image: '/images/verein/bereiche/gymnastik.jpeg', body: ['Abteilungsleitung: Sigrid Burkhardt', 'Training: Dienstag von 19:00 bis 20:15 Uhr in der Gymnastikhalle des BSV Nordstern.'], people: [{ name: 'Sigrid Burkhardt', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/sigrid-burkhardt.jpg' }] },
+  { path: 'abteilungen/gymnastik', eyebrow: 'Beweglich & gemeinsam', title: 'Gymnastik', intro: 'Fitness erhalten und gemeinsam Spaß an der Bewegung haben.', image: '/images/verein/bereiche/gymnastik-gruppenbild-2026.jpg', body: ['Abteilungsleitung: Sigrid Burkhardt', 'Training: Dienstag von 19:00 bis 20:15 Uhr in der Gymnastikhalle des BSV Nordstern.'], people: [{ name: 'Sigrid Burkhardt', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/sigrid-burkhardt.jpg' }] },
   { path: 'abteilungen/bogensport', eyebrow: 'Ruhe. Fokus. Präzision.', title: 'Bogensport', intro: 'Breiten- und Leistungssport auf unserem Nebenplatz an der Schlesierstraße.', image: '/images/verein/bereiche/bogensport.jpg', body: ['Abteilungsleiter: Konrad Mauz', 'Training: Freitag von 17:30 bis 19:00 Uhr auf dem Nebenplatz des BSV Nordstern. Die Abteilung führt derzeit eine Warteliste für Interessierte.'] },
   { path: 'abteilungen/wandergruppe', eyebrow: 'Draußen zuhause', title: 'Wandergruppe', intro: 'Gemeinsam unterwegs – bei jeder Witterung und mit Freude an Natur und Geselligkeit.', image: '/images/verein/bereiche/wandern.jpg', people: [
     { name: 'Peter Weidele', role: 'Wanderführer · 0152 / 05170308' }, { name: 'Jutta Fuchs', role: 'Wanderführerin · 07732 / 12379' }, { name: 'Anita Steppacher', role: 'Wanderführerin · 0170 / 5757127' }, { name: 'Siggi Bayer', role: 'Wanderführer · 07732 / 4938' }, { name: 'Thomas Graf', role: 'Wanderführer · 0176 / 54027893' },
@@ -438,7 +438,7 @@ const departmentPages = {
     facts: [{ label: 'Training', value: 'Dienstag', detail: '19:00 – 20:15 Uhr' }, { label: 'Ort', value: 'Gymnastikhalle', detail: 'BSV Nordstern' }, { label: 'Angebot', value: 'Fitness', detail: 'Bewegung in der Gruppe' }],
     qualities: [{ icon: '↔', title: 'Beweglichkeit', text: 'Mobilisation und vielseitige Übungen halten den Körper geschmeidig.' }, { icon: '▲', title: 'Stabilität', text: 'Gezieltes Training kräftigt den gesamten Körper und verbessert die Haltung.' }, { icon: '♥', title: 'Gemeinsam aktiv', text: 'Regelmäßige Bewegung macht in einer vertrauten Gruppe doppelt Freude.' }],
     people: [{ name: 'Sigrid Burkhardt', role: 'Abteilungsleitung Gymnastik', image: '/images/verein/personen/sigrid-burkhardt.jpg', email: 'verwaltung@bsvnordstern.de' }],
-    gallery: [],
+    gallery: [{ src: '/images/verein/bereiche/gymnastik-gruppenbild-2026.jpg', alt: 'Die Gymnastikdamen des BSV Nordstern Radolfzell im grünen Vereinsoutfit', caption: 'Unsere Gymnastikdamen' }],
     notice: 'Du möchtest die Gymnastikgruppe kennenlernen? Melde dich über die Vereinsadresse – wir stellen gerne den Kontakt zur Abteilungsleitung her.',
   },
   'abteilungen/wandergruppe': {
@@ -631,11 +631,11 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
 
           {departmentPage.gallery.length > 0 && (
             <section class="department-gallery-section">
-              <div class="department-section-head"><div><span>Einblicke</span><h2>Mitten im Erlebnis.</h2></div><p>Bilder aus Training, Touren und gemeinsamen Momenten unserer Abteilung.</p></div>
-              <div class:list={["department-gallery", { "has-four": departmentPage.gallery.length === 4 }]}>
+              <div class="department-section-head"><div><span>Einblicke</span><h2>{departmentPage.theme === 'gymnastics' ? 'Unsere Gymnastikdamen.' : 'Mitten im Erlebnis.'}</h2></div><p>{departmentPage.theme === 'gymnastics' ? 'Gemeinsam in Bewegung – unsere Gymnastikgruppe im Vereinsoutfit.' : 'Bilder aus Training, Touren und gemeinsamen Momenten unserer Abteilung.'}</p></div>
+              <div class:list={["department-gallery", { "has-four": departmentPage.gallery.length === 4, "has-single": departmentPage.gallery.length === 1 }]}>
                 {departmentPage.gallery.map((photo, index) => (
                   <button type="button" data-gallery-image={withBase(photo.src)} data-gallery-alt={photo.alt} data-gallery-caption={photo.caption} aria-label={`${photo.caption} vergrößern`}>
-                    <img src={withBase(photo.src)} alt={photo.alt} width="1024" height="768" loading="lazy" />
+                    <img src={withBase(photo.src)} alt={photo.alt} width={departmentPage.theme === 'gymnastics' ? 1181 : 1024} height={departmentPage.theme === 'gymnastics' ? 800 : 768} loading="lazy" />
                     <span><small>0{index + 1}</small><strong>{photo.caption}</strong><b aria-hidden="true">↗</b></span>
                   </button>
                 ))}
@@ -1071,6 +1071,12 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .department-gallery button b { width:28px; aspect-ratio:1; display:grid; place-items:center; border-radius:50%; background:var(--yellow); color:var(--dark); font-size:.72rem; }
   .department-gallery button:hover img,.department-gallery button:focus-visible img { opacity:.82; transform:scale(1.035); }
   .department-gallery button:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
+  .department-gallery.has-single { display:block; }
+  .department-gallery.has-single button { display:block; width:100%; }
+  .department-gallery.has-single img { height:auto; }
+  .department-gallery.has-single button::after { display:none; }
+  .department-gallery.has-single button > span { position:static; padding:18px; }
+  .department-gallery.has-single button:hover img,.department-gallery.has-single button:focus-visible img { transform:none; }
   .department-notice { position:relative; overflow:hidden; min-height:330px; padding:60px 65px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:65px; border-radius:8px; background:var(--yellow); }
   .department-notice::after { content:'✦'; position:absolute; right:35px; top:-35px; color:rgb(255 255 255 / 45%); font-size:11rem; line-height:1; }
   .department-notice > div,.department-notice > a { position:relative; z-index:1; }
