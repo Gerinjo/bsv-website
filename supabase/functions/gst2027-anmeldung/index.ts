@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
+import { loadYouthSponsors } from '../_shared/youth-sponsors.mjs';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -132,6 +133,7 @@ Deno.serve(async (request) => {
       ['Beteiligung der Schule', altersklasse.startsWith('Mädchen') ? 'Einmal Waffelteig pro teilnehmender Mannschaft' : 'Ein Kuchen pro teilnehmender Mannschaft'],
     ],
     notes: weitereInformationen,
+    sponsors: await loadYouthSponsors(),
   });
   const confirmationStatus = await deliverEventConfirmation({
     db: supabase, table: 'gst_anmeldungen', id: registration.id,

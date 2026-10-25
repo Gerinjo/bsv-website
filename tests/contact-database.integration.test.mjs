@@ -43,6 +43,7 @@ test('complete HTTP submission stores contact data through the real driver and p
    Request,Response,crypto,console,withContactDatabase,createClient:()=>rest,postgres:()=>sql,
    BAMBINI_EVENT,URMEL_EVENT,GIRLS_CUP_EVENT,getBambiniRouting,BAMBINI_SUCCESS_MESSAGE,prepareBambiniRegistration,
    buildEventConfirmation,deliverEventConfirmation,
+   loadYouthSponsors:async()=>[],
    Deno:{env:{get:key=>({SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'test-only',SUPABASE_DB_URL:databaseUrl,ALLOWED_ORIGINS:'https://bsvnordstern.de'})[key]},serve:fn=>{handle=fn}},
    getEmailRuntimeConfig:()=>({mode:'test'}),sendEmail:async mail=>{mails.push(mail);return {id:'provider-id',mode:'test'}},
    resolveContactRecipients:async({db})=>{const {data,error}=await db.from('contact_empfaenger').select('email, weitere_emails, bezeichnung').eq('schluessel','general').eq('aktiv',true).maybeSingle();if(error)throw error;return {bezeichnung:data.bezeichnung,emails:[data.email,...data.weitere_emails]}},

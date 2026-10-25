@@ -10,6 +10,7 @@ import { URMEL_EVENT } from '../supabase/functions/_shared/urmel-event.mjs';
 import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from '../supabase/functions/contact-request/bambini-registration.mjs';
 import { buildEventConfirmation, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
 import { resolveContactRecipients } from '../supabase/functions/contact-request/recipients.mjs';
+import { eventSponsors } from './fixtures/event-sponsors.mjs';
 
 const valid = (overrides = {}) => ({
   topic: BAMBINI_EVENT.topic, clubName: 'FC Testverein',
@@ -75,6 +76,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
       return { id: 'mail-123', mode: 'test' };
     },
     buildEventConfirmation, deliverEventConfirmation,
+    loadYouthSponsors: async () => eventSponsors,
     GIRLS_CUP_EVENT, GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration,
     BAMBINI_EVENT, URMEL_EVENT, getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration,
   });
@@ -168,6 +170,10 @@ test('every contact-based event sends a separate styled receipt to the applicant
     assert.equal(mail.cc, undefined);
     assert.equal(mail.bcc, undefined);
     assert.ok(mail.html.includes(event.title));
+    for (const sponsor of eventSponsors) {
+      assert.ok(mail.html.includes(sponsor.logo));
+      assert.ok(mail.text.includes(`${sponsor.name}: ${sponsor.website}`));
+    }
     assert.ok(mail.text.includes(event.address));
     assert.match(mail.html, /#092f20[\s\S]*#f4d638/);
     assert.match(mail.html, /Jérôme Ernsberger[\s\S]*Jugendleiter/);

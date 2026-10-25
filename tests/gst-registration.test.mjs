@@ -4,6 +4,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import { buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
+import { eventSponsors } from './fixtures/event-sponsors.mjs';
 
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/gst2027-anmeldung/index.ts', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, ''));
 const valid = (overrides = {}) => ({ vorname: 'Mara', nachname: 'Muster', email: 'School@Example.org', telefon: '07732 123456', grundschule: 'Testschule', altersklasse: 'Mix 1. & 2. Klasse', mannschaftsname: 'Die Sterne', turniergebuehr: true, datenschutz: true, ...overrides });
@@ -23,6 +24,7 @@ function harness({ insertError, mailFails = false } = {}) {
     Response, console: { error() {} }, createClient: () => db,
     Deno: { env: { get: key => ({ SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'test-only' })[key] }, serve: fn => { handle = fn; } },
     buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation, getEmailRuntimeConfig: () => ({ mode: 'test' }),
+    loadYouthSponsors: async () => eventSponsors,
     sendEmail: async (mail, options) => { mails.push({ mail, options }); if (mailFails) throw new Error('simulated provider rejection'); return { id: 'provider-id', mode: 'test' }; },
   });
   return { handle, mails, operations };
@@ -36,6 +38,10 @@ test('GST confirms validated school/team details, known address and pending date
     assert.equal((await response.json()).confirmationStatus, 'versendet');
     const { mail, options } = app.mails[0];
     assert.equal(mail.to, 'school@example.org');
+    for (const sponsor of eventSponsors) {
+      assert.ok(mail.html.includes(sponsor.logo));
+      assert.ok(mail.text.includes(`${sponsor.name}: ${sponsor.website}`));
+    }
     assert.match(mail.text, /Grundschule: Testschule/);
     assert.match(mail.text, /Mannschaft: Die Sterne/);
     assert.match(mail.text, /Termin: Wird noch bekannt gegeben/);

@@ -282,6 +282,8 @@ Vor der Bereitstellung beider Funktionen die Migration `event_registration_confi
 
 Tests: `node --test tests/bambini-registration.test.mjs tests/gst-registration.test.mjs tests/event-confirmation.test.mjs`. Der optionale lokale Datenbanktest `tests/contact-database.integration.test.mjs` prüft zusätzlich die Migration und den Versandstatus über die native Datenbankverbindung in einer frischen, isolierten Testdatenbank.
 
+Die Eventmails ergänzen unten vier zufällig ausgewählte, unterschiedliche Jugendsponsoren mit verlinkten Logos und denselben Partnern in der Textversion. `_shared/youth-sponsors.mjs` verwendet den bestehenden öffentlichen Feed `/mitgliedschaft-sponsoren.json`. Der freigegebene Pool wird eine Stunde zwischengespeichert; die Auswahl erfolgt für jede Mail neu. Bei Feedstörungen kann ein höchstens 24 Stunden alter Pool verwendet werden. Ohne gültige Daten bleiben Dank und Übersichtslink erhalten, der Versand der Anmeldung läuft weiter.
+
 ## Aktuelle Trainerkontakte im Kontaktformular
 
 Beim Absenden einer Mannschafts- oder Personenanfrage liest `contact-request` die aktuellen Empfänger über die private Verbindung zur Club Suite. `prepare_trainer_contact_lookup` signiert den Zweck, den Routing-Schlüssel und einen kurzlebigen Zeitstempel mit dem bestehenden Onboarding-Brückenschlüssel. `trainer-contact-recipients` prüft diese Signatur und liest aktive, öffentlich zugeordnete Trainer sowie zusätzliche Mannschaftskontakte. Die Adressen werden ausschließlich zwischen den Servern verarbeitet. Änderungen an Trainerprofilen und Zuordnungen gelten bei der nächsten Anfrage, ohne Website-Build oder zweiten Adressabgleich.

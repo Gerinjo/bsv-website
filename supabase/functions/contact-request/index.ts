@@ -3,6 +3,7 @@ import { withContactDatabase } from './database.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { buildEventConfirmation, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
+import { loadYouthSponsors } from '../_shared/youth-sponsors.mjs';
 import { resolveContactRecipients } from './recipients.mjs';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
 import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
@@ -308,6 +309,7 @@ Deno.serve(async (request) => {
       firstName, lastName, email, phone, reference: inquiryId,
       details: teamRegistration.confirmationDetails, notes: teamRegistration.confirmationNotes,
       replyTo: recipient.emails[0],
+      sponsors: await loadYouthSponsors(),
     });
     confirmationStatus = await deliverEventConfirmation({
       db: supabase, table: 'contact_anfragen', id: inquiryId,

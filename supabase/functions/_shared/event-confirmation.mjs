@@ -1,4 +1,5 @@
 import { getOtherTournaments } from './tournament-announcements.mjs';
+import { buildYouthSponsorFooter } from './youth-sponsors.mjs';
 
 export const EVENT_CONTACT_URL = 'https://bsvnordstern.de/kontakt/?thema=person-jerome-ernsberger';
 export const CLUB_ADDRESS = 'Schlesierstraße 43, 78315 Radolfzell am Bodensee';
@@ -9,7 +10,8 @@ const lines = (value) => escapeHtml(value).replaceAll('\n', '<br>');
 const cleanSubject = (value) => String(value).replace(/[\r\n]/g, ' ');
 
 // Event facts and details come from the server's validated registration, never client-supplied fees or URLs.
-export function buildEventConfirmation({ event, firstName, lastName, email, phone, details, notes = '', reference, replyTo, now = new Date() }) {
+export function buildEventConfirmation({ event, firstName, lastName, email, phone, details, notes = '', reference, replyTo, now = new Date(), sponsors = [] }) {
+  const sponsorFooter = buildYouthSponsorFooter(sponsors);
   const nextSteps = event.nextSteps ?? 'Wir prüfen eure Anmeldung und bestätigen euch die Teilnahme und die endgültigen Startzeiten persönlich. Eure angegebenen Wunschzeiten sind noch keine feste Zuteilung.';
   const rows = [
     ['Veranstaltung', event.title], ['Termin', event.date], ['Spielort', event.venue],
@@ -67,9 +69,10 @@ ${tournament.image ? `<img src="${escapeHtml(tournament.image.src)}" width="584"
 <p style="margin:0 0 12px;line-height:1.7;color:#3f5146;"><a href="${EVENT_CONTACT_URL}" style="color:#164f32;font-weight:700;">Jérôme Ernsberger</a><br>Jugendleiter · BSV Nordstern Radolfzell<br>Fragen zur Anmeldung, zum Ablauf oder zur Anreise? Meldet euch gerne über unsere Homepage${replyTo ? ' oder antwortet direkt auf diese E-Mail' : ''}.</p>
 ${button('Jérôme kontaktieren', EVENT_CONTACT_URL)}${button('Veranstaltung ansehen', event.url)}${button('Anfahrt zum Spielort', mapUrl)}</td></tr>
 ${tournamentHtml}
+${sponsorFooter.html}
 <tr><td style="padding:24px;background:#092f20;color:#d3dfd7;font-size:13px;line-height:1.7;"><strong style="color:#f4d638;">Gemeinsam auf und neben dem Platz.</strong><br>BSV Nordstern e.V. Radolfzell<br>Vereinsanschrift: ${CLUB_ADDRESS}<br><a href="https://bsvnordstern.de/" style="color:#ffffff;">bsvnordstern.de</a> · <a href="https://bsvnordstern.de/datenschutz/" style="color:#ffffff;">Datenschutz</a></td></tr>
 </table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`,
-    text: `Hallo ${firstName},\n\neure Anmeldung ist erfolgreich beim BSV Nordstern eingegangen. Schön, dass ihr dabei sein möchtet!\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}\n\nWie geht es weiter?\n${nextSteps}\nDiese E-Mail bestätigt den Eingang eurer Anmeldung. Bei Änderungen oder Rückfragen nennt uns bitte eure Anmeldenummer und sendet keine zweite Anmeldung.\n\nJérôme Ernsberger – Jugendleiter\n${EVENT_CONTACT_URL}${replyTo ? '\nIhr könnt auch direkt auf diese E-Mail antworten.' : ''}\n\nVeranstaltung: ${event.url}\nAnfahrt: ${mapUrl}${tournamentText}\n\nBSV Nordstern e.V. Radolfzell\nVereinsanschrift: ${CLUB_ADDRESS}\nhttps://bsvnordstern.de/\nDatenschutz: https://bsvnordstern.de/datenschutz/`,
+    text: `Hallo ${firstName},\n\neure Anmeldung ist erfolgreich beim BSV Nordstern eingegangen. Schön, dass ihr dabei sein möchtet!\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}\n\nWie geht es weiter?\n${nextSteps}\nDiese E-Mail bestätigt den Eingang eurer Anmeldung. Bei Änderungen oder Rückfragen nennt uns bitte eure Anmeldenummer und sendet keine zweite Anmeldung.\n\nJérôme Ernsberger – Jugendleiter\n${EVENT_CONTACT_URL}${replyTo ? '\nIhr könnt auch direkt auf diese E-Mail antworten.' : ''}\n\nVeranstaltung: ${event.url}\nAnfahrt: ${mapUrl}${tournamentText}${sponsorFooter.text}\n\nBSV Nordstern e.V. Radolfzell\nVereinsanschrift: ${CLUB_ADDRESS}\nhttps://bsvnordstern.de/\nDatenschutz: https://bsvnordstern.de/datenschutz/`,
   };
 }
 
