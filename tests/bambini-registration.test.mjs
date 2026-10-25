@@ -152,7 +152,7 @@ test('names, clubs and free text are escaped in organizer email HTML', async () 
   assert.equal(confirmation.to, 'trainer@example.org');
   assert.match(confirmation.html, /&lt;b&gt;Mara&lt;\/b&gt;/);
   assert.match(confirmation.html, /FC &lt;Test&gt; &amp; Verein/);
-  assert.doesNotMatch(confirmation.html, /<img|<b>Mara/);
+  assert.doesNotMatch(confirmation.html, /<img\s+src=x|<b>Mara/);
 });
 
 test('every contact-based event sends a separate styled receipt to the applicant', async () => {
@@ -381,7 +381,7 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   assert.match(confirmation.text, /Startgebühren insgesamt: 100 €/);
   assert.match(confirmation.text, /E-Juniorinnen: 2 Teams/);
   assert.match(confirmation.text, /B-Juniorinnen: 1 Team/);
-  assert.doesNotMatch(confirmation.html, /2030|attacker@example.org|<img|<b>Mara/);
+  assert.doesNotMatch(confirmation.html, /2030|attacker@example.org|<img\s+src=x|<b>Mara/);
 });
 
 test('Girls Cup preserves saved registrations on email failure and rejects reused captcha', async () => {

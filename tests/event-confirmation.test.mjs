@@ -1,6 +1,59 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
+import { load } from 'cheerio';
+import { buildEventConfirmation, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
+import { getOtherTournaments } from '../supabase/functions/_shared/tournament-announcements.mjs';
+import { BAMBINI_EVENT } from '../supabase/functions/_shared/bambini-event.mjs';
+import { GIRLS_CUP_EVENT } from '../supabase/functions/_shared/girls-cup-event.mjs';
+import { URMEL_EVENT } from '../supabase/functions/_shared/urmel-event.mjs';
+
+const now = new Date('2026-10-25T12:00:00Z');
+const girlsUrl = 'https://bsvnordstern.de/erlebnis/bodensee-indoor-girls-cup/';
+
+test('each event announces the other upcoming BSV tournaments using the shared dates and fees', () => {
+  const all = getOtherTournaments('', now);
+  assert.equal(all.length, 4);
+  for (const event of all) {
+    const others = getOtherTournaments(event.url, now);
+    assert.equal(others.length, 3);
+    assert.ok(others.every(other => other.url !== event.url));
+  }
+  const girls = all.find(event => event.url === girlsUrl);
+  assert.equal(girls.date, GIRLS_CUP_EVENT.date);
+  assert.ok(girls.note.includes(String(GIRLS_CUP_EVENT.firstTeamFee)));
+  assert.ok(all.some(event => event.title === BAMBINI_EVENT.title && event.date === BAMBINI_EVENT.date));
+  assert.ok(all.some(event => event.title === URMEL_EVENT.title && event.date === URMEL_EVENT.date));
+  assert.deepEqual(getOtherTournaments(girlsUrl + '?from=email#anmeldung', now), getOtherTournaments(girlsUrl.slice(0, -1), now));
+});
+
+test('announcements expire after the last event day in Berlin, and undated events expire after their announced year', () => {
+  // 23:30 UTC is already the next calendar day in Berlin in December.
+  const before = getOtherTournaments('', new Date('2026-12-12T22:30:00Z'));
+  const after = getOtherTournaments('', new Date('2026-12-12T23:30:00Z'));
+  assert.ok(before.some(event => event.title === BAMBINI_EVENT.title));
+  assert.ok(!after.some(event => event.title === BAMBINI_EVENT.title));
+  assert.ok(getOtherTournaments('', new Date('2027-02-21T12:00:00Z')).some(event => event.url === girlsUrl));
+  assert.ok(!getOtherTournaments('', new Date('2027-02-22T12:00:00Z')).some(event => event.url === girlsUrl));
+  assert.deepEqual(getOtherTournaments('', new Date('2028-01-01T12:00:00Z')), []);
+});
+
+test('HTML and text confirmations announce the same other tournaments with direct links', () => {
+  const mail = buildEventConfirmation({
+    event: { ...GIRLS_CUP_EVENT, url: girlsUrl }, firstName: 'Mara', lastName: 'Muster',
+    email: 'trainer@example.org', phone: '07732 123456', details: [['Verein', 'FC Testverein']], reference: 'one-registration', now,
+  });
+  const $ = load(mail.html);
+  const section = $('h2').filter((_, element) => $(element).text() === 'Unsere weiteren Turniere').parent();
+  assert.ok(section.length);
+  for (const event of getOtherTournaments(girlsUrl, now)) {
+    assert.ok(section.text().includes(event.title));
+    assert.ok(section.text().includes(event.date));
+    assert.equal(section.find(`a[href="${event.url}"]`).length, 1);
+    assert.ok(mail.text.includes(event.url));
+  }
+  assert.ok(!section.text().includes(GIRLS_CUP_EVENT.title));
+  assert.ok(mail.text.includes('Termin wird noch bekannt gegeben'));
+});
 
 test('transient errors retry with one idempotency key and record only the final outcome', async () => {
   const sends = [], updates = [], waits = [];
