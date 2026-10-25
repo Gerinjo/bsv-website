@@ -6,7 +6,7 @@ export const getBambiniRouting = (event) => ({
   inquiryLabel: `${event.title} · Mannschaftsanmeldung`,
 });
 
-export const BAMBINI_SUCCESS_MESSAGE = 'Vielen Dank! Eure Anmeldung mit euren Wunschzeiten ist eingegangen. Wir melden uns bei eurer Trainerin oder eurem Trainer und bestätigen die Teilnahme sowie die zugeteilte Startzeit persönlich.';
+export const BAMBINI_SUCCESS_MESSAGE = 'Vielen Dank! Eure Anmeldung ist bestätigt. Wir freuen uns auf euch! Eure endgültige Startzeit und alle weiteren Informationen zum Spieltag teilen wir euch rechtzeitig mit.';
 
 /**
  * @param {Record<string, unknown>} body
@@ -27,10 +27,11 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
   if (notes.length > 2000 || (body.message != null && typeof body.message !== 'string')) {
     return { error: 'Deine Anmerkungen dürfen höchstens 2.000 Zeichen lang sein.' };
   }
-  if (body.registrationAccepted !== true) return { error: 'Bitte bestätige den Hinweis zur persönlichen Teilnahme- und Startzeitbestätigung.' };
+  if (body.registrationAccepted !== true) return { error: 'Bitte bestätige die Angaben zur Anmeldung, zu den Wunschzeiten und zur Startgebühr.' };
 
   // Build the complete registration on the server; clients cannot change event or recipient.
   return {
+    paymentAmount: `${event.fee} pro Mannschaft`,
     confirmationDetails: [
       ['Verein', club],
       ['Wunschzeiten (noch nicht zugeteilt)', event.timeSlots.filter((slot) => body.timeSlots.includes(slot)).map((slot) => `${slot} Uhr`).join(', ')],
@@ -51,7 +52,7 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
       `Startgebühr: ${event.fee} pro Mannschaft`,
       ...(event.charityNote ? [event.charityNote] : []),
       'Kontaktperson: Trainerin oder Trainer der Mannschaft',
-      'Hinweis zur persönlichen Teilnahme- und Startzeitbestätigung: bestätigt',
+      'Hinweis zur direkten Anmeldebestätigung, späteren Startzeitmitteilung und Startgebühr: akzeptiert',
       '',
       `Anmerkungen: ${notes || 'Keine'}`,
     ].join('\n'),

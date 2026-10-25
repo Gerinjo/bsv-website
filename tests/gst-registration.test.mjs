@@ -38,6 +38,9 @@ test('GST confirms validated school/team details, known address and pending date
     assert.equal((await response.json()).confirmationStatus, 'versendet');
     const { mail, options } = app.mails[0];
     assert.equal(mail.to, 'school@example.org');
+    assert.equal(app.operations.find(operation => operation.insert).insert.status, 'bestaetigt');
+    assert.match(mail.text, /Teilnahme ist hiermit bestätigt/);
+    assert.doesNotMatch(mail.text, /Wir prüfen|IBAN:|BIC:/);
     for (const sponsor of eventSponsors) {
       assert.ok(mail.html.includes(sponsor.logo));
       assert.ok(mail.text.includes(`${sponsor.name}: ${sponsor.website}`));

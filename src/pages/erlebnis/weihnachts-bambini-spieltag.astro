@@ -51,7 +51,7 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
 
     <section class="times-section" aria-labelledby="times-title">
       <div class="shell times-grid">
-        <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Die Teilnahme und eure endgültige Startzeit bestätigen wir anschließend persönlich.</p></div>
+        <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Eure Anmeldung wird direkt bestätigt. Die endgültige Startzeit teilen wir euch rechtzeitig vor dem Spieltag mit.</p></div>
         <ol class="time-list" aria-label="Mögliche Startzeiten">
           {BAMBINI_EVENT.timeSlots.map((slot, index) => <li><span>Start {index + 1}</span><strong>{slot}<small> Uhr</small></strong></li>)}
         </ol>
@@ -60,7 +60,7 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
 
     <section id="anmeldung" class="registration" aria-labelledby="registration-title">
       <div class="shell registration-grid">
-        <div class="registration-copy"><p class="eyebrow">Seid ihr dabei?</p><h2 id="registration-title">Ein Team.<br /><em>Ganz viel Vorfreude.</em></h2><p>Meldet eure Bambini-Mannschaft an und verratet uns eure Wunschzeiten. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Wir melden uns bei euch mit der Teilnahmebestätigung, der Startzeit und allen weiteren Informationen.</p><div class="organizer"><span>Fragen zum Spieltag?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
+        <div class="registration-copy"><p class="eyebrow">Seid ihr dabei?</p><h2 id="registration-title">Ein Team.<br /><em>Ganz viel Vorfreude.</em></h2><p>Meldet eure Bambini-Mannschaft an und verratet uns eure Wunschzeiten. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Nach eurer Anmeldung erhaltet ihr direkt die Bestätigung per E-Mail. Die Startzeit und alle weiteren Informationen zum Ablauf teilen wir euch rechtzeitig mit.</p><div class="organizer"><span>Fragen zum Spieltag?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
         <BambiniRegistrationForm />
       </div>
     </section>

@@ -109,6 +109,7 @@ Deno.serve(async (request) => {
     weitere_informationen: weitereInformationen || null,
     beteiligung_bestaetigt: true,
     datenschutz_bestaetigt: true,
+    status: 'bestaetigt',
   }).select('id').single();
 
   if (error?.code === '23505') {
@@ -125,7 +126,7 @@ Deno.serve(async (request) => {
       title: 'Zeller Grundschulturnier 2027', date: 'Wird noch bekannt gegeben',
       venue: 'BSV-Sportgelände Radolfzell', address: CLUB_ADDRESS,
       url: 'https://bsvnordstern.de/gst2027/',
-      nextSteps: 'Wir prüfen eure Mannschaftsanmeldung und melden uns persönlich bei euch. Termin, Startzeiten, Blockeinteilung und genauer Ablauf werden noch bekannt gegeben.',
+      nextSteps: 'Termin, Startzeiten, Blockeinteilung und genauer Ablauf werden noch bekannt gegeben. Wir informieren euch rechtzeitig vor dem Turnier.',
     },
     firstName: vorname, lastName: nachname, email, phone: telefon, reference: registration.id,
     details: [

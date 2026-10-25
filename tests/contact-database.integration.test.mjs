@@ -8,6 +8,7 @@ import test from 'node:test';
 import postgres from 'postgres';
 import {withContactDatabase} from '../supabase/functions/contact-request/database.mjs';
 import {buildEventConfirmation,deliverEventConfirmation} from '../supabase/functions/_shared/event-confirmation.mjs';
+import {tournamentPayment} from '../supabase/functions/_shared/tournament-payment.mjs';
 import {BAMBINI_EVENT} from '../supabase/functions/_shared/bambini-event.mjs';
 import {URMEL_EVENT} from '../supabase/functions/_shared/urmel-event.mjs';
 import {GIRLS_CUP_EVENT} from '../supabase/functions/_shared/girls-cup-event.mjs';
@@ -44,6 +45,7 @@ test('complete HTTP submission stores contact data through the real driver and p
    BAMBINI_EVENT,URMEL_EVENT,GIRLS_CUP_EVENT,getBambiniRouting,BAMBINI_SUCCESS_MESSAGE,prepareBambiniRegistration,
    buildEventConfirmation,deliverEventConfirmation,
    loadYouthSponsors:async()=>[],
+   tournamentPayment,
    Deno:{env:{get:key=>({SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'test-only',SUPABASE_DB_URL:databaseUrl,ALLOWED_ORIGINS:'https://bsvnordstern.de'})[key]},serve:fn=>{handle=fn}},
    getEmailRuntimeConfig:()=>({mode:'test'}),sendEmail:async mail=>{mails.push(mail);return {id:'provider-id',mode:'test'}},
    resolveContactRecipients:async({db})=>{const {data,error}=await db.from('contact_empfaenger').select('email, weitere_emails, bezeichnung').eq('schluessel','general').eq('aktiv',true).maybeSingle();if(error)throw error;return {bezeichnung:data.bezeichnung,emails:[data.email,...data.weitere_emails]}},

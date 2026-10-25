@@ -36,7 +36,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. Die Teilnahme und Startzeiten stehen erst nach persönlicher Bestätigung durch den BSV fest. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. Die Anmeldung wird direkt bestätigt; die genauen Startzeiten werden später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
     <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Verarbeitung meiner Angaben zur Organisation des Turniers und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
@@ -141,7 +141,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         if (!response.ok || data.ok !== true) throw new Error(data.message || 'Die Anmeldung konnte nicht übermittelt werden. Bitte versuche es später erneut.');
         completed = true;
         status.dataset.success = 'true';
-        status.textContent = data.message || 'Vielen Dank! Eure Anmeldung ist eingegangen. Wir melden uns bei euch.';
+        status.textContent = data.message || 'Vielen Dank! Eure Anmeldung ist bestätigt. Wir freuen uns auf euch!';
       } catch (error) {
         status.dataset.success = 'false';
         status.textContent = error instanceof Error && error.name === 'Error' ? error.message : 'Die Verbindung wurde unterbrochen. Eure Eingaben bleiben erhalten. Bitte versucht es erneut.';

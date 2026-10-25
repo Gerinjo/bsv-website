@@ -11,6 +11,7 @@ import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration 
 import { buildEventConfirmation, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
 import { resolveContactRecipients } from '../supabase/functions/contact-request/recipients.mjs';
 import { eventSponsors } from './fixtures/event-sponsors.mjs';
+import { tournamentPayment, YOUTH_TREASURY } from '../supabase/functions/_shared/tournament-payment.mjs';
 
 const valid = (overrides = {}) => ({
   topic: BAMBINI_EVENT.topic, clubName: 'FC Testverein',
@@ -77,6 +78,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
     },
     buildEventConfirmation, deliverEventConfirmation,
     loadYouthSponsors: async () => eventSponsors,
+    tournamentPayment,
     GIRLS_CUP_EVENT, GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration,
     BAMBINI_EVENT, URMEL_EVENT, getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration,
   });
@@ -119,7 +121,7 @@ test('a registration stores all wishes and emails the private organizer with tra
   const result = await response.json();
   assert.equal(result.saved, true);
   assert.equal(result.notificationStatus, 'versendet');
-  assert.match(result.message, /persönlich/);
+  assert.match(result.message, /Anmeldung ist bestätigt/);
   const recipient = app.operations.find((op) => op.table === 'contact_empfaenger');
   assert.equal(recipient.filters.schluessel, 'person-jerome-ernsberger');
   assert.equal(recipient.filters.aktiv, true);
@@ -178,7 +180,14 @@ test('every contact-based event sends a separate styled receipt to the applicant
     assert.match(mail.html, /#092f20[\s\S]*#f4d638/);
     assert.match(mail.html, /Jérôme Ernsberger[\s\S]*Jugendleiter/);
     assert.match(mail.html, /https:\/\/bsvnordstern.de\/kontakt\/\?thema=person-jerome-ernsberger/);
-    assert.match(mail.text, /Teilnahme[\s\S]*Startzeiten persönlich/);
+    assert.match(mail.text, /Teilnahme ist hiermit bestätigt/);
+    assert.match(mail.subject, /Anmeldung ist bestätigt/);
+    assert.doesNotMatch(mail.text, /Wir prüfen|Eingang eurer Anmeldung|sendet keine zweite Anmeldung|Startzeiten persönlich/);
+    assert.match(mail.text, /bar vor Ort[\s\S]*Jugendkasse überweisen/);
+    assert.ok(mail.text.includes(YOUTH_TREASURY.accountHolder));
+    assert.ok(mail.text.includes(YOUTH_TREASURY.iban.replace(/(.{4})(?=.)/g, '$1 ')));
+    assert.ok(mail.text.includes(YOUTH_TREASURY.bic));
+    assert.match(mail.text, /Verwendungszweck: .*FC Testverein.*registration-123/);
     assert.match(mail.text, /Anmeldenummer: registration-123/);
     assert.equal(options.idempotencyKey, 'event-confirmation/test/contact_anfragen/registration-123');
     const saved = app.operations.find(op => op.values?.bestaetigung_status);

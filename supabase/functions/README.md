@@ -115,8 +115,9 @@ Das öffentliche Thema `event-bambini-weihnachten-2026` wird serverseitig auf de
 bestehenden Empfänger `person-jerome-ernsberger` abgebildet. Trainerkontakt,
 Verein, sämtliche ausgewählten Wunschzeiten und optionale Anmerkungen kommen
 in einer E-Mail an die Organisation an; Antworten gehen an den Trainerkontakt.
-Teilnahme und Startzeit werden anschließend persönlich bestätigt. Eine
-automatische Bestätigungsmail an die anmeldende Person ist nicht vorgesehen.
+Die Teilnahme wird unmittelbar nach erfolgreicher Anmeldung per E-Mail bestätigt.
+Die endgültige Startzeit und der Ablauf werden später mitgeteilt. Die Mail nennt
+Barzahlung vor Ort oder Überweisung an die bestätigte Jugendkasse als Zahlungswege.
 
 Die private Speicherung erfolgt in `contact_anfragen`, mit dem Ereignisthema
 in `thema` und den Anmeldedaten in `nachricht`. Der zentrale E-Mail-Modus bleibt
@@ -146,8 +147,8 @@ Tage dieser Anmeldung. Preisangaben aus dem Browser werden nicht übernommen.
 Beide Themen gehen ebenfalls an `person-jerome-ernsberger` und verwenden
 die bestehenden privaten Kontakttabellen und den Spamschutz. Die E-Mail
 enthält den Trainerkontakt und alle ausgewählten Zeiten bzw. Tage und Teams;
-beim Girls Cup zusätzlich die Gesamtgebühr. Die Teilnahme bestätigt die
-Organisation persönlich. Neue Tabellen oder Migrationen sind nicht nötig.
+beim Girls Cup zusätzlich die Gesamtgebühr. Die Anmeldenden erhalten sofort
+ihre Teilnahmebestätigung mit Zahlungshinweisen; die Startzeiten folgen später.
 Auch hier zuerst `contact-request`, dann die Website veröffentlichen.
 
 ## Fördervereinsantrag

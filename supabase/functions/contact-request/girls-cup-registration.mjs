@@ -6,7 +6,7 @@ export const GIRLS_CUP_ROUTING = Object.freeze({
   inquiryLabel: `${GIRLS_CUP_EVENT.title} · Mannschaftsanmeldung`,
 });
 
-export const GIRLS_CUP_SUCCESS_MESSAGE = 'Vielen Dank! Eure Anmeldung zum Bodensee Indoor Girls Cup ist eingegangen. Wir melden uns bei eurer Trainerin oder eurem Trainer und bestätigen die Teilnahme der angemeldeten Teams und die Startzeiten persönlich.';
+export const GIRLS_CUP_SUCCESS_MESSAGE = 'Vielen Dank! Eure Anmeldung zum Bodensee Indoor Girls Cup ist bestätigt. Wir freuen uns auf euch! Die Startzeiten und den Spielplan schicken wir euch rechtzeitig vor dem Turnier zu.';
 
 /** @param {Record<string, unknown>} body */
 export function prepareGirlsCupRegistration(body) {
@@ -37,7 +37,7 @@ export function prepareGirlsCupRegistration(body) {
   if (GIRLS_CUP_EVENT.days.some((day) => days.includes(day.isoDate) !== teams.some((team) => day.divisionKeys.includes(team.division)))) {
     return { error: 'Bitte melde für jeden ausgewählten Tag mindestens ein Team in der passenden Altersklasse an.' };
   }
-  if (body.registrationAccepted !== true) return { error: 'Bitte bestätige den Hinweis zu Startgebühren und persönlicher Teilnahmebestätigung.' };
+  if (body.registrationAccepted !== true) return { error: 'Bitte bestätige die Angaben zur Anmeldung, zu den Startzeiten und zu den Startgebühren.' };
 
   const teamCount = teams.reduce((sum, team) => sum + team.count, 0);
   const totalFee = calculateGirlsCupFee(teamCount);
@@ -45,6 +45,7 @@ export function prepareGirlsCupRegistration(body) {
   return {
     teamCount,
     totalFee,
+    paymentAmount: `${totalFee} € insgesamt`,
     confirmationDetails: [
       ['Verein', club],
       ...selectedDays.map((day) => [`${day.weekday}, ${day.date}`, day.divisionKeys.flatMap((division) => {
@@ -75,7 +76,7 @@ export function prepareGirlsCupRegistration(body) {
       `Spielort: ${GIRLS_CUP_EVENT.venue}`,
       `Adresse: ${GIRLS_CUP_EVENT.address}`,
       'Kontaktperson: Trainerin oder Trainer der Mannschaften',
-      'Hinweis zu Gebühren und persönlicher Teilnahme- und Startzeitbestätigung: bestätigt',
+      'Hinweis zu Startgebühren, direkter Anmeldebestätigung und späterer Startzeitmitteilung: akzeptiert',
       '',
       `Anmerkungen: ${notes || 'Keine'}`,
     ].join('\n'),

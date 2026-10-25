@@ -31,7 +31,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Mannschaft als Trainerin oder Trainer an. Mir ist bekannt, dass die ausgewählten Zeitfenster Wünsche sind und die Teilnahme sowie die zugeteilte Startzeit erst nach persönlicher Bestätigung durch den BSV feststehen. Die Startgebühr beträgt {event.fee} pro Mannschaft. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Mannschaft als Trainerin oder Trainer an und akzeptiere die Startgebühr von {event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt. Die ausgewählten Zeitfenster sind Wünsche; die endgültige Startzeit wird später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
     <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
@@ -112,7 +112,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         if (!response.ok || data.ok !== true) throw new Error(data.message || 'Die Anmeldung konnte nicht übermittelt werden. Bitte versuche es später erneut.');
         completed = true;
         status.dataset.success = 'true';
-        status.textContent = data.message || 'Vielen Dank! Eure Anmeldung ist eingegangen. Wir melden uns bei euch.';
+        status.textContent = data.message || 'Vielen Dank! Eure Anmeldung ist bestätigt. Wir freuen uns auf euch!';
         form.reset();
       } catch (error) {
         status.dataset.success = 'false';

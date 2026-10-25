@@ -4,6 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { buildEventConfirmation, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
 import { loadYouthSponsors } from '../_shared/youth-sponsors.mjs';
+import { tournamentPayment } from '../_shared/tournament-payment.mjs';
 import { resolveContactRecipients } from './recipients.mjs';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
 import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
@@ -304,12 +305,16 @@ Deno.serve(async (request) => {
       event: {
         ...event,
         url: `https://bsvnordstern.de/erlebnis/${eventPath}/`,
-        ...(girlsRegistration ? { nextSteps: 'Wir prüfen eure Anmeldung und bestätigen euch die Teilnahme der angemeldeten Teams und die endgültigen Startzeiten persönlich. Die Startgebühren gelten gemeinsam für alle Teams dieser Anmeldung.' } : {}),
+        ...(girlsRegistration ? { nextSteps: 'Die genauen Startzeiten und den Spielplan schicken wir euch rechtzeitig vor dem Turnier zu.' } : {}),
       },
       firstName, lastName, email, phone, reference: inquiryId,
       details: teamRegistration.confirmationDetails, notes: teamRegistration.confirmationNotes,
       replyTo: recipient.emails[0],
       sponsors: await loadYouthSponsors(),
+      payment: tournamentPayment({
+        event, clubName, reference: inquiryId,
+        amount: teamRegistration.paymentAmount,
+      }),
     });
     confirmationStatus = await deliverEventConfirmation({
       db: supabase, table: 'contact_anfragen', id: inquiryId,
