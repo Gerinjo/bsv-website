@@ -46,7 +46,7 @@ const tournaments: HomeTournament[] = [
     heading: 'Bodensee.', emphasis: 'Indoor Girls Cup 2027.',
     intro: 'Zwei Tage Hallenfußball für E-, D-, C- und B-Juniorinnen. Gemeinsam spielen, als Team zusammenhalten und Fußballfreude erleben.',
     logo: { src: '/images/verein/wappen/bsv-nordstern.png', alt: 'BSV Nordstern Radolfzell' },
-    photo: { src: girlsCup.artwork, alt: 'Turniermotiv Bodensee Indoor Girls Cup 2027 mit Fußball und stilisierten Bodenseewellen', caption: 'Vier Altersklassen · Ein Wochenende Hallenfußball', width: 1200, height: 800, fit: 'contain' },
+    photo: { src: girlsCup.artwork, alt: 'Turniermotiv Bodensee Indoor Girls Cup 2027 mit Mädchen beim Hallenfußball', caption: 'Vier Altersklassen · Ein Wochenende Hallenfußball', width: 1200, height: 800, fit: 'contain' },
     facts: [
       ...girlsCup.days.map((day) => ({ label: day.date, value: day.divisions.join(' & ') })),
       { label: 'Spielort', value: `${girlsCup.venue} · ${girlsCup.address}`, wide: true },

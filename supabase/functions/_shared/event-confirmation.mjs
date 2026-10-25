@@ -1,4 +1,4 @@
-import { getOtherTournaments } from './tournament-announcements.mjs';
+import { getOtherTournaments, getTournamentImage } from './tournament-announcements.mjs';
 import { buildYouthSponsorFooter } from './youth-sponsors.mjs';
 
 export const EVENT_CONTACT_URL = 'https://bsvnordstern.de/kontakt/?thema=person-jerome-ernsberger';
@@ -19,7 +19,12 @@ export function buildEventConfirmation({ event, firstName, lastName, email, phon
     ['Kontaktperson eurer Anmeldung', `${firstName} ${lastName}`], ['E-Mail', email], ['Telefon', phone],
     ['Anmerkungen', notes || 'Keine'], ['Anmeldenummer', reference],
   ];
-  const rowHtml = rows.map(([label, value]) => `<tr><td style="padding:8px 0;border-bottom:1px solid #dde5de;line-height:1.6;overflow-wrap:anywhere;"><strong style="color:#164f32;">${escapeHtml(label)}</strong><br>${lines(value)}</td></tr>`).join('');
+  const rowHtml = rows.map(([label, value]) => `<tr><th scope="row" width="35%" align="left" valign="top" style="width:35%;padding:6px 10px;border-bottom:1px solid #dde5de;font-size:12px;font-weight:700;color:#164f32;line-height:1.45;vertical-align:top;overflow-wrap:anywhere;">${escapeHtml(label)}</th><td valign="top" style="padding:6px 8px 6px 0;border-bottom:1px solid #dde5de;font-size:13px;line-height:1.45;vertical-align:top;overflow-wrap:anywhere;">${lines(value)}</td></tr>`).join('');
+  const eventImage = getTournamentImage(event.url);
+  const registrationHtml = `<table class="registration-summary" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="table-layout:fixed;"><tr><td class="registration-details" valign="top" style="vertical-align:top;">
+<table width="100%" cellspacing="0" cellpadding="0" aria-label="Eure Anmeldedaten" style="background:#f3f6f3;border-left:4px solid #f4d638;table-layout:fixed;"><caption style="padding:10px 12px;text-align:left;background:#164f32;color:#ffffff;font-size:14px;font-weight:700;">Eure Anmeldedaten</caption><tbody>${rowHtml}</tbody></table></td>
+${eventImage ? `<td class="registration-art" width="220" valign="top" style="width:220px;padding-left:16px;vertical-align:top;"><a href="${escapeHtml(event.url)}" style="text-decoration:none;"><img src="${escapeHtml(eventImage.src)}" width="204" height="${Math.round(204 * eventImage.height / eventImage.width)}" alt="${escapeHtml(eventImage.alt)}" style="display:block;width:100%;max-width:320px;height:auto;border:0;"></a><p style="margin:6px 0 0;color:#687b6e;font-size:10px;line-height:1.4;">${escapeHtml(eventImage.caption)}</p></td>` : ''}
+</tr></table>`;
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.venue}, ${event.address}`)}`;
   const button = (label, url) => `<a href="${escapeHtml(url)}" style="display:inline-block;margin:8px 8px 0 0;padding:13px 18px;background:#164f32;color:#ffffff;text-decoration:none;font-weight:700;border-radius:4px;">${escapeHtml(label)}</a>`;
   const headerBackground = 'https://bsvnordstern.de/images/onboarding/email-header-organic.png';
@@ -36,21 +41,22 @@ export function buildEventConfirmation({ event, firstName, lastName, email, phon
 <p style="margin:0 0 8px;color:#164f32;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Noch mehr Fußball beim BSV</p>
 <h2 style="margin:0 0 12px;color:#164f32;font-size:23px;">Unsere weiteren Turniere</h2>
 <p style="margin:0 0 20px;line-height:1.7;color:#3f5146;">Vielleicht ist auch für eure anderen Mannschaften etwas dabei. Gebt die Termine gerne in eurem Verein weiter!</p>
-${otherTournaments.map(tournament => `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 14px;background:#ffffff;border-left:4px solid #f4d638;"><tr><td style="padding:18px;line-height:1.6;overflow-wrap:anywhere;">
+${otherTournaments.map(tournament => `<table class="tournament-card" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 14px;background:#ffffff;border-left:4px solid #f4d638;table-layout:fixed;"><tr><td class="tournament-copy" valign="top" style="padding:14px;line-height:1.5;vertical-align:top;overflow-wrap:anywhere;">
 <p style="margin:0 0 6px;color:#164f32;font-size:13px;font-weight:700;">${escapeHtml(tournament.date)}</p>
 <h3 style="margin:0 0 8px;color:#17251b;font-size:18px;line-height:1.35;">${escapeHtml(tournament.title)}</h3>
 <p style="margin:0 0 6px;color:#3f5146;font-size:14px;">${escapeHtml(tournament.audience)}<br>${escapeHtml(tournament.venue)}</p>
 <p style="margin:0 0 10px;color:#52665a;font-size:13px;">${escapeHtml(tournament.note)}</p>
-${tournament.image ? `<img src="${escapeHtml(tournament.image.src)}" width="584" height="${Math.round(584 * tournament.image.height / tournament.image.width)}" alt="${escapeHtml(tournament.image.alt)}" style="display:block;width:100%;max-width:584px;height:auto;margin:16px 0 6px;border:0;">
-<p style="margin:0 0 14px;color:#687b6e;font-size:12px;line-height:1.5;">${escapeHtml(tournament.image.caption)}</p>` : ''}
-<a href="${escapeHtml(tournament.url)}" style="color:#164f32;font-size:14px;font-weight:700;">Infos &amp; Anmeldung →</a></td></tr></table>`).join('')}
+<a href="${escapeHtml(tournament.url)}" style="color:#164f32;font-size:14px;font-weight:700;">Infos &amp; Anmeldung →</a></td>
+${tournament.image ? `<td class="tournament-image-cell" width="146" valign="top" style="width:146px;padding:14px 14px 14px 0;vertical-align:top;"><img class="tournament-image" src="${escapeHtml(tournament.image.src)}" width="132" height="${Math.round(132 * tournament.image.height / tournament.image.width)}" alt="${escapeHtml(tournament.image.alt)}" style="display:block;width:132px;max-width:100%;height:auto;border:0;">
+<p style="margin:6px 0 0;color:#687b6e;font-size:10px;line-height:1.4;">${escapeHtml(tournament.image.caption)}</p></td>` : ''}
+</tr></table>`).join('')}
 </td></tr>` : '';
   const tournamentText = otherTournaments.length ? `\n\nUnsere weiteren BSV-Turniere\nGebt die Termine gerne in eurem Verein weiter!\n\n${otherTournaments.map(tournament => `${tournament.title}\n${tournament.date}\n${tournament.audience}\n${tournament.venue}\n${tournament.note}\nInfos & Anmeldung: ${tournament.url}`).join('\n\n')}` : '';
   return {
     to: email,
     ...(replyTo ? { reply_to: replyTo } : {}),
     subject: `Eure Anmeldung ist bestätigt – ${cleanSubject(event.title)}`,
-    html: `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Anmeldebestätigung</title><style>@media only screen and (max-width:480px){.event-header-gutter{padding:26px 20px 32px!important}.event-header-title{font-size:27px!important}.event-header-logo{width:82px!important;height:auto!important}.event-header-logo-cell{width:96px!important;padding-left:12px!important}}</style></head>
+    html: `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Anmeldebestätigung</title><style>@media only screen and (max-width:600px){.registration-details,.registration-art{display:block!important;width:100%!important;box-sizing:border-box!important}.registration-art{padding:16px 0 0!important}.registration-art img{margin:0 auto!important}.registration-art p{text-align:center!important}}@media only screen and (max-width:480px){.event-header-gutter{padding:26px 20px 32px!important}.event-header-title{font-size:27px!important}.event-header-logo{width:82px!important;height:auto!important}.event-header-logo-cell{width:96px!important;padding-left:12px!important}.tournament-copy{padding:12px!important}.tournament-image-cell{width:96px!important;padding:12px 8px 12px 0!important}.tournament-image{width:88px!important}}</style></head>
 <body style="margin:0;padding:0;background:#eef2ee;font-family:Arial,Helvetica,sans-serif;color:#17251b;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eef2ee;"><tr><td align="center" style="padding:24px 12px;">
 <!--[if mso]><table role="presentation" width="680" align="center" cellspacing="0" cellpadding="0"><tr><td><![endif]-->
@@ -68,7 +74,7 @@ ${tournament.image ? `<img src="${escapeHtml(tournament.image.src)}" width="584"
 <tr><td style="padding:32px 24px 24px;">
 <p style="margin:0 0 18px;font-size:18px;font-weight:700;">Hallo ${escapeHtml(firstName)},</p>
 <p style="margin:0 0 18px;line-height:1.7;color:#3f5146;">vielen Dank für eure Anmeldung! Eure Teilnahme ist hiermit bestätigt. Wir freuen uns darauf, euch beim BSV Nordstern zu begrüßen. Hier findet ihr alle Angaben auf einen Blick.</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f3f6f3;border-left:4px solid #f4d638;"><tr><td style="padding:12px 18px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${rowHtml}</table></td></tr></table>
+${registrationHtml}
 </td></tr>
 <tr><td style="padding:28px 24px;background:#f8faf8;"><h2 style="margin:0 0 12px;color:#164f32;font-size:23px;">Schön, dass ihr dabei seid!</h2>
 <p style="margin:0;line-height:1.7;color:#3f5146;">${escapeHtml(nextSteps)}</p>

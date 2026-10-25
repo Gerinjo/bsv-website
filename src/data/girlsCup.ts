@@ -5,7 +5,7 @@ export const girlsCup = {
   id: 'bodensee-indoor-girls-cup',
   href: '/erlebnis/bodensee-indoor-girls-cup',
   fee: GIRLS_CUP_FEE_LABEL,
-  artwork: '/images/events/bodensee-indoor-girls-cup-2027.svg',
+  artwork: '/images/events/bodensee-indoor-girls-cup-2027-motiv.jpg',
   rulesUrl: 'https://www.sbfv.de/fileadmin/user_upload/Nav_SBFV/ab/AB11_Futsal_0.pdf',
   rulesOverviewUrl: 'https://www.sbfv.de/sbfv/ausfuehrungsbestimmungen',
   rules: [

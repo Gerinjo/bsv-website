@@ -49,9 +49,10 @@ test('HTML and text confirmations announce the same other tournaments with direc
   for (const event of getOtherTournaments(girlsUrl, now)) {
     assert.ok(section.text().includes(event.title));
     assert.ok(section.text().includes(event.date));
-    const card = section.find('h3').filter((_, heading) => $(heading).text() === event.title).parent();
+    const card = section.find('h3').filter((_, heading) => $(heading).text() === event.title).closest('.tournament-card');
     assert.equal(card.find(`a[href="${event.url}"]`).length, 1);
     assert.equal(card.find('img').attr('src'), event.image.src);
+    assert.equal(card.find('.tournament-copy').next('.tournament-image-cell').find('img').attr('width'), '132');
     assert.ok(card.find('img').attr('alt'));
     assert.ok(mail.text.includes(event.url));
   }
@@ -59,6 +60,14 @@ test('HTML and text confirmations announce the same other tournaments with direc
   assert.ok(!mail.text.includes('Grundschulturnier'));
   assert.ok(!mail.html.includes('/gst2027/'));
   assert.ok(mail.text.includes('Urmel Bambini Cup 2027 – Kinder spielen für Kinder'));
+  assert.match(section.find('img[alt*="Urmel"]').attr('src'), /urmel-drache\.png$/);
+  const summary = $('.registration-summary');
+  assert.equal(summary.find('.registration-details').next('.registration-art').find('img').attr('src'), 'https://bsvnordstern.de/images/events/bodensee-indoor-girls-cup-2027-motiv.jpg');
+  assert.equal(summary.find('caption').text(), 'Eure Anmeldedaten');
+  assert.equal(summary.find('th[scope="row"]').length, summary.find('.registration-details td').length);
+  for (const value of ['FC Testverein', 'Mara Muster', 'trainer@example.org', '07732 123456', 'one-registration']) {
+    assert.ok(summary.text().includes(value));
+  }
 });
 
 test('transient errors retry with one idempotency key and record only the final outcome', async () => {
