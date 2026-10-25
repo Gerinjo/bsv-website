@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import EventTeamRoster from '../../components/EventTeamRoster.astro';
 import GirlsCupRegistrationForm from '../../components/GirlsCupRegistrationForm.astro';
 import { girlsCup } from '../../data/girlsCup';
 import { withBase } from '../../utils/paths';
@@ -35,7 +36,7 @@ import { withBase } from '../../utils/paths';
     </section>
 
     <section class="cup-days shell" id="turniertage" aria-labelledby="days-title">
-      <div class="section-heading"><p class="eyebrow">Euer Wochenende im Überblick</p><h2 id="days-title">Zwei Turniertage.<br /><em>Findet euren Termin.</em></h2><p>Die Altersklassen sind auf Samstag und Sonntag verteilt. Die Startzeiten der einzelnen Turniere folgen.</p></div>
+      <div class="section-heading"><p class="eyebrow">Euer Wochenende im Überblick</p><h2 id="days-title">Zwei Turniertage.<br /><em>Findet euren Termin.</em></h2><p>Die Altersklassen sind auf Samstag und Sonntag verteilt. Pro Altersklasse sind acht Teams in zwei Gruppen à vier Teams sowie zwei Wartelistenplätze vorgesehen. Die Startzeiten und die Gruppeneinteilung folgen.</p></div>
       <div class="days-grid">
         {girlsCup.days.map((day) => (
           <article class="day-card" data-cup-day={day.isoDate}>
@@ -77,9 +78,11 @@ import { withBase } from '../../utils/paths';
       <p class="rules-source">Verlinkte AB-11-Fassung: Oktober 2019. Maßgeblich ist die zum Turnier gültige Fassung des SBFV.</p>
     </section>
 
+    <EventTeamRoster topic={girlsCup.topic} />
+
     <section class="cup-registration" id="anmeldung" aria-labelledby="registration-title">
       <div class="shell registration-grid">
-        <div class="registration-copy"><p class="eyebrow">Ein Verein · Ein oder zwei Tage</p><h2 id="registration-title">Eure Teams.<br /><em>Euer Wochenende.</em></h2><p>Meldet eure Mannschaften gemeinsam an. Wählt Samstag, Sonntag oder beide Tage und gebt die Teamanzahl je Altersklasse an.</p><p><strong>{girlsCup.fee}.</strong> Die Staffelung gilt gemeinsam für alle Teams dieser Anmeldung, auch über beide Tage. Zwei Teams kosten 70 €, drei Teams 100 €.</p><p>Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer. Nach eurer Anmeldung erhaltet ihr direkt die Bestätigung per E-Mail. Die Startzeiten und den Spielplan schicken wir euch rechtzeitig vor dem Turnier zu.</p><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zu Jérôme Ernsberger →</a></div>
+        <div class="registration-copy"><p class="eyebrow">Ein Verein · Ein oder zwei Tage</p><h2 id="registration-title">Eure Teams.<br /><em>Euer Wochenende.</em></h2><p>Meldet eure Mannschaften gemeinsam an. Wählt Samstag, Sonntag oder beide Tage und gebt die Teamanzahl je Altersklasse an.</p><p><strong>{girlsCup.fee}.</strong> Die Staffelung gilt gemeinsam für die bestätigten Teams dieser Anmeldung, auch über beide Tage. Für Wartelistenteams bitte noch nichts bezahlen. Zwei Teams kosten 70 €, drei Teams 100 €.</p><p>Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer. Nach eurer Anmeldung erhaltet ihr direkt eine E-Mail mit euren bestätigten Turnierplätzen oder Wartelistenplätzen. Die Startzeiten und den Spielplan schicken wir euch rechtzeitig vor dem Turnier zu.</p><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zu Jérôme Ernsberger →</a></div>
         <GirlsCupRegistrationForm />
       </div>
     </section>

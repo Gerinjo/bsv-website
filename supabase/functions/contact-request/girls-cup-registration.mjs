@@ -29,9 +29,9 @@ export function prepareGirlsCupRegistration(body) {
   const divisions = GIRLS_CUP_EVENT.days.flatMap((day) => day.divisionKeys);
   if (!Array.isArray(teams) || teams.length < 1 || teams.length > divisions.length
     || teams.some((team) => !team || typeof team !== 'object' || !divisions.includes(team.division)
-      || !Number.isSafeInteger(team.count) || team.count < 1 || team.count > 99)
+      || !Number.isSafeInteger(team.count) || team.count < 1 || team.count > 9)
     || new Set(teams.map((team) => team.division)).size !== teams.length) {
-    return { error: 'Bitte gib für jede gewünschte Altersklasse eine ganze Teamanzahl zwischen 1 und 99 an.' };
+    return { error: 'Bitte gib für jede gewünschte Altersklasse eine ganze Teamanzahl zwischen 1 und 9 an. Je Altersklasse gibt es 8 Turnierplätze (einschließlich BSV) und 2 Wartelistenplätze.' };
   }
   // Every selected day needs teams, and teams may only belong to selected days.
   if (GIRLS_CUP_EVENT.days.some((day) => days.includes(day.isoDate) !== teams.some((team) => day.divisionKeys.includes(team.division)))) {

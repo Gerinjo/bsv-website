@@ -1,0 +1,84 @@
+---
+import { GIRLS_CUP_EVENT } from '../../supabase/functions/_shared/girls-cup-event.mjs';
+interface Props { topic: string; }
+const { topic } = Astro.props;
+const girls = topic === GIRLS_CUP_EVENT.topic;
+const categories = girls ? GIRLS_CUP_EVENT.days.flatMap(day => day.divisionKeys.map(key => ({ key, label: `${key}-Juniorinnen`, date: `${day.weekday}, ${day.date}` }))) : [{ key: 'Bambini', label: 'Bambini', date: '' }];
+const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
+---
+<section class="event-roster" id="mannschaften" data-event-roster data-topic={topic} data-endpoint={endpoint} aria-labelledby="roster-title">
+  <div class="roster-heading"><p class="eyebrow">Wir sind dabei</p><h2 id="roster-title">Angemeldete Mannschaften.</h2>
+    <p>{girls ? 'Je Altersklasse spielen zwei Gruppen mit je vier Teams. Ein Platz ist für den BSV reserviert. Danach nehmen wir zwei Teams auf die Warteliste auf. Die Gruppeneinteilung folgt später.' : 'Diese Mannschaften sind angemeldet. Die gewünschten Startzeiten stimmen wir noch ab; eine Warteliste gibt es hier derzeit nicht.'}</p>
+  </div>
+  <p class="roster-status" data-roster-status role="status">Die aktuelle Mannschaftsliste wird geladen …</p>
+  <button class="retry" type="button" data-roster-retry hidden>Liste erneut laden</button>
+  <div class:list={['roster-grid', { 'one-category': !girls }]}>
+    {categories.map(category => <article data-roster-category={category.key}>
+      <p class="category-date">{category.date}</p><h3>{category.label}</h3>
+      <p class="category-count" data-roster-count>BSV als erste Mannschaft gesetzt</p>
+      <ol data-roster-confirmed><li class="host"><span>BSV Nordstern Radolfzell I</span><small>Gastgeber</small></li></ol>
+      {girls && <div class="waiting"><h4>Warteliste <span data-waiting-count></span></h4><ol data-roster-waiting><li class="free">Wartelistenplätze werden geladen …</li></ol></div>}
+    </article>)}
+  </div>
+  <p class="roster-note">Hier erscheinen Vereins- und Mannschaftsnamen. Die Kontaktdaten der Anmeldenden werden nicht veröffentlicht.</p>
+  <noscript>Bitte aktiviere JavaScript, um alle aktuellen Mannschaften zu sehen.</noscript>
+</section>
+
+<script>
+  for (const section of document.querySelectorAll<HTMLElement>('[data-event-roster]')) {
+    let busy = false;
+    let refreshAgain = false;
+    const status = section.querySelector<HTMLElement>('[data-roster-status]')!;
+    const retry = section.querySelector<HTMLButtonElement>('[data-roster-retry]')!;
+    const teamName = (team: { clubName: string; teamNumber: number }) => `${team.clubName}${team.teamNumber === 1 ? ' I' : team.teamNumber === 2 ? ' II' : team.teamNumber === 3 ? ' III' : ` ${team.teamNumber}`}`;
+    const item = (label: string, kind = '', detail = '') => {
+      const li = document.createElement('li'); li.className = kind;
+      const text = document.createElement('span'); text.textContent = label; li.append(text);
+      if (detail) { const small = document.createElement('small'); small.textContent = detail; li.append(small); }
+      return li;
+    };
+    const refresh = async () => {
+      if (busy) { refreshAgain = true; return; } busy = true; retry.disabled = true;
+      try {
+        const url = new URL(section.dataset.endpoint!); url.searchParams.set('action', 'teams'); url.searchParams.set('event', section.dataset.topic!);
+        const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+        const data = await response.json();
+        if (!response.ok || !data.ok || !Array.isArray(data.categories) || !data.categories.length) throw new Error();
+        for (const category of data.categories) {
+          const card = [...section.querySelectorAll<HTMLElement>('[data-roster-category]')].find(card => card.dataset.rosterCategory === category.key);
+          if (!card || !Array.isArray(category.teams)) continue;
+          const confirmed = category.teams.filter((team: { status: string }) => team.status === 'confirmed');
+          const waiting = category.teams.filter((team: { status: string }) => team.status === 'waiting');
+          const list = card.querySelector<HTMLOListElement>('[data-roster-confirmed]')!; list.replaceChildren();
+          confirmed.forEach((team: { clubName: string; teamNumber: number; host: boolean }) => list.append(item(teamName(team), team.host ? 'host' : '', team.host ? 'Gastgeber' : '')));
+          if (category.capacity) for (let i = confirmed.length; i < category.capacity; i++) list.append(item('Platz frei', 'free'));
+          card.querySelector<HTMLElement>('[data-roster-count]')!.textContent = category.capacity ? `${confirmed.length} von ${category.capacity} Turnierplätzen belegt` : `${confirmed.length} ${confirmed.length === 1 ? 'Mannschaft angemeldet' : 'Mannschaften angemeldet'}`;
+          const queue = card.querySelector<HTMLOListElement>('[data-roster-waiting]');
+          if (queue) {
+            queue.replaceChildren(); waiting.forEach((team: { clubName: string; teamNumber: number }) => queue.append(item(teamName(team))));
+            for (let i = waiting.length; i < category.waitingCapacity; i++) queue.append(item('Wartelistenplatz frei', 'free'));
+            card.querySelector<HTMLElement>('[data-waiting-count]')!.textContent = `· ${waiting.length}/${category.waitingCapacity}`;
+          }
+        }
+        status.textContent = 'Aktueller Anmeldestand'; retry.hidden = true;
+      } catch {
+        status.textContent = 'Der aktuelle Anmeldestand konnte gerade nicht geladen werden. Bitte versucht es erneut.'; retry.hidden = false;
+      } finally { busy = false; retry.disabled = false; if (refreshAgain) { refreshAgain = false; void refresh(); } }
+    };
+    retry.addEventListener('click', () => void refresh());
+    document.addEventListener('bsv:event-registration-saved', () => void refresh());
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });
+    window.setInterval(() => { if (!document.hidden) void refresh(); }, 60000);
+    void refresh();
+  }
+</script>
+
+<style>
+  .event-roster{width:min(1160px,calc(100% - 48px));margin:0 auto;padding:70px 0;scroll-margin-top:120px;color:#173d2b}
+  .eyebrow{margin:0 0 12px;color:#356b67;font-size:.7rem;letter-spacing:.14em;font-weight:850;text-transform:uppercase}.roster-heading h2{margin:0 0 22px;font-size:clamp(2rem,4vw,3rem);line-height:1.1;letter-spacing:-.035em}.roster-heading>p:last-child{max-width:740px;color:#536353;line-height:1.8}
+  .roster-status,.roster-note{font-size:.8rem;line-height:1.6;color:#536353}.roster-status{margin:25px 0 16px}.roster-note{margin-top:22px}
+  .roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.roster-grid.one-category{grid-template-columns:1fr;max-width:760px}article{min-width:0;padding:26px;background:#fffefa;border-top:4px solid #f4d638;box-shadow:0 8px 24px #092f2008}
+  .category-date{margin:0 0 8px;color:#536353;font-size:.75rem}.category-date:empty{display:none}h3{margin:0;font-size:1.55rem}h4{margin:22px 0 12px;font-size:.9rem}h4 span{color:#687b6e;font-weight:400}.category-count{margin:10px 0 20px;color:#536353;font-size:.8rem}
+  ol{margin:0;padding-left:30px}.event-roster :global(li){padding:10px 8px;border-bottom:1px solid #e0e6dc;font-size:.87rem;line-height:1.5;overflow-wrap:anywhere}.event-roster :global(li)::marker{color:#708574;font-size:.75rem}.event-roster :global(li.host){background:#e7f0e6;font-weight:750}.event-roster :global(li small){display:block;color:#52665a;font-size:.68rem;font-weight:400}.event-roster :global(.free){color:#6f7c71;font-style:italic}.waiting{margin-top:23px;border-top:1px solid #d2dbd2}.retry{padding:10px 14px;margin-bottom:18px;border:1px solid #173d2b;background:white;color:#173d2b;cursor:pointer;font:inherit;font-size:.8rem}.retry[hidden]{display:none}
+  @media(max-width:700px){.event-roster{width:calc(100% - 34px);padding:48px 0}.roster-grid{grid-template-columns:1fr}article{padding:22px}}
+</style>

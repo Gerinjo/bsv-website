@@ -123,9 +123,26 @@ Die private Speicherung erfolgt in `contact_anfragen`, mit dem Ereignisthema
 in `thema` und den Anmeldedaten in `nachricht`. Der zentrale E-Mail-Modus bleibt
 maßgeblich. Bei einem Versandfehler nach erfolgreicher Speicherung zeigt das
 Formular einen Kontaktlink und verhindert erneutes Absenden derselben
-Anmeldung. Es ist keine Datenbankmigration erforderlich.
+Anmeldung. Die normalisierten Mannschaftslisten benötigen die Migration
+`event_team_rosters`.
 
-Zur Bereitstellung zuerst die aktualisierte öffentliche Edge Function
+Die drei Turnierseiten lesen `GET contact-request?action=teams&event=<Thema>`.
+Öffentlich sind ausschließlich Verein, Teamnummer, Kategorie und Platzstatus;
+Anmeldungs-IDs, Kontaktdaten und Anmerkungen bleiben privat. Je Kategorie steht
+eine BSV-Mannschaft zuerst. Beim Girls Cup zählen diese Gastgeber zu den acht
+Turnierplätzen (zwei Gruppen à vier Teams); zusätzlich sind zwei Wartelistenplätze
+möglich. Beide Bambini-Veranstaltungen haben jeweils eine gemeinsame Liste ohne
+Warteliste; Wunschzeiten legen keine Kategorie fest.
+
+`submit_event_registration` speichert Anfrage und Teams atomar und sperrt die
+betroffenen Kategorien in fester Reihenfolge. Ist eine Kategorie samt Warteliste
+voll, wird die gesamte Anfrage zurückgerollt (HTTP 409). Gemischte Anmeldungen
+weisen bestätigte Teams und Wartelistenteams getrennt aus; die Startgebühr
+berechnet sich nur aus den bestätigten Teams. Testanmeldungen haben eigene
+Plätze und erscheinen nicht öffentlich. Die SQL-Grenztests in
+`supabase/tests/event_team_rosters.sql` werden vollständig zurückgerollt.
+
+Zur Bereitstellung zuerst die Migration, dann die aktualisierte öffentliche Edge Function
 `contact-request` deployen, danach die Website. Die Verhaltenstests laufen mit
 `node --test tests/bambini-registration.test.mjs` ohne echten E-Mail-Versand.
 

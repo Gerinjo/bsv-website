@@ -32,7 +32,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
     <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Mannschaft als Trainerin oder Trainer an und akzeptiere die Startgebühr von {event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt. Die ausgewählten Zeitfenster sind Wünsche; die endgültige Startzeit wird später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
-    <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
+    <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Veröffentlichung unseres Vereinsnamens und unserer Mannschaften in der Teilnehmerliste sowie mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
       <label><span data-captcha-label>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label>
@@ -109,6 +109,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         const data = await response.json();
         // A stored request must not be sent a second time after a mail failure.
         completed = data.saved === true;
+        if (completed) document.dispatchEvent(new CustomEvent('bsv:event-registration-saved'));
         if (!response.ok || data.ok !== true) throw new Error(data.message || 'Die Anmeldung konnte nicht übermittelt werden. Bitte versuche es später erneut.');
         completed = true;
         status.dataset.success = 'true';

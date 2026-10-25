@@ -11,6 +11,7 @@ import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration 
 import { buildEventConfirmation, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
 import { resolveContactRecipients } from '../supabase/functions/contact-request/recipients.mjs';
 import { eventSponsors } from './fixtures/event-sponsors.mjs';
+import { applyTeamAllocation } from '../supabase/functions/contact-request/team-allocation.mjs';
 import { tournamentPayment, YOUTH_TREASURY } from '../supabase/functions/_shared/tournament-payment.mjs';
 
 const valid = (overrides = {}) => ({
@@ -27,11 +28,19 @@ const request = (body) => new Request('https://example.org/contact-request', {
 // No production secrets, network calls, registrations or messages are needed.
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/contact-request/index.ts', import.meta.url), 'utf8')
   .replace(/^import .*;\r?\n/gm, ''));
-function harness({ emailFails = false, confirmationFails = false, internalFails = false, captchaExpired = false, insertFails = false, trainerEmails = ['current@example.org','co@example.org'], bridgeFails = false } = {}) {
+function harness({ emailFails = false, confirmationFails = false, internalFails = false, captchaExpired = false, insertFails = false, trainerEmails = ['current@example.org','co@example.org'], bridgeFails = false, allocationOverride = null, capacityError = false } = {}) {
   const operations = [], mails = [], challenges = new Map();
   challenges.set(valid().captchaToken, { antwort: 7, expires_at: new Date(Date.now() + (captchaExpired ? -60000 : 60000)).toISOString() });
   const db = {
-    rpc: async (name, { routing_key }) => {
+    rpc: async (name, args) => {
+      if (name === 'submit_event_registration') {
+        if (capacityError) return { data: null, error: { code: 'P0001', message: 'EVENT_FULL:C-Juniorinnen' } };
+        operations.push({ table: 'contact_anfragen', operation: 'insert', values: args.p_contact });
+        if (insertFails) return { data: null, error: { message: 'simulated database failure' } };
+        return { data: { id: 'registration-123', allocations: allocationOverride ?? args.p_teams.flatMap(team => Array.from({ length: team.count }, (_, index) => ({ category: team.division, clubName: args.p_club_name, teamNumber: index + 1, position: index + 2, status: 'confirmed' }))) } };
+      }
+      if (name === 'get_event_team_roster') return { data: [{ key: 'E', label: 'E-Juniorinnen', capacity: 8, waitingCapacity: 2, teams: [{ clubName: 'BSV Nordstern Radolfzell', teamNumber: 1, position: 1, status: 'confirmed', host: true }] }] };
+      const { routing_key } = args;
       assert.equal(name, 'prepare_trainer_contact_lookup');
       return { data: { payload: { purpose: 'trainer-contact', routingKey: routing_key, requestedAt: new Date().toISOString() }, signature: 'a'.repeat(64) } };
     },
@@ -64,7 +73,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
   };
   let handle;
   runInNewContext(source, {
-    Request, Response, crypto, console: { error() {} }, createClient: () => db,
+    Request, Response, URL, crypto, console: { error() {} }, createClient: () => db,
     Deno: { env: { get: (key) => ({ SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'fake-server-key', ALLOWED_ORIGINS: 'https://bsvnordstern.de' })[key] }, serve: (callback) => { handle = callback; } },
     resolveContactRecipients: (options) => resolveContactRecipients({ ...options, fetcher: async () => {
       if (bridgeFails) throw new Error('simulated bridge outage');
@@ -76,7 +85,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
       if (emailFails || (confirmationFails && mail.to === 'trainer@example.org') || (internalFails && Array.isArray(mail.to))) throw new Error('simulated email failure');
       return { id: 'mail-123', mode: 'test' };
     },
-    buildEventConfirmation, deliverEventConfirmation,
+    buildEventConfirmation, deliverEventConfirmation, applyTeamAllocation,
     loadYouthSponsors: async () => eventSponsors,
     tournamentPayment,
     GIRLS_CUP_EVENT, GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration,
@@ -322,6 +331,56 @@ const girlsValid = (overrides = {}) => valid({
   days: ['2027-02-20', '2027-02-21'],
   teams: [{ division: 'E', count: 1 }, { division: 'B', count: 1 }],
   ...overrides,
+});
+
+test('full categories reject the whole registration without saving or sending mail', async () => {
+  const app = harness({ capacityError: true });
+  const response = await app.handle(request(girlsValid()));
+  const result = await response.json();
+  assert.equal(response.status, 409);
+  assert.equal(result.saved, false);
+  assert.match(result.message, /C-Juniorinnen/);
+  assert.equal(app.mails.length, 0);
+  assert.ok(!app.operations.some(operation => operation.operation === 'insert'));
+});
+
+test('waiting-only entries receive an explicit waiting list email without a payment request or participation promise', async () => {
+  const app = harness({ allocationOverride: [{ category: 'E', clubName: 'FC Testverein', teamNumber: 1, position: 9, status: 'waiting' }] });
+  const response = await app.handle(request(girlsValid({ days: ['2027-02-20'], teams: [{ division: 'E', count: 1 }] })));
+  assert.equal(response.status, 201);
+  assert.match((await response.json()).message, /Warteliste/);
+  const mail = app.mails[1].mail;
+  assert.match(mail.subject, /^Warteliste/);
+  assert.match(mail.text, /Teilnahme ist noch nicht bestätigt/);
+  assert.match(mail.html, /Teilnahme ist noch nicht bestätigt/);
+  assert.match(mail.text, /Warteliste, Platz 1/);
+  assert.doesNotMatch(mail.text, /Teilnahme ist hiermit bestätigt|Eure Startgebühr|DE77/);
+});
+
+test('mixed entries confirm only allocated teams and charge only the confirmed team', async () => {
+  const app = harness({ allocationOverride: [
+    { category: 'E', clubName: 'FC Testverein', teamNumber: 1, position: 8, status: 'confirmed' },
+    { category: 'E', clubName: 'FC Testverein', teamNumber: 2, position: 9, status: 'waiting' },
+  ] });
+  const response = await app.handle(request(girlsValid({ days: ['2027-02-20'], teams: [{ division: 'E', count: 2 }] })));
+  assert.equal(response.status, 201);
+  assert.match((await response.json()).message, /1 Team bestätigt, 1 Team auf der Warteliste/);
+  const mail = app.mails[1].mail;
+  assert.match(mail.subject, /bestätigte Teams und Warteliste/);
+  assert.match(mail.text, /40 € insgesamt/);
+  assert.doesNotMatch(mail.text, /70 €/);
+  assert.match(mail.text, /Warteliste bitte noch nichts bezahlen/);
+});
+
+test('public team reads return no applicant details and do not create a captcha', async () => {
+  const app = harness();
+  const response = await app.handle(new Request(`https://example.org/contact-request?action=teams&event=${GIRLS_CUP_EVENT.topic}`));
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.categories[0].teams[0].host, true);
+  assert.equal(app.operations.length, 0);
+  assert.equal(app.mails.length, 0);
+  assert.doesNotMatch(JSON.stringify(result), /email|telefon|vorname|nachname|inquiry_id/);
 });
 
 test('Girls Cup fees count all teams across selected days, with the discount after the first team', async () => {

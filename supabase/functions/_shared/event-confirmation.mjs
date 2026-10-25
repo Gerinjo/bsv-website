@@ -10,9 +10,11 @@ const lines = (value) => escapeHtml(value).replaceAll('\n', '<br>');
 const cleanSubject = (value) => String(value).replace(/[\r\n]/g, ' ');
 
 // Event facts and details come from the server's validated registration, never client-supplied fees or URLs.
-export function buildEventConfirmation({ event, firstName, lastName, email, phone, details, notes = '', reference, replyTo, now = new Date(), sponsors = [], payment = null }) {
+export function buildEventConfirmation({ event, firstName, lastName, email, phone, details, notes = '', reference, replyTo, now = new Date(), sponsors = [], payment = null, outcome = null }) {
   const sponsorFooter = buildYouthSponsorFooter(sponsors);
-  const nextSteps = event.nextSteps ?? 'Wir berücksichtigen eure Wunschzeiten bei der Einteilung. Die endgültige Startzeit und alle weiteren Informationen zum Ablauf schicken wir euch rechtzeitig vor dem Spieltag zu.';
+  const intro = outcome?.intro ?? 'vielen Dank für eure Anmeldung! Eure Teilnahme ist hiermit bestätigt. Wir freuen uns darauf, euch beim BSV Nordstern zu begrüßen. Hier findet ihr alle Angaben auf einen Blick.';
+  const heading = outcome?.heading ?? 'Schön, dass ihr dabei seid!';
+  const nextSteps = outcome?.nextSteps ?? event.nextSteps ?? 'Wir berücksichtigen eure Wunschzeiten bei der Einteilung. Die endgültige Startzeit und alle weiteren Informationen zum Ablauf schicken wir euch rechtzeitig vor dem Spieltag zu.';
   const rows = [
     ['Veranstaltung', event.title], ['Termin', event.date], ['Spielort', event.venue],
     ['Adresse', event.address], ...details,
@@ -55,7 +57,7 @@ ${tournament.image ? `<td class="tournament-image-cell" width="146" valign="top"
   return {
     to: email,
     ...(replyTo ? { reply_to: replyTo } : {}),
-    subject: `Eure Anmeldung ist bestätigt – ${cleanSubject(event.title)}`,
+    subject: `${cleanSubject(outcome?.subjectPrefix ?? 'Eure Anmeldung ist bestätigt')} – ${cleanSubject(event.title)}`,
     html: `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Anmeldebestätigung</title><style>@media only screen and (max-width:600px){.registration-details,.registration-art{display:block!important;width:100%!important;box-sizing:border-box!important}.registration-art{padding:16px 0 0!important}.registration-art img{margin:0 auto!important}.registration-art p{text-align:center!important}}@media only screen and (max-width:480px){.event-header-gutter{padding:26px 20px 32px!important}.event-header-title{font-size:27px!important}.event-header-logo{width:82px!important;height:auto!important}.event-header-logo-cell{width:96px!important;padding-left:12px!important}.tournament-copy{padding:12px!important}.tournament-image-cell{width:96px!important;padding:12px 8px 12px 0!important}.tournament-image{width:88px!important}}</style></head>
 <body style="margin:0;padding:0;background:#eef2ee;font-family:Arial,Helvetica,sans-serif;color:#17251b;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eef2ee;"><tr><td align="center" style="padding:24px 12px;">
@@ -73,10 +75,10 @@ ${tournament.image ? `<td class="tournament-image-cell" width="146" valign="top"
 <!--[if gte mso 9]></v:textbox></v:rect><![endif]--></td></tr>
 <tr><td style="padding:32px 24px 24px;">
 <p style="margin:0 0 18px;font-size:18px;font-weight:700;">Hallo ${escapeHtml(firstName)},</p>
-<p style="margin:0 0 18px;line-height:1.7;color:#3f5146;">vielen Dank für eure Anmeldung! Eure Teilnahme ist hiermit bestätigt. Wir freuen uns darauf, euch beim BSV Nordstern zu begrüßen. Hier findet ihr alle Angaben auf einen Blick.</p>
+<p style="margin:0 0 18px;line-height:1.7;color:#3f5146;">${escapeHtml(intro)}</p>
 ${registrationHtml}
 </td></tr>
-<tr><td style="padding:28px 24px;background:#f8faf8;"><h2 style="margin:0 0 12px;color:#164f32;font-size:23px;">Schön, dass ihr dabei seid!</h2>
+<tr><td style="padding:28px 24px;background:#f8faf8;"><h2 style="margin:0 0 12px;color:#164f32;font-size:23px;">${escapeHtml(heading)}</h2>
 <p style="margin:0;line-height:1.7;color:#3f5146;">${escapeHtml(nextSteps)}</p>
 </td></tr>
 ${paymentHtml}
@@ -87,7 +89,7 @@ ${tournamentHtml}
 ${sponsorFooter.html}
 <tr><td style="padding:24px;background:#092f20;color:#d3dfd7;font-size:13px;line-height:1.7;"><strong style="color:#f4d638;">Gemeinsam auf und neben dem Platz.</strong><br>BSV Nordstern e.V. Radolfzell<br>Vereinsanschrift: ${CLUB_ADDRESS}<br><a href="https://bsvnordstern.de/" style="color:#ffffff;">bsvnordstern.de</a> · <a href="https://bsvnordstern.de/datenschutz/" style="color:#ffffff;">Datenschutz</a></td></tr>
 </table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`,
-    text: `Hallo ${firstName},\n\nvielen Dank für eure Anmeldung! Eure Teilnahme ist hiermit bestätigt. Wir freuen uns darauf, euch beim BSV Nordstern zu begrüßen.\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}\n\nSchön, dass ihr dabei seid!\n${nextSteps}${paymentText}\n\nJérôme Ernsberger – Jugendleiter\n${EVENT_CONTACT_URL}${replyTo ? '\nIhr könnt auch direkt auf diese E-Mail antworten.' : ''}\n\nVeranstaltung: ${event.url}\nAnfahrt: ${mapUrl}${tournamentText}${sponsorFooter.text}\n\nBSV Nordstern e.V. Radolfzell\nVereinsanschrift: ${CLUB_ADDRESS}\nhttps://bsvnordstern.de/\nDatenschutz: https://bsvnordstern.de/datenschutz/`,
+    text: `Hallo ${firstName},\n\n${intro}\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}\n\n${heading}\n${nextSteps}${paymentText}\n\nJérôme Ernsberger – Jugendleiter\n${EVENT_CONTACT_URL}${replyTo ? '\nIhr könnt auch direkt auf diese E-Mail antworten.' : ''}\n\nVeranstaltung: ${event.url}\nAnfahrt: ${mapUrl}${tournamentText}${sponsorFooter.text}\n\nBSV Nordstern e.V. Radolfzell\nVereinsanschrift: ${CLUB_ADDRESS}\nhttps://bsvnordstern.de/\nDatenschutz: https://bsvnordstern.de/datenschutz/`,
   };
 }
 

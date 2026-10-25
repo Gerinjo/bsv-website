@@ -15,12 +15,21 @@ export function withContactDatabase(rest, connect) {
       return { data, error: null };
     } catch (error) {
       console.error('Kontakt-Datenbankverbindung fehlgeschlagen:', { code: error?.code || 'connection-failed' });
+      if (['P0001', '22023'].includes(error?.code)) return { data: null, error: { code: error.code, message: error.message } };
       return result;
     }
   };
   return {
     rpc(name, args) {
       return recover(rest.rpc(name, args), async sql => {
+        if (name === 'submit_event_registration') {
+          const rows = await sql`select public.submit_event_registration(${sql.json(args.p_contact)}::jsonb, ${args.p_club_name}, ${sql.json(args.p_teams)}::jsonb, ${args.p_mode}) as data`;
+          return rows[0]?.data ?? null;
+        }
+        if (name === 'get_event_team_roster') {
+          const rows = await sql`select public.get_event_team_roster(${args.p_event_topic}) as data`;
+          return rows[0]?.data ?? null;
+        }
         if (name !== 'prepare_trainer_contact_lookup') throw new Error('Unsupported contact operation');
         const rows = await sql`select public.prepare_trainer_contact_lookup(${args.routing_key}) as data`;
         return rows[0]?.data ?? null;

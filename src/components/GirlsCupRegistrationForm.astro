@@ -26,18 +26,18 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         <label class="day-choice"><input name="days" type="checkbox" value={day.isoDate} aria-controls={`girls-teams-${day.isoDate}`} /><span><strong>{day.weekday}, {day.date}</strong><small>{day.divisions.join(' & ')}</small></span></label>
         <fieldset class="team-counts" id={`girls-teams-${day.isoDate}`} data-day-teams={day.isoDate} disabled>
           <legend>Teamanzahl am {day.date}</legend>
-          {day.divisionKeys.map((division) => <label>{division}-Juniorinnen<input name={`teams-${division}`} data-team-count data-day={day.isoDate} data-division={division} type="number" inputmode="numeric" min="0" max="99" step="1" value="0" required /></label>)}
+          {day.divisionKeys.map((division) => <label>{division}-Juniorinnen<input name={`teams-${division}`} data-team-count data-day={day.isoDate} data-division={division} type="number" inputmode="numeric" min="0" max="9" step="1" value="0" required /></label>)}
         </fieldset>
       </div>
     ))}
-    <div class="fee-summary full" role="status" aria-live="polite" aria-atomic="true"><strong data-fee-summary>Noch keine Teams ausgewählt.</strong><p>{GIRLS_CUP_FEE_LABEL}. Die Staffelung gilt für alle Teams eures Vereins in dieser Anmeldung gemeinsam, auch über beide Tage.</p></div>
+    <div class="fee-summary full" role="status" aria-live="polite" aria-atomic="true"><strong data-fee-summary>Noch keine Teams ausgewählt.</strong><p>{GIRLS_CUP_FEE_LABEL}. Die Staffelung gilt gemeinsam für die bestätigten Teams dieser Anmeldung, auch über beide Tage. Für Wartelistenteams bitte noch nichts bezahlen.</p></div>
     <label class="full">Möchtet ihr uns noch etwas mitteilen?<textarea name="message" rows="4" maxlength="2000" placeholder="Zum Beispiel Fragen oder Hinweise zu euren Teams"></textarea></label>
     <p class="field-hint full">Bitte keine Namen oder Geburtsdaten der Kinder eintragen.</p>
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. Die Anmeldung wird direkt bestätigt; die genauen Startzeiten werden später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
-    <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Verarbeitung meiner Angaben zur Organisation des Turniers und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. Je Altersklasse gibt es acht Turnierplätze (einschließlich einer BSV-Mannschaft) und zwei Wartelistenplätze. Freie Turnierplätze werden direkt bestätigt, weitere Teams kommen auf die Warteliste. Die genauen Startzeiten folgen später. Für Wartelistenteams ist vorerst keine Startgebühr fällig. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
+    <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Veröffentlichung unseres Vereinsnamens und unserer Mannschaften in der Teilnehmerliste sowie mit der Verarbeitung meiner Angaben zur Organisation des Turniers und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
       <label><span data-captcha-label>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label>
@@ -82,12 +82,12 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         }
       });
       const selectedCounts = teamCounts.filter((input) => selectedDays.includes(input.dataset.day!));
-      if (selectedCounts.some((input) => input.value === '' || !Number.isSafeInteger(Number(input.value)) || Number(input.value) < 0 || Number(input.value) > 99)) {
+      if (selectedCounts.some((input) => input.value === '' || !Number.isSafeInteger(Number(input.value)) || Number(input.value) < 0 || Number(input.value) > 9)) {
         feeSummary.textContent = 'Bitte prüft die Teamanzahlen.';
         return;
       }
       const count = selectedCounts.reduce((sum, input) => sum + Number(input.value), 0);
-      feeSummary.textContent = count ? `${count} ${count === 1 ? 'Team' : 'Teams'} · ${calculateGirlsCupFee(count)} € Startgebühr insgesamt` : 'Noch keine Teams ausgewählt.';
+      feeSummary.textContent = count ? `${count} ${count === 1 ? 'Team' : 'Teams'} · ${calculateGirlsCupFee(count)} € bei Bestätigung aller ausgewählten Teams` : 'Noch keine Teams ausgewählt.';
     };
     dayOptions.forEach((option) => option.addEventListener('change', syncTeams));
     teamCounts.forEach((input) => input.addEventListener('input', syncTeams));
@@ -138,6 +138,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
         const data = await response.json();
         // A stored request must not be sent a second time after a mail failure.
         completed = data.saved === true;
+        if (completed) document.dispatchEvent(new CustomEvent('bsv:event-registration-saved'));
         if (!response.ok || data.ok !== true) throw new Error(data.message || 'Die Anmeldung konnte nicht übermittelt werden. Bitte versuche es später erneut.');
         completed = true;
         status.dataset.success = 'true';

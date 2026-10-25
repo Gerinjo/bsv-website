@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import EventTeamRoster from '../../components/EventTeamRoster.astro';
 import BambiniRegistrationForm from '../../components/BambiniRegistrationForm.astro';
 import BambiniPhotoGallery from '../../components/BambiniPhotoGallery.astro';
 import { withBase } from '../../utils/paths';
@@ -57,6 +58,8 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
         </ol>
       </div>
     </section>
+
+    <EventTeamRoster topic={BAMBINI_EVENT.topic} />
 
     <section id="anmeldung" class="registration" aria-labelledby="registration-title">
       <div class="shell registration-grid">

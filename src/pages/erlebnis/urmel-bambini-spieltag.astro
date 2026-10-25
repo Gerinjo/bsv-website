@@ -1,5 +1,6 @@
 ---
 import Footer from '../../components/Footer.astro';
+import EventTeamRoster from '../../components/EventTeamRoster.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 import BambiniRegistrationForm from '../../components/BambiniRegistrationForm.astro';
@@ -72,6 +73,8 @@ const gallery = [
         <ol class="time-list" aria-label="Mögliche Startzeiten">{URMEL_EVENT.timeSlots.map((slot, index) => <li><span>Start {index + 1}</span><strong>{slot}<small> Uhr</small></strong></li>)}</ol>
       </div>
     </section>
+
+    <EventTeamRoster topic={URMEL_EVENT.topic} />
 
     <section id="anmeldung" class="registration" aria-labelledby="registration-title">
       <div class="shell registration-grid">

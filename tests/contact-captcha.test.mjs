@@ -25,7 +25,7 @@ function adapters({error=clockError,rows=[{id:'challenge-id'}],fail=false}={}){
 test('live HTTP entrypoint creates a correct captcha despite gateway clock rejection',async()=>{
  const app=adapters();let handle;
  runInNewContext(source,{
-  Response,crypto,console:{error(){}},BAMBINI_EVENT:{},URMEL_EVENT:{},withContactDatabase,
+  Response,URL,crypto,console:{error(){}},BAMBINI_EVENT:{},URMEL_EVENT:{},withContactDatabase,
   postgres:()=>app.connect(),createClient:()=>app.rest,
   Deno:{env:{get:key=>({SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'server-only',SUPABASE_DB_URL:'postgres://example.org',ALLOWED_ORIGINS:'https://bsvnordstern.de'})[key]},serve:fn=>{handle=fn}},
  });

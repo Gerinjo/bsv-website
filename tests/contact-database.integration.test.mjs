@@ -8,6 +8,7 @@ import test from 'node:test';
 import postgres from 'postgres';
 import {withContactDatabase} from '../supabase/functions/contact-request/database.mjs';
 import {buildEventConfirmation,deliverEventConfirmation} from '../supabase/functions/_shared/event-confirmation.mjs';
+import {applyTeamAllocation} from '../supabase/functions/contact-request/team-allocation.mjs';
 import {tournamentPayment} from '../supabase/functions/_shared/tournament-payment.mjs';
 import {BAMBINI_EVENT} from '../supabase/functions/_shared/bambini-event.mjs';
 import {URMEL_EVENT} from '../supabase/functions/_shared/urmel-event.mjs';
@@ -21,9 +22,10 @@ test('complete HTTP submission stores contact data through the real driver and p
  const sql=postgres(databaseUrl,{prepare:false,max:1}),mails=[];
  try{
   await sql.unsafe(`
-   do $$ begin if not exists(select 1 from pg_roles where rolname='service_role') then create role service_role nologin; end if; end $$;
+   do $$ begin if not exists(select 1 from pg_roles where rolname='service_role') then create role service_role nologin bypassrls; end if; end $$;
+   do $$ begin if not exists(select 1 from pg_roles where rolname='anon') then create role anon nologin; end if; if not exists(select 1 from pg_roles where rolname='authenticated') then create role authenticated nologin; end if; end $$;
    create table if not exists public.contact_anfragen (
-    id uuid primary key default gen_random_uuid(),thema text,routing_schluessel text,anfrageart text,
+    id uuid primary key default gen_random_uuid(),created_at timestamptz not null default now(),thema text,routing_schluessel text,anfrageart text,
     empfaenger_email text,empfaenger_emails text[],vorname text,nachname text,email text,telefon text,
     gegner_verein text,gegner_mannschaft text,nachricht text,datenschutz_bestaetigt boolean,
     benachrichtigung_status text,mail_modus text,resend_id text,benachrichtigung_fehler text
@@ -36,14 +38,15 @@ test('complete HTTP submission stores contact data through the real driver and p
    insert into public.contact_empfaenger values('general','one@example.invalid',array[]::text[],'Kontakt',true) on conflict (schluessel) do update set weitere_emails=excluded.weitere_emails;
   `);
   await sql.unsafe(readFileSync(new URL('../supabase/migrations/20261025164806_event_registration_confirmations.sql',import.meta.url),'utf8'));
+  await sql.unsafe(readFileSync(new URL('../supabase/migrations/20261025182534_event_team_rosters.sql',import.meta.url),'utf8'));
   const query={};for(const method of ['insert','update','delete','select','eq','lt','single','maybeSingle'])query[method]=()=>query;
   query.then=(resolve,reject)=>Promise.resolve({data:null,error:{code:'PGRST303',message:'JWT issued at future'}}).then(resolve,reject);
-  const rest={from:()=>query};let handle;
+  const rest={from:()=>query,rpc:()=>query};let handle;
   const source=stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/contact-request/index.ts',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,''));
   runInNewContext(source,{
-   Request,Response,crypto,console,withContactDatabase,createClient:()=>rest,postgres:()=>sql,
+   Request,Response,URL,crypto,console,withContactDatabase,createClient:()=>rest,postgres:()=>sql,
    BAMBINI_EVENT,URMEL_EVENT,GIRLS_CUP_EVENT,getBambiniRouting,BAMBINI_SUCCESS_MESSAGE,prepareBambiniRegistration,
-   buildEventConfirmation,deliverEventConfirmation,
+   buildEventConfirmation,deliverEventConfirmation,applyTeamAllocation,
    loadYouthSponsors:async()=>[],
    tournamentPayment,
    Deno:{env:{get:key=>({SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'test-only',SUPABASE_DB_URL:databaseUrl,ALLOWED_ORIGINS:'https://bsvnordstern.de'})[key]},serve:fn=>{handle=fn}},

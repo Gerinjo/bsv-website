@@ -1,5 +1,6 @@
 import postgres from 'npm:postgres@3.4.7';
 import { withContactDatabase } from './database.mjs';
+import { applyTeamAllocation } from './team-allocation.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { buildEventConfirmation, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
@@ -100,6 +101,14 @@ Deno.serve(async (request) => {
     return json({ ok: false, message: 'Das Kontaktformular ist momentan nicht verfügbar.' }, 500, origin);
   }
 
+  if (request.method === 'GET' && new URL(request.url).searchParams.get('action') === 'teams') {
+    const eventTopic = new URL(request.url).searchParams.get('event') ?? '';
+    if (![GIRLS_CUP_EVENT, ...registrationEvents].some(event => event.topic === eventTopic)) return json({ ok: false, message: 'Veranstaltung nicht gefunden.' }, 404, origin);
+    const { data, error } = await supabase.rpc('get_event_team_roster', { p_event_topic: eventTopic });
+    if (error) return json({ ok: false, message: 'Die Mannschaftsliste ist gerade nicht erreichbar.' }, 503, origin);
+    return json({ ok: true, categories: data }, 200, origin);
+  }
+
   if (request.method === 'GET') {
     const a = crypto.getRandomValues(new Uint8Array(1))[0] % 8 + 2;
     const b = crypto.getRandomValues(new Uint8Array(1))[0] % 9 + 1;
@@ -154,7 +163,7 @@ Deno.serve(async (request) => {
   if (bambini?.error) return json({ ok: false, message: bambini.error }, 422, origin);
   const girlsRegistration = topic === GIRLS_CUP_EVENT.topic ? prepareGirlsCupRegistration(body) : null;
   if (girlsRegistration?.error) return json({ ok: false, message: girlsRegistration.error }, 422, origin);
-  const teamRegistration = bambini ?? girlsRegistration;
+  let teamRegistration = bambini ?? girlsRegistration;
   const registrationTitle = registrationEvent?.title ?? (girlsRegistration ? GIRLS_CUP_EVENT.title : null);
   const message = teamRegistration?.message ?? text(body.message, 5000);
   const captchaToken = text(body.captchaToken, 80);
@@ -212,9 +221,8 @@ Deno.serve(async (request) => {
     return json({ ok: false, message: 'Für dieses Anliegen ist momentan keine Kontaktadresse hinterlegt.' }, 422, origin);
   }
 
-  const { data: inquiry, error: insertError } = await supabase
-    .from('contact_anfragen')
-    .insert({
+  const emailConfig = getEmailRuntimeConfig();
+  const contactValues = {
       thema: topic,
       routing_schluessel: routing.routingKey,
       anfrageart: routing.requestType,
@@ -228,9 +236,16 @@ Deno.serve(async (request) => {
       gegner_mannschaft: routing.requestType === 'freundschaftsspiel' ? opponentTeam : null,
       nachricht: message,
       datenschutz_bestaetigt: true,
-    })
-    .select('id')
-    .single();
+    };
+  const { data: inquiry, error: insertError } = teamRegistration
+    ? await supabase.rpc('submit_event_registration', {
+        p_contact: contactValues, p_club_name: clubName, p_mode: emailConfig.mode,
+        p_teams: girlsRegistration ? body.teams : [{ division: 'Bambini', count: 1 }],
+      })
+    : await supabase.from('contact_anfragen').insert(contactValues).select('id').single();
+  if (insertError?.code === 'P0001' && insertError.message?.startsWith('EVENT_FULL:')) {
+    return json({ ok: false, saved: false, message: `Bei den ${insertError.message.slice('EVENT_FULL:'.length)} sind die Turnier- und Wartelistenplätze für die gewählte Teamanzahl bereits belegt. Bitte reduziert die Teamanzahl oder wählt eine andere Altersklasse.` }, 409, origin);
+  }
 
   if (insertError || !inquiry?.id) {
     console.error('Kontaktanfrage konnte nicht gespeichert werden:', insertError);
@@ -238,8 +253,9 @@ Deno.serve(async (request) => {
   }
 
   const inquiryId = inquiry.id as string;
-  const emailConfig = getEmailRuntimeConfig();
-  const safeMessage = escapeHtml(message).replaceAll('\n', '<br>');
+  if (girlsRegistration) teamRegistration = applyTeamAllocation(girlsRegistration, inquiry.allocations);
+  const allocatedMessage = teamRegistration?.message ?? message;
+  const safeMessage = escapeHtml(allocatedMessage).replaceAll('\n', '<br>');
   const safeFullName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;
   const friendlyMatchRows = routing.requestType === 'freundschaftsspiel'
     ? `
@@ -309,12 +325,13 @@ Deno.serve(async (request) => {
       },
       firstName, lastName, email, phone, reference: inquiryId,
       details: teamRegistration.confirmationDetails, notes: teamRegistration.confirmationNotes,
+      outcome: teamRegistration.outcome,
       replyTo: recipient.emails[0],
       sponsors: await loadYouthSponsors(),
-      payment: tournamentPayment({
+      payment: teamRegistration.paymentAmount ? tournamentPayment({
         event, clubName, reference: inquiryId,
         amount: teamRegistration.paymentAmount,
-      }),
+      }) : null,
     });
     confirmationStatus = await deliverEventConfirmation({
       db: supabase, table: 'contact_anfragen', id: inquiryId,
@@ -334,7 +351,7 @@ Deno.serve(async (request) => {
     }, 503, origin);
   }
 
-  const successMessage = bambini ? BAMBINI_SUCCESS_MESSAGE : girlsRegistration ? GIRLS_CUP_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
+  const successMessage = teamRegistration?.successMessage ?? (bambini ? BAMBINI_SUCCESS_MESSAGE : girlsRegistration ? GIRLS_CUP_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.');
   return json({
     ok: true, saved: true, mailMode: emailConfig.mode, notificationStatus, confirmationStatus, inquiryId,
     message: confirmationStatus === 'fehler'
