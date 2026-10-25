@@ -12,10 +12,11 @@ const girlsUrl = 'https://bsvnordstern.de/erlebnis/bodensee-indoor-girls-cup/';
 
 test('each event announces the other upcoming BSV tournaments using the shared dates and fees', () => {
   const all = getOtherTournaments('', now);
-  assert.equal(all.length, 4);
+  assert.equal(all.length, 3);
+  assert.ok(all.every(event => !event.url.includes('gst2027') && !event.title.includes('Grundschulturnier')));
   for (const event of all) {
     const others = getOtherTournaments(event.url, now);
-    assert.equal(others.length, 3);
+    assert.equal(others.length, 2);
     assert.ok(others.every(other => other.url !== event.url));
   }
   const girls = all.find(event => event.url === girlsUrl);
@@ -26,7 +27,7 @@ test('each event announces the other upcoming BSV tournaments using the shared d
   assert.deepEqual(getOtherTournaments(girlsUrl + '?from=email#anmeldung', now), getOtherTournaments(girlsUrl.slice(0, -1), now));
 });
 
-test('announcements expire after the last event day in Berlin, and undated events expire after their announced year', () => {
+test('announcements expire after the last event day in Berlin', () => {
   // 23:30 UTC is already the next calendar day in Berlin in December.
   const before = getOtherTournaments('', new Date('2026-12-12T22:30:00Z'));
   const after = getOtherTournaments('', new Date('2026-12-12T23:30:00Z'));
@@ -48,11 +49,16 @@ test('HTML and text confirmations announce the same other tournaments with direc
   for (const event of getOtherTournaments(girlsUrl, now)) {
     assert.ok(section.text().includes(event.title));
     assert.ok(section.text().includes(event.date));
-    assert.equal(section.find(`a[href="${event.url}"]`).length, 1);
+    const card = section.find('h3').filter((_, heading) => $(heading).text() === event.title).parent();
+    assert.equal(card.find(`a[href="${event.url}"]`).length, 1);
+    assert.equal(card.find('img').attr('src'), event.image.src);
+    assert.ok(card.find('img').attr('alt'));
     assert.ok(mail.text.includes(event.url));
   }
   assert.ok(!section.text().includes(GIRLS_CUP_EVENT.title));
-  assert.ok(mail.text.includes('Termin wird noch bekannt gegeben'));
+  assert.ok(!mail.text.includes('Grundschulturnier'));
+  assert.ok(!mail.html.includes('/gst2027/'));
+  assert.ok(mail.text.includes('Urmel Bambini Cup 2027 – Kinder spielen für Kinder'));
 });
 
 test('transient errors retry with one idempotency key and record only the final outcome', async () => {

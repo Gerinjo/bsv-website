@@ -25,15 +25,17 @@ export function buildEventConfirmation({ event, firstName, lastName, email, phon
   const tournamentHtml = otherTournaments.length ? `<tr><td style="padding:28px 24px;background:#f3f6f3;">
 <p style="margin:0 0 8px;color:#164f32;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Noch mehr Fußball beim BSV</p>
 <h2 style="margin:0 0 12px;color:#164f32;font-size:23px;">Unsere weiteren Turniere</h2>
-<p style="margin:0 0 20px;line-height:1.7;color:#3f5146;">Vielleicht ist auch für eure anderen Mannschaften etwas dabei. Gebt die Termine gerne in eurem Verein oder eurer Schule weiter!</p>
+<p style="margin:0 0 20px;line-height:1.7;color:#3f5146;">Vielleicht ist auch für eure anderen Mannschaften etwas dabei. Gebt die Termine gerne in eurem Verein weiter!</p>
 ${otherTournaments.map(tournament => `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 14px;background:#ffffff;border-left:4px solid #f4d638;"><tr><td style="padding:18px;line-height:1.6;overflow-wrap:anywhere;">
 <p style="margin:0 0 6px;color:#164f32;font-size:13px;font-weight:700;">${escapeHtml(tournament.date)}</p>
 <h3 style="margin:0 0 8px;color:#17251b;font-size:18px;line-height:1.35;">${escapeHtml(tournament.title)}</h3>
 <p style="margin:0 0 6px;color:#3f5146;font-size:14px;">${escapeHtml(tournament.audience)}<br>${escapeHtml(tournament.venue)}</p>
 <p style="margin:0 0 10px;color:#52665a;font-size:13px;">${escapeHtml(tournament.note)}</p>
+${tournament.image ? `<img src="${escapeHtml(tournament.image.src)}" width="584" height="${Math.round(584 * tournament.image.height / tournament.image.width)}" alt="${escapeHtml(tournament.image.alt)}" style="display:block;width:100%;max-width:584px;height:auto;margin:16px 0 6px;border:0;">
+<p style="margin:0 0 14px;color:#687b6e;font-size:12px;line-height:1.5;">${escapeHtml(tournament.image.caption)}</p>` : ''}
 <a href="${escapeHtml(tournament.url)}" style="color:#164f32;font-size:14px;font-weight:700;">Infos &amp; Anmeldung →</a></td></tr></table>`).join('')}
 </td></tr>` : '';
-  const tournamentText = otherTournaments.length ? `\n\nUnsere weiteren BSV-Turniere\nGebt die Termine gerne in eurem Verein oder eurer Schule weiter!\n\n${otherTournaments.map(tournament => `${tournament.title}\n${tournament.date}\n${tournament.audience}\n${tournament.venue}\n${tournament.note}\nInfos & Anmeldung: ${tournament.url}`).join('\n\n')}` : '';
+  const tournamentText = otherTournaments.length ? `\n\nUnsere weiteren BSV-Turniere\nGebt die Termine gerne in eurem Verein weiter!\n\n${otherTournaments.map(tournament => `${tournament.title}\n${tournament.date}\n${tournament.audience}\n${tournament.venue}\n${tournament.note}\nInfos & Anmeldung: ${tournament.url}`).join('\n\n')}` : '';
   return {
     to: email,
     ...(replyTo ? { reply_to: replyTo } : {}),

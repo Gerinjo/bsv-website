@@ -58,7 +58,7 @@ const tournaments: HomeTournament[] = [
   {
     id: 'urmel-cup', name: URMEL_EVENT.title, category: 'Bambini · Benefizturnier',
     date: URMEL_EVENT.date, isoDate: URMEL_EVENT.isoDate,
-    heading: 'URMEL-Cup.', emphasis: 'Kids spielen für Kids.',
+    heading: `${URMEL_EVENT.name}.`, emphasis: `${URMEL_EVENT.motto}.`,
     intro: 'Unser Bambini-Benefizturnier geht in die nächste Runde. Die gesamten Turniergebühren und die Einnahmen der Tombola gehen an die Urmel Kinder-Krebshilfe e.V.',
     logo: { src: '/images/events/urmel/urmel-kinder-krebshilfe.webp', alt: 'Urmel Kinder-Krebshilfe e.V.', whiteBackground: true },
     gallery: urmelGallery,

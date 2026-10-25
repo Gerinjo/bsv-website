@@ -275,8 +275,8 @@ test('URMEL registrations use their own event facts and charity purpose with the
   const { mail } = app.mails[0];
   assert.deepEqual(mail.to, ['organizer@example.org']);
   assert.equal(mail.reply_to, 'trainer@example.org');
-  assert.match(mail.subject, /URMEL-Cup/);
-  assert.match(mail.html, /Neue Mannschaftsanmeldung: URMEL-Cup/);
+  assert.ok(mail.subject.includes(URMEL_EVENT.title));
+  assert.ok(mail.html.includes(`Neue Mannschaftsanmeldung: ${URMEL_EVENT.title}`));
   assert.doesNotMatch(mail.html, /Weihnacht|Dezember|Unterseesporthalle|35 €|attacker@example.org|Startgebühr: 0/);
   const christmas = harness();
   await christmas.handle(request(valid()));

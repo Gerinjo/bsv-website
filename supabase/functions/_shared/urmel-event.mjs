@@ -1,7 +1,11 @@
 // Shared event details for the website and registration emails.
+const name = 'Urmel Bambini Cup 2027';
+const motto = 'Kinder spielen für Kinder';
 export const URMEL_EVENT = Object.freeze({
   topic: 'event-urmel-cup',
-  title: 'URMEL-Cup',
+  name,
+  motto,
+  title: `${name} – ${motto}`,
   period: 'Mai 2027',
   date: '01.05.2027',
   isoDate: '2027-05-01',

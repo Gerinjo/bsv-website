@@ -23,7 +23,7 @@ const gallery = [
 ];
 ---
 
-<Layout title={`${URMEL_EVENT.title} · ${URMEL_EVENT.date} | BSV Nordstern Radolfzell`} description={`Kids spielen für Kids: URMEL-Cup am ${URMEL_EVENT.date} beim BSV Nordstern. Drei Startzeiten, Mannschaftsanmeldung und Tombola zugunsten der Urmel Kinder-Krebshilfe.`}>
+<Layout title={`${URMEL_EVENT.title} · ${URMEL_EVENT.date} | BSV Nordstern Radolfzell`} description={`${URMEL_EVENT.title} am ${URMEL_EVENT.date} beim BSV Nordstern. Drei Startzeiten, Mannschaftsanmeldung und Tombola zugunsten der Urmel Kinder-Krebshilfe.`}>
   <Header />
   <main class="urmel-page">
     <section class="hero" aria-labelledby="event-title">
@@ -31,8 +31,8 @@ const gallery = [
         <div class="hero-copy">
           <a class="back" href={withBase('/erlebnis')}>← Zu den Events & Erlebnissen</a>
           <p class="eyebrow">Bambini · Benefizturnier · {URMEL_EVENT.date}</p>
-          <h1 id="event-title">URMEL-Cup.<br /><em>Kids spielen<br />für Kids.</em></h1>
-          <p class="intro">Kleine Kicker, große Freude und ein gemeinsamer guter Zweck: Unser URMEL-Cup geht in die nächste Runde. Seid mit eurer Bambini-Mannschaft dabei und erlebt einen Fußballtag voller Teamgeist.</p>
+          <h1 id="event-title">{URMEL_EVENT.name}.<br /><em>Kinder spielen<br />für Kinder.</em></h1>
+          <p class="intro">Kleine Kicker, große Freude und ein gemeinsamer guter Zweck: Unser Urmel Bambini Cup geht in die nächste Runde. Seid mit eurer Bambini-Mannschaft dabei und erlebt einen Fußballtag voller Teamgeist.</p>
           <a class="button" href="#anmeldung">Mannschaft anmelden <span aria-hidden="true">↗</span></a>
           <p class="hero-note">{URMEL_EVENT.date} · {URMEL_EVENT.venue}</p>
         </div>
@@ -45,7 +45,7 @@ const gallery = [
       </div>
     </section>
 
-    <section class="event-facts shell" aria-label="Der URMEL-Cup auf einen Blick">
+    <section class="event-facts shell" aria-label="Der Urmel Bambini Cup auf einen Blick">
       <div><span>Wann?</span><strong><time datetime={URMEL_EVENT.isoDate}>{URMEL_EVENT.date}</time></strong></div>
       <div><span>Wo?</span><strong>{URMEL_EVENT.venue}</strong></div>
       <div><span>Startzeiten</span><strong>{URMEL_EVENT.timeSlots.join(' · ')} Uhr</strong></div>
@@ -60,9 +60,9 @@ const gallery = [
     <section class="joy shell" aria-labelledby="joy-title">
       <div class="section-heading"><p class="eyebrow">Ein Tag für Kinder. Ein Beitrag für Familien.</p><h2 id="joy-title">Gemeinsam spielen.<br /><em>Gemeinsam helfen.</em></h2></div>
       <div class="joy-grid">
-        <article><span class="article-number">01 / Fußballfreude</span><h3>Kleine Teams. Große Begeisterung.</h3><p>Beim URMEL-Cup gehören der Platz und die Freude am Spiel den Bambinis. Gemeinsam kicken, einander anfeuern und als Mannschaft einen schönen Tag erleben.</p></article>
+        <article><span class="article-number">01 / Fußballfreude</span><h3>Kleine Teams. Große Begeisterung.</h3><p>Beim Urmel Bambini Cup gehören der Platz und die Freude am Spiel den Bambinis. Gemeinsam kicken, einander anfeuern und als Mannschaft einen schönen Tag erleben.</p></article>
         <article><span class="article-number">02 / Tombola</span><h3>Mitmachen und Gutes tun.</h3><p>Auch neben dem Spielfeld könnt ihr helfen: Die Einnahmen unserer Tombola gehen an die Urmel Kinder-Krebshilfe e.V. Jeder Beitrag zählt.</p></article>
-        <article class="charity"><span class="article-number">03 / Kids spielen für Kids</span><h3>Eure Startgebühr hilft mit.</h3><p>{URMEL_EVENT.charityNote} So verbindet unser Spieltag Fußballfreude mit Unterstützung für betroffene Familien.</p></article>
+        <article class="charity"><span class="article-number">03 / Kinder spielen für Kinder</span><h3>Eure Startgebühr hilft mit.</h3><p>{URMEL_EVENT.charityNote} So verbindet unser Spieltag Fußballfreude mit Unterstützung für betroffene Familien.</p></article>
       </div>
     </section>
 
@@ -75,7 +75,7 @@ const gallery = [
 
     <section id="anmeldung" class="registration" aria-labelledby="registration-title">
       <div class="shell registration-grid">
-        <div class="registration-copy"><p class="eyebrow">Seid ihr dabei?</p><h2 id="registration-title">Ein Team.<br /><em>Ein guter Zweck.</em></h2><p>Meldet eure Bambini-Mannschaft zum URMEL-Cup an. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Wir melden uns bei euch mit der Teilnahmebestätigung, der Startzeit und allen weiteren Informationen.</p><div class="organizer"><span>Fragen zum URMEL-Cup?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
+        <div class="registration-copy"><p class="eyebrow">Seid ihr dabei?</p><h2 id="registration-title">Ein Team.<br /><em>Ein guter Zweck.</em></h2><p>Meldet eure Bambini-Mannschaft zum Urmel Bambini Cup an. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Wir melden uns bei euch mit der Teilnahmebestätigung, der Startzeit und allen weiteren Informationen.</p><div class="organizer"><span>Fragen zum Urmel Bambini Cup?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
         <BambiniRegistrationForm event={URMEL_EVENT} />
       </div>
     </section>
