@@ -1,3 +1,7 @@
+## BSV correspondence
+
+Always use `jerome.ernsberger@bsvnordstern.de` for Jérôme Ernsberger in the BSV Nordstern context, including personal sender/contact addresses, Reply-To, test emails, and internal copies. This is the user's explicit preference. Keep the established sender for automated club emails unless a personal sender is requested.
+
 ## Development
 
 When starting the dev server, use background mode:

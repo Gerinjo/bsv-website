@@ -107,8 +107,8 @@ Deno.serve(async (request) => {
     const recipients = collectRecipientEmails(recipientRows ?? []);
     if (!recipients?.length) return json({ error: 'invalid_recipient_configuration' }, 503);
     recipient = recipients;
-    if (messageType === 'foerderverein' && !recipients.includes('jerome.ernsberger@gmail.com')) {
-      copyRecipient = 'jerome.ernsberger@gmail.com';
+    if (messageType === 'foerderverein' && !recipients.includes('jerome.ernsberger@bsvnordstern.de')) {
+      copyRecipient = 'jerome.ernsberger@bsvnordstern.de';
     }
   }
 

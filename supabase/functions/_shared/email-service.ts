@@ -27,7 +27,10 @@ export type EmailRuntimeConfig = {
   resendApiKey: string;
 };
 
-const DEFAULT_TEST_RECIPIENT = 'jerome.ernsberger@gmail.com';
+const DEFAULT_TEST_RECIPIENT = 'jerome.ernsberger@bsvnordstern.de';
+// Honor Jérôme's club address even when an older runtime setting or preview still names Gmail.
+const testRecipientAddress = (value: string) => value.trim().toLowerCase() === 'jerome.ernsberger@gmail.com'
+  ? DEFAULT_TEST_RECIPIENT : value.trim();
 const list = (value?: string | string[]) => {
   if (!value) return [];
   return (Array.isArray(value) ? value : [value]).map((item) => item.trim()).filter(Boolean);
@@ -49,7 +52,7 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
   return {
     mode: resolvedMode.mode as EmailMode,
     testMode: resolvedMode.testMode,
-    testRecipient: Deno.env.get('EMAIL_TEST_RECIPIENT')?.trim() || DEFAULT_TEST_RECIPIENT,
+    testRecipient: testRecipientAddress(Deno.env.get('EMAIL_TEST_RECIPIENT')?.trim() || DEFAULT_TEST_RECIPIENT),
     mailFrom: Deno.env.get('MAIL_FROM')?.trim() ?? '',
     resendApiKey: Deno.env.get('RESEND_API_KEY')?.trim() ?? '',
   };
@@ -58,7 +61,7 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
 export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number; forceTestRecipient?: string } = {}) => {
   const runtimeConfig = getEmailRuntimeConfig();
   const config: EmailRuntimeConfig = options.forceTestRecipient
-    ? { ...runtimeConfig, mode: 'test', testMode: true, testRecipient: options.forceTestRecipient }
+    ? { ...runtimeConfig, mode: 'test', testMode: true, testRecipient: testRecipientAddress(options.forceTestRecipient) }
     : runtimeConfig;
   if (!config.resendApiKey) throw new Error('RESEND_API_KEY fehlt.');
   if (!config.mailFrom) throw new Error('MAIL_FROM fehlt.');

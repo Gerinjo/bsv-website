@@ -72,7 +72,7 @@ test('complete application sends the mandatory copy and a separate confirmation 
   const app = harness({ extraRecipients: ['kasse@example.org'] });
   assert.equal((await app.submit()).status, 201);
   assert.deepEqual(Array.from(app.mails[0].to), ['foerderverein@bsvnordstern.de', 'kasse@example.org']);
-  assert.equal(app.mails[0].bcc, 'jerome.ernsberger@gmail.com');
+  assert.equal(app.mails[0].bcc, 'jerome.ernsberger@bsvnordstern.de');
   assert.equal(app.mails[0].reply_to, 'mara@example.org');
   assert.match(app.mails[0].html, /18\.03\.1985/);
   assert.match(app.mails[0].html, /DE89 3704 0044 0532 0130 00/);
@@ -86,9 +86,9 @@ test('complete application sends the mandatory copy and a separate confirmation 
 });
 
 test('mandatory copy is not duplicated when Jerome is already a configured recipient', async () => {
-  const app = harness({ extraRecipients: [' Jerome.Ernsberger@gmail.com ', 'jerome.ernsberger@gmail.com'] });
+  const app = harness({ extraRecipients: [' Jerome.Ernsberger@bsvnordstern.de ', 'jerome.ernsberger@bsvnordstern.de'] });
   assert.equal((await app.submit()).status, 201);
-  assert.equal(app.mails[0].to.filter(x => x === 'jerome.ernsberger@gmail.com').length, 1);
+  assert.equal(app.mails[0].to.filter(x => x === 'jerome.ernsberger@bsvnordstern.de').length, 1);
   assert.equal(app.mails[0].bcc, undefined);
 });
 

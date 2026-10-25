@@ -1,4 +1,4 @@
-export const TRAINER_TEST_RECIPIENT = 'jerome.ernsberger@gmail.com';
+export const TRAINER_TEST_RECIPIENT = 'jerome.ernsberger@bsvnordstern.de';
 const types = ['trainer-onboarding', 'trainer-membership', 'trainer-keys', 'trainer-dfbnet', 'trainer-welcome'];
 export const isTrainerEmail = (type) => types.includes(type);
 

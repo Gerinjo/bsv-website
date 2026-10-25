@@ -18,7 +18,7 @@ welche Nachricht und welcher Live-Empfänger simuliert wurden.
 
 ```bash
 supabase secrets set EMAIL_DELIVERY_MODE=test
-supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
+supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@bsvnordstern.de
 ```
 
 Live-Versand benötigt zwei unabhängig gesetzte Werte. Fehlt die zweite
@@ -35,7 +35,7 @@ supabase secrets set EMAIL_LIVE_CONFIRMATION=SEND_BSV_EMAILS_TO_REAL_RECIPIENTS
 ```bash
 supabase secrets set RESEND_API_KEY=...
 supabase secrets set EMAIL_DELIVERY_MODE=test
-supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
+supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@bsvnordstern.de
 supabase secrets set MCSHAPE_RECIPIENT_EMAIL=...
 supabase secrets set BSV_CONFIRMATION_EMAIL=...
 supabase secrets set MAIL_FROM="BSV Nordstern <...>"

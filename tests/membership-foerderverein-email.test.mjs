@@ -39,7 +39,7 @@ test('Förderverein receives only its PDF and Jerome always receives a copy', as
   assert.deepEqual(app.lookups, [{ table: 'contact_empfaenger', field: 'schluessel', keys: ['foerderverein'] }]);
   const { mail, options } = app.mails[0];
   assert.deepEqual(Array.from(mail.to), ['foerderverein@bsvnordstern.de']);
-  assert.equal(mail.bcc, 'jerome.ernsberger@gmail.com');
+  assert.equal(mail.bcc, 'jerome.ernsberger@bsvnordstern.de');
   assert.equal(mail.reply_to, 'mara@example.org');
   assert.equal(mail.attachments.length, 1);
   assert.equal(mail.attachments[0].content, attachment.content);
@@ -48,9 +48,9 @@ test('Förderverein receives only its PDF and Jerome always receives a copy', as
 });
 
 test('configured additional recipients are retained and Jerome is not duplicated', async () => {
-  const app = harness({ recipients: [{ schluessel: 'foerderverein', email: 'foerderverein@bsvnordstern.de', weitere_emails: [' Jerome.Ernsberger@gmail.com ', 'kasse@example.org'] }] });
+  const app = harness({ recipients: [{ schluessel: 'foerderverein', email: 'foerderverein@bsvnordstern.de', weitere_emails: [' Jerome.Ernsberger@bsvnordstern.de ', 'kasse@example.org'] }] });
   assert.equal((await app.submit()).status, 201);
-  assert.deepEqual(Array.from(app.mails[0].mail.to), ['foerderverein@bsvnordstern.de', 'jerome.ernsberger@gmail.com', 'kasse@example.org']);
+  assert.deepEqual(Array.from(app.mails[0].mail.to), ['foerderverein@bsvnordstern.de', 'jerome.ernsberger@bsvnordstern.de', 'kasse@example.org']);
   assert.equal(app.mails[0].mail.bcc, undefined);
 });
 

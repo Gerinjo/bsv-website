@@ -133,7 +133,7 @@ verhindert die Aufforderung zum erneuten Absenden.
 Einstellung wird niemals aus Formularfeldern oder Frontend-Variablen übernommen.
 Ohne Servervorgabe gilt das private Supabase-Secret `TRAINER_ONBOARDING_MAIL_MODE`,
 Standard `test`. Im Testmodus gehen alle fünf Trainer-Mailtypen
-ausschließlich an `jerome.ernsberger@gmail.com`, auch Reply-To; To/Cc/Bcc können
+ausschließlich an `jerome.ernsberger@bsvnordstern.de`, auch Reply-To; To/Cc/Bcc können
 das nicht umgehen. Das gilt auch bei Livebetrieb anderer Vereinsmails und bei
 anders eingestelltem `EMAIL_TEST_RECIPIENT`. Für echte Empfänger müssen sowohl die
 Servervorgabe (oder ohne Vorgabe das Secret) als auch der zentrale, ausdrücklich

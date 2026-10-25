@@ -3,7 +3,7 @@ import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { berlinToday, isValidIsoDate, formatGermanDate as formatDate } from '../_shared/form-dates.mjs';
 import { collectRecipientEmails } from '../_shared/membership-routing.mjs';
 
-const applicationCopyRecipient = 'jerome.ernsberger@gmail.com';
+const applicationCopyRecipient = 'jerome.ernsberger@bsvnordstern.de';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')

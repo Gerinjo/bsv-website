@@ -78,7 +78,7 @@ import welcome from '../../../public/api/trainer-onboarding-welcome.json';
       const test = params.get('mode') === 'test';
       get('[data-receipt-title]').textContent = test ? 'Deine Testanmeldung wurde übermittelt.' : 'Deine Trainerunterlagen wurden übermittelt.';
       get('[data-receipt-body]').textContent = test
-        ? 'Im Onboarding-Testmodus gehen alle E-Mails ausschließlich an jerome.ernsberger@gmail.com. Die Begrüßungs-Mail mit den unterschriebenen PDFs geht ebenfalls an diese Testadresse.'
+        ? 'Im Onboarding-Testmodus gehen alle E-Mails ausschließlich an jerome.ernsberger@bsvnordstern.de. Die Begrüßungs-Mail mit den unterschriebenen PDFs geht ebenfalls an diese Testadresse.'
         : params.get('copy') === 'failed' ? 'Die Jugendleitung hat deine Trainerunterlagen erhalten.' : 'Deine Begrüßungs-E-Mail mit den unterschriebenen PDFs wurde an deine E-Mail-Adresse versendet.';
       get('[data-receipt-reference]').textContent = 'Deine Anmeldenummer: ' + reference;
       if (params.get('copy') === 'failed' || params.get('pending')) {

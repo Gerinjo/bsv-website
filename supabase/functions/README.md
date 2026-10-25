@@ -17,7 +17,7 @@ Alle Supabase Edge Functions, die E-Mails versenden, verwenden
 
 ```bash
 supabase secrets set EMAIL_DELIVERY_MODE=test
-supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@gmail.com
+supabase secrets set EMAIL_TEST_RECIPIENT=jerome.ernsberger@bsvnordstern.de
 supabase secrets set RESEND_API_KEY=...
 supabase secrets set MAIL_FROM="BSV Nordstern Radolfzell <...>"
 ```
@@ -48,7 +48,7 @@ PHP-Antragsserver entgegen. Der authentifizierte Server kann den Modus über
 `live` an. Die Vorgabe stammt ausschließlich aus Servercode, nie aus
 Formularfeldern. Ohne sie ist der private Schalter `TRAINER_ONBOARDING_MAIL_MODE`
 standardmäßig `test`: alle Trainer-Mails gehen ausschließlich an
-`jerome.ernsberger@gmail.com`, einschließlich Reply-To und unabhängig vom
+`jerome.ernsberger@bsvnordstern.de`, einschließlich Reply-To und unabhängig vom
 zentralen `EMAIL_TEST_RECIPIENT`. Der gemeinsame Maildienst unterdrückt in diesem
 Modus weitere To/Cc/Bcc-Empfänger. Für echte Trainerzustellung müssen die
 Servervorgabe (oder ohne sie das Secret) `live` und der oben beschriebene bestätigte
@@ -157,7 +157,7 @@ Auch hier zuerst `contact-request`, dann die Website veröffentlichen.
 SEPA-Mandat und digitaler Unterschrift entgegen. Der zuständige Empfänger wird
 mit dem Schlüssel `foerderverein` aus `public.contact_empfaenger` gelesen
 (aktuell `foerderverein@bsvnordstern.de`). Jeder Antrag geht zusätzlich als
-BCC-Kopie an `jerome.ernsberger@gmail.com`, unabhängig von weiteren in der
+BCC-Kopie an `jerome.ernsberger@bsvnordstern.de`, unabhängig von weiteren in der
 Verwaltung hinterlegten Empfängern. Doppelte Adressen werden vermieden. Die
 Antragstellenden erhalten eine separate Eingangsbestätigung ohne Bankdaten;
 die interne Kopie enthält den vollständigen Antrag und die Unterschrift.
@@ -224,7 +224,7 @@ Es erhält eine eigene FV-Antragsnummer und verweist auf den Hauptvereinsantrag.
 Mitgliederverwaltung und Antragsteller erhalten beide PDFs. Die neue,
 geschützte Mailroute `foerderverein` löst ausschließlich den konfigurierten
 Fördervereinsempfänger auf; sie erlaubt genau dessen PDF, keine Ausweise oder
-Spielgenehmigungen. Eine BCC-Kopie geht stets an `jerome.ernsberger@gmail.com`,
+Spielgenehmigungen. Eine BCC-Kopie geht stets an `jerome.ernsberger@bsvnordstern.de`,
 sofern die Adresse nicht bereits zu den Empfängern gehört.
 
 Ist die Hauptvereinszustellung erfolgreich, ein nachfolgender Versand aber
