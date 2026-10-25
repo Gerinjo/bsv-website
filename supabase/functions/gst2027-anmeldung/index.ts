@@ -1,4 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
+import { buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -39,6 +41,7 @@ Deno.serve(async (request) => {
   let body: Record<string, unknown>;
   try {
     body = await request.json();
+    if (!body || Array.isArray(body) || typeof body !== 'object') throw new Error('invalid_body');
   } catch {
     return json({ message: 'Die Formulardaten sind ungültig.' }, 400, origin);
   }
@@ -94,7 +97,7 @@ Deno.serve(async (request) => {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { error } = await supabase.from('gst_anmeldungen').insert({
+  const { data: registration, error } = await supabase.from('gst_anmeldungen').insert({
     vorname,
     nachname,
     email,
@@ -105,16 +108,39 @@ Deno.serve(async (request) => {
     weitere_informationen: weitereInformationen || null,
     beteiligung_bestaetigt: true,
     datenschutz_bestaetigt: true,
-  });
+  }).select('id').single();
 
   if (error?.code === '23505') {
     return json({ message: 'Diese Mannschaft wurde offenbar bereits angemeldet.' }, 409, origin);
   }
 
-  if (error) {
+  if (error || !registration?.id) {
     console.error(error);
     return json({ message: 'Die Anmeldung konnte nicht gespeichert werden.' }, 500, origin);
   }
 
-  return json({ message: 'Vielen Dank! Die Mannschaft wurde erfolgreich angemeldet.' }, 201, origin);
+  const message = buildEventConfirmation({
+    event: {
+      title: 'Zeller Grundschulturnier 2027', date: 'Wird noch bekannt gegeben',
+      venue: 'BSV-Sportgelände Radolfzell', address: CLUB_ADDRESS,
+      url: 'https://bsvnordstern.de/gst2027/',
+      nextSteps: 'Wir prüfen eure Mannschaftsanmeldung und melden uns persönlich bei euch. Termin, Startzeiten, Blockeinteilung und genauer Ablauf werden noch bekannt gegeben.',
+    },
+    firstName: vorname, lastName: nachname, email, phone: telefon, reference: registration.id,
+    details: [
+      ['Grundschule', grundschule], ['Mannschaft', mannschaftsname], ['Wettbewerb', altersklasse],
+      ['Beteiligung der Schule', altersklasse.startsWith('Mädchen') ? 'Einmal Waffelteig pro teilnehmender Mannschaft' : 'Ein Kuchen pro teilnehmender Mannschaft'],
+    ],
+    notes: weitereInformationen,
+  });
+  const confirmationStatus = await deliverEventConfirmation({
+    db: supabase, table: 'gst_anmeldungen', id: registration.id,
+    message, mode: getEmailRuntimeConfig().mode, sendEmail,
+  });
+  return json({
+    saved: true, confirmationStatus,
+    message: confirmationStatus === 'versendet'
+      ? 'Vielen Dank! Die Mannschaft wurde erfolgreich angemeldet. Eine Bestätigung wurde an deine E-Mail-Adresse gesendet.'
+      : 'Vielen Dank! Die Mannschaft wurde erfolgreich angemeldet. Die Bestätigungsmail konnte leider nicht versendet werden. Bitte melde die Mannschaft nicht erneut an; bei Rückfragen erreicht ihr Jérôme Ernsberger über unsere Kontaktseite.',
+  }, 201, origin);
 });

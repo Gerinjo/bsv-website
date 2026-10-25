@@ -78,6 +78,15 @@ async function contactQuery(sql, { table, operation, values, columns, filters })
       return rows[0];
     }
     if (operation === 'update' && filters.id && !columns) {
+      if (Object.hasOwn(values, 'bestaetigung_status')) {
+        await sql`update public.contact_anfragen set
+          bestaetigung_status = ${values.bestaetigung_status},
+          bestaetigung_mail_modus = ${values.bestaetigung_mail_modus},
+          bestaetigung_resend_id = ${values.bestaetigung_resend_id},
+          bestaetigung_fehler = ${values.bestaetigung_fehler}
+          where id = ${filters.id}`;
+        return null;
+      }
       // A failed email must not clear a provider ID that was already recorded.
       await sql`update public.contact_anfragen set
         benachrichtigung_status = ${values.benachrichtigung_status},

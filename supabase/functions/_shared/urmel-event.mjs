@@ -7,6 +7,7 @@ export const URMEL_EVENT = Object.freeze({
   isoDate: '2027-05-01',
   timeSlots: ['09:00', '12:00', '15:00'],
   venue: 'BSV-Sportgelände Radolfzell',
+  address: 'Schlesierstraße 43, 78315 Radolfzell am Bodensee',
   fee: '25 €',
   charityNote: 'Die gesamten Turniergebühren und die Einnahmen der Tombola gehen an die Urmel Kinder-Krebshilfe e.V. aus Friedrichshafen.',
 });

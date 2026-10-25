@@ -45,6 +45,17 @@ export function prepareGirlsCupRegistration(body) {
   return {
     teamCount,
     totalFee,
+    confirmationDetails: [
+      ['Verein', club],
+      ...selectedDays.map((day) => [`${day.weekday}, ${day.date}`, day.divisionKeys.flatMap((division) => {
+        const team = teams.find((item) => item.division === division);
+        return team ? [`${division}-Juniorinnen: ${team.count} ${team.count === 1 ? 'Team' : 'Teams'}`] : [];
+      }).join('\n')]),
+      ['Teams insgesamt', String(teamCount)],
+      ['Startgebühren insgesamt', `${totalFee} €`],
+      ['Gebührenstaffelung', `${GIRLS_CUP_FEE_LABEL} (gemeinsam für beide Tage dieser Anmeldung).`],
+    ],
+    confirmationNotes: notes,
     message: [
       GIRLS_CUP_EVENT.title,
       'Mannschaftsanmeldung',

@@ -8,6 +8,7 @@ import { GIRLS_CUP_EVENT, calculateGirlsCupFee } from '../supabase/functions/_sh
 import { GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration } from '../supabase/functions/contact-request/girls-cup-registration.mjs';
 import { URMEL_EVENT } from '../supabase/functions/_shared/urmel-event.mjs';
 import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from '../supabase/functions/contact-request/bambini-registration.mjs';
+import { buildEventConfirmation, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
 import { resolveContactRecipients } from '../supabase/functions/contact-request/recipients.mjs';
 
 const valid = (overrides = {}) => ({
@@ -24,7 +25,7 @@ const request = (body) => new Request('https://example.org/contact-request', {
 // No production secrets, network calls, registrations or messages are needed.
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/contact-request/index.ts', import.meta.url), 'utf8')
   .replace(/^import .*;\r?\n/gm, ''));
-function harness({ emailFails = false, captchaExpired = false, insertFails = false, trainerEmails = ['current@example.org','co@example.org'], bridgeFails = false } = {}) {
+function harness({ emailFails = false, confirmationFails = false, internalFails = false, captchaExpired = false, insertFails = false, trainerEmails = ['current@example.org','co@example.org'], bridgeFails = false } = {}) {
   const operations = [], mails = [], challenges = new Map();
   challenges.set(valid().captchaToken, { antwort: 7, expires_at: new Date(Date.now() + (captchaExpired ? -60000 : 60000)).toISOString() });
   const db = {
@@ -70,9 +71,10 @@ function harness({ emailFails = false, captchaExpired = false, insertFails = fal
     getEmailRuntimeConfig: () => ({ mode: 'test' }),
     sendEmail: async (mail, options) => {
       mails.push({ mail, options });
-      if (emailFails) throw new Error('simulated email failure');
+      if (emailFails || (confirmationFails && mail.to === 'trainer@example.org') || (internalFails && Array.isArray(mail.to))) throw new Error('simulated email failure');
       return { id: 'mail-123', mode: 'test' };
     },
+    buildEventConfirmation, deliverEventConfirmation,
     GIRLS_CUP_EVENT, GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration,
     BAMBINI_EVENT, URMEL_EVENT, getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration,
   });
@@ -126,7 +128,7 @@ test('a registration stores all wishes and emails the private organizer with tra
   assert.equal(saved.email, 'trainer@example.org');
   assert.match(saved.nachricht, /Verein: FC Testverein/);
   assert.match(saved.nachricht, /09:00 Uhr, 15:00 Uhr/);
-  assert.equal(app.mails.length, 1);
+  assert.equal(app.mails.length, 2);
   const { mail, options } = app.mails[0];
   assert.deepEqual(mail.to, ['organizer@example.org']);
   assert.equal(mail.reply_to, 'trainer@example.org');
@@ -146,6 +148,61 @@ test('names, clubs and free text are escaped in organizer email HTML', async () 
   assert.match(app.mails[0].mail.html, /FC &lt;Test&gt; &amp; Verein/);
   assert.match(app.mails[0].mail.html, /&lt;img src=x onerror=alert\(1\)&gt;<br>Noch eine Zeile/);
   assert.doesNotMatch(app.mails[0].mail.html, /<img|<b>Mara/);
+  const confirmation = app.mails[1].mail;
+  assert.equal(confirmation.to, 'trainer@example.org');
+  assert.match(confirmation.html, /&lt;b&gt;Mara&lt;\/b&gt;/);
+  assert.match(confirmation.html, /FC &lt;Test&gt; &amp; Verein/);
+  assert.doesNotMatch(confirmation.html, /<img|<b>Mara/);
+});
+
+test('every contact-based event sends a separate styled receipt to the applicant', async () => {
+  for (const event of [BAMBINI_EVENT, URMEL_EVENT, GIRLS_CUP_EVENT]) {
+    const app = harness();
+    const response = await app.handle(request(event === GIRLS_CUP_EVENT ? girlsValid() : valid({ topic: event.topic })));
+    const result = await response.json();
+    assert.equal(response.status, 201);
+    assert.equal(result.confirmationStatus, 'versendet');
+    const { mail, options } = app.mails[1];
+    assert.equal(mail.to, 'trainer@example.org');
+    assert.equal(mail.reply_to, 'organizer@example.org');
+    assert.equal(mail.cc, undefined);
+    assert.equal(mail.bcc, undefined);
+    assert.ok(mail.html.includes(event.title));
+    assert.ok(mail.text.includes(event.address));
+    assert.match(mail.html, /#092f20[\s\S]*#f4d638/);
+    assert.match(mail.html, /Jérôme Ernsberger[\s\S]*Jugendleiter/);
+    assert.match(mail.html, /https:\/\/bsvnordstern.de\/kontakt\/\?thema=person-jerome-ernsberger/);
+    assert.match(mail.text, /Teilnahme[\s\S]*Startzeiten persönlich/);
+    assert.match(mail.text, /Anmeldenummer: registration-123/);
+    assert.equal(options.idempotencyKey, 'event-confirmation/test/contact_anfragen/registration-123');
+    const saved = app.operations.find(op => op.values?.bestaetigung_status);
+    assert.equal(saved.values.bestaetigung_status, 'versendet');
+    assert.equal(saved.values.bestaetigung_mail_modus, 'test');
+  }
+});
+
+test('applicant failure preserves internal success and saved registration without inviting resubmission', async () => {
+  const app = harness({ confirmationFails: true });
+  const response = await app.handle(request(girlsValid()));
+  const result = await response.json();
+  assert.equal(response.status, 201);
+  assert.equal(result.saved, true);
+  assert.equal(result.notificationStatus, 'versendet');
+  assert.equal(result.confirmationStatus, 'fehler');
+  assert.match(result.message, /nicht erneut/);
+  assert.equal(app.operations.find(op => op.values?.benachrichtigung_status).values.benachrichtigung_status, 'versendet');
+  assert.equal(app.operations.find(op => op.values?.bestaetigung_status).values.bestaetigung_status, 'fehler');
+});
+
+test('applicant still receives receipt when the internal notification fails', async () => {
+  const app = harness({ internalFails: true });
+  const response = await app.handle(request(girlsValid()));
+  const result = await response.json();
+  assert.equal(response.status, 503);
+  assert.equal(result.saved, true);
+  assert.equal(result.notificationStatus, 'fehler');
+  assert.equal(result.confirmationStatus, 'versendet');
+  assert.equal(app.mails[1].mail.to, 'trainer@example.org');
 });
 
 test('incorrect, expired and reused captcha challenges cannot submit a registration', async () => {
@@ -158,7 +215,7 @@ test('incorrect, expired and reused captcha challenges cannot submit a registrat
   const app = harness();
   assert.equal((await app.handle(request(valid()))).status, 201);
   assert.equal((await app.handle(request(valid()))).status, 422);
-  assert.equal(app.mails.length, 1);
+  assert.equal(app.mails.length, 2);
 });
 
 test('saved registrations report an email failure without inviting duplicate submissions', async () => {
@@ -169,7 +226,7 @@ test('saved registrations report an email failure without inviting duplicate sub
   assert.equal(result.saved, true);
   assert.equal(result.notificationStatus, 'fehler');
   assert.match(result.message, /nicht erneut/);
-  assert.equal(app.operations.at(-1).values.benachrichtigung_status, 'fehler');
+  assert.equal(app.operations.find((op) => op.values?.benachrichtigung_status === 'fehler').values.benachrichtigung_status, 'fehler');
 });
 
 test('database failures do not send email or claim the registration was saved', async () => {
@@ -242,7 +299,7 @@ test('an URMEL mail failure preserves the registration without requesting anothe
   const result = await response.json();
   assert.equal(result.saved, true);
   assert.match(result.message, /nicht erneut/);
-  assert.equal(app.operations.at(-1).values.benachrichtigung_status, 'fehler');
+  assert.equal(app.operations.find((op) => op.values?.benachrichtigung_status === 'fehler').values.benachrichtigung_status, 'fehler');
 });
 
 const girlsValid = (overrides = {}) => valid({
@@ -272,7 +329,7 @@ test('Girls Cup fees count all teams across selected days, with the discount aft
     assert.ok(saved.nachricht.includes(`Startgebühren insgesamt: ${calculateGirlsCupFee(count)} €`));
     assert.equal(saved.thema, GIRLS_CUP_EVENT.topic);
     assert.equal(saved.routing_schluessel, 'person-jerome-ernsberger');
-    assert.equal(app.mails.length, 1);
+    assert.equal(app.mails.length, 2);
   }
 });
 
@@ -320,6 +377,11 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   assert.match(mail.html, /&lt;img src=x onerror=alert\(1\)&gt;/);
   assert.doesNotMatch(mail.html, /<img|<b>Mara|2030|attacker@example.org|Wunschzeiten|Tombola/);
   assert.equal(options.idempotencyKey, 'girls-cup-registration/test/registration-123');
+  const confirmation = app.mails[1].mail;
+  assert.match(confirmation.text, /Startgebühren insgesamt: 100 €/);
+  assert.match(confirmation.text, /E-Juniorinnen: 2 Teams/);
+  assert.match(confirmation.text, /B-Juniorinnen: 1 Team/);
+  assert.doesNotMatch(confirmation.html, /2030|attacker@example.org|<img|<b>Mara/);
 });
 
 test('Girls Cup preserves saved registrations on email failure and rejects reused captcha', async () => {
@@ -332,7 +394,7 @@ test('Girls Cup preserves saved registrations on email failure and rejects reuse
   const app = harness();
   assert.equal((await app.handle(request(girlsValid()))).status, 201);
   assert.equal((await app.handle(request(girlsValid()))).status, 422);
-  assert.equal(app.mails.length, 1);
+  assert.equal(app.mails.length, 2);
   const insertFailure = harness({ insertFails: true });
   assert.equal((await insertFailure.handle(request(girlsValid()))).status, 500);
   assert.equal(insertFailure.mails.length, 0);

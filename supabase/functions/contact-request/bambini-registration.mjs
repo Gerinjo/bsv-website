@@ -31,6 +31,13 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
 
   // Build the complete registration on the server; clients cannot change event or recipient.
   return {
+    confirmationDetails: [
+      ['Verein', club],
+      ['Wunschzeiten (noch nicht zugeteilt)', event.timeSlots.filter((slot) => body.timeSlots.includes(slot)).map((slot) => `${slot} Uhr`).join(', ')],
+      ['Startgebühr', `${event.fee} pro Mannschaft`],
+      ...(event.charityNote ? [['Guter Zweck', event.charityNote]] : []),
+    ],
+    confirmationNotes: notes,
     message: [
       `${event.title} · ${event.date}`,
       'Mannschaftsanmeldung mit Wunschzeiten',

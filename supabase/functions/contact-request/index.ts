@@ -2,6 +2,7 @@ import postgres from 'npm:postgres@3.4.7';
 import { withContactDatabase } from './database.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
+import { buildEventConfirmation, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
 import { resolveContactRecipients } from './recipients.mjs';
 import { BAMBINI_EVENT } from '../_shared/bambini-event.mjs';
 import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
@@ -244,6 +245,7 @@ Deno.serve(async (request) => {
             <tr><td><strong>Mannschaft</strong></td><td>${escapeHtml(opponentTeam)}</td></tr>`
     : '';
 
+  let notificationStatus = 'versendet';
   try {
     const emailResult = await sendEmail({
       to: recipient.emails,
@@ -275,16 +277,8 @@ Deno.serve(async (request) => {
       })
       .eq('id', inquiryId);
     if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
-
-    return json({
-      ok: true,
-      saved: true,
-      mailMode: emailResult.mode,
-      notificationStatus: 'versendet',
-      inquiryId,
-      message: bambini ? BAMBINI_SUCCESS_MESSAGE : girlsRegistration ? GIRLS_CUP_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.',
-    }, 201, origin);
   } catch (error) {
+    notificationStatus = 'fehler';
     const detail = error instanceof Error ? error.message.slice(0, 2000) : 'Unbekannter E-Mail-Fehler';
     console.error('Kontakt-E-Mail konnte nicht versendet werden:', error);
 
@@ -297,14 +291,47 @@ Deno.serve(async (request) => {
       })
       .eq('id', inquiryId);
     if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
+  }
 
+  // Send the applicant receipt even when the independent internal notification failed.
+  let confirmationStatus;
+  if (teamRegistration) {
+    const event = registrationEvent ?? GIRLS_CUP_EVENT;
+    const eventPath = topic === GIRLS_CUP_EVENT.topic ? 'bodensee-indoor-girls-cup'
+      : topic === URMEL_EVENT.topic ? 'urmel-bambini-spieltag' : 'weihnachts-bambini-spieltag';
+    const confirmation = buildEventConfirmation({
+      event: {
+        ...event,
+        url: `https://bsvnordstern.de/erlebnis/${eventPath}/`,
+        ...(girlsRegistration ? { nextSteps: 'Wir prüfen eure Anmeldung und bestätigen euch die Teilnahme der angemeldeten Teams und die endgültigen Startzeiten persönlich. Die Startgebühren gelten gemeinsam für alle Teams dieser Anmeldung.' } : {}),
+      },
+      firstName, lastName, email, phone, reference: inquiryId,
+      details: teamRegistration.confirmationDetails, notes: teamRegistration.confirmationNotes,
+      replyTo: recipient.emails[0],
+    });
+    confirmationStatus = await deliverEventConfirmation({
+      db: supabase, table: 'contact_anfragen', id: inquiryId,
+      message: confirmation, mode: emailConfig.mode, sendEmail,
+    });
+  }
+
+  if (notificationStatus === 'fehler') {
     return json({
       ok: false,
       saved: true,
       notificationStatus: 'fehler',
+      confirmationStatus,
       message: teamRegistration
         ? 'Eure Anmeldung wurde gespeichert, aber die E-Mail an die Organisation konnte nicht versendet werden. Bitte meldet euch über den Kontakt zur Organisation. Sendet die Anmeldung nicht erneut ab.'
         : 'Deine Anfrage wurde gespeichert, die E-Mail konnte aber noch nicht versendet werden. Bitte versuche es später erneut.',
     }, 503, origin);
   }
+
+  const successMessage = bambini ? BAMBINI_SUCCESS_MESSAGE : girlsRegistration ? GIRLS_CUP_SUCCESS_MESSAGE : 'Vielen Dank! Deine Nachricht wurde erfolgreich gesendet.';
+  return json({
+    ok: true, saved: true, mailMode: emailConfig.mode, notificationStatus, confirmationStatus, inquiryId,
+    message: confirmationStatus === 'fehler'
+      ? `${successMessage} Die Bestätigungsmail konnte leider nicht versendet werden. Eure Anmeldung ist gespeichert; bitte sendet sie nicht erneut ab. Bei Rückfragen erreicht ihr Jérôme Ernsberger über unsere Kontaktseite.`
+      : successMessage,
+  }, 201, origin);
 });

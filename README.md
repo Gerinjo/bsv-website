@@ -272,6 +272,14 @@ All commands are run from the root of the project, from a terminal:
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
+## Bestätigungsmails für Eventanmeldungen
+
+`contact-request` versendet für Girls Cup, Weihnachts-Bambini-Spieltag und URMEL-Cup nach erfolgreicher Speicherung eine eigene Eingangsbestätigung an die anmeldende Person. `gst2027-anmeldung` verwendet dieselbe Vorlage für das Grundschulturnier. HTML- und Textversion enthalten die serverseitig geprüften Veranstaltungs- und Anmeldedaten sowie den Kontaktlink zur Jugendleitung. Teilnahme und endgültige Startzeiten werden weiterhin persönlich bestätigt. Externe Camp-Anmeldungen laufen beim jeweiligen Anbieter.
+
+Vor der Bereitstellung beider Funktionen die Migration `event_registration_confirmations` anwenden. Der Versand läuft über den bestehenden zentralen Test-/Live-Modus. Die Felder `bestaetigung_status`, `bestaetigung_mail_modus`, `bestaetigung_resend_id` und `bestaetigung_fehler` dokumentieren die Eingangsbestätigung unabhängig von der internen Vereinsnachricht. Vorübergehende Versandfehler werden bis zu zweimal mit demselben Idempotenzschlüssel wiederholt; verbleibende Fehler müssen anhand des privaten Anfrageprotokolls bearbeitet werden. Bereits vorhandene Anmeldungen werden nicht nachträglich angeschrieben.
+
+Tests: `node --test tests/bambini-registration.test.mjs tests/gst-registration.test.mjs tests/event-confirmation.test.mjs`. Der optionale lokale Datenbanktest `tests/contact-database.integration.test.mjs` prüft zusätzlich die Migration und den Versandstatus über die native Datenbankverbindung in einer frischen, isolierten Testdatenbank.
+
 ## Aktuelle Trainerkontakte im Kontaktformular
 
 Beim Absenden einer Mannschafts- oder Personenanfrage liest `contact-request` die aktuellen Empfänger über die private Verbindung zur Club Suite. `prepare_trainer_contact_lookup` signiert den Zweck, den Routing-Schlüssel und einen kurzlebigen Zeitstempel mit dem bestehenden Onboarding-Brückenschlüssel. `trainer-contact-recipients` prüft diese Signatur und liest aktive, öffentlich zugeordnete Trainer sowie zusätzliche Mannschaftskontakte. Die Adressen werden ausschließlich zwischen den Servern verarbeitet. Änderungen an Trainerprofilen und Zuordnungen gelten bei der nächsten Anfrage, ohne Website-Build oder zweiten Adressabgleich.
