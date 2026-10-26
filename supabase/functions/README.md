@@ -346,12 +346,23 @@ Nach Abschluss der Fehlersuche kann die Datei auf dem Webspace gelöscht werden.
   müssen übereinstimmen. Die Werte nicht in Logs oder Tickets kopieren.
 - `recipient_*` / `invalid_recipient_configuration`: Die geschützte
   Empfängerzuordnung in `contact_empfaenger` prüfen.
+- `PGRST303 / JWT issued at future`: `membership-email/database.mjs` wiederholt
+  ausschließlich diese vor der SQL-Ausführung abgewiesenen Zugriffe über
+  `SUPABASE_DB_URL` unter derselben Rolle `service_role`. Das betrifft die
+  Empfängerabfrage und die beiden bekannten Mitgliedsantrags-/Onboarding-RPCs.
+  Andere JWT-, Netzwerk- und SQL-Fehler lösen keine Wiederholung aus.
 - `email_failed`: Die Logs der Edge Function `membership-email` und den
   Maildienst prüfen.
 - `request_too_large` / `attachments_too_large`: Die Größe der Anlagen prüfen.
 
 Die Erreichbarkeit des Spamschutzes allein bestätigt keinen funktionierenden
 E-Mail-Versand. Für eine Versandprobe keine echten Mitgliedsdaten verwenden.
+Die authentifizierte Mailbrücke akzeptiert `dryRun: true` für alle Nachrichtentypen:
+Sie prüft Empfänger und Anlagen, versendet aber nichts und speichert keine
+Newsletter-Einwilligung oder Traineranmeldung. Bei Fehlern vor dem internen
+Versand wurden die PDF-Unterlagen nur im Arbeitsspeicher erzeugt; nach der
+Reparatur muss der Antrag mit den im Formular erhaltenen Eingaben erneut
+abgesendet werden.
 
 Die internen Empfänger werden nicht mehr über ein Edge Secret gepflegt,
 sondern serverseitig aus `public.contact_empfaenger` geladen:

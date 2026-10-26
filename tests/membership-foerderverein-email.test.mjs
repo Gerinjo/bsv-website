@@ -1,3 +1,4 @@
+import {withMembershipDatabase} from '../supabase/functions/membership-email/database.mjs';
 import {prepareTrainerOnboarding,acceptTrainerOnboarding} from '../supabase/functions/_shared/trainer-suite-onboarding.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -21,7 +22,7 @@ function harness({ recipients = [{ schluessel: 'foerderverein', email: 'foerderv
     }; return chain;
   } };
   runInNewContext(source, {
-    Response, Request, console: { error() {} }, createClient: () => db, collectRecipientEmails, getMembershipRoutingKeys, isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT,
+    Response, Request, console: { error() {} }, withMembershipDatabase,createClient: () => db, collectRecipientEmails, getMembershipRoutingKeys, isTrainerEmail, getTrainerEmailRecipient, getTrainerEmailMode, TRAINER_TEST_RECIPIENT,
     Deno: { env: { get: key => ({ MEMBERSHIP_EMAIL_SECRET: 'test-secret', SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'test-only' })[key] }, serve: callback => { handler = callback; } },
     getEmailRuntimeConfig: () => ({ mode: 'live' }),
     prepareTrainerOnboarding,acceptTrainerOnboarding,queueMembershipNewsletter: async options => { newsletter.push(options); return 'not_requested'; },

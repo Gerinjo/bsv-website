@@ -1,4 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import postgres from 'npm:postgres@3.4.7';
+import { withMembershipDatabase } from './database.mjs';
 import { getEmailRuntimeConfig, sendEmail, type EmailAttachment } from '../_shared/email-service.ts';
 import { collectRecipientEmails, getMembershipRoutingKeys } from '../_shared/membership-routing.mjs';
 import { queueMembershipNewsletter } from '../_shared/membership-newsletter.mjs';
@@ -30,14 +32,19 @@ function attachmentBytes(base64: string): number {
   return Math.floor(base64.length * 3 / 4) - padding;
 }
 
+let nativeConnection;
 const getSupabase = () => {
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!supabaseUrl || !serviceRoleKey) return null;
 
-  return createClient(supabaseUrl, serviceRoleKey, {
+  const client = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  const databaseUrl = Deno.env.get('SUPABASE_DB_URL');
+  return withMembershipDatabase(client, databaseUrl ? () => nativeConnection ??= postgres(databaseUrl, {
+    prepare: false, max: 1, idle_timeout: 5, connect_timeout: 5,
+  }) : undefined);
 };
 
 Deno.serve(async (request) => {
@@ -87,11 +94,7 @@ Deno.serve(async (request) => {
     const supabase = getSupabase();
     if (!supabase) return json({ error: 'recipient_lookup_not_configured' }, 503);
 
-    const { data: recipientRows, error: recipientError } = await supabase
-      .from('contact_empfaenger')
-      .select('schluessel, email, weitere_emails')
-      .in('schluessel', routingKeys)
-      .eq('aktiv', true);
+    const { data: recipientRows, error: recipientError } = await supabase.recipients(routingKeys);
 
     if (recipientError) {
       console.error('Mitgliedsantrags-Empfaenger konnten nicht geladen werden:', recipientError);
@@ -154,11 +157,11 @@ Deno.serve(async (request) => {
 
   // Authenticated deployment checks validate routing and attachments without
   // delivering mail or recording an application/newsletter request.
-  if (trainerMail && body.dryRun === true) {
+  if (body.dryRun === true) {
     const runtime = getEmailRuntimeConfig();
     return json({
-      ok: true, dryRun: true, mailMode: trainerMode,
-      to: trainerMode === 'test' ? [TRAINER_TEST_RECIPIENT] : (Array.isArray(recipient) ? recipient : [recipient]),
+      ok: true, dryRun: true, mailMode: trainerMail ? trainerMode : runtime.mode,
+      to: trainerMail && trainerMode === 'test' ? [TRAINER_TEST_RECIPIENT] : (Array.isArray(recipient) ? recipient : [recipient]),
       senderConfigured: Boolean(runtime.mailFrom && runtime.resendApiKey),
       attachmentCount: attachments.length,
     }, 200);
