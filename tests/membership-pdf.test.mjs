@@ -169,22 +169,30 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
   const directory = mkdtempSync(join(tmpdir(), 'bsv-membership-mail-'));
   const api = join(directory, 'api');
   mkdirSync(api);
-  for (const name of ['membership.php', 'membership-v3.php', 'membership-pdf.php', 'foerderverein-pdf.php', 'vendor', 'assets']) {
+  for (const name of ['membership.php', 'membership-v3.php', 'membership-failure-alert.php', 'membership-pdf.php', 'foerderverein-pdf.php', 'vendor', 'assets']) {
     cpSync(join(root, 'public/api', name), join(api, name), {
       recursive: true, filter: source => !/\.(?:mtx\.php|cw\.dat|cw127\.php)$/.test(source),
     });
   }
   writeFileSync(join(api, 'membership-sponsors-cache.json'), JSON.stringify({ version: 1, sponsors: [] }));
   const messages = [];
+  const alerts = [];
   let failMessageType = '';
   const bridge = createServer(async (request, response) => {
     const chunks = [];
     for await (const chunk of request) chunks.push(chunk);
     const message = JSON.parse(Buffer.concat(chunks).toString());
+    if (request.url === '/alerts') {
+      alerts.push(message);
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ id: 'test-alert' }));
+      return;
+    }
     messages.push(message);
     const fail = message.messageType === failMessageType;
     response.writeHead(fail ? 502 : 201, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify(fail ? { error: 'email_failed' } : { ok: true }));
+    response.end(JSON.stringify(fail ? { error: 'email_failed' } : { ok: true,
+      newsletterStatus: message.emailNewsletterAccepted || message.emailGeneralInfoAccepted ? 'queued' : 'not_requested' }));
   });
   bridge.listen(0, '127.0.0.1');
   await once(bridge, 'listening');
@@ -193,9 +201,10 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
   await once(reservation, 'listening');
   const port = reservation.address().port;
   await new Promise(resolve => reservation.close(resolve));
-  const php = spawn('php', ['-S', '127.0.0.1:' + port, '-t', directory], {
+  const php = spawn('php', ['-d', 'opcache.enable=0', '-S', '127.0.0.1:' + port, '-t', directory], {
     env: { ...process.env, BSV_MEMBERSHIP_EMAIL_ENDPOINT: 'http://127.0.0.1:' + bridge.address().port,
-      BSV_MEMBERSHIP_EMAIL_SECRET: 'local-test-only' }, stdio: ['ignore', 'ignore', 'pipe'],
+      BSV_MEMBERSHIP_EMAIL_SECRET: 'local-test-only', BSV_MEMBERSHIP_ALERT_RESEND_API_KEY: 'local-alert-test-only',
+      BSV_MEMBERSHIP_ALERT_EMAIL_ENDPOINT: 'http://127.0.0.1:' + bridge.address().port + '/alerts' }, stdio: ['ignore', 'ignore', 'pipe'],
   });
   let phpErrors = '';
   php.stderr.on('data', chunk => { phpErrors += chunk; });
@@ -211,6 +220,7 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     try { captcha = await fetch(endpoint); break; } catch { await delay(50); }
   }
   assert.ok(captcha?.ok, phpErrors);
+  assert.equal((await fetch(endpoint.replace('membership.php', 'membership-failure-alert.php'))).status, 404);
 
   async function submit(overrides = {}, uploadCount = 0) {
     const challenge = await fetch(endpoint);
@@ -260,11 +270,21 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     }
   }
 
-  for (const failure of ['', 'foerderverein', 'applicant', 'internal']) {
+  assert.equal(alerts.length, 0, 'Successful applications must not trigger alerts');
+  for (const failure of ['', 'foerderverein', 'team', 'applicant', 'internal']) {
     messages.length = 0;
+    alerts.length = 0;
     failMessageType = failure;
     const response = await submit(supporters, 1);
     const result = await response.json();
+    assert.equal(alerts.length, failure ? 1 : 0, 'Each failed delivery step must send one independent alert');
+    if (failure) {
+      assert.deepEqual(alerts[0].to, ['jerome.ernsberger@bsvnordstern.de']);
+      assert.match(alerts[0].text, /Vorname: Mila\nNachname: Muster-Łukasz/);
+      assert.match(alerts[0].text, /mila\.muster@example\.invalid/);
+      assert.doesNotMatch(JSON.stringify(alerts[0]), /DE89370400440532013000|base64|signature|local-test-only/);
+      assert.match(alerts[0].text, failure === 'internal' ? /Eingang des Hauptantrags.*nicht bestätigt/ : /Hauptantrag wurde bereits/);
+    }
     if (failure === 'internal') {
       assert.equal(response.status, 500);
       assert.deepEqual(messages.map(m => m.messageType), ['internal']);
@@ -296,6 +316,7 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
     }
   }
   failMessageType = '';
+  alerts.length = 0;
   // Birth date, not sport/department or client flags, determines whose application it is.
   const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(new Date());
   const eighteenthBirthday = `${Number(today.slice(0, 4)) - 18}${today.slice(4)}`;
@@ -367,7 +388,16 @@ test('real PHP submission sends the same complete PDF to both recipients and kee
   const oversized = await submit({}, 10);
   assert.equal(oversized.status, 422);
   assert.equal(messages.length, 0, 'Oversized attachment lists must not be silently truncated by the bridge');
+  assert.equal(alerts.length, 0, 'Validation errors must not send technical failure alerts');
   const invalidSignature = await submit({ signatureData: 'data:image/png;base64,' + Buffer.alloc(300, 65).toString('base64') });
   assert.equal(invalidSignature.status, 500);
+  assert.equal(alerts.length, 1, 'PDF generation failure must send an alert without calling the mail bridge');
+  assert.match(alerts[0].text, /pdf_generation_failed/);
   assert.equal(messages.length, 0, 'No incomplete application may be sent when the PDF cannot be rendered');
+  alerts.length = 0;
+  writeFileSync(join(api, 'membership-pdf.php'), '<?php trigger_error("synthetic processing failure", E_USER_ERROR);');
+  const fatal = await submit();
+  assert.equal(fatal.status, 500, (await fatal.clone().text()) + '\n' + phpErrors.slice(-5000));
+  assert.equal(alerts.length, 1, 'Unexpected fatal processing errors must trigger the shutdown alert');
+  assert.match(alerts[0].text, /processing_failed/);
 });

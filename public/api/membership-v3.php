@@ -1,5 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+// Keep technical failures in the private log, never in the applicant response.
+ini_set('display_errors', '0');
 
 $allowedOrigins = array(
     'https://gerinjo.github.io',
@@ -41,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $b = random_int(1, 10);
     $_SESSION['membership_captcha'] = $a + $b;
     header('Cache-Control: no-store');
-    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b, 'features' => array('foerdervereinMembership' => true, 'foerdervereinGuardianMembership' => true)));
+    $respond(200, array('ok' => true, 'a' => $a, 'b' => $b, 'features' => array('foerdervereinMembership' => true, 'foerdervereinGuardianMembership' => true, 'membershipFailureAlerts' => true)));
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $respond(405, array('ok' => false, 'message' => 'Diese Anfrage ist nicht erlaubt.'));
@@ -414,6 +416,42 @@ if ($isFootball) {
 }
 
 $applicationNumber = 'BSV-' . date('Ymd-His') . '-' . strtoupper(bin2hex(random_bytes(2)));
+// Configure independent alerts only after captcha, fields and uploads are valid.
+$mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
+if (!$mailBridgeEndpoint) $mailBridgeEndpoint = 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/membership-email';
+$membershipConfig = array();
+if (is_file(__DIR__ . '/membership-config.php')) {
+    if (!defined('BSV_MEMBERSHIP_CONFIG_LOADER')) define('BSV_MEMBERSHIP_CONFIG_LOADER', true);
+    $loadedConfig = require __DIR__ . '/membership-config.php';
+    if (is_array($loadedConfig)) $membershipConfig = $loadedConfig;
+    unset($loadedConfig);
+}
+$mailBridgeSecret = trim((string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET'));
+if ($mailBridgeSecret === '' && isset($membershipConfig['email_secret'])) $mailBridgeSecret = trim((string)$membershipConfig['email_secret']);
+$alertKey = trim((string)getenv('BSV_MEMBERSHIP_ALERT_RESEND_API_KEY'));
+if ($alertKey !== '') $membershipConfig['alert_resend_api_key'] = $alertKey;
+unset($alertKey);
+require_once __DIR__ . '/membership-failure-alert.php';
+$internalApplicationDelivered = false;
+$membershipProcessingStage = 'documents';
+$membershipAlert = bsvMembershipFailureAlert(array(
+    'reference' => $applicationNumber, 'firstName' => $firstName, 'lastName' => $lastName,
+    'email' => (string)$email, 'phone' => $phone,
+    'contactName' => ($isMinor || $isYouthFootball) ? trim($guardianFirstName . ' ' . $guardianLastName) : '',
+    'contactPhone' => ($isMinor || $isYouthFootball) ? $guardianPhone : '',
+    'department' => $departments[$department], 'team' => $selectedTeamLabel,
+), $membershipConfig, function () use (&$internalApplicationDelivered) { return $internalApplicationDelivered; });
+unset($membershipConfig);
+register_shutdown_function(function () use ($membershipAlert, &$membershipProcessingStage, $applicationNumber) {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR), true)) {
+        $membershipAlert($membershipProcessingStage, 'processing_failed', 500);
+        if (!headers_sent()) {
+            http_response_code(500);
+            echo json_encode(array('ok' => false, 'message' => 'Der Antrag konnte nicht vollständig verarbeitet werden. Deine Eingaben bleiben im Formular erhalten. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
+        }
+    }
+});
 $foerdervereinApplicationNumber = $foerdervereinMembership
     ? 'FV-' . (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))->format('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)))
     : null;
@@ -668,6 +706,7 @@ try {
     }
 } catch (Throwable $exception) {
     error_log('[membership-pdf] generation_failed reference=' . $applicationNumber);
+    $membershipAlert('documents', 'pdf_generation_failed', 500);
     $respond(500, array('ok' => false, 'message' => 'Der vollständige Mitgliedsantrag konnte nicht als PDF erstellt werden. Deine Eingaben bleiben erhalten. Fehlerreferenz: ' . $applicationNumber));
 }
 $applicationAttachments = array(array(
@@ -710,8 +749,9 @@ if ($isFootball) {
             'signingPlace' => $signingPlace,
             'signingDateTime' => $displayDate($signingDate) . ' ' . date('H:i:s'),
         ), $signatureBinary);
-    } catch (Exception $exception) {
-        $respond(500, array('ok' => false, 'message' => 'Der Spielgenehmigungsantrag konnte nicht erzeugt werden: ' . $exception->getMessage()));
+    } catch (Throwable $exception) {
+        $membershipAlert('documents', 'player_pdf_generation_failed', 500);
+        $respond(500, array('ok' => false, 'message' => 'Der Spielgenehmigungsantrag konnte nicht erzeugt werden. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
     }
     $pdfLabel = 'Spielgenehmigungsantrag PDF';
     $applicationAttachments[] = array('name' => $pdfFilename, 'mime' => 'application/pdf', 'data' => $pdfBinary, 'label' => $pdfLabel);
@@ -726,23 +766,11 @@ if (count($allAttachments) > 12 || array_sum(array_map(function ($file) { return
 }
 
 $htmlEscape = function ($text) { return htmlspecialchars((string)$text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); };
-$mailBridgeEndpoint = getenv('BSV_MEMBERSHIP_EMAIL_ENDPOINT');
-if (!$mailBridgeEndpoint) $mailBridgeEndpoint = 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/membership-email';
-$mailBridgeSecret = trim((string)getenv('BSV_MEMBERSHIP_EMAIL_SECRET'));
-// Shared hosting may not provide custom environment variables to PHP.
-// Keep its private configuration separate from deployable application code.
-if ($mailBridgeSecret === '' && is_file(__DIR__ . '/membership-config.php')) {
-    define('BSV_MEMBERSHIP_CONFIG_LOADER', true);
-    $membershipConfig = require __DIR__ . '/membership-config.php';
-    if (is_array($membershipConfig) && isset($membershipConfig['email_secret']) && is_string($membershipConfig['email_secret'])) {
-        $mailBridgeSecret = trim($membershipConfig['email_secret']);
-    }
-    unset($membershipConfig);
-}
 $emailSubscriptionRequested = $emailNewsletterAccepted || $emailGeneralInfoAccepted;
 $newsletterStatus = $emailSubscriptionRequested ? 'unavailable' : 'not_requested';
-$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape, $applicationNumber, $emailNewsletterAccepted, $emailGeneralInfoAccepted, $emailSubscriptionRequested, &$newsletterStatus) {
-    $deliveryFailed = function ($reason, $httpStatus = 0, $curlCode = 0) use ($messageType, $applicationNumber) {
+$sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, $htmlBody = null, $routingKey = '') use ($mailBridgeEndpoint, $mailBridgeSecret, $htmlEscape, $applicationNumber, $emailNewsletterAccepted, $emailGeneralInfoAccepted, $emailSubscriptionRequested, &$newsletterStatus, $membershipAlert, &$membershipProcessingStage) {
+    $membershipProcessingStage = $messageType;
+    $deliveryFailed = function ($reason, $httpStatus = 0, $curlCode = 0) use ($messageType, $applicationNumber, $membershipAlert) {
         // Never log request/response bodies: they can contain membership data,
         // bank details, signatures, attachments, addresses or authentication keys.
         $logEntry = '[membership-mail] ' . json_encode(array(
@@ -762,6 +790,7 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
             FILE_APPEND | LOCK_EX
         );
         if ($written === false) error_log('[membership-mail] diagnostic_file_unwritable');
+        $membershipAlert($reason === 'newsletter_queue_failed' ? 'newsletter' : $messageType, $reason, $httpStatus, $curlCode);
         return false;
     };
     if ($mailBridgeSecret === '') return $deliveryFailed('missing_bridge_secret');
@@ -810,15 +839,6 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
     curl_close($request);
     if ($responseBody === false) return $deliveryFailed('bridge_connection_failed', $responseCode, $curlCode);
     $result = json_decode($responseBody, true);
-    if ($messageType === 'applicant' && $emailSubscriptionRequested && is_array($result)) {
-        // Keep the existing subscriber status private in the public response.
-        $queuedStates = array('queued', 'pending', 'already_confirmed', 'already_requested');
-        if (isset($result['newsletterStatus']) && in_array($result['newsletterStatus'], $queuedStates, true)) {
-            $newsletterStatus = 'requested';
-        } else {
-            $deliveryFailed('newsletter_queue_failed', $responseCode);
-        }
-    }
     if ($responseCode < 200 || $responseCode >= 300) {
         $knownErrors = array('mail_bridge_not_configured', 'unauthorized', 'request_too_large',
             'invalid_json', 'invalid_routing', 'recipient_lookup_not_configured',
@@ -830,6 +850,16 @@ $sendMail = function ($messageType, $to, $subject, $textBody, $files, $replyTo, 
     }
     if (!is_array($result) || !isset($result['ok']) || $result['ok'] !== true) {
         return $deliveryFailed('invalid_bridge_response', $responseCode);
+    }
+    if ($messageType === 'applicant' && $emailSubscriptionRequested) {
+        // Check this only after successful mail delivery, avoiding a second alert
+        // for an applicant message that never reached the subscription step.
+        $queuedStates = array('queued', 'pending', 'already_confirmed', 'already_requested');
+        if (isset($result['newsletterStatus']) && in_array($result['newsletterStatus'], $queuedStates, true)) {
+            $newsletterStatus = 'requested';
+        } else {
+            $deliveryFailed('newsletter_queue_failed', $responseCode);
+        }
     }
     return true;
 };
@@ -885,6 +915,7 @@ if ($foerdervereinMembership) {
 if (!$sendMail('internal', '', $internalSubject, $internalBody, $allAttachments, (string)$email)) {
     $respond(500, array('ok' => false, 'message' => 'Der Versand ist momentan nicht möglich. Deine Eingaben bleiben im Formular erhalten. Fehlerreferenz: ' . $applicationNumber, 'reference' => $applicationNumber));
 }
+$internalApplicationDelivered = true;
 
 $foerdervereinStatus = 'not_requested';
 if ($foerdervereinMembership) {

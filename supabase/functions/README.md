@@ -297,6 +297,40 @@ hochladen. Sie gehört weder ins Git-Repository noch ins lokale Astro-Verzeichni
 Direkte HTTP-Aufrufe der PHP-Konfiguration erhalten eine leere 404-Antwort.
 Ohne Schlüssel wird keine Mail versendet. Die Umgebungsvariable hat Vorrang.
 
+### Automatische Warnung bei Mitgliedsantragsfehlern
+
+Nach bestandener Formular-/Uploadprüfung sendet `membership-failure-alert.php`
+bei PDF-, Verarbeitungs- und Versandfehlern eine Warnung ausschließlich an
+`jerome.ernsberger@bsvnordstern.de`. Auch Fehler beim Versand der Bestätigung,
+Trainer-/Fördervereinsnachricht oder bei der E-Mail-Einwilligung werden gemeldet.
+Falsche Eingaben, Captcha-Fehler und erfolgreiche Anträge erzeugen keine Warnung.
+
+Der Warnversand umgeht Supabase, die Mailbrücke und deren Empfänger-Datenbank:
+zuerst direkt über Resend, ersatzweise über die Mailfunktion des PHP-Hosters.
+Hierfür in der privaten `membership-config.php` zusätzlich
+`'alert_resend_api_key' => 'RESEND_SCHLUESSEL'` hinterlegen; alternativ
+`BSV_MEMBERSHIP_ALERT_RESEND_API_KEY` setzen. Schlüssel weder ins Repository
+noch in `public` oder Protokolle schreiben. Die Umgebung hat Vorrang.
+`BSV_MEMBERSHIP_ALERT_EMAIL_ENDPOINT` dient lokalen Tests mit einem Mailstub;
+produktiv gilt standardmäßig `https://api.resend.com/emails`.
+
+Die Warnung enthält Vor-/Nachname, E-Mail, Telefon, ggf. Kontaktperson und
+deren Telefon, Abteilung, Mannschaft, Zeitpunkt, Antragsreferenz und Fehlercode.
+Bankdaten, Ausweise, Unterschriften und Anlagen werden nicht mitgeschickt.
+Sie erklärt, ob der Hauptantrag bereits übermittelt wurde. Bei einem
+unklaren Versandstatus zuerst den Eingang prüfen, um doppelte Anträge zu vermeiden.
+Personendaten erscheinen ausschließlich in der internen Warnmail, nicht im Fehlerlog.
+Pro Antrag und fehlgeschlagenem Schritt wird höchstens eine Warnung ausgelöst;
+Resend erhält zusätzlich einen stabilen Idempotenzschlüssel.
+
+Bereitstellung: zuerst die private Konfiguration ergänzen und den Helfer
+`membership-failure-alert.php` auf den PHP-Webspace laden, anschließend
+`membership-v3.php` aktualisieren. Ein GitHub-Pages-Deploy reicht nicht.
+Den Warnversand mit synthetischen Daten und ausdrücklich als TEST markiert prüfen.
+Ein vollständiger Ausfall des PHP-Servers bzw. beider Mailwege kann keine
+Warnmail auslösen; auch spätere Bounces nach Annahme durch den Maildienst
+werden durch diese synchrone Fehlerbenachrichtigung nicht erkannt.
+
 ### Sponsoren in der Willkommensmail
 
 Der Website-Build veröffentlicht unter `/mitgliedschaft-sponsoren.json` die
