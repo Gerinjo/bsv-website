@@ -20,6 +20,7 @@ import { fTournamentSchedules } from '../data/fTournamentSchedules';
 import { legacyContent } from '../data/legacyContent';
 import { sportsPages, sportsPaths } from '../data/sportsPages';
 import { teamProfiles } from '../data/teamPages';
+import { youthWinterTraining, winterTrainingPeriod } from '../data/winterTraining';
 import { documentPages } from '../data/documentPages';
 import { withBase, withBaseInHtml } from '../utils/paths';
 
@@ -106,6 +107,7 @@ const isFootballLanding = page.path === 'fussball';
 const isHistoryPage = page.path === 'verein/geschichte';
 const isOrganizationPage = page.path === 'verein/organigramm';
 const teamProfile = teamProfiles[page.path];
+const winterTraining = youthWinterTraining[page.path];
 const hasTableWidget = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teamProfile?.fussballDeTableWidgetId ?? '');
 const tournamentSchedules: Record<string, TournamentSchedule> = {
   'jugend/u11-e1': e1TournamentSchedule,
@@ -718,8 +720,23 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
             </div>
           </section>
 
-          <section class="d-girls-training" aria-labelledby="team-training-title">
-            <div class="training-intro"><span>Training</span><h2 id="team-training-title">Gemeinsam trainieren.<br />Besser werden.</h2><p>{teamProfile.trainingLead}</p></div>
+          {winterTraining && (
+            <section class="d-girls-training winter-training" id="wintertraining" aria-labelledby="winter-training-title">
+              <div class="training-intro">
+                <span>Halle und Kunstrasen</span>
+                <h2 id="winter-training-title">Wintertraining<br />{winterTrainingPeriod.season}.</h2>
+                <p class="training-validity">Gültig vom <time datetime={winterTrainingPeriod.start}>{winterTrainingPeriod.startLabel}</time> bis <time datetime={winterTrainingPeriod.end}>{winterTrainingPeriod.endLabel}</time>.</p>
+              </div>
+              <div class="training-days">
+                {winterTraining.map((slot, index) => (
+                  <article><span>{String(index + 1).padStart(2, '0')}</span><div><small>{slot.day}</small><strong>{slot.time}</strong><p>{slot.place}</p>{slot.note && <p>{slot.note}</p>}</div></article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section class:list={['d-girls-training', { 'summer-training': Boolean(winterTraining) }]} aria-labelledby="team-training-title">
+            <div class="training-intro"><span>{winterTraining ? 'Sommertraining' : 'Training'}</span><h2 id="team-training-title">Gemeinsam trainieren.<br />Besser werden.</h2><p>{teamProfile.trainingLead}</p></div>
             <div class="training-days">
               {teamProfile.training.map((slot, index) => (
                 <article><span>{String(index + 1).padStart(2, '0')}</span><div><small>{slot.day}</small><strong>{slot.time}</strong><p>{slot.place}</p></div></article>
@@ -1257,7 +1274,10 @@ const departmentPage = isDepartmentPage ? departmentPages[page.path as keyof typ
   .team-data-tabs button:focus-visible { outline:3px solid rgb(22 79 50 / 25%); outline-offset:2px; }
   .d-girls-training { min-height:450px; margin-bottom:115px; padding:62px 68px; display:grid; grid-template-columns:.85fr 1.15fr; gap:80px; border-radius:9px; background:var(--yellow); }
   .training-intro h2 { font-size:clamp(2.7rem,4.6vw,4.3rem); }
+  .winter-training .training-intro h2 { font-size:clamp(2.2rem,4.6vw,4.3rem); }
   .training-intro p { max-width:430px; margin:25px 0 0; color:#415245; line-height:1.65; }
+  .summer-training { background:#edf2ee; }
+  .training-intro .training-validity { font-weight:700; }
   .training-days { align-self:center; }
   .training-days > article { padding:20px 0; display:grid; grid-template-columns:48px 1fr; gap:22px; border-bottom:1px solid rgb(9 47 32 / 20%); }
   .training-days > article:first-child { border-top:1px solid rgb(9 47 32 / 20%); }
