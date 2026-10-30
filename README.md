@@ -291,3 +291,9 @@ Beim Absenden einer Mannschafts- oder Personenanfrage liest `contact-request` di
 Leere, passive oder gelöschte Trainerkontakte verwenden keine veraltete Empfängerliste. Bei einer Störung wird die Anfrage vor Speicherung und Versand mit einem erneuten Versuchshinweis abgewiesen. Andere Vereinsbereiche behalten ihre konfigurierten Empfänger einschließlich zusätzlicher Adressen. Die beim Absenden ermittelten Empfänger stehen im privaten Anfrageprotokoll.
 
 Bereitstellung: Suite-Migrationen `trainer_email_contact_form`, `trainer_contact_directory` und `trainer_contact_email_import` anwenden, `trainer-contact-recipients` und die Admin-API bereitstellen; anschließend die Website-Migration `trainer_contact_lookup` anwenden und `contact-request` bereitstellen. Tests: `node --test tests/contact-recipients.test.mjs` und `node scripts/test-trainer-contact-lookup.mjs`; die Suite-Datenbanktests prüfen Adressänderungen, Freigaben, Passivschaltungen, Löschung, zusätzliche Kontakte und fehlende Browserrechte.
+
+### Erweiterte Saisonmotive und Weihnachts-Schneefall
+
+Die Homepage übernimmt das in der Club Suite gespeicherte Theme. Weihnachten und Ostern verwenden v3-Motive: Weihnachtsbaum mit Krippe und Geschenken beziehungsweise Osterhase mit weiteren Eiern, Nest und Glocken. Die vorherigen Bildversionen bleiben erhalten. `src/utils/brand-themes.mjs` liefert jeweils Bildpfad, Alternativtext und Bildmaße.
+
+`SeasonalSnow.astro` ergänzt bei Weihnachten einen dezenten Schneefall über der Homepage. Die Ebene ignoriert Zeigerereignisse und ist für Screenreader unsichtbar. Bei Themewechsel, reduzierter Bewegung, Hintergrundansicht oder im Druck läuft kein Schneefall. Die Umschaltung reagiert auf `bsv:themechange` aus `ClubBrand.astro`; eine Datenbankänderung ist nicht nötig. Controller und CSS entsprechen der Homepage-Vorschau in der Club Suite.

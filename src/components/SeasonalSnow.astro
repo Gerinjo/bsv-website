@@ -1,0 +1,15 @@
+---
+import {loadClubBrandSettings} from '../utils/club-brand.mjs';
+import '../styles/seasonal-snow.css';
+const brand=await loadClubBrandSettings();
+---
+<div data-bsv-seasonal-snow data-theme={brand.theme_key} class="bsv-seasonal-snow" aria-hidden="true" hidden></div>
+<script>
+ import {createSeasonalSnow} from '../utils/seasonal-snow.mjs';
+ const target=document.querySelector<HTMLElement>('[data-bsv-seasonal-snow]');
+ if(target){
+  const snow=createSeasonalSnow(target);
+  const update=()=>snow.setTheme(document.documentElement.dataset.bsvTheme||target.dataset.theme||'football');
+  document.addEventListener('bsv:themechange',update);update();
+ }
+</script>

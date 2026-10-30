@@ -16,7 +16,8 @@ const css=Object.entries(clubBrandVariables(brand.color_scheme)).map(([key,value
   const football=document.querySelector<HTMLElement>('[data-bsv-hero-football]');
   const seasonal=document.querySelector<HTMLElement>('[data-bsv-hero-seasonal]');
   if(football)football.hidden=brand.theme_key!=='football';
-  if(seasonal){seasonal.hidden=brand.theme_key==='football';const art=seasonal.querySelector<HTMLImageElement>('[data-bsv-theme-art]');if(art&&brand.theme_key!=='football'){const artwork=brandThemeArtwork(brand.theme_key),src=withBase(artwork.src);if(art.getAttribute('src')!==src)art.src=src;art.alt=artwork.alt;}}
+  if(seasonal){seasonal.hidden=brand.theme_key==='football';const art=seasonal.querySelector<HTMLImageElement>('[data-bsv-theme-art]');if(art&&brand.theme_key!=='football'){const artwork=brandThemeArtwork(brand.theme_key),src=withBase(artwork.src);if(art.getAttribute('src')!==src)art.src=src;art.alt=artwork.alt;art.width=artwork.width;art.height=artwork.height;}}
+  document.dispatchEvent(new CustomEvent('bsv:themechange',{detail:{theme:brand.theme_key}}));
   try{localStorage.setItem('bsv-public-brand-v2',JSON.stringify(brand));}catch{}
  };
  try{const stored=localStorage.getItem('bsv-public-brand-v2');if(stored)apply(JSON.parse(stored));}catch{}
