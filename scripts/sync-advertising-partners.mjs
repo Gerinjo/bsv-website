@@ -1,3 +1,4 @@
+import { assertUniqueSponsorServices } from '../src/data/sponsorServices.mjs';
 import { access, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
@@ -111,16 +112,13 @@ for (const source of payload.partners) {
   if (teamAudienceSlugs.some((audienceSlug) => !slugPattern.test(audienceSlug))) {
     throw new Error(`Eine Mannschaftszuweisung für ${slug} ist ungültig.`);
   }
-  if (new Set(teamAssignments.map((assignment) => assignment.audienceSlug)).size !== teamAssignments.length) {
-    throw new Error(`Detaillierte Mannschaftszuweisungen für ${slug} sind doppelt vorhanden.`);
-  }
-  if (teamAssignments.length && (
-    teamAssignments.length !== teamAudienceSlugs.length
-    || teamAssignments.some((assignment) => !teamAudienceSlugs.includes(assignment.audienceSlug))
+  assertUniqueSponsorServices(teamAssignments, slug);
+  assertUniqueSponsorServices(audienceAssignments, slug);
+  const detailedAudienceSlugs = [...new Set(teamAssignments.map(assignment => assignment.audienceSlug))];
+  if (detailedAudienceSlugs.length && (
+    detailedAudienceSlugs.length !== teamAudienceSlugs.length
+    || detailedAudienceSlugs.some(audienceSlug => !teamAudienceSlugs.includes(audienceSlug))
   )) throw new Error(`Die Mannschaftszuweisungen für ${slug} sind widersprüchlich.`);
-  if (new Set(audienceAssignments.map((assignment) => assignment.audienceSlug)).size !== audienceAssignments.length) {
-    throw new Error(`Website-Zuweisungen für ${slug} sind doppelt vorhanden.`);
-  }
   ids.add(sourceId);
   slugs.add(slug);
   if (!Number.isInteger(sortOrder) || sortOrder < 0) throw new Error(`Sortierung für ${slug} ist ungültig.`);

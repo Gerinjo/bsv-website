@@ -38,7 +38,7 @@ test('only direct team assignments are rendered on individual team pages', () =>
       .sort();
     assert.deepEqual(partner.teamAudienceSlugs, directTeamAssignments, `${partner.name}: Mannschaftszuweisungen sind nicht direkt`);
   }
-  assert.match(teamPagesSource, /partner\.audienceAssignments\.find\(item=>item\.audienceSlug===sponsorAudience\)/);
+  assert.match(teamPagesSource, /teamSponsorDetails\(partner\.audienceAssignments,sponsorAudience\)/);
 });
 
 test('every assigned audience used by current sponsor data maps to a team page', () => {
