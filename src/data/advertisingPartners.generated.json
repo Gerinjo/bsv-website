@@ -778,6 +778,18 @@
           "displayWeight": 1
         },
         "description": ""
+      },
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "bandensponsor",
+          "label": "Bandensponsor",
+          "sortOrder": 60,
+          "displayWeight": 1
+        },
+        "description": ""
       }
     ],
     "sortOrder": 100,
@@ -913,6 +925,32 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-09T10:54:13.785111+00:00"
+  },
+  {
+    "sourceId": "9285f3d1-8d5f-4a6c-9ad8-4cf84d28d68d",
+    "slug": "joos-gmbh-co-kg-holzbau",
+    "name": "Joos Gmbh & Co. KG - Holzbau",
+    "logoSrc": "/images/sponsors/synced/joos-gmbh-co-kg-holzbau.png",
+    "logoAlt": "Logo von Joos Gmbh & Co. KG - Holzbau",
+    "website": "https://www.joos-holzbau.de/",
+    "teamAudienceSlugs": [],
+    "teamAssignments": [],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "bandensponsor",
+          "label": "Bandensponsor",
+          "sortOrder": 60,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-11-01T11:58:50.259732+00:00"
   },
   {
     "sourceId": "e34b384c-4c6b-450a-912f-1ec663148557",
@@ -1677,6 +1715,32 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-09-09T12:38:14.31733+00:00"
+  },
+  {
+    "sourceId": "e770df5f-15e4-4adb-958d-44101cfbe0fc",
+    "slug": "zimmerei-hirling",
+    "name": "Zimmerei Hirling",
+    "logoSrc": "/images/sponsors/synced/zimmerei-hirling.png",
+    "logoAlt": "Logo von Zimmerei Hirling",
+    "website": "https://www.zimmerei-hirling.de/",
+    "teamAudienceSlugs": [],
+    "teamAssignments": [],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "bandensponsor",
+          "label": "Bandensponsor",
+          "sortOrder": 60,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
+    "sortOrder": 100,
+    "sourceUpdatedAt": "2026-11-01T11:56:46.593162+00:00"
   },
   {
     "sourceId": "23145ec1-8ca8-46f5-84b9-b77b9be4a26f",
