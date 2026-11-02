@@ -790,7 +790,20 @@
     "website": "https://www.engler-metzgerei.de/",
     "teamAudienceSlugs": [],
     "teamAssignments": [],
-    "audienceAssignments": [],
+    "audienceAssignments": [
+      {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "bandensponsor",
+          "label": "Bandensponsor",
+          "sortOrder": 60,
+          "displayWeight": 1
+        },
+        "description": ""
+      }
+    ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-11-01T21:25:14.758833+00:00"
   },
@@ -1037,19 +1050,6 @@
     ],
     "sortOrder": 100,
     "sourceUpdatedAt": "2026-11-01T12:16:29.89569+00:00"
-  },
-  {
-    "sourceId": "554bf08d-912c-46fc-a8e4-4f2f62c12aec",
-    "slug": "geissmann-elektrotechnik",
-    "name": "Geissmann Elektrotechnik",
-    "logoSrc": "/images/sponsors/synced/geissmann-elektrotechnik.png",
-    "logoAlt": "Logo von Geissmann Elektrotechnik",
-    "website": "https://geissmann-elektrotechnik.com/",
-    "teamAudienceSlugs": [],
-    "teamAssignments": [],
-    "audienceAssignments": [],
-    "sortOrder": 100,
-    "sourceUpdatedAt": "2026-09-09T12:42:07.008549+00:00"
   },
   {
     "sourceId": "4384ae55-f596-481c-b652-97ac20208202",
