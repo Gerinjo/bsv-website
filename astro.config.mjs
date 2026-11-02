@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
     site: 'https://bsvnordstern.de',
     redirects: {
-        '/cs': 'https://bsv-story-automatik.jerome-ernsberger.chatgpt.site/',
+        '/cs': 'https://suite.bsvnordstern.de/',
         '/raku': 'https://gerinjo.github.io/raku-plan-pages/',
     },
 });

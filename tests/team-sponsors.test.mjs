@@ -15,10 +15,11 @@ const headerSource = readFileSync(new URL('../src/components/Header.astro', impo
 const navigationSource = readFileSync(new URL('../src/data/navigation.ts', import.meta.url), 'utf8');
 const sponsoringMenuSource = readFileSync(new URL('../src/components/SponsoringMegaEnhancer.astro', import.meta.url), 'utf8');
 
-test('synced sponsors include deduplicated direct website assignments', () => {
+test('synced sponsors include unique services per website audience and deduplicated team audiences', () => {
   for (const partner of partners) {
     assert.ok(Array.isArray(partner.audienceAssignments), `${partner.name}: Website-Zuweisungen fehlen`);
-    assert.equal(new Set(partner.audienceAssignments.map((assignment) => assignment.audienceSlug)).size, partner.audienceAssignments.length, `${partner.name}: doppelte Website-Zuweisung`);
+    const services = partner.audienceAssignments.map((assignment) => JSON.stringify([assignment.audienceSlug, assignment.sponsorType?.slug ?? null]));
+    assert.equal(new Set(services).size, partner.audienceAssignments.length, `${partner.name}: doppelte Sponsorleistung im selben Bereich`);
     assert.ok(Array.isArray(partner.teamAudienceSlugs), `${partner.name}: Mannschaftszuweisungen fehlen`);
     assert.equal(new Set(partner.teamAudienceSlugs).size, partner.teamAudienceSlugs.length, `${partner.name}: doppelte Mannschaftszuweisung`);
   }
@@ -32,9 +33,9 @@ test('synced sponsors include deduplicated direct website assignments', () => {
 
 test('only direct team assignments are rendered on individual team pages', () => {
   for (const partner of partners) {
-    const directTeamAssignments = partner.audienceAssignments
+    const directTeamAssignments = [...new Set(partner.audienceAssignments
       .filter((assignment) => ['mens_team', 'womens_team', 'youth_team'].includes(assignment.audienceGroup))
-      .map((assignment) => assignment.audienceSlug)
+      .map((assignment) => assignment.audienceSlug))]
       .sort();
     assert.deepEqual(partner.teamAudienceSlugs, directTeamAssignments, `${partner.name}: Mannschaftszuweisungen sind nicht direkt`);
   }
