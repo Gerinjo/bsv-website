@@ -1,3 +1,4 @@
+import {createClubEmailPreparer} from '../supabase/functions/_shared/club-email-delivery.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
@@ -12,7 +13,7 @@ function harness(testRecipient) {
   const env = { EMAIL_DELIVERY_MODE: 'test', EMAIL_TEST_RECIPIENT: testRecipient, MAIL_FROM: 'BSV <no-reply@bsvnordstern.de>', RESEND_API_KEY: 'test-only' };
   const sent = [];
   const api = runInNewContext(source + '\n({sendEmail,getEmailRuntimeConfig});', {
-    Deno: { env: { get: key => env[key] } }, resolveEmailMode, console,
+    prepareClubEmail:createClubEmailPreparer({loadSponsors:async()=>[],freezeSponsors:async(_k,s)=>s}), Deno: { env: { get: key => env[key] } }, resolveEmailMode, console,
     fetch: async (_, options) => { sent.push(JSON.parse(options.body)); return Response.json({ id: 'test-message' }); },
   });
   return { ...api, sent };

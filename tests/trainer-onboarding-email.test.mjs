@@ -1,3 +1,4 @@
+import {createClubEmailPreparer} from '../supabase/functions/_shared/club-email-delivery.mjs';
 import {withMembershipDatabase} from '../supabase/functions/membership-email/database.mjs';
 import {prepareTrainerOnboarding,acceptTrainerOnboarding} from '../supabase/functions/_shared/trainer-suite-onboarding.mjs';
 import assert from 'node:assert/strict';
@@ -22,11 +23,11 @@ function harness(values={},failed=false){
   const payloads=[],lookups=[],imports=[];let handler;
   const deno={env:{get:key=>env[key]},serve:callback=>{handler=callback;}};
   const api=runInNewContext(stripped('supabase/functions/_shared/email-service.ts')+'\n({sendEmail,getEmailRuntimeConfig});',{
-    Deno:deno,resolveEmailMode,console:{error(){}},fetch:async(url,options)=>{assert.equal(url,'https://api.resend.com/emails');payloads.push({body:JSON.parse(options.body),headers:options.headers});return new Response(JSON.stringify(failed?{error:'test-failure'}:{id:'test-resend'}),{status:failed?502:201});},
+    prepareClubEmail:createClubEmailPreparer({loadSponsors:async()=>[],freezeSponsors:async(_k,s)=>s}), Deno:deno,resolveEmailMode,console:{error(){}},fetch:async(url,options)=>{assert.equal(url,'https://api.resend.com/emails');payloads.push({body:JSON.parse(options.body),headers:options.headers});return new Response(JSON.stringify(failed?{error:'test-failure'}:{id:'test-resend'}),{status:failed?502:201});},
   });
   const db={rpc:async(name,args)=>{imports.push(args.payload);return {data:{ok:true}};},from(){const chain={select(){return chain;},in(field,keys){lookups.push(Array.from(keys));return chain;},eq(){return Promise.resolve({data:[{schluessel:'youth-leadership',email:'jugend@bsvnordstern.de',weitere_emails:[]}],error:null});}};return chain;}};
   runInNewContext(stripped('supabase/functions/membership-email/index.ts'),{
-    Deno:deno,Response,Request,console:{error(){}},withMembershipDatabase,createClient:()=>db,collectRecipientEmails,getMembershipRoutingKeys,isTrainerEmail,getTrainerEmailRecipient,getTrainerEmailMode,TRAINER_TEST_RECIPIENT,...api,prepareTrainerOnboarding,acceptTrainerOnboarding,queueMembershipNewsletter:async()=> 'not_requested',
+    prepareClubEmail:createClubEmailPreparer({loadSponsors:async()=>[],freezeSponsors:async(_k,s)=>s}), Deno:deno,Response,Request,console:{error(){}},withMembershipDatabase,createClient:()=>db,collectRecipientEmails,getMembershipRoutingKeys,isTrainerEmail,getTrainerEmailRecipient,getTrainerEmailMode,TRAINER_TEST_RECIPIENT,...api,prepareTrainerOnboarding,acceptTrainerOnboarding,queueMembershipNewsletter:async()=> 'not_requested',
   });
   return{payloads,lookups,imports,submit:async(type,overrides={},secret='test-secret')=>handler(new Request('https://example.org/mail',{method:'POST',headers:{'Content-Type':'application/json','x-bsv-membership-secret':secret},body:JSON.stringify({messageType:type,to:'coach@example.org',routingKey:'attacker',replyTo:'coach@example.org',subject:'Willkommen',text:'Testunterlagen',html:'<p>Testunterlagen</p>',applicationNumber:reference,attachments:type==='trainer-welcome'?[pdf]:[],...overrides})}))};
 }

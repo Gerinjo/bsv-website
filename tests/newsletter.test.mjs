@@ -38,8 +38,8 @@ test('email templates contain BSV identity, action, address and same sponsor sel
 test('partner pool is unique, shuffled and rejects unsafe URLs; outages preserve the signup email', async () => {
   const pool = [sponsor('one'), sponsor('two'), sponsor('three'), sponsor('four'), sponsor('one'), { ...sponsor('bad'), website: 'javascript:alert(1)' }];
   const partners = selectSponsors(pool, () => 0);
-  assert.equal(partners.length, 3);
-  assert.equal(new Set(partners.map((item) => item.id)).size, 3);
+  assert.equal(partners.length, 4);
+  assert.equal(new Set(partners.map((item) => item.id)).size, 4);
   assert.ok(!partners.some((item) => item.id === 'bad'));
   assert.notDeepEqual(partners.map((item) => item.id), ['one', 'two', 'three']);
   assert.deepEqual(await loadSponsors(noFetch), []);

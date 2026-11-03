@@ -32,3 +32,6 @@ public/api/vendor/tfpdf/font/unifont/*.cw127.php
 
 # Generated high-quality website derivatives; rebuilt before Astro.
 /public/images/optimized/
+
+# Public logo selection cache created by the independent PHP mail fallback.
+/public/api/.club-email-public-cache/

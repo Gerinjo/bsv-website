@@ -1,3 +1,4 @@
+import {standardizeClubEmail,BSV_EMAIL_SPONSOR_SLOT,buildClubSponsorFooter} from '../_shared/club-email.mjs';
 const SITE = 'https://bsvnordstern.de';
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const safeUrl = (value) => {
@@ -18,7 +19,7 @@ export function selectSponsors(items, random = Math.random) {
     const j = Math.floor(random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  return pool.slice(0, 3);
+  return pool.slice(0, 4);
 }
 
 export async function loadSponsors(fetcher = fetch) {
@@ -78,9 +79,9 @@ export function renderNewsletterEmail({ kind, email, actionUrl, sponsors = [], t
 <table role="presentation"><tr><td style="background:#f4d638;border-radius:4px;"><a href="${escapeHtml(buttonUrl)}" style="display:inline-block;padding:15px 24px;color:#092f20;font-weight:bold;text-decoration:none;">${buttonLabel} →</a></td></tr></table>
 ${confirmation ? `<p style="font-size:12px;line-height:1.6;">Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:<br><a href="${escapeHtml(actionUrl)}" style="color:#164f32;word-break:break-all;">${escapeHtml(actionUrl)}</a></p>` : ''}
 ${!infoOnly ? '<p style="padding:16px;background:#f4f1e8;"><strong>Unser Newsletter entsteht gerade.</strong><br>Wir arbeiten aktuell am Konzept. Die ersten Sendungen folgen in absehbarer Zeit. Mit deiner bestätigten Anmeldung bist du zum Start dabei.</p>' : ''}<p>${note}</p><p style="margin-bottom:0;">Grün-weiße Grüße<br><strong>Dein BSV Nordstern Radolfzell</strong><br><span style="color:#164f32;">#aufgehtsgrün</span></p></td></tr>
-<tr><td class="section" style="padding:28px 40px;background:#f4f1e8;"><h2 style="margin:0 0 12px;font-size:20px;">Gemeinsam mehr möglich machen.</h2><p style="font-size:14px;line-height:1.6;">Danke an unsere Partner, die Sport und Gemeinschaft beim BSV unterstützen.</p>${sponsors.length ? `<table role="presentation" width="100%"><tr>${partnersHtml}</tr></table>` : ''}<p style="font-size:13px;"><a href="${SITE}/werbepartner" style="color:#164f32;">Alle BSV-Partner entdecken →</a></p></td></tr>
+${buildClubSponsorFooter(sponsors).html}
 <tr><td class="section" style="padding:28px 40px;background:#092f20;color:white;font-size:13px;line-height:1.8;"><strong>BSV Nordstern e.V. Radolfzell</strong><br>Schlesierstraße 43 · 78315 Radolfzell<br><a href="mailto:info@bsvnordstern.de" style="color:white;">info@bsvnordstern.de</a><p><a href="${SITE}/impressum" style="color:#d7e5dc;">Impressum</a> · <a href="${SITE}/datenschutz#newsletter" style="color:#d7e5dc;">Datenschutz</a></p><p style="color:#d7e5dc;font-size:12px;">Diese Nachricht gehört zu deiner Anmeldung (${subscriptionLabel}) für ${escapeHtml(email)}.${unsubscribeHtml}</p></td></tr>
 </table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`;
   const text = `${subject}\n\nHallo, liebe Nordstern-Freundin, lieber Nordstern-Freund!\n\n${intro}\n\n${!infoOnly ? 'Unser Newsletter entsteht gerade: Wir arbeiten aktuell am Konzept. Die ersten Sendungen folgen in absehbarer Zeit. Mit deiner bestätigten Anmeldung bist du zum Start dabei.\n\n' : ''}${buttonLabel}: ${buttonUrl}\n\n${note}\n\nGrün-weiße Grüße\nDein BSV Nordstern Radolfzell\n#aufgehtsgrün\n\nDanke an unsere Partner, die Sport und Gemeinschaft beim BSV unterstützen.\n${sponsors.map((partner) => `${partner.name}: ${partner.website}`).join('\n')}\nAlle BSV-Partner: ${SITE}/werbepartner\n\nBSV Nordstern e.V. Radolfzell\nSchlesierstraße 43 · 78315 Radolfzell\ninfo@bsvnordstern.de\nImpressum: ${SITE}/impressum\nDatenschutz: ${SITE}/datenschutz#newsletter\n\nDiese Nachricht gehört zu deiner Anmeldung (${subscriptionLabel}) für ${email}.${unsubscribeText}\n`;
-  return { to: email, subject, html, text };
+  const styled=standardizeClubEmail({to:email,subject,html,text});return {...styled,html:styled.html.replace(BSV_EMAIL_SPONSOR_SLOT,'')};
 }

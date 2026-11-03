@@ -41,6 +41,10 @@ function bsvMembershipFailureAlert($context, $config, $internalDelivered, $trans
             'subject' => ($isTest ? 'TEST – ' : '') . 'BSV: Fehler bei Mitgliedsanmeldung ' . $reference,
             'text' => $text);
         $idempotencyKey = 'membership-alert/' . hash('sha256', $reference . '/' . $stage);
+        if (is_file(__DIR__.'/club-email.php')) {
+            require_once __DIR__.'/club-email.php';
+            $message=bsvClubEmailDecorate($message,$idempotencyKey,isset($transports['sponsors'])?call_user_func($transports['sponsors']):null);
+        }
         $resend = isset($transports['resend']) ? $transports['resend'] : function ($message, $key) use ($config) {
             if (empty($config['alert_resend_api_key']) || !function_exists('curl_init')) return false;
             $endpoint = getenv('BSV_MEMBERSHIP_ALERT_EMAIL_ENDPOINT');
@@ -59,6 +63,11 @@ function bsvMembershipFailureAlert($context, $config, $internalDelivered, $trans
         };
         $native = isset($transports['native']) ? $transports['native'] : function ($message) {
             if (!function_exists('mail')) return false;
+            if (isset($message['html']) && function_exists('bsvClubEmailAlternative')) {
+                $alternative=bsvClubEmailAlternative($message);
+                return @mail($message['to'][0], '=?UTF-8?B?'.base64_encode($message['subject']).'?=', $alternative['body'],
+                    "From: BSV Nordstern <no-reply@bsvnordstern.de>\r\nReply-To: jerome.ernsberger@bsvnordstern.de\r\n".$alternative['header']);
+            }
             return @mail($message['to'][0], '=?UTF-8?B?' . base64_encode($message['subject']) . '?=', $message['text'],
                 "From: BSV Nordstern <no-reply@bsvnordstern.de>\r\nReply-To: jerome.ernsberger@bsvnordstern.de\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit");
         };

@@ -78,7 +78,7 @@ export async function processNewsletterJob({ db, config, sendEmail, fetcher = fe
     let providerId = null;
     if (job.kind !== 'unsubscribe') {
       if (!job.message || job.message.to !== sub.email) throw new Error('invalid_job_message');
-      const result = await sendEmail(job.message, { idempotencyKey: `newsletter/${config.mode}/${job.id}`, timeoutMs: 15000 });
+      const result = await sendEmail(job.message, { idempotencyKey: `newsletter/${config.mode}/${job.id}`, timeoutMs: 15000, preserveStoredHtml: true });
       if (result.mode !== config.mode) throw new Error('mail_mode_changed');
       providerId = result.id;
     }

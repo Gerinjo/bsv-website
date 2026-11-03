@@ -1,3 +1,4 @@
+import { prepareClubEmail } from './club-email-delivery.mjs';
 import { resolveEmailMode } from './email-mode.mjs';
 
 export type EmailMode = 'test' | 'live';
@@ -58,7 +59,7 @@ export const getEmailRuntimeConfig = (): EmailRuntimeConfig => {
   };
 };
 
-export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number; forceTestRecipient?: string } = {}) => {
+export const sendEmail = async (message: EmailMessage, options: { idempotencyKey?: string; timeoutMs?: number; forceTestRecipient?: string; preserveStoredHtml?: boolean } = {}) => {
   const runtimeConfig = getEmailRuntimeConfig();
   const config: EmailRuntimeConfig = options.forceTestRecipient
     ? { ...runtimeConfig, mode: 'test', testMode: true, testRecipient: testRecipientAddress(options.forceTestRecipient) }
@@ -66,6 +67,8 @@ export const sendEmail = async (message: EmailMessage, options: { idempotencyKey
   if (!config.resendApiKey) throw new Error('RESEND_API_KEY fehlt.');
   if (!config.mailFrom) throw new Error('MAIL_FROM fehlt.');
   if (config.testMode && !config.testRecipient) throw new Error('EMAIL_TEST_RECIPIENT fehlt.');
+
+  if (!options.preserveStoredHtml) message = await prepareClubEmail(message, options);
 
   const intendedRecipients = [
     ...list(message.to).map((address) => `To: ${address}`),

@@ -19,7 +19,7 @@ function run(scenario = {}) {
       'email' => 'mila@example.invalid', 'phone' => '0123456789', 'department' => 'Fußball Jugend',
       'team' => 'U13 D2', 'iban' => 'PRIVATE-IBAN', 'signature' => 'PRIVATE-SIGNATURE',
     ), array(), function () use ($input) { return !empty($input['delivered']); },
-      array('resend' => $transport('resend'), 'native' => $transport('hosting')));
+      array('resend' => $transport('resend'), 'native' => $transport('hosting'), 'sponsors' => function(){return array_map(function($i){return array('id'=>'partner'.$i,'name'=>'Partner '.$i,'website'=>'https://example.test','logo'=>'https://bsvnordstern.de/images/sponsors/test.png','width'=>112,'height'=>64);},array(1,2,3,4));}));
     $results = array();
     foreach (isset($input['stages']) ? $input['stages'] : array('internal') as $stage) {
       $results[] = $alert($stage, 'recipient_lookup_failed', 500);
@@ -42,6 +42,8 @@ test('failure alerts contain contact details and a fixed BSV recipient without s
   assert.match(message.text, /mila@example\.invalid/);
   assert.match(message.text, /Eingang des Hauptantrags.*nicht bestätigt/);
   assert.doesNotMatch(JSON.stringify(message), /PRIVATE|attachments|signature|iban/i);
+  assert.match(message.html,/email-header-organic[.]png/);
+  assert.equal((message.html.match(/width="25%"/g)||[]).length,4);
   assert.match(key, /^membership-alert\/[a-f0-9]{64}$/);
 });
 
