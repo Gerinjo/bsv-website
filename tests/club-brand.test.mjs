@@ -24,7 +24,7 @@ test('the CSD color proposal displays six rainbow colors and removes the ribbon 
 });
 
 test('public design accepts only known seasonal themes and valid colors',()=>{
- for(const theme of ['football','christmas','easter','summer'])assert.equal(clubBrandSettings({theme_key:theme,color_scheme:CLUB_BRAND_DEFAULT}).theme_key,theme);
+ for(const theme of ['football','christmas','easter','summer','girls_day'])assert.equal(clubBrandSettings({theme_key:theme,color_scheme:CLUB_BRAND_DEFAULT}).theme_key,theme);
  assert.equal(clubBrandSettings({theme_key:'<script>',color_scheme:CLUB_BRAND_DEFAULT}).theme_key,'football');
  assert.deepEqual(clubBrandSettings(null),{theme_key:'football',color_scheme:CLUB_BRAND_DEFAULT});
 });
