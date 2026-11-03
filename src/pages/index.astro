@@ -76,7 +76,7 @@ const getEventType = (title: string) => {
             <Image class="hero-player" src={heroPlayer} widths={[360, 640, 960]} sizes="(max-width: 650px) 85vw, (max-width: 900px) 400px, 720px" format="webp" alt="KI-generierter Fußballer in grünem Trikot beim Schuss" loading="eager" fetchpriority="high" />
             <figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption>
           </figure>
-          <figure class="hero-seasonal-figure" data-bsv-hero-seasonal hidden={brand.theme_key==='football'}><img data-bsv-theme-art src={brand.theme_key==='football'?undefined:withBase(seasonalArt.src)} alt={seasonalArt.alt} width={seasonalArt.width} height={seasonalArt.height} decoding="async" /><figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption></figure>
+          <figure class="hero-seasonal-figure" data-bsv-hero-seasonal data-theme={brand.theme_key} hidden={brand.theme_key==='football'}><img data-bsv-theme-art src={brand.theme_key==='football'?undefined:withBase(seasonalArt.src)} alt={seasonalArt.alt} width={seasonalArt.width} height={seasonalArt.height} decoding="async" /><span class="hero-girls-title" data-bsv-girls-title hidden={brand.theme_key!=='girls_day'}>Girls’ Day</span><figcaption><a href={withBase('/impressum#ki-bildnachweis')}>KI-generierte Illustration</a></figcaption></figure>
         </div>
       </div>
       <div class="ticker" aria-label="Vereinswerte">
@@ -264,9 +264,9 @@ const getEventType = (title: string) => {
   .newsletter-teaser p.newsletter-concept { margin-top: 10px; font-size: .78rem; }
   .newsletter-teaser .button { white-space: nowrap; }
   @media (max-width: 650px) { .newsletter-teaser { padding-top: 26px; }.newsletter-teaser-card { grid-template-columns: 1fr; gap: 22px; padding: 24px 22px; }.newsletter-teaser .button { justify-self: start; } }
-  .hero { position: relative; overflow: hidden; color: white; background: var(--green); }
+  .hero { position: relative; overflow: hidden; color: var(--bsv-hero-ink,white); background: var(--bsv-background,var(--green)); }
   .hero::before { content: ''; position: absolute; inset: 0; opacity: .17; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(to right, black, transparent 70%); }
-  .hero-lines { position: absolute; width: 520px; height: 520px; right: -130px; top: -130px; border: 1px solid rgb(255 255 255 / 18%); border-radius: 50%; box-shadow: 0 0 0 70px rgb(255 255 255 / 4%), 0 0 0 140px rgb(255 255 255 / 4%); }
+  .hero-lines { position: absolute; width: 520px; height: 520px; right: -130px; top: -130px; border: 1px solid rgb(var(--bsv-hero-rgb,255 255 255) / 18%); border-radius: 50%; box-shadow: 0 0 0 70px rgb(var(--bsv-hero-rgb,255 255 255) / 4%), 0 0 0 140px rgb(var(--bsv-hero-rgb,255 255 255) / 4%); }
   .hero-grid { position: relative; min-height: 640px; padding-block: 80px 100px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 50px; }
   .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
   .kicker > span { width: 27px; height: 3px; background: var(--yellow); }
@@ -275,14 +275,15 @@ const getEventType = (title: string) => {
   h1, h2 { letter-spacing: -.055em; }
   h1 { margin-bottom: 28px; font-size: clamp(4rem, 7.6vw, 7rem); line-height: .86; }
   h1 em, h2 em { color: var(--yellow); font-family: Georgia, serif; font-weight: 400; }
+  .hero h1 em { color:var(--bsv-hero-accent,var(--yellow)); }
   .hero-copy { position:relative; z-index:4; --hero-action-gap:28px; }
-  .intro { max-width: 550px; margin-bottom:var(--hero-action-gap); color: #d2e3d8; font-size: 1.12rem; line-height: 1.65; }
+  .intro { max-width: 550px; margin-bottom:var(--hero-action-gap); color: var(--bsv-hero-muted,#d2e3d8); font-size: 1.12rem; line-height: 1.65; }
   .text-link,
   .text-link:visited,
   .text-link:hover,
   .text-link:focus-visible {
     display: inline;
-    color: white;
+    color: var(--bsv-hero-ink,white);
     font-family: Georgia, serif;
     font-size: 1em;
     font-style: italic;
@@ -294,8 +295,8 @@ const getEventType = (title: string) => {
   .hero-cta-row { display: flex; align-items: center; flex-wrap: wrap; gap: 28px; }
   .button { display: inline-flex; align-items: center; justify-content: center; gap: 22px; min-height: 52px; padding: 0 22px; border-radius: 4px; color: var(--ink); font-size: .85rem; font-weight: 800; text-decoration: none; }
   .button-yellow { background: var(--yellow); box-shadow: 0 7px 0 var(--bsv-accent-dark, #bda51e); }.button-yellow:hover { transform: translateY(2px); box-shadow: 0 5px 0 var(--bsv-accent-dark, #bda51e); }
-  .button-shop { border: 2px solid rgb(255 255 255 / 72%); color: white; background: rgb(255 255 255 / 8%); box-shadow: 0 7px 0 rgb(5 30 19 / 45%); }
-  .button-shop:hover { transform: translateY(2px); border-color: white; background: rgb(255 255 255 / 15%); box-shadow: 0 5px 0 rgb(5 30 19 / 45%); }
+  .button-shop { border: 2px solid rgb(var(--bsv-hero-rgb,255 255 255) / 72%); color: var(--bsv-hero-ink,white); background: rgb(var(--bsv-hero-rgb,255 255 255) / 8%); box-shadow: 0 7px 0 rgb(5 30 19 / 45%); }
+  .button-shop:hover { transform: translateY(2px); border-color: var(--bsv-hero-ink,white); background: rgb(var(--bsv-hero-rgb,255 255 255) / 15%); box-shadow: 0 5px 0 rgb(5 30 19 / 45%); }
   .dark-link { color: var(--ink); }
   .hero-art { min-height:500px; }
   .hero-field { position:relative; min-height:inherit; }
@@ -308,18 +309,26 @@ const getEventType = (title: string) => {
   .hero-seasonal-figure[hidden],.hero-player-figure[hidden] { display:none; }
   @media(max-width:900px){.hero-seasonal-figure{width:min(100%,440px);bottom:0;right:0}}
   @media(max-width:650px){.hero-seasonal-figure{width:min(100%,360px);bottom:0;right:0}}
+  .hero-girls-title { position:absolute;right:6%;bottom:2%;padding:8px 22px 11px;background:var(--cream);color:var(--green);font:italic 700 clamp(1.8rem,3vw,3rem)/1 Georgia,serif;box-shadow:6px 6px 0 var(--yellow);transform:rotate(-5deg);white-space:nowrap; }
+  .hero-girls-title[hidden] { display:none; }
+  @media(min-width:901px){
+    .hero-seasonal-figure[data-theme="girls_day"] { height:110%;max-height:calc((50vw - 55px) * 1.5 / 1.28);width:auto;aspect-ratio:1;right:calc((100% - 100vw) / 2);transform:translate(5%,4.6%); }
+    .hero-grid:has(.hero-seasonal-figure[data-theme="girls_day"]:not([hidden])) .hero-copy { max-width:440px; }
+    .hero-seasonal-figure[data-theme="girls_day"] .hero-girls-title { bottom:7%;right:14%; }
+    .hero-seasonal-figure[data-theme="girls_day"] figcaption { top:4%;right:10%; }
+  }
   .hero-player { display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 16px 14px rgb(0 0 0 / 18%)); }
   :is(.hero-player-figure,.hero-seasonal-figure) figcaption { position:absolute; top:8%; right:16px; font-size:.65rem; line-height:1.4; }
-  :is(.hero-player-figure,.hero-seasonal-figure) figcaption a { display:block; padding:5px 8px; border:1px solid rgb(255 255 255 / 25%); border-radius:3px; background:#123c2b; color:#d2e3d8; text-decoration:none; pointer-events:auto; }
+  :is(.hero-player-figure,.hero-seasonal-figure) figcaption a { display:block; padding:5px 8px; border:1px solid rgb(var(--bsv-hero-rgb,255 255 255) / 25%); border-radius:3px; background:#123c2b; color:#d2e3d8; text-decoration:none; pointer-events:auto; }
   :is(.hero-player-figure,.hero-seasonal-figure) figcaption a:hover { color:white; text-decoration:underline; }
   :is(.hero-player-figure,.hero-seasonal-figure) figcaption a:focus-visible { outline:2px solid var(--yellow); outline-offset:3px; }
   .hero-foerderverein { position:absolute; z-index:5; top:90px; left:54%; width:clamp(135px,13vw,175px); display:block; border-radius:50%; filter:drop-shadow(0 5px 8px rgb(5 30 19 / 18%)); transition:transform .2s ease; }
   .hero-foerderverein:hover { transform:translateY(-4px) rotate(-3deg); }
   .hero-foerderverein:focus-visible { outline:3px solid white; outline-offset:6px; }
   @media (prefers-reduced-motion:reduce) { .hero-foerderverein { transition:none; }.hero-foerderverein:hover { transform:none; } }
-  .year { position: absolute; z-index: 1; right: 0; top: -25px; color: rgb(255 255 255 / 8%); font-size: 9rem; font-weight: 900; line-height: 1; writing-mode: vertical-rl; }.year span { color: rgb(var(--bsv-accent-rgb, 244 214 56) / 15%); }
-  .pitch { position: absolute; inset: 35px 36px 0 0; overflow: hidden; border: 2px solid rgb(255 255 255 / 32%); transform: rotate(-5deg); background: linear-gradient(90deg, rgb(255 255 255 / 3%) 50%, transparent 50%); }
-  .pitch::before { content: ''; position: absolute; left: 50%; height: 100%; border-left: 2px solid rgb(255 255 255 / 28%); }.pitch-circle { position: absolute; left: 50%; top: 50%; width: 120px; aspect-ratio: 1; border: 2px solid rgb(255 255 255 / 28%); border-radius: 50%; transform: translate(-50%, -50%); }.pitch-box { position: absolute; left: -2px; top: 28%; width: 95px; height: 44%; border: 2px solid rgb(255 255 255 / 28%); }
+  .year { position: absolute; z-index: 1; right: 0; top: -25px; color: rgb(var(--bsv-hero-rgb,255 255 255) / 8%); font-size: 9rem; font-weight: 900; line-height: 1; writing-mode: vertical-rl; }.year span { color: rgb(var(--bsv-accent-rgb, 244 214 56) / 15%); }
+  .pitch { position: absolute; inset: 35px 36px 0 0; overflow: hidden; border: 2px solid rgb(var(--bsv-hero-rgb,255 255 255) / 32%); transform: rotate(-5deg); background: linear-gradient(90deg, rgb(var(--bsv-hero-rgb,255 255 255) / 3%) 50%, transparent 50%); }
+  .pitch::before { content: ''; position: absolute; left: 50%; height: 100%; border-left: 2px solid rgb(var(--bsv-hero-rgb,255 255 255) / 28%); }.pitch-circle { position: absolute; left: 50%; top: 50%; width: 120px; aspect-ratio: 1; border: 2px solid rgb(var(--bsv-hero-rgb,255 255 255) / 28%); border-radius: 50%; transform: translate(-50%, -50%); }.pitch-box { position: absolute; left: -2px; top: 28%; width: 95px; height: 44%; border: 2px solid rgb(var(--bsv-hero-rgb,255 255 255) / 28%); }
   .hero-badge { position: absolute; z-index: 3; left: -28px; bottom: 5px; padding: 20px 25px; transform: rotate(3deg); background: white; color: var(--ink); box-shadow: 12px 15px 0 rgb(9 47 32 / 55%); }.hero-badge strong, .hero-badge span { display: block; }.hero-badge strong { font-size: 1.2rem; }.hero-badge span { margin-top: 4px; color: #6a796f; font-size: .75rem; }
   .ticker { position: relative; z-index: 2; overflow: hidden; padding: 17px 0; background: var(--yellow); color: var(--green-dark); font-weight: 900; text-transform: uppercase; white-space: nowrap; transform: rotate(-1deg) scale(1.02); }.ticker div { min-width: max-content; word-spacing: 16px; }.ticker span { color: white; }
 

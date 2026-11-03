@@ -28,3 +28,9 @@ test('public design accepts only known seasonal themes and valid colors',()=>{
  assert.equal(clubBrandSettings({theme_key:'<script>',color_scheme:CLUB_BRAND_DEFAULT}).theme_key,'football');
  assert.deepEqual(clubBrandSettings(null),{theme_key:'football',color_scheme:CLUB_BRAND_DEFAULT});
 });
+
+test('a light BSV background uses dark hero text and links, while dark themes retain light text',()=>{
+ const light=clubBrandVariables({...CLUB_BRAND_DEFAULT,background:'#f1f7f3',panel:'#1d6242',ink:'#173d2a'});
+ assert.equal(light['--bsv-background'],'#f1f7f3');assert.equal(light['--bsv-hero-ink'],'#173d2a');assert.equal(light['--bsv-hero-muted'],'#1d6242');assert.equal(light['--bsv-hero-accent'],'#1d6242');
+ assert.equal(clubBrandVariables(CLUB_BRAND_DEFAULT)['--bsv-hero-ink'],'#ffffff');
+});
