@@ -4,6 +4,18 @@ import { normalizeIban, isValidIban } from '../utils/bankDetails.mjs';
 export const initTrainerOnboardingForm = (form) => {
   const fields = [...form.querySelectorAll('[data-entry-fields]')];
   const get = (name) => form.elements.namedItem(name);
+  const teamSelection = get('team');
+  const roleSelection = get('role');
+  if (teamSelection && roleSelection?.options) {
+    const syncRoles = () => {
+      const junior = teamSelection.selectedOptions?.[0]?.dataset.trainerOnly === 'true';
+      const co = [...roleSelection.options].find(option => option.value === 'Co-Trainer');
+      if (co) { co.hidden = junior; co.disabled = junior; }
+      if (junior && roleSelection.value === 'Co-Trainer') roleSelection.value = 'Trainer';
+    };
+    teamSelection.addEventListener('change', syncRoles);
+    syncRoles();
+  }
   const submit = form.querySelector('[type="submit"]');
   const submitLabel = form.querySelector('[data-submit-label]');
   const reload = form.querySelector('[data-captcha-reload]');

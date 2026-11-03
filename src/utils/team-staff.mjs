@@ -1,3 +1,4 @@
+import {trainerPublicRole} from './trainer-team-roles.mjs';
 import {personCardMarkup} from './person-presentation.mjs';
 import {optimizedImageUrl,imageKey,imageFresh,imagesFresh} from './optimized-images.mjs';
 export const TRAINER_FEED_URL='https://maejihwjzxkmthjavgnx.supabase.co/functions/v1/website-trainers-feed';
@@ -6,7 +7,7 @@ const imageUrl=value=>typeof value==='string'&&(/^(https:\/\/)/.test(value)||/^\
 export function normalizeTeamStaffFeed(value){
  if(!value||!Array.isArray(value.teams))return null;const teams=Object.assign(new Map(),{photos:new Map(),employees:new Map()});
  for(const t of value.teams){if(!t||typeof t.path!=='string'||!Array.isArray(t.coaches)||teams.has(t.path))return null;const coaches=[];
-  for(const c of t.coaches){if(!c||typeof c.name!=='string'||!c.name.trim()||typeof c.role!=='string')return null;coaches.push({name:c.name.trim(),role:c.role,qualification:String(c.qualification||''),club:String(c.club||''),image:imageUrl(c.image),phone:typeof c.phone==='string'&&/^[+\d ()/.-]{3,50}$/.test(c.phone)?c.phone:''});}
+  for(const c of t.coaches){if(!c||typeof c.name!=='string'||!c.name.trim()||typeof c.role!=='string')return null;coaches.push({name:c.name.trim(),role:trainerPublicRole({path:t.path},c.role),qualification:String(c.qualification||''),club:String(c.club||''),image:imageUrl(c.image),phone:typeof c.phone==='string'&&/^[+\d ()/.-]{3,50}$/.test(c.phone)?c.phone:''});}
   teams.set(t.path,coaches);
   if(Object.hasOwn(t,'photo')){if(t.photo===null)teams.photos.set(t.path,null);else if(imageUrl(t.photo?.image))teams.photos.set(t.path,{image:imageUrl(t.photo.image),previewImage:imageUrl(t.photo.previewImage)||imageUrl(t.photo.image)});}
  }
@@ -23,8 +24,8 @@ let pendingFeed;
 export function fetchTeamStaff(options){if(options)return requestTeamStaff(options);return pendingFeed??=requestTeamStaff().finally(()=>{pendingFeed=undefined;});}
 let feedPromise;
 export function loadTeamStaff(){return feedPromise??=fetchTeamStaff();}
-export function teamStaffMarkup(coaches,{contactPath,withBase=value=>value}={}){
- return coaches.map(person=>personCardMarkup(person,{withBase,contactPath,cardClass:'coach-card',portraitClass:'coach-portrait',detailsClass:'coach-details',contactClass:'team-contact-link'})).join('');
+export function teamStaffMarkup(coaches,{contactPath,path,withBase=value=>value}={}){
+ return coaches.map(person=>personCardMarkup({...person,role:trainerPublicRole({path},person.role)},{withBase,contactPath,cardClass:'coach-card',portraitClass:'coach-portrait',detailsClass:'coach-details',contactClass:'team-contact-link'})).join('');
 }
 
 export function teamStaffKey(coaches){return JSON.stringify(coaches.map(c=>[c.name,c.role,c.qualification||'',c.club||'',imageKey(optimizedImageUrl(c.image||'',900)),c.phone||'']));}
@@ -32,7 +33,7 @@ export function updateTeamStaff(root,feed){
  const coaches=feed?.get(root.dataset.trainerPath);if(!coaches)return false;
  const grid=root.querySelector('.coach-grid');if(!grid)return false;
  const key=teamStaffKey(coaches);if(root.dataset.staffRenderKey===key&&imagesFresh(root))return true;root.dataset.staffRenderKey=key;
- grid.innerHTML=teamStaffMarkup(coaches,{contactPath:root.dataset.contactPath,withBase:path=>/^\/(?!\/)/.test(path)?(root.dataset.basePath||'').replace(/\/$/,'')+path:path});grid.classList.toggle('is-single',coaches.length===1);root.hidden=coaches.length===0;root.dataset.trainerSource='suite';return true;
+ grid.innerHTML=teamStaffMarkup(coaches,{path:root.dataset.trainerPath,contactPath:root.dataset.contactPath,withBase:path=>/^\/(?!\/)/.test(path)?(root.dataset.basePath||'').replace(/\/$/,'')+path:path});grid.classList.toggle('is-single',coaches.length===1);root.hidden=coaches.length===0;root.dataset.trainerSource='suite';return true;
 }
 
 export function updateTeamPhoto(root,feed){

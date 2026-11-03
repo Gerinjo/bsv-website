@@ -1,4 +1,5 @@
 ---
+import {trainerOnlyTeam} from '../utils/trainer-team-roles.mjs';
 import { contactTeams } from '../data/contactTopics';
 import { withBase } from '../utils/paths';
 import trainerClothing from '../../public/api/trainer-onboarding-clothing.json';
@@ -46,7 +47,7 @@ const endpoint = import.meta.env.PUBLIC_TRAINER_ONBOARDING_ENDPOINT?.trim() || '
   <fieldset id="trainer-aufgabe" data-entry-fields disabled>
     <legend><span>04</span> Mannschaft und Rolle</legend>
     <p class="full form-note">Wähle die Mannschaft und die Rolle, die du mit der Jugendleitung für deinen Start vereinbart hast.</p>
-    <label>Zugewiesene Mannschaft *<select name="team" required><option value="">Bitte Mannschaft auswählen …</option>{['youth-team', 'active-team'].map((group) => <optgroup label={group === 'youth-team' ? 'Jugendmannschaften' : 'Aktive Mannschaften'}>{contactTeams.filter((team) => team.group === group).map((team) => <option value={team.key}>{team.name}</option>)}</optgroup>)}</select></label>
+    <label>Zugewiesene Mannschaft *<select name="team" required><option value="">Bitte Mannschaft auswählen …</option>{['youth-team', 'active-team'].map((group) => <optgroup label={group === 'youth-team' ? 'Jugendmannschaften' : 'Aktive Mannschaften'}>{contactTeams.filter((team) => team.group === group).map((team) => <option value={team.key} data-trainer-only={trainerOnlyTeam({path:team.key.replaceAll('--','/')})}>{team.name}</option>)}</optgroup>)}</select></label>
     <label>Deine Rolle *<select name="role" required><option value="">Bitte Rolle auswählen …</option><option value="Trainer">Trainer</option><option value="Co-Trainer">Co-Trainer</option><option value="Betreuer">Betreuer</option></select></label>
   </fieldset>
   <fieldset id="trainer-vertragsdaten" data-entry-fields disabled>

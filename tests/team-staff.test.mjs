@@ -15,3 +15,13 @@ test('team photos use central uploads, explicit removal and preserve fallback on
  assert.equal(updateTeamPhoto(root,normalizeTeamStaffFeed({teams:[{path:'jugend/u19',coaches:[],photo:{image:'javascript:evil'}}]})),false);
  assert.equal(updateTeamPhoto(root,normalizeTeamStaffFeed({teams:[{path:'jugend/u19',coaches:[],photo:null}]})),true);assert.doesNotMatch(root.innerHTML,/<img/);assert.match(root.innerHTML,/Teambild folgt/);
 });
+
+test('G/F/E display Trainer on initial render and live feed even for legacy Co labels, while D keeps its role',()=>{
+ const coaches=[{name:'Zweiter Trainer',role:'Co-Trainerin',qualification:'C-Lizenz'}];
+ for(const path of ['jugend/u7-g','jugend/u9-f','jugend/u11-e1']){
+  assert.equal(normalizeTeamStaffFeed({teams:[{path,coaches}]}).get(path)[0].role,'Trainer');
+  const html=teamStaffMarkup(coaches,{path,contactPath:'/kontakt'});assert.doesNotMatch(html,/Co-Trainer/);assert.match(html,/Trainer/);assert.match(html,/C-Lizenz/);
+ }
+ assert.equal(normalizeTeamStaffFeed({teams:[{path:'jugend/u13-d1',coaches}]}).get('jugend/u13-d1')[0].role,'Co-Trainerin');
+ assert.match(teamStaffMarkup(coaches,{path:'jugend/u13-d1'}),/Co-Trainerin/);
+});
