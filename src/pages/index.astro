@@ -311,9 +311,10 @@ const getEventType = (title: string) => {
   @media(max-width:650px){.hero-seasonal-figure{width:min(100%,360px);bottom:0;right:0}}
   .hero-girls-title { position:absolute;right:6%;bottom:2%;padding:8px 22px 11px;background:var(--cream);color:var(--green);font:italic 700 clamp(1.8rem,3vw,3rem)/1 Georgia,serif;box-shadow:6px 6px 0 var(--yellow);transform:rotate(-5deg);white-space:nowrap; }
   .hero-girls-title[hidden] { display:none; }
+  @media(max-width:900px){.hero-seasonal-figure[data-theme="girls_day"]{height:auto;width:min(90%,360px);aspect-ratio:1}}
+  @media(max-width:650px){.hero-seasonal-figure[data-theme="girls_day"]{width:min(88%,310px)}}
   @media(min-width:901px){
-    .hero-seasonal-figure[data-theme="girls_day"] { height:110%;max-height:calc((50vw - 55px) * 1.5 / 1.28);width:auto;aspect-ratio:1;right:calc((100% - 100vw) / 2);transform:translate(5%,4.6%); }
-    .hero-grid:has(.hero-seasonal-figure[data-theme="girls_day"]:not([hidden])) .hero-copy { max-width:440px; }
+    .hero-seasonal-figure[data-theme="girls_day"] { height:auto;max-height:none;width:min(42vw,560px);aspect-ratio:1;right:0;bottom:18px;transform:none; }
     .hero-seasonal-figure[data-theme="girls_day"] .hero-girls-title { bottom:7%;right:14%; }
     .hero-seasonal-figure[data-theme="girls_day"] figcaption { top:4%;right:10%; }
   }
