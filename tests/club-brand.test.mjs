@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {clubBrandColors,clubBrandVariables,clubBrandSettings,CLUB_BRAND_DEFAULT} from '../src/utils/club-brand.mjs';
+import {clubBrandColors,clubBrandVariables,clubBrandSettings,clubBrandRibbon,CLUB_BRAND_DEFAULT,CLUB_BRAND_PRIDE} from '../src/utils/club-brand.mjs';
 test('public brand accepts only the seven color fields',()=>{
  assert.equal(clubBrandColors({...CLUB_BRAND_DEFAULT,panel:'red;display:none'}),null);
  assert.equal(clubBrandColors({panel:'#abcdef'}),null);
@@ -13,6 +13,14 @@ test('website variables respond to the central club identity',()=>{
  assert.equal(variables['--bsv-accent-dark'],'#83909d');
  assert.notEqual(variables['--bsv-green-dark'],variables['--bsv-green']);
  assert.equal(clubBrandVariables(null)['--bsv-green'],CLUB_BRAND_DEFAULT.panel);
+});
+
+test('the CSD color proposal displays six rainbow colors and removes the ribbon when returning to standard colors',()=>{
+ const rainbow=clubBrandRibbon(CLUB_BRAND_PRIDE);assert.equal(rainbow.length,6);
+ const variables=clubBrandVariables(CLUB_BRAND_PRIDE);assert.equal(variables['--bsv-ribbon-height'],'6px');
+ for(const color of rainbow)assert.ok(variables['--bsv-ribbon'].includes(color));
+ assert.equal(clubBrandVariables(CLUB_BRAND_DEFAULT)['--bsv-ribbon'],'none');assert.equal(clubBrandVariables(CLUB_BRAND_DEFAULT)['--bsv-ribbon-height'],'0px');
+ assert.deepEqual(clubBrandRibbon({...CLUB_BRAND_PRIDE,panel:'url(evil)'}),[]);
 });
 
 test('public design accepts only known seasonal themes and valid colors',()=>{

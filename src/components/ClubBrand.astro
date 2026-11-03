@@ -4,6 +4,8 @@ const brand=await loadClubBrandSettings();
 const css=Object.entries(clubBrandVariables(brand.color_scheme)).map(([key,value])=>`${key}:${value}`).join(';');
 ---
 <style is:inline set:html={`:root{${css}}`}></style>
+<div class="bsv-brand-ribbon" aria-hidden="true"></div>
+<style is:inline>.bsv-brand-ribbon{position:fixed;inset:0 0 auto;height:var(--bsv-ribbon-height,0px);background:var(--bsv-ribbon,none);z-index:1001;pointer-events:none}</style>
 <script>
  import {CLUB_BRAND_URL,CLUB_BRAND_PUBLIC_KEY,clubBrandSettings,clubBrandVariables} from '../utils/club-brand.mjs';
  import {brandThemeArtwork} from '../utils/brand-themes.mjs';

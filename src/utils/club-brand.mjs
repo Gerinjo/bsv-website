@@ -7,10 +7,16 @@ export function clubBrandColors(value){
  if(!value||Object.keys(CLUB_BRAND_DEFAULT).some(key=>!/^#[a-f\d]{6}$/i.test(value[key]||'')))return null;
  return Object.fromEntries(Object.keys(CLUB_BRAND_DEFAULT).map(key=>[key,value[key].toLowerCase()]));
 }
+// Same seven-color CSD proposal as the Suite; custom colors remain independent.
+export const CLUB_BRAND_PRIDE={background:'#171a36',panel:'#293777',primary:'#28b678',accent:'#ffd447',muted:'#c6d5ff',surface:'#fff8f1',ink:'#17213a'};
+export function clubBrandRibbon(value){
+ const c=clubBrandColors(value);
+ return c&&Object.keys(CLUB_BRAND_DEFAULT).every(key=>c[key]===CLUB_BRAND_PRIDE[key])?['#e40303','#ff8c00','#ffed00','#008026','#004dff','#750787']:[];
+}
 export function clubBrandVariables(colors){
- const c=clubBrandColors(colors)||CLUB_BRAND_DEFAULT;
+ const c=clubBrandColors(colors)||CLUB_BRAND_DEFAULT,ribbon=clubBrandRibbon(c);
  const mix=(hex,t)=>'#'+[1,3,5].map(i=>Math.round(parseInt(hex.slice(i,i+2),16)*(1-t)).toString(16).padStart(2,'0')).join('');
- return {'--bsv-green':c.panel,'--bsv-green-dark':mix(c.panel,.4),'--bsv-green-light':c.panel,'--bsv-background':c.background,'--bsv-primary':c.primary,'--bsv-yellow':c.accent,'--bsv-accent-rgb':[1,3,5].map(i=>parseInt(c.accent.slice(i,i+2),16)).join(' '),'--bsv-accent-dark':mix(c.accent,.23),'--bsv-muted':c.muted,'--bsv-cream':c.surface,'--bsv-ink':c.ink};
+ return {'--bsv-ribbon':ribbon.length?`linear-gradient(90deg,${ribbon.map((color,i)=>`${color} ${i*100/6}% ${(i+1)*100/6}%`).join(',')})`:'none','--bsv-ribbon-height':ribbon.length?'6px':'0px','--bsv-green':c.panel,'--bsv-green-dark':mix(c.panel,.4),'--bsv-green-light':c.panel,'--bsv-background':c.background,'--bsv-primary':c.primary,'--bsv-yellow':c.accent,'--bsv-accent-rgb':[1,3,5].map(i=>parseInt(c.accent.slice(i,i+2),16)).join(' '),'--bsv-accent-dark':mix(c.accent,.23),'--bsv-muted':c.muted,'--bsv-cream':c.surface,'--bsv-ink':c.ink};
 }
 export function clubBrandSettings(value){
  const colors=clubBrandColors(value?.color_scheme)||CLUB_BRAND_DEFAULT;
