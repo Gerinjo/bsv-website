@@ -128,14 +128,14 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
     background:#fff;
     color:var(--bsv-ink, #10251a);
     text-decoration:none!important;
-    box-shadow:0 14px 35px rgb(9 47 32 / 9%);
+    box-shadow:0 14px 35px rgb(var(--bsv-shadow-rgb, 9 47 32) / 9%);
     transition:transform .2s ease,box-shadow .2s ease;
   }
   :global(.home-promo-card:hover){
     color:var(--bsv-ink, #10251a);
     text-decoration:none!important;
     transform:translateY(-4px);
-    box-shadow:0 20px 42px rgb(9 47 32 / 14%);
+    box-shadow:0 20px 42px rgb(var(--bsv-shadow-rgb, 9 47 32) / 14%);
   }
   :global(.home-promo-card:focus-visible){
     outline:3px solid var(--bsv-yellow, #f4d638);
@@ -173,7 +173,7 @@ const porscheCampImage = 'https://fussballschule.stuttgarter-kickers.de/uploads/
   :global(.home-promo-card .promo-copy p){
     min-height:58px;
     margin:0 0 15px;
-    color:#64736a!important;
+    color:var(--bsv-ui-muted, #64736a)!important;
     font-size:.76rem;
     line-height:1.48;
   }

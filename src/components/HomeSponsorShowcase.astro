@@ -85,23 +85,23 @@ const stadiumMagazineSponsors = advertisingPartners.filter((partner) =>
 </script>
 
 <style>
-  .home-sponsors{margin-top:42px;padding-top:36px;border-top:1px solid #ccd6ce}
+  .home-sponsors{margin-top:42px;padding-top:36px;border-top:1px solid var(--bsv-border, #ccd6ce)}
   .home-sponsors-copy{display:grid;grid-template-columns:.9fr 1.1fr;align-items:end;gap:65px;margin-bottom:26px}
-  .home-sponsors-copy span{display:block;color:#17613a;font-size:.63rem;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+  .home-sponsors-copy span{display:block;color:var(--bsv-green, #17613a);font-size:.63rem;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
   .home-sponsors-copy h2{margin:8px 0 0;color:var(--bsv-ink, #10251a);font-size:clamp(1.8rem,3vw,2.7rem);line-height:.98;letter-spacing:-.045em}
-  .home-sponsors-copy p{max-width:650px;margin:0;color:#64736a;line-height:1.7}
+  .home-sponsors-copy p{max-width:650px;margin:0;color:var(--bsv-ui-muted, #64736a);line-height:1.7}
   .home-sponsor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-  .home-sponsor-logo{min-width:0;height:132px;padding:24px;box-sizing:border-box;display:grid;place-items:center;border:1px solid #d7dfd9;background:#fff;color:inherit;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
+  .home-sponsor-logo{min-width:0;height:132px;padding:24px;box-sizing:border-box;display:grid;place-items:center;border:1px solid var(--bsv-border, #d7dfd9);background:#fff;color:inherit;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
   .home-sponsor-logo:nth-child(n+4){display:none}
   .home-sponsor-logo img{display:block;width:100%;height:82px;object-fit:contain}
-  a.home-sponsor-logo:hover,a.home-sponsor-logo:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 12px 28px rgb(9 47 32 / 10%)}
-  .stadium-sponsors{margin-top:26px;padding-top:20px;border-top:1px solid #d7dfd9}
+  a.home-sponsor-logo:hover,a.home-sponsor-logo:focus-visible{outline:none;transform:translateY(-3px);box-shadow:0 12px 28px rgb(var(--bsv-shadow-rgb, 9 47 32) / 10%)}
+  .stadium-sponsors{margin-top:26px;padding-top:20px;border-top:1px solid var(--bsv-border, #d7dfd9)}
   .stadium-sponsors-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
   .stadium-sponsors-head h3{margin:0;color:var(--bsv-green, #164f32);font-size:1.05rem}
   .stadium-sponsors-head a{color:var(--bsv-green, #164f32);font-size:.7rem;font-weight:800;text-decoration:none}
   .stadium-sponsors-head a:hover{text-decoration:underline}
   .stadium-sponsor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .stadium-sponsor-logo{min-width:0;height:100px;padding:20px;box-sizing:border-box;display:grid;place-items:center;border:1px solid #d7dfd9;background:#fff;transition:transform .18s ease,box-shadow .18s ease}
+  .stadium-sponsor-logo{min-width:0;height:100px;padding:20px;box-sizing:border-box;display:grid;place-items:center;border:1px solid var(--bsv-border, #d7dfd9);background:#fff;transition:transform .18s ease,box-shadow .18s ease}
   .stadium-sponsor-logo:nth-child(n+5){display:none}
   .stadium-sponsor-logo img{display:block;width:100%;height:58px;object-fit:contain}
   a.stadium-sponsor-logo:hover,a.stadium-sponsor-logo:focus-visible{outline:2px solid var(--bsv-green, #164f32);outline-offset:2px;transform:translateY(-2px)}
