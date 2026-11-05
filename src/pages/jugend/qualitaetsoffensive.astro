@@ -128,8 +128,8 @@ const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
 
     <section class="coaches-section shell">
       <div class="section-head"><div><span>Unsere Jugendtrainer:innen</span><h2>Qualifiziert.<br /><em>Und immer in Entwicklung.</em></h2></div><p>Die Übersicht zeigt alle in den aktuellen Jugendteam-Daten hinterlegten Aus- und Weiterbildungen sowie die unmittelbar bevorstehenden Ausbildungsstarts.</p></div>
-      <div class="coach-grid">
-        <Fragment set:html={allCoaches.map(coach => personCardMarkup({...coach, role: 'Jugendtrainer:in'}, {withBase})).join('')} />
+      <div class="coach-grid" data-quality-coach-portraits data-base-path={import.meta.env.BASE_URL}>
+        <Fragment set:html={allCoaches.map(coach => personCardMarkup({...coach, role: 'Jugendtrainer:in'}, {withBase, deferTemporaryImages: true})).join('')} />
       </div>
     </section>
 
@@ -140,6 +140,22 @@ const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
   </main>
   <Footer />
 </Layout>
+
+<script>
+  import { fetchTeamStaff } from '../../utils/team-staff.mjs';
+  import { updateQualityCoachPortraits } from '../../utils/quality-coach-portraits.mjs';
+  const refreshPortraits = async () => {
+    const roots = document.querySelectorAll<HTMLElement>('[data-quality-coach-portraits]');
+    if (!roots.length) return;
+    const feed = await fetchTeamStaff();
+    if (feed) roots.forEach(root => updateQualityCoachPortraits(root, feed));
+  };
+  void refreshPortraits();
+  document.addEventListener('astro:page-load', refreshPortraits);
+  window.addEventListener('pageshow', event => { if (event.persisted) void refreshPortraits(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) void refreshPortraits(); });
+  window.setInterval(() => { if (!document.hidden) void refreshPortraits(); }, 10 * 60 * 1000);
+</script>
 
 <style>
   .quality-page{--green:#0d7b4d;--dark:var(--bsv-green-dark, #092f20);--lime:#d9f34a;overflow:hidden;background:#f6f7f3;color:var(--dark)}

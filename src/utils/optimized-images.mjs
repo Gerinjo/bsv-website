@@ -10,6 +10,7 @@ export function optimizedImageUrl(value,width=1800){
  }catch{return value;}
 }
 function tokenData(value){try{const token=new URL(value,'https://bsvnordstern.de').searchParams.get('token');if(!token)return null;return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}catch{return {};}}
+export function imageIsTemporary(value){return tokenData(value)!==null;}
 export function imageKey(value){try{const url=new URL(value,'https://bsvnordstern.de');const data=tokenData(value);url.searchParams.delete('token');url.searchParams.sort();return url.href+JSON.stringify(data?.transformations||data?.transform||null);}catch{return String(value||'');}}
 export function imageFresh(value,now=Date.now()){
  const data=tokenData(value);return !data||Number.isFinite(data.exp)&&data.exp*1000>now+300000;
