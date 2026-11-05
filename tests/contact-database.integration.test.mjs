@@ -40,6 +40,7 @@ test('complete HTTP submission stores contact data through the real driver and p
   `);
   await sql.unsafe(readFileSync(new URL('../supabase/migrations/20261025164806_event_registration_confirmations.sql',import.meta.url),'utf8'));
   await sql.unsafe(readFileSync(new URL('../supabase/migrations/20261025182534_event_team_rosters.sql',import.meta.url),'utf8'));
+  await sql.unsafe(readFileSync(new URL('../supabase/migrations/20261105100858_event_roster_time_preferences.sql',import.meta.url),'utf8'));
   const query={};for(const method of ['insert','update','delete','select','eq','lt','single','maybeSingle'])query[method]=()=>query;
   query.then=(resolve,reject)=>Promise.resolve({data:null,error:{code:'PGRST303',message:'JWT issued at future'}}).then(resolve,reject);
   const rest={from:()=>query,rpc:()=>query};let handle;
@@ -82,6 +83,8 @@ test('complete HTTP submission stores contact data through the real driver and p
   assert.equal(eventStored.benachrichtigung_status,'versendet');assert.equal(eventStored.bestaetigung_status,'versendet');
   assert.equal(eventStored.bestaetigung_mail_modus,'test');assert.equal(eventStored.bestaetigung_resend_id,'provider-id');
   assert.equal(eventStored.bestaetigung_fehler,null);assert.equal(mails.length,3);assert.equal(mails[2].to,'sender@example.invalid');
+  const eventTeams=await sql`select preferred_time_slots from public.event_team_registrations where inquiry_id=${eventResult.inquiryId}`;
+  assert.deepEqual(eventTeams.map(team=>team.preferred_time_slots),[['09:00']]);
   const confirmationError=await db.from('contact_anfragen').update({bestaetigung_status:'fehler',bestaetigung_mail_modus:'test',bestaetigung_resend_id:null,bestaetigung_fehler:'Rejected'}).eq('id',eventResult.inquiryId);
   assert.equal(confirmationError.error,null);
   const [after]=await sql`select * from public.contact_anfragen where id=${eventResult.inquiryId}`;

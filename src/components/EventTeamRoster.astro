@@ -1,22 +1,32 @@
 ---
 import { GIRLS_CUP_EVENT, GIRLS_CUP_CAPACITY_NOTICE } from '../../supabase/functions/_shared/girls-cup-event.mjs';
+import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
+import { URMEL_EVENT } from '../../supabase/functions/_shared/urmel-event.mjs';
 interface Props { topic: string; }
 const { topic } = Astro.props;
 const girls = topic === GIRLS_CUP_EVENT.topic;
+const timeSlots = girls ? [] : (topic === URMEL_EVENT.topic ? URMEL_EVENT : BAMBINI_EVENT).timeSlots;
 const categories = girls ? GIRLS_CUP_EVENT.days.flatMap(day => day.divisionKeys.map(key => ({ key, label: `${key}-Juniorinnen`, date: `${day.weekday}, ${day.date}` }))) : [{ key: 'Bambini', label: 'Bambini', date: '' }];
 const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
 ---
 <section class="event-roster" id="mannschaften" data-event-roster data-topic={topic} data-endpoint={endpoint} aria-labelledby="roster-title">
   <div class="roster-heading"><p class="eyebrow">Wir sind dabei</p><h2 id="roster-title">Angemeldete Mannschaften.</h2>
-    <p>{girls ? `${GIRLS_CUP_CAPACITY_NOTICE} Die Gruppeneinteilung folgt später.` : 'Diese Mannschaften sind angemeldet. Die gewünschten Startzeiten stimmen wir noch ab; eine Warteliste gibt es hier derzeit nicht.'}</p>
+    <p>{girls ? `${GIRLS_CUP_CAPACITY_NOTICE} Die Gruppeneinteilung folgt später.` : 'Die BSV-Mannschaften stehen zuerst. Ein Häkchen markiert eine angegebene Wunschzeit; mehrere Häkchen bedeuten mehrere mögliche Startzeiten. Die endgültige Einteilung folgt noch.'}</p>
   </div>
   <p class="roster-status" data-roster-status role="status">Die aktuelle Mannschaftsliste wird geladen …</p>
   <button class="retry" type="button" data-roster-retry hidden>Liste erneut laden</button>
   <div class:list={['roster-grid', { 'one-category': !girls }]}>
     {categories.map(category => <article data-roster-category={category.key}>
       <p class="category-date">{category.date}</p><h3>{category.label}</h3>
-      <p class="category-count" data-roster-count>BSV als erste Mannschaft gesetzt</p>
-      <ol data-roster-confirmed><li class="host"><span>BSV Nordstern Radolfzell I</span><small>Gastgeber</small></li></ol>
+      <p class="category-count" data-roster-count>{girls ? 'BSV als erste Mannschaft gesetzt' : 'Anmeldestand wird geladen …'}</p>
+      {girls ? <ol data-roster-confirmed><li class="host"><span>BSV Nordstern Radolfzell I</span><small>Gastgeber</small></li></ol> :
+        <div class="roster-table-scroll" role="region" aria-label="Mannschaften und Wunschzeiten" tabindex="0">
+          <table class="roster-table" data-time-slots={timeSlots.join(',')}>
+            <caption>Angemeldete Teams und ihre Wunschzeiten</caption>
+            <thead><tr><th scope="col">Mannschaft</th>{timeSlots.map(slot => <th class="slot-column" scope="col">{slot}<span> Uhr</span></th>)}</tr></thead>
+            <tbody data-roster-confirmed><tr><td colspan="4">Mannschaften werden geladen …</td></tr></tbody>
+          </table>
+        </div>}
       {girls && <div class="waiting"><h4>Warteliste <span data-waiting-count></span></h4><ol data-roster-waiting><li class="free">Wartelistenplätze werden geladen …</li></ol></div>}
     </article>)}
   </div>
@@ -37,6 +47,21 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
       if (detail) { const small = document.createElement('small'); small.textContent = detail; li.append(small); }
       return li;
     };
+    const teamRow = (team: { clubName: string; teamNumber: number; host: boolean; timeSlots?: string[] }, timeSlots: string[]) => {
+      const row = document.createElement('tr');
+      if (team.host) row.className = 'host';
+      const name = document.createElement('th'); name.scope = 'row'; name.textContent = teamName(team);
+      if (team.host) { const badge = document.createElement('small'); badge.textContent = 'Gastgeber'; name.append(badge); }
+      row.append(name);
+      for (const slot of timeSlots) {
+        const cell = document.createElement('td'); cell.className = 'slot-column';
+        const selected = Array.isArray(team.timeSlots) && team.timeSlots.includes(slot);
+        const mark = document.createElement('span'); mark.className = `slot-selection${selected ? ' selected' : ''}`;
+        mark.setAttribute('role', 'img'); mark.setAttribute('aria-label', selected ? 'Wunschzeit gewählt' : 'Nicht gewählt');
+        mark.textContent = selected ? '✓' : '–'; cell.append(mark); row.append(cell);
+      }
+      return row;
+    };
     const refresh = async () => {
       if (busy) { refreshAgain = true; return; } busy = true; retry.disabled = true;
       try {
@@ -49,8 +74,10 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
           if (!card || !Array.isArray(category.teams)) continue;
           const confirmed = category.teams.filter((team: { status: string }) => team.status === 'confirmed');
           const waiting = category.teams.filter((team: { status: string }) => team.status === 'waiting');
-          const list = card.querySelector<HTMLOListElement>('[data-roster-confirmed]')!; list.replaceChildren();
-          confirmed.forEach((team: { clubName: string; teamNumber: number; host: boolean }) => list.append(item(teamName(team), team.host ? 'host' : '', team.host ? 'Gastgeber' : '')));
+          const list = card.querySelector<HTMLElement>('[data-roster-confirmed]')!; list.replaceChildren();
+          const table = card.querySelector<HTMLTableElement>('[data-time-slots]');
+          const slots = table?.dataset.timeSlots?.split(',') ?? [];
+          confirmed.forEach((team: { clubName: string; teamNumber: number; host: boolean; timeSlots?: string[] }) => list.append(table ? teamRow(team, slots) : item(teamName(team), team.host ? 'host' : '', team.host ? 'Gastgeber' : '')));
           if (category.capacity) for (let i = confirmed.length; i < category.capacity; i++) list.append(item('Platz frei', 'free'));
           card.querySelector<HTMLElement>('[data-roster-count]')!.textContent = category.capacity ? `${confirmed.length} von ${category.capacity} Turnierplätzen belegt` : `${confirmed.length} ${confirmed.length === 1 ? 'Mannschaft angemeldet' : 'Mannschaften angemeldet'}`;
           const queue = card.querySelector<HTMLOListElement>('[data-roster-waiting]');
@@ -79,6 +106,8 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
   .roster-status,.roster-note{font-size:.8rem;line-height:1.6;color:#536353}.roster-status{margin:25px 0 16px}.roster-note{margin-top:22px}
   .roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.roster-grid.one-category{grid-template-columns:1fr;max-width:760px}article{min-width:0;padding:26px;background:#fffefa;border-top:4px solid #f4d638;box-shadow:0 8px 24px #092f2008}
   .category-date{margin:0 0 8px;color:#536353;font-size:.75rem}.category-date:empty{display:none}h3{margin:0;font-size:1.55rem}h4{margin:22px 0 12px;font-size:.9rem}h4 span{color:#687b6e;font-weight:400}.category-count{margin:10px 0 20px;color:#536353;font-size:.8rem}
+  .roster-table-scroll{overflow-x:auto}.roster-table{width:100%;min-width:390px;border-collapse:collapse;font-size:.87rem;line-height:1.5}.roster-table caption{text-align:left;font-size:.75rem;color:#536353;padding:0 0 12px}.roster-table thead th{padding:12px 8px;background:#edf2e9;color:#173d2b;text-align:left;font-size:.78rem}.roster-table :global(tbody th),.roster-table :global(tbody td){padding:12px 8px;border-bottom:1px solid #e0e6dc}.roster-table :global(tbody th){text-align:left;font-weight:500;overflow-wrap:anywhere}.roster-table :global(tr.host){background:#e7f0e6}.roster-table :global(tr.host th){font-weight:750}.roster-table :global(small){display:block;color:#52665a;font-size:.68rem;font-weight:400}.roster-table .slot-column,.roster-table :global(td.slot-column){width:75px;text-align:center;white-space:nowrap}.roster-table :global(.slot-selection){display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #c5d0c5;border-radius:4px;color:#7b877b}.roster-table :global(.slot-selection.selected){background:#164f32;border-color:#164f32;color:#fff;font-weight:850}
   ol{margin:0;padding-left:30px}.event-roster :global(li){padding:10px 8px;border-bottom:1px solid #e0e6dc;font-size:.87rem;line-height:1.5;overflow-wrap:anywhere}.event-roster :global(li)::marker{color:#708574;font-size:.75rem}.event-roster :global(li.host){background:#e7f0e6;font-weight:750}.event-roster :global(li small){display:block;color:#52665a;font-size:.68rem;font-weight:400}.event-roster :global(.free){color:#6f7c71;font-style:italic}.waiting{margin-top:23px;border-top:1px solid #d2dbd2}.retry{padding:10px 14px;margin-bottom:18px;border:1px solid #173d2b;background:white;color:#173d2b;cursor:pointer;font:inherit;font-size:.8rem}.retry[hidden]{display:none}
   @media(max-width:700px){.event-roster{width:calc(100% - 34px);padding:48px 0}.roster-grid{grid-template-columns:1fr}article{padding:22px}}
+  @media(max-width:560px){.roster-table{min-width:0;table-layout:fixed}.roster-table .slot-column,.roster-table :global(td.slot-column){width:54px;padding-inline:4px;white-space:normal}.roster-table thead .slot-column span{display:block}}
 </style>

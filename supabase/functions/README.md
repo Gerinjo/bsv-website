@@ -132,7 +132,8 @@ Anmeldung. Die normalisierten Mannschaftslisten benötigen die Migration
 `event_team_rosters`.
 
 Die drei Turnierseiten lesen `GET contact-request?action=teams&event=<Thema>`.
-Öffentlich sind ausschließlich Verein, Teamnummer, Kategorie und Platzstatus;
+Öffentlich sind ausschließlich Verein, Teamnummer, Kategorie, Platzstatus und
+bei Bambini die gewählten Wunschzeiten;
 Anmeldungs-IDs, Kontaktdaten und Anmerkungen bleiben privat. Je Kategorie steht
 eine BSV-Mannschaft zuerst. Beim Girls Cup zählen die BSV-Mannschaften zu den
 Turnierplätzen: D-Juniorinnen haben zehn Turnierplätze und vier Wartelistenplätze;
@@ -141,7 +142,13 @@ Die Erweiterung der D-Juniorinnen erfolgt mit `girls_cup_d_capacity_and_bsv_team
 bestehende Wartelistenteams auf Position 9 und 10 rücken dabei ins Teilnehmerfeld.
 Mannschaftsnummern stehen in `team_number`, nicht zusätzlich im `club_name`.
 Beide Bambini-Veranstaltungen haben jeweils eine gemeinsame Liste ohne
-Warteliste; Wunschzeiten legen keine Kategorie fest.
+Warteliste; Wunschzeiten legen keine Kategorie fest. Die Migration
+`event_roster_time_preferences` übernimmt vorhandene Wunschzeiten in
+`preferred_time_slots`. Neue Anmeldungen speichern die validierte Auswahl
+atomar mit den Mannschaften. Im Dezember stehen BSV I, II und III zuerst,
+mit Wunschzeiten 09:00, 12:00 beziehungsweise 15:00 Uhr. Mehrere ausgewählte
+Wunschzeiten werden in mehreren Spalten markiert; sie sind keine endgültige
+Startzeitzuteilung.
 
 `submit_event_registration` speichert Anfrage und Teams atomar und sperrt die
 betroffenen Kategorien in fester Reihenfolge. Ist eine Kategorie samt Warteliste

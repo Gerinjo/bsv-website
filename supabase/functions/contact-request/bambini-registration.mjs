@@ -38,6 +38,7 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
   const totalFee = teamCount * event.teamFee;
   return {
     teamCount,
+    timeSlots: event.timeSlots.filter(slot => body.timeSlots.includes(slot)),
     paymentAmount: `${totalFee} € insgesamt`,
     confirmationDetails: [
       ['Verein', club],

@@ -134,6 +134,7 @@ test('Bambini registrations allocate one, two or three teams and calculate the t
     const saved = app.operations.find(op => op.operation === 'insert');
     assert.equal(saved.teams[0].division, 'Bambini');
     assert.equal(saved.teams[0].count, teamCount);
+    assert.deepEqual(Array.from(saved.values.team_time_slots), ['09:00', '15:00']);
     assert.ok(saved.values.nachricht.includes(`Anzahl Mannschaften: ${teamCount}`));
     const total = `${teamCount * event.teamFee} €`;
     assert.equal(app.mails.length, 2);
@@ -145,6 +146,14 @@ test('Bambini registrations allocate one, two or three teams and calculate the t
     assert.ok(app.mails[1].mail.text.includes(`${total} insgesamt`));
     assert.equal(app.mails[0].mail.to[0], TOURNAMENT_NOTIFICATION_RECIPIENT);
   }
+});
+
+test('Bambini roster preferences use the validated choices instead of browser-supplied database fields', async () => {
+  const app = harness();
+  const response = await app.handle(request(valid({ timeSlots: ['15:00', '09:00'], team_time_slots: ['12:00'] })));
+  assert.equal(response.status, 201);
+  const saved = app.operations.find(op => op.operation === 'insert');
+  assert.deepEqual(Array.from(saved.values.team_time_slots), ['09:00', '15:00']);
 });
 
 test('older cached Bambini forms without a team count still register one team', async () => {

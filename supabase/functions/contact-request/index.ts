@@ -238,6 +238,7 @@ Deno.serve(async (request) => {
       gegner_mannschaft: routing.requestType === 'freundschaftsspiel' ? opponentTeam : null,
       nachricht: message,
       datenschutz_bestaetigt: true,
+      ...(bambini ? { team_time_slots: bambini.timeSlots } : {}),
     };
   const { data: inquiry, error: insertError } = teamRegistration
     ? await supabase.rpc('submit_event_registration', {
