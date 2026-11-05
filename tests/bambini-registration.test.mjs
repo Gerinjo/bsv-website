@@ -401,13 +401,13 @@ test('waiting-only entries receive an explicit waiting list email without a paym
 test('D-Juniorinnen waiting list starts after ten tournament places', async () => {
   const app = harness({ allocationOverride: [
     { category: 'D', clubName: 'FC Testverein', teamNumber: 1, position: 11, status: 'waiting' },
-    { category: 'D', clubName: 'FC Testverein', teamNumber: 2, position: 14, status: 'waiting' },
+    { category: 'D', clubName: 'FC Testverein', teamNumber: 2, position: 12, status: 'waiting' },
   ] });
   const response = await app.handle(request(girlsValid({ days: ['2027-02-20'], teams: [{ division: 'D', count: 2 }] })));
   assert.equal(response.status, 201);
   const mail = app.mails[1].mail;
   assert.match(mail.text, /D-Juniorinnen · FC Testverein 1: Warteliste, Platz 1/);
-  assert.match(mail.text, /D-Juniorinnen · FC Testverein 2: Warteliste, Platz 4/);
+  assert.match(mail.text, /D-Juniorinnen · FC Testverein 2: Warteliste, Platz 2/);
   assert.doesNotMatch(mail.text, /Eure Startgebühr|DE77/);
 });
 

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import SoldOutRibbon from '../../components/SoldOutRibbon.astro';
 import EventTeamRoster from '../../components/EventTeamRoster.astro';
 import GirlsCupRegistrationForm from '../../components/GirlsCupRegistrationForm.astro';
 import { girlsCup } from '../../data/girlsCup';
@@ -39,14 +40,15 @@ import { withBase } from '../../utils/paths';
     <section class="cup-days shell" id="turniertage" aria-labelledby="days-title">
       <div class="section-heading"><p class="eyebrow">Euer Wochenende im Überblick</p><h2 id="days-title">Zwei Turniertage.<br /><em>Findet euren Termin.</em></h2><p>Die Altersklassen sind auf Samstag und Sonntag verteilt. {GIRLS_CUP_CAPACITY_NOTICE} Die Startzeiten und die Gruppeneinteilung folgen.</p></div>
       <div class="days-grid">
-        {girlsCup.days.map((day) => (
-          <article class="day-card" data-cup-day={day.isoDate}>
+        {girlsCup.days.flatMap(day => day.divisionKeys.map(division => (
+          <article class="day-card" data-cup-day={day.isoDate} data-event-capacity-topic={girlsCup.topic} data-event-capacity-category={division}>
+            <SoldOutRibbon />
             <div class="day-top"><p class="eyebrow">{day.weekday}</p><time datetime={day.isoDate}><strong>{day.date}</strong></time></div>
-            <h3>{day.divisions.join(' & ')}</h3>
-            <ul aria-label={`Altersklassen am ${day.date}`}>{day.divisions.map((division) => <li>{division}</li>)}</ul>
-            <p>Dieser Turniertag gehört den {day.divisions.join(' und ')}. Die genauen Startzeiten geben wir noch bekannt.</p>
+            <h3>{division}-Juniorinnen</h3>
+            <ul aria-label={`Turnierplätze der ${division}-Juniorinnen`}><li>{girlsCup.divisions[division].capacity} Turnierplätze</li><li>{girlsCup.divisions[division].waitingCapacity} Wartelistenplätze</li></ul>
+            <p>Das Turnier der {division}-Juniorinnen findet am {day.date} statt. Die genauen Startzeiten geben wir noch bekannt.</p>
           </article>
-        ))}
+        )))}
       </div>
     </section>
 
@@ -107,7 +109,8 @@ import { withBase } from '../../utils/paths';
   .hero-note { margin: 18px 0 0; color: #d5dfd1; font-size: .77rem; line-height: 1.7; }
   .cup-facts { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: -25px; background: #fffefa; border-top: 4px solid var(--gold); box-shadow: 0 10px 28px #0e392910; }.cup-facts > div { padding: 25px 24px; border-right: 1px solid #e4e5d9; }.cup-facts > div:last-child { border: 0; }.cup-facts span { display: block; margin-bottom: 9px; font-size: .65rem; color: #6d745e; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; }.cup-facts strong { font-size: .94rem; line-height: 1.6; }
   h2 { margin-bottom: 24px; font-size: clamp(2.2rem, 3.9vw, 3.6rem); line-height: 1.05; }h2 em { color: #426448; }.cup-days { padding-block: 85px; scroll-margin-top: 130px; }.section-heading { margin-bottom: 35px; }.section-heading .eyebrow, .cup-contact .eyebrow { color: #356b67; }.section-heading > p:last-child, .cup-contact p { max-width: 620px; color: #536353; font-size: .95rem; line-height: 1.8; }
-  .days-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }.day-card { padding: 32px; border-top: 4px solid var(--bsv-yellow, #e4bf6a); background: #fffefa; box-shadow: 0 12px 25px #0e392908; }.day-card:nth-child(2) { border-color: #337d88; }.day-top { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 20px; margin-bottom: 30px; }.day-top .eyebrow { padding-top: 5px; color: #637958; }.day-top time { display: flex; align-items: center; gap: 12px; }.day-top time strong { font-size: 1.7rem; font-weight: 850; line-height: 1; letter-spacing: -.06em; }.day-top time span { font-size: .8rem; line-height: 1.5; color: #607266; }.day-card h3 { margin-bottom: 20px; font-size: 1.55rem; line-height: 1.2; letter-spacing: -.025em; }.day-card ul { display: flex; flex-wrap: wrap; gap: 9px; padding: 0; margin: 0 0 22px; list-style: none; }.day-card li { padding: 8px 12px; border: 1px solid #c2d1c2; background: #edf2e9; font-size: .8rem; font-weight: 750; }.day-card > p { margin-bottom: 0; color: #536353; font-size: .9rem; line-height: 1.8; }
+  .days-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }.day-card { position: relative; padding: 32px; border-top: 4px solid var(--bsv-yellow, #e4bf6a); background: #fffefa; box-shadow: 0 12px 25px #0e392908; }.day-card:nth-child(2) { border-color: #337d88; }.day-top { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 20px; margin-bottom: 30px; }.day-top .eyebrow { padding-top: 5px; color: #637958; }.day-top time { display: flex; align-items: center; gap: 12px; }.day-top time strong { font-size: 1.7rem; font-weight: 850; line-height: 1; letter-spacing: -.06em; }.day-top time span { font-size: .8rem; line-height: 1.5; color: #607266; }.day-card h3 { margin-bottom: 20px; font-size: 1.55rem; line-height: 1.2; letter-spacing: -.025em; }.day-card ul { display: flex; flex-wrap: wrap; gap: 9px; padding: 0; margin: 0 0 22px; list-style: none; }.day-card li { padding: 8px 12px; border: 1px solid #c2d1c2; background: #edf2e9; font-size: .8rem; font-weight: 750; }.day-card > p { margin-bottom: 0; color: #536353; font-size: .9rem; line-height: 1.8; }
+  .day-card.is-sold-out .day-top { padding-right: 94px; }.day-card.is-sold-out h3 { margin-right: 94px; }
   .cup-details { padding-block: 75px; background: #eaf0e7; border-block: 1px solid #d8e0d2; }.details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 75px; align-items: center; }.details-grid p:not(.eyebrow) { margin-bottom: 0; color: #536353; line-height: 1.8; }.details-grid dl { margin: 0; }.details-grid dl > div { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; padding: 20px 0; border-bottom: 1px solid #bdccba; }.details-grid dl > div:first-child { border-top: 1px solid #bdccba; }.details-grid dt { font-size: .82rem; font-weight: 800; line-height: 1.6; }.details-grid dd { margin: 0; color: #536353; font-size: .87rem; line-height: 1.6; }
   .cup-contact { display: flex; align-items: center; justify-content: space-between; gap: 45px; padding-block: 80px; }.cup-contact p { margin-bottom: 0; }.cup-contact .eyebrow { margin-bottom: 14px; }.cup-contact .button { flex: 0 0 auto; margin-top: 0; }a:focus-visible { outline: 3px solid #a22e36; outline-offset: 4px; }
   .cup-rules { padding-block: 80px; scroll-margin-top: 130px; }.rules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }.rule-card { padding: 26px; border-top: 3px solid var(--gold); background: #fffefa; }.rule-card h3 { margin-bottom: 22px; font-size: 1.4rem; }.rule-card dl { margin: 0; }.rule-card dl > div + div { margin-top: 18px; }.rule-card dt { color: #637958; font-size: .72rem; font-weight: 750; }.rule-card dd { margin: 6px 0 0; font-size: .94rem; line-height: 1.5; }.rules-note { margin: 25px 0 0; color: #536353; font-size: .9rem; line-height: 1.8; }.rules-links { display: flex; flex-wrap: wrap; gap: 15px 30px; margin-top: 26px; }.rules-links a, .details-grid a { color: var(--bsv-green, #164f32); text-underline-offset: 4px; }.rules-links a { font-size: .83rem; font-weight: 750; }.rules-source { margin: 18px 0 0; color: #637958; font-size: .72rem; line-height: 1.6; }

@@ -136,8 +136,11 @@ Die drei Turnierseiten lesen `GET contact-request?action=teams&event=<Thema>`.
 bei Bambini die gewählten Wunschzeiten;
 Anmeldungs-IDs, Kontaktdaten und Anmerkungen bleiben privat. Je Kategorie steht
 eine BSV-Mannschaft zuerst. Beim Girls Cup zählen die BSV-Mannschaften zu den
-Turnierplätzen: D-Juniorinnen haben zehn Turnierplätze und vier Wartelistenplätze;
-E-, C- und B-Juniorinnen jeweils acht Turnierplätze und zwei Wartelistenplätze.
+Turnierplätzen: D-Juniorinnen haben zehn Turnierplätze;
+E-, C- und B-Juniorinnen jeweils acht. Alle vier Altersklassen haben höchstens
+zwei Wartelistenplätze (`event_waiting_list_limit_two`). Ausgebuchte Altersklassen
+tragen in der Infokarte und Teilnehmerliste ein rotes diagonales Band. Der Status
+wird aus den bestätigten Teams des öffentlichen Anmeldestands ermittelt.
 Die Erweiterung der D-Juniorinnen erfolgt mit `girls_cup_d_capacity_and_bsv_team`;
 bestehende Wartelistenteams auf Position 9 und 10 rücken dabei ins Teilnehmerfeld.
 Mannschaftsnummern stehen in `team_number`, nicht zusätzlich im `club_name`.

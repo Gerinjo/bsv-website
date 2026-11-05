@@ -5,6 +5,7 @@ declare
   payload jsonb := '{"thema":"event-bodensee-indoor-girls-cup","routing_schluessel":"person-jerome-ernsberger","anfrageart":"kontakt","empfaenger_email":"qa@example.invalid","empfaenger_emails":["qa@example.invalid"],"vorname":"Test","nachname":"Roster","email":"qa@example.invalid","nachricht":"SQL capacity test – rolled back","datenschutz_bestaetigt":true}'::jsonb;
   result jsonb; before_count integer; actual integer; roster jsonb; n integer;
 begin
+  assert not exists(select 1 from public.event_team_categories where capacity is not null and waiting_capacity<>2), 'Every capped tournament must have two waiting places';
   -- All nine available external places: seven confirmed and two waiting, plus the seeded BSV.
   result := public.submit_event_registration(payload,'SQL Kapazitätstest','[{"division":"E","count":9}]','test');
   select count(*) into actual from jsonb_array_elements(result->'allocations') item where item->>'status'='confirmed';
@@ -22,12 +23,12 @@ begin
   assert actual=before_count, 'A full category must roll back the whole inquiry';
   select count(*) into actual from public.event_team_registrations where category='D' and mode='test' and not is_host;
   assert actual=0, 'A mixed request must not partly consume another category';
-  -- D-Juniorinnen: nine external confirmed teams plus the host, then four waiting.
-  result := public.submit_event_registration(payload,'SQL D Kapazitätstest','[{"division":"D","count":13}]','test');
+  -- D-Juniorinnen: nine external confirmed teams plus the host, then two waiting.
+  result := public.submit_event_registration(payload,'SQL D Kapazitätstest','[{"division":"D","count":11}]','test');
   select count(*) into actual from jsonb_array_elements(result->'allocations') item where item->>'status'='confirmed';
   assert actual=9, 'Nine external D teams must be confirmed';
   select count(*) into actual from jsonb_array_elements(result->'allocations') item where item->>'status'='waiting';
-  assert actual=4, 'Four D teams must be on the waiting list';
+  assert actual=2, 'Only two D teams may be on the waiting list';
   assert (select min((item->>'position')::integer) from jsonb_array_elements(result->'allocations') item where item->>'status'='waiting')=11,
     'The first D waiting place must be position 11';
   select count(*) into before_count from public.contact_anfragen;

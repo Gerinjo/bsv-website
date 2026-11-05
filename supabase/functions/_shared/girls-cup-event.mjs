@@ -9,7 +9,7 @@ export const GIRLS_CUP_EVENT = Object.freeze({
   additionalTeamFee: 30,
   divisions: {
     E: { capacity: 8, waitingCapacity: 2 },
-    D: { capacity: 10, waitingCapacity: 4 },
+    D: { capacity: 10, waitingCapacity: 2 },
     C: { capacity: 8, waitingCapacity: 2 },
     B: { capacity: 8, waitingCapacity: 2 },
   },
@@ -20,7 +20,7 @@ export const GIRLS_CUP_EVENT = Object.freeze({
 });
 
 export const GIRLS_CUP_FEE_LABEL = `${GIRLS_CUP_EVENT.firstTeamFee} € für das erste Team, jedes weitere ${GIRLS_CUP_EVENT.additionalTeamFee} €`;
-export const GIRLS_CUP_CAPACITY_NOTICE = 'Für die D-Juniorinnen gibt es zehn Turnierplätze und vier Wartelistenplätze. Für E-, C- und B-Juniorinnen sind jeweils acht Turnierplätze und zwei Wartelistenplätze vorgesehen. Die BSV-Mannschaften zählen zu den Turnierplätzen.';
+export const GIRLS_CUP_CAPACITY_NOTICE = 'Für die D-Juniorinnen gibt es zehn Turnierplätze, für E-, C- und B-Juniorinnen jeweils acht. Je Altersklasse sind höchstens zwei Teams auf der Warteliste möglich. Die BSV-Mannschaften zählen zu den Turnierplätzen.';
 
 export function calculateGirlsCupFee(teamCount) {
   if (!Number.isSafeInteger(teamCount) || teamCount < 0) throw new RangeError('Invalid team count');

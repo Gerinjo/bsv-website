@@ -1,4 +1,5 @@
 ---
+import SoldOutRibbon from './SoldOutRibbon.astro';
 import { GIRLS_CUP_EVENT, GIRLS_CUP_CAPACITY_NOTICE } from '../../supabase/functions/_shared/girls-cup-event.mjs';
 import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
 import { URMEL_EVENT } from '../../supabase/functions/_shared/urmel-event.mjs';
@@ -16,7 +17,8 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
   <p class="roster-status" data-roster-status role="status">Die aktuelle Mannschaftsliste wird geladen …</p>
   <button class="retry" type="button" data-roster-retry hidden>Liste erneut laden</button>
   <div class:list={['roster-grid', { 'one-category': !girls }]}>
-    {categories.map(category => <article data-roster-category={category.key}>
+    {categories.map(category => <article data-roster-category={category.key} data-event-capacity-topic={topic} data-event-capacity-category={category.key}>
+      <SoldOutRibbon />
       <p class="category-date">{category.date}</p><h3>{category.label}</h3>
       <p class="category-count" data-roster-count>{girls ? 'BSV als erste Mannschaft gesetzt' : 'Anmeldestand wird geladen …'}</p>
       {girls ? <ol data-roster-confirmed><li class="host"><span>BSV Nordstern Radolfzell I</span><small>Gastgeber</small></li></ol> :
@@ -35,6 +37,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
 </section>
 
 <script>
+  import { eventCategorySoldOut } from '../utils/event-capacity.mjs';
   for (const section of document.querySelectorAll<HTMLElement>('[data-event-roster]')) {
     let busy = false;
     let refreshAgain = false;
@@ -72,6 +75,13 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
         for (const category of data.categories) {
           const card = [...section.querySelectorAll<HTMLElement>('[data-roster-category]')].find(card => card.dataset.rosterCategory === category.key);
           if (!card || !Array.isArray(category.teams)) continue;
+          const soldOut = eventCategorySoldOut(category);
+          for (const info of document.querySelectorAll<HTMLElement>('[data-event-capacity-topic]')) {
+            if (info.dataset.eventCapacityTopic !== section.dataset.topic || info.dataset.eventCapacityCategory !== category.key) continue;
+            info.classList.toggle('is-sold-out', soldOut);
+            const ribbon = info.querySelector<HTMLElement>('[data-sold-out-ribbon]');
+            if (ribbon) ribbon.hidden = !soldOut;
+          }
           const confirmed = category.teams.filter((team: { status: string }) => team.status === 'confirmed');
           const waiting = category.teams.filter((team: { status: string }) => team.status === 'waiting');
           const list = card.querySelector<HTMLElement>('[data-roster-confirmed]')!; list.replaceChildren();
@@ -104,7 +114,8 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
   .event-roster{width:min(1160px,calc(100% - 48px));margin:0 auto;padding:70px 0;scroll-margin-top:120px;color:#173d2b}
   .eyebrow{margin:0 0 12px;color:#356b67;font-size:.7rem;letter-spacing:.14em;font-weight:850;text-transform:uppercase}.roster-heading h2{margin:0 0 22px;font-size:clamp(2rem,4vw,3rem);line-height:1.1;letter-spacing:-.035em}.roster-heading>p:last-child{max-width:740px;color:#536353;line-height:1.8}
   .roster-status,.roster-note{font-size:.8rem;line-height:1.6;color:#536353}.roster-status{margin:25px 0 16px}.roster-note{margin-top:22px}
-  .roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.roster-grid.one-category{grid-template-columns:1fr;max-width:760px}article{min-width:0;padding:26px;background:#fffefa;border-top:4px solid #f4d638;box-shadow:0 8px 24px #092f2008}
+  .roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.roster-grid.one-category{grid-template-columns:1fr;max-width:760px}article{position:relative;min-width:0;padding:26px;background:#fffefa;border-top:4px solid #f4d638;box-shadow:0 8px 24px #092f2008}
+  article.is-sold-out .category-date,article.is-sold-out h3{margin-right:94px}
   .category-date{margin:0 0 8px;color:#536353;font-size:.75rem}.category-date:empty{display:none}h3{margin:0;font-size:1.55rem}h4{margin:22px 0 12px;font-size:.9rem}h4 span{color:#687b6e;font-weight:400}.category-count{margin:10px 0 20px;color:#536353;font-size:.8rem}
   .roster-table-scroll{overflow-x:auto}.roster-table{width:100%;min-width:390px;border-collapse:collapse;font-size:.87rem;line-height:1.5}.roster-table caption{text-align:left;font-size:.75rem;color:#536353;padding:0 0 12px}.roster-table thead th{padding:12px 8px;background:#edf2e9;color:#173d2b;text-align:left;font-size:.78rem}.roster-table :global(tbody th),.roster-table :global(tbody td){padding:12px 8px;border-bottom:1px solid #e0e6dc}.roster-table :global(tbody th){text-align:left;font-weight:500;overflow-wrap:anywhere}.roster-table :global(tr.host){background:#e7f0e6}.roster-table :global(tr.host th){font-weight:750}.roster-table :global(small){display:block;color:#52665a;font-size:.68rem;font-weight:400}.roster-table .slot-column,.roster-table :global(td.slot-column){width:75px;text-align:center;white-space:nowrap}.roster-table :global(.slot-selection){display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #c5d0c5;border-radius:4px;color:#7b877b}.roster-table :global(.slot-selection.selected){background:#164f32;border-color:#164f32;color:#fff;font-weight:850}
   ol{margin:0;padding-left:30px}.event-roster :global(li){padding:10px 8px;border-bottom:1px solid #e0e6dc;font-size:.87rem;line-height:1.5;overflow-wrap:anywhere}.event-roster :global(li)::marker{color:#708574;font-size:.75rem}.event-roster :global(li.host){background:#e7f0e6;font-weight:750}.event-roster :global(li small){display:block;color:#52665a;font-size:.68rem;font-weight:400}.event-roster :global(.free){color:#6f7c71;font-style:italic}.waiting{margin-top:23px;border-top:1px solid #d2dbd2}.retry{padding:10px 14px;margin-bottom:18px;border:1px solid #173d2b;background:white;color:#173d2b;cursor:pointer;font:inherit;font-size:.8rem}.retry[hidden]{display:none}
