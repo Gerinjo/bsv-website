@@ -35,7 +35,11 @@ test('Annika Peglau is no longer added as a youth representative', () => {
 });
 
 test('the favicon uses the filled PNG crest', () => {
-  assert.match(layoutSource, /rel="icon" type="image\/png"[^>]*bsv-nordstern\.png/);
+  assert.match(layoutSource, /<Favicon\s*\/>/);
+  const faviconSource = readFileSync(new URL('../src/components/Favicon.astro', import.meta.url), 'utf8');
+  assert.match(faviconSource, /rel="icon" type="image\/png"[^>]*favicon\.png/);
+  const generatorSource = readFileSync(new URL('../scripts/generate-favicons.mjs', import.meta.url), 'utf8');
+  assert.match(generatorSource, /images\/verein\/wappen\/bsv-nordstern\.png/);
   assert.doesNotMatch(layoutSource, /rel="icon"[^>]*bsv-nordstern\.gif/);
 });
 
