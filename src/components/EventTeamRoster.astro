@@ -1,5 +1,5 @@
 ---
-import { GIRLS_CUP_EVENT } from '../../supabase/functions/_shared/girls-cup-event.mjs';
+import { GIRLS_CUP_EVENT, GIRLS_CUP_CAPACITY_NOTICE } from '../../supabase/functions/_shared/girls-cup-event.mjs';
 interface Props { topic: string; }
 const { topic } = Astro.props;
 const girls = topic === GIRLS_CUP_EVENT.topic;
@@ -8,7 +8,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
 ---
 <section class="event-roster" id="mannschaften" data-event-roster data-topic={topic} data-endpoint={endpoint} aria-labelledby="roster-title">
   <div class="roster-heading"><p class="eyebrow">Wir sind dabei</p><h2 id="roster-title">Angemeldete Mannschaften.</h2>
-    <p>{girls ? 'Je Altersklasse spielen zwei Gruppen mit je vier Teams. Ein Platz ist für den BSV reserviert. Danach nehmen wir zwei Teams auf die Warteliste auf. Die Gruppeneinteilung folgt später.' : 'Diese Mannschaften sind angemeldet. Die gewünschten Startzeiten stimmen wir noch ab; eine Warteliste gibt es hier derzeit nicht.'}</p>
+    <p>{girls ? `${GIRLS_CUP_CAPACITY_NOTICE} Die Gruppeneinteilung folgt später.` : 'Diese Mannschaften sind angemeldet. Die gewünschten Startzeiten stimmen wir noch ab; eine Warteliste gibt es hier derzeit nicht.'}</p>
   </div>
   <p class="roster-status" data-roster-status role="status">Die aktuelle Mannschaftsliste wird geladen …</p>
   <button class="retry" type="button" data-roster-retry hidden>Liste erneut laden</button>

@@ -1,9 +1,9 @@
-import { calculateGirlsCupFee } from '../_shared/girls-cup-event.mjs';
+import { GIRLS_CUP_EVENT, calculateGirlsCupFee } from '../_shared/girls-cup-event.mjs';
 
 export function applyTeamAllocation(registration, allocations) {
   const confirmed = allocations.filter(team => team.status === 'confirmed');
   const waiting = allocations.filter(team => team.status === 'waiting');
-  const allocationText = allocations.map(team => `${team.category}-Juniorinnen · ${team.clubName} ${team.teamNumber}: ${team.status === 'confirmed' ? 'Teilnahme bestätigt' : `Warteliste, Platz ${team.position - 8}`}`).join('\n');
+  const allocationText = allocations.map(team => `${team.category}-Juniorinnen · ${team.clubName} ${team.teamNumber}: ${team.status === 'confirmed' ? 'Teilnahme bestätigt' : `Warteliste, Platz ${team.position - GIRLS_CUP_EVENT.divisions[team.category].capacity}`}`).join('\n');
   const fee = calculateGirlsCupFee(confirmed.length);
   const feeNote = waiting.length ? 'Die Startgebühr gilt nur für bestätigte Teams. Für Teams auf der Warteliste bitte noch nichts bezahlen.' : '';
   const outcome = waiting.length ? {

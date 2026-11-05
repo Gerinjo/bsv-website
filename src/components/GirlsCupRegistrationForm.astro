@@ -1,6 +1,6 @@
 ---
 import { withBase } from '../utils/paths';
-import { GIRLS_CUP_EVENT as event, GIRLS_CUP_FEE_LABEL } from '../../supabase/functions/_shared/girls-cup-event.mjs';
+import { GIRLS_CUP_EVENT as event, GIRLS_CUP_FEE_LABEL, GIRLS_CUP_CAPACITY_NOTICE } from '../../supabase/functions/_shared/girls-cup-event.mjs';
 const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
 ---
@@ -36,7 +36,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. Je Altersklasse gibt es acht Turnierplätze (einschließlich einer BSV-Mannschaft) und zwei Wartelistenplätze. Freie Turnierplätze werden direkt bestätigt, weitere Teams kommen auf die Warteliste. Die genauen Startzeiten folgen später. Für Wartelistenteams ist vorerst keine Startgebühr fällig. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Teams als Trainerin oder Trainer an und akzeptiere die Startgebühren: {GIRLS_CUP_FEE_LABEL}. {GIRLS_CUP_CAPACITY_NOTICE} Freie Turnierplätze werden direkt bestätigt, weitere Teams kommen auf die Warteliste. Die genauen Startzeiten folgen später. Für Wartelistenteams ist vorerst keine Startgebühr fällig. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
     <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Veröffentlichung unseres Vereinsnamens und unserer Mannschaften in der Teilnehmerliste sowie mit der Verarbeitung meiner Angaben zur Organisation des Turniers und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">

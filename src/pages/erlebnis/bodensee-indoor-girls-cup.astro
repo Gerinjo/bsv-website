@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import EventTeamRoster from '../../components/EventTeamRoster.astro';
 import GirlsCupRegistrationForm from '../../components/GirlsCupRegistrationForm.astro';
 import { girlsCup } from '../../data/girlsCup';
+import { GIRLS_CUP_CAPACITY_NOTICE } from '../../../supabase/functions/_shared/girls-cup-event.mjs';
 import { withBase } from '../../utils/paths';
 ---
 
@@ -36,7 +37,7 @@ import { withBase } from '../../utils/paths';
     </section>
 
     <section class="cup-days shell" id="turniertage" aria-labelledby="days-title">
-      <div class="section-heading"><p class="eyebrow">Euer Wochenende im Überblick</p><h2 id="days-title">Zwei Turniertage.<br /><em>Findet euren Termin.</em></h2><p>Die Altersklassen sind auf Samstag und Sonntag verteilt. Pro Altersklasse sind acht Teams in zwei Gruppen à vier Teams sowie zwei Wartelistenplätze vorgesehen. Die Startzeiten und die Gruppeneinteilung folgen.</p></div>
+      <div class="section-heading"><p class="eyebrow">Euer Wochenende im Überblick</p><h2 id="days-title">Zwei Turniertage.<br /><em>Findet euren Termin.</em></h2><p>Die Altersklassen sind auf Samstag und Sonntag verteilt. {GIRLS_CUP_CAPACITY_NOTICE} Die Startzeiten und die Gruppeneinteilung folgen.</p></div>
       <div class="days-grid">
         {girlsCup.days.map((day) => (
           <article class="day-card" data-cup-day={day.isoDate}>

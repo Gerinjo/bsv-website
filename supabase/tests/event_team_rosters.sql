@@ -22,6 +22,23 @@ begin
   assert actual=before_count, 'A full category must roll back the whole inquiry';
   select count(*) into actual from public.event_team_registrations where category='D' and mode='test' and not is_host;
   assert actual=0, 'A mixed request must not partly consume another category';
+  -- D-Juniorinnen: nine external confirmed teams plus the host, then four waiting.
+  result := public.submit_event_registration(payload,'SQL D Kapazitätstest','[{"division":"D","count":13}]','test');
+  select count(*) into actual from jsonb_array_elements(result->'allocations') item where item->>'status'='confirmed';
+  assert actual=9, 'Nine external D teams must be confirmed';
+  select count(*) into actual from jsonb_array_elements(result->'allocations') item where item->>'status'='waiting';
+  assert actual=4, 'Four D teams must be on the waiting list';
+  assert (select min((item->>'position')::integer) from jsonb_array_elements(result->'allocations') item where item->>'status'='waiting')=11,
+    'The first D waiting place must be position 11';
+  select count(*) into before_count from public.contact_anfragen;
+  begin
+    perform public.submit_event_registration(payload,'SQL D Überlauf','[{"division":"D","count":1}]','test');
+    raise exception 'Expected EVENT_FULL';
+  exception when raise_exception then
+    if sqlerrm not like 'EVENT_FULL:%' then raise; end if;
+  end;
+  select count(*) into actual from public.contact_anfragen;
+  assert actual=before_count, 'A full D category must not save an inquiry';
   assert not (public.get_event_team_roster('event-bodensee-indoor-girls-cup')::text like '%SQL Kapazitätstest%'), 'Test teams must remain private';
   assert not (public.get_event_team_roster('event-bodensee-indoor-girls-cup')::text like '%example.invalid%'), 'No contact data may appear in the public roster';
   payload := jsonb_set(payload,'{thema}','"event-urmel-cup"');

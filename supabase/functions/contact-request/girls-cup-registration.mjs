@@ -1,4 +1,4 @@
-import { GIRLS_CUP_EVENT, GIRLS_CUP_FEE_LABEL, calculateGirlsCupFee } from '../_shared/girls-cup-event.mjs';
+import { GIRLS_CUP_EVENT, GIRLS_CUP_FEE_LABEL, GIRLS_CUP_CAPACITY_NOTICE, calculateGirlsCupFee } from '../_shared/girls-cup-event.mjs';
 
 export const GIRLS_CUP_ROUTING = Object.freeze({
   routingKey: 'person-jerome-ernsberger',
@@ -31,7 +31,7 @@ export function prepareGirlsCupRegistration(body) {
     || teams.some((team) => !team || typeof team !== 'object' || !divisions.includes(team.division)
       || !Number.isSafeInteger(team.count) || team.count < 1 || team.count > 9)
     || new Set(teams.map((team) => team.division)).size !== teams.length) {
-    return { error: 'Bitte gib für jede gewünschte Altersklasse eine ganze Teamanzahl zwischen 1 und 9 an. Je Altersklasse gibt es 8 Turnierplätze (einschließlich BSV) und 2 Wartelistenplätze.' };
+    return { error: `Bitte gib für jede gewünschte Altersklasse eine ganze Teamanzahl zwischen 1 und 9 an. ${GIRLS_CUP_CAPACITY_NOTICE}` };
   }
   // Every selected day needs teams, and teams may only belong to selected days.
   if (GIRLS_CUP_EVENT.days.some((day) => days.includes(day.isoDate) !== teams.some((team) => day.divisionKeys.includes(team.division)))) {

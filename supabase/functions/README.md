@@ -129,9 +129,13 @@ Anmeldung. Die normalisierten Mannschaftslisten benötigen die Migration
 Die drei Turnierseiten lesen `GET contact-request?action=teams&event=<Thema>`.
 Öffentlich sind ausschließlich Verein, Teamnummer, Kategorie und Platzstatus;
 Anmeldungs-IDs, Kontaktdaten und Anmerkungen bleiben privat. Je Kategorie steht
-eine BSV-Mannschaft zuerst. Beim Girls Cup zählen diese Gastgeber zu den acht
-Turnierplätzen (zwei Gruppen à vier Teams); zusätzlich sind zwei Wartelistenplätze
-möglich. Beide Bambini-Veranstaltungen haben jeweils eine gemeinsame Liste ohne
+eine BSV-Mannschaft zuerst. Beim Girls Cup zählen die BSV-Mannschaften zu den
+Turnierplätzen: D-Juniorinnen haben zehn Turnierplätze und vier Wartelistenplätze;
+E-, C- und B-Juniorinnen jeweils acht Turnierplätze und zwei Wartelistenplätze.
+Die Erweiterung der D-Juniorinnen erfolgt mit `girls_cup_d_capacity_and_bsv_team`;
+bestehende Wartelistenteams auf Position 9 und 10 rücken dabei ins Teilnehmerfeld.
+Mannschaftsnummern stehen in `team_number`, nicht zusätzlich im `club_name`.
+Beide Bambini-Veranstaltungen haben jeweils eine gemeinsame Liste ohne
 Warteliste; Wunschzeiten legen keine Kategorie fest.
 
 `submit_event_registration` speichert Anfrage und Teams atomar und sperrt die
