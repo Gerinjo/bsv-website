@@ -1,6 +1,7 @@
 ---
 import { withBase } from '../utils/paths';
 import { newsletterEndpoint } from '../utils/newsletter';
+import Favicon from './Favicon.astro';
 interface Props { action: 'confirm' | 'unsubscribe' }
 const { action } = Astro.props;
 const confirmation = action === 'confirm';
@@ -13,7 +14,7 @@ const title = confirmation ? 'E-Mail-Anmeldung bestätigen' : 'E-Mails abmelden'
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="referrer" content="no-referrer" />
-    <link rel="icon" href={withBase('/images/verein/wappen/bsv-nordstern.png')} />
+    <Favicon />
     <title>{title} · BSV Nordstern Radolfzell</title>
   </head>
   <body>

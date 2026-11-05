@@ -7,6 +7,7 @@ import TagDesMaedchenfussballMenuEnhancer from '../components/TagDesMaedchenfuss
 import UmamiAnalytics from '../components/UmamiAnalytics.astro';
 import ClubBrand from '../components/ClubBrand.astro';
 import PwaSupport from '../components/PwaSupport.astro';
+import Favicon from '../components/Favicon.astro';
 import '../styles/people.css';
 import { withBase } from '../utils/paths';
 
@@ -42,7 +43,7 @@ const friendlyMatchTeamPaths = [
 		<meta name="viewport" content="width=device-width" />
 		<PwaSupport />
 		<ClubBrand />
-		<link rel="icon" type="image/png" href={withBase('/images/verein/wappen/bsv-nordstern.png')} />
+		<Favicon />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
