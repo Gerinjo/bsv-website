@@ -36,7 +36,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
     rpc: async (name, args) => {
       if (name === 'submit_event_registration') {
         if (capacityError) return { data: null, error: { code: 'P0001', message: 'EVENT_FULL:C-Juniorinnen' } };
-        operations.push({ table: 'contact_anfragen', operation: 'insert', values: args.p_contact });
+        operations.push({ table: 'contact_anfragen', operation: 'insert', values: args.p_contact, teams: args.p_teams });
         if (insertFails) return { data: null, error: { message: 'simulated database failure' } };
         return { data: { id: 'registration-123', allocations: allocationOverride ?? args.p_teams.flatMap(team => Array.from({ length: team.count }, (_, index) => ({ category: team.division, clubName: args.p_club_name, teamNumber: index + 1, position: index + 2, status: 'confirmed' }))) } };
       }
@@ -115,6 +115,7 @@ test('missing or invalid trainer details, club, preferences and acknowledgements
     { firstName: '' }, { lastName: '' }, { email: 'invalid-address' }, { phone: '' }, { phone: '0170<script>' },
     ...[undefined, null, [], '09:00', {}, ['09:00', '09:00'], ['09:00', '10:00'], ['09:00', null]].map((timeSlots) => ({ timeSlots })),
     { message: 'x'.repeat(2001) }, { message: {} }, { registrationAccepted: false }, { registrationAccepted: 'true' }, { privacyAccepted: false },
+    ...[0, -1, 4, 1.5, '2', null, false, [], {}].map(teamCount => ({ teamCount })),
   ];
   for (const topic of [BAMBINI_EVENT.topic, URMEL_EVENT.topic]) for (const override of invalid) {
     const app = harness();
@@ -123,6 +124,35 @@ test('missing or invalid trainer details, club, preferences and acknowledgements
     assert.equal(app.operations.length, 0, 'invalid registrations must not consume captcha or write data');
     assert.equal(app.mails.length, 0);
   }
+});
+
+test('Bambini registrations allocate one, two or three teams and calculate the trusted total in both emails', async () => {
+  for (const event of [BAMBINI_EVENT, URMEL_EVENT]) for (const teamCount of [1, 2, 3]) {
+    const app = harness();
+    const response = await app.handle(request(valid({ topic: event.topic, teamCount, totalFee: 0, fee: 0 })));
+    assert.equal(response.status, 201);
+    const saved = app.operations.find(op => op.operation === 'insert');
+    assert.equal(saved.teams[0].division, 'Bambini');
+    assert.equal(saved.teams[0].count, teamCount);
+    assert.ok(saved.values.nachricht.includes(`Anzahl Mannschaften: ${teamCount}`));
+    const total = `${teamCount * event.teamFee} €`;
+    assert.equal(app.mails.length, 2);
+    for (const { mail } of app.mails) {
+      assert.ok(mail.text.includes(`Anzahl Mannschaften: ${teamCount}`));
+      assert.ok(mail.text.includes(`Startgebühren insgesamt: ${total}`));
+      assert.ok(mail.html.includes(total));
+    }
+    assert.ok(app.mails[1].mail.text.includes(`${total} insgesamt`));
+    assert.equal(app.mails[0].mail.to[0], TOURNAMENT_NOTIFICATION_RECIPIENT);
+  }
+});
+
+test('older cached Bambini forms without a team count still register one team', async () => {
+  const app = harness();
+  const response = await app.handle(request(valid()));
+  assert.equal(response.status, 201);
+  assert.equal(app.operations.find(op => op.operation === 'insert').teams[0].count, 1);
+  assert.equal(prepareBambiniRegistration(valid()).teamCount, 1);
 });
 
 test('a registration stores all wishes and emails the private organizer with trainer reply-to', async () => {

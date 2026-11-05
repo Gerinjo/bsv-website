@@ -242,7 +242,7 @@ Deno.serve(async (request) => {
   const { data: inquiry, error: insertError } = teamRegistration
     ? await supabase.rpc('submit_event_registration', {
         p_contact: contactValues, p_club_name: clubName, p_mode: emailConfig.mode,
-        p_teams: girlsRegistration ? body.teams : [{ division: 'Bambini', count: 1 }],
+        p_teams: girlsRegistration ? body.teams : [{ division: 'Bambini', count: bambini.teamCount }],
       })
     : await supabase.from('contact_anfragen').insert(contactValues).select('id').single();
   if (insertError?.code === 'P0001' && insertError.message?.startsWith('EVENT_FULL:')) {

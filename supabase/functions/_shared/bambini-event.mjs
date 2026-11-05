@@ -1,4 +1,5 @@
 // Public event details shared by the page and its registration email.
+const teamFee = 35;
 export const BAMBINI_EVENT = Object.freeze({
   topic: 'event-bambini-weihnachten-2026',
   title: 'Weihnachtlicher Bambini-Spieltag',
@@ -8,5 +9,6 @@ export const BAMBINI_EVENT = Object.freeze({
   timeSlots: ['09:00', '12:00', '15:00'],
   venue: 'Unterseesporthalle Radolfzell',
   address: 'Markelfinger Str. 12, 78315 Radolfzell am Bodensee',
-  fee: '35 €',
+  teamFee,
+  fee: `${teamFee} €`,
 });

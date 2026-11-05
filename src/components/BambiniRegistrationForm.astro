@@ -1,17 +1,23 @@
 ---
 import { withBase } from '../utils/paths';
 import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
-interface Props { event?: { topic: string; timeSlots: readonly string[]; fee: string }; }
+interface Props { event?: { topic: string; timeSlots: readonly string[]; teamFee: number; fee: string }; }
 const { event = BAMBINI_EVENT } = Astro.props;
 const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
 ---
 
-<form data-bambini-registration data-endpoint={endpoint} data-topic={event.topic}>
+<form data-bambini-registration data-endpoint={endpoint} data-topic={event.topic} data-team-fee={event.teamFee}>
   <p class="form-note">Bitte gebt eure Trainerin oder euren Trainer als Kontaktperson an. Mit * markierte Felder sind Pflichtfelder.</p>
   <fieldset data-registration-fields>
     <legend>Euer Verein</legend>
     <label class="full">Verein *<input name="clubName" autocomplete="organization" minlength="2" maxlength="160" required /></label>
+    <label class="full">Anzahl Teams *<select name="teamCount" required aria-describedby="team-fee-hint">
+      <option value="1">1 Team</option>
+      <option value="2">2 Teams</option>
+      <option value="3">3 Teams</option>
+    </select></label>
+    <p id="team-fee-hint" class="field-hint full" role="status" aria-live="polite" aria-atomic="true">Startgebühr insgesamt: <strong data-total-fee>{event.fee}</strong> ({event.fee} pro Mannschaft).</p>
   </fieldset>
   <fieldset data-registration-fields>
     <legend>Eure Trainerin / euer Trainer</legend>
@@ -22,7 +28,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="time-options" data-registration-fields aria-describedby="time-hint">
     <legend>Eure priorisierten Zeitfenster *</legend>
-    <p id="time-hint" class="field-hint full">Welche Startzeiten bevorzugt ihr? Wählt mindestens eine aus. Mehrere Häkchen geben uns mehr Möglichkeiten bei der Einteilung.</p>
+    <p id="time-hint" class="field-hint full">Welche Startzeiten bevorzugt ihr? Wählt mindestens eine aus. Mehrere Häkchen geben uns mehr Möglichkeiten bei der Einteilung. Die Wunschzeiten gelten für alle Teams dieser Anmeldung.</p>
     <div class="time-grid full">
       {event.timeSlots.map((slot) => <label class="time-option"><input name="timeSlots" type="checkbox" value={slot} /><span><strong>{slot} Uhr</strong><small>Wunschzeit</small></span></label>)}
     </div>
@@ -31,14 +37,14 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde unsere Mannschaft als Trainerin oder Trainer an und akzeptiere die Startgebühr von {event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt. Die ausgewählten Zeitfenster sind Wünsche; die endgültige Startzeit wird später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde die ausgewählten Mannschaften als Trainerin oder Trainer an und akzeptiere die Startgebühr von {event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt. Die ausgewählten Zeitfenster sind Wünsche; die endgültigen Startzeiten werden später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
     <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Veröffentlichung unseres Vereinsnamens und unserer Mannschaften in der Teilnehmerliste sowie mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
       <label><span data-captcha-label>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label>
       <button type="button" class="reload" data-captcha-reload>Neue Aufgabe</button>
     </div>
-    <button class="submit" type="submit" disabled><span data-submit-label>Mannschaft anmelden</span><span aria-hidden="true">↗</span></button>
+    <button class="submit" type="submit" disabled><span data-submit-label>Teams anmelden</span><span aria-hidden="true">↗</span></button>
   </fieldset>
   <p class="form-status" data-registration-status role="status" aria-live="polite" tabindex="-1"></p>
   <p class="contact-help" data-contact-help hidden>Für Rückfragen: <a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation</a>.</p>
@@ -54,6 +60,11 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
     const captchaLabel = form.querySelector<HTMLElement>('[data-captcha-label]')!;
     const answer = form.elements.namedItem('captchaAnswer') as HTMLInputElement;
     const timeOptions = [...form.querySelectorAll<HTMLInputElement>('[name="timeSlots"]')];
+    const teamCount = form.elements.namedItem('teamCount') as HTMLSelectElement;
+    const totalFee = form.querySelector<HTMLElement>('[data-total-fee]')!;
+    const updateFee = () => { totalFee.textContent = `${Number(teamCount.value) * Number(form.dataset.teamFee)} €`; };
+    teamCount.addEventListener('change', updateFee);
+    form.addEventListener('reset', () => { totalFee.textContent = `${Number(form.dataset.teamFee)} €`; });
     const status = form.querySelector<HTMLElement>('[data-registration-status]')!;
     const fields = [...form.querySelectorAll<HTMLFieldSetElement>('[data-registration-fields]')];
     let captchaToken = '';
@@ -101,6 +112,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
           body: JSON.stringify({
             topic: form.dataset.topic,
             clubName: values.get('clubName'), timeSlots: values.getAll('timeSlots'),
+            teamCount: Number(values.get('teamCount')),
             firstName: values.get('firstName'), lastName: values.get('lastName'), email: values.get('email'), phone: values.get('phone'),
             message: values.get('message'), registrationAccepted: values.get('registrationAccepted') === 'on', privacyAccepted: values.get('privacyAccepted') === 'on',
             website: values.get('website'), captchaToken, captchaAnswer: Number(values.get('captchaAnswer')),
@@ -145,7 +157,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   fieldset { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0 0 28px; padding: 0 0 28px; border: 0; border-bottom: 1px solid #d9e2da; }
   legend { padding: 0; margin-bottom: 20px; font-size: 1.08rem; font-weight: 850; }
   label { display: flex; flex-direction: column; gap: 8px; font-size: .82rem; font-weight: 750; line-height: 1.5; }
-  input:not([type=checkbox]), textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 47px; padding: 11px 12px; border: 1px solid #91a497; border-radius: 3px; background: #fff; color: #173d2b; font: inherit; font-weight: 400; }
+  input:not([type=checkbox]), select, textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 47px; padding: 11px 12px; border: 1px solid #91a497; border-radius: 3px; background: #fff; color: #173d2b; font: inherit; font-weight: 400; }
   textarea { resize: vertical; }
   .full { grid-column: 1 / -1; }
   .field-hint { margin: -6px 0 0; font-size: .76rem; }
@@ -158,7 +170,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   button { font: inherit; cursor: pointer; }.reload { border: 0; padding: 12px 0; background: none; color: var(--bsv-green, #164f32); font-size: .78rem; text-decoration: underline; }
   .submit { display: flex; justify-content: space-between; gap: 15px; padding: 17px 20px; border: 0; border-radius: 3px; background: var(--bsv-yellow, #f4d638); color: var(--bsv-green-dark, #092f20); font-weight: 850; text-align: left; }
   .submit:hover:not(:disabled) { background: color-mix(in srgb, var(--bsv-yellow, #f4d638) 80%, white); }button:disabled { opacity: .6; cursor: default; }
-  a { color: var(--bsv-green, #164f32); text-decoration: underline; }input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #a22e36; outline-offset: 3px; }
+  a { color: var(--bsv-green, #164f32); text-decoration: underline; }input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #a22e36; outline-offset: 3px; }
   .form-status { margin: 20px 0 0; font-size: .86rem; line-height: 1.65; }.form-status:empty { display: none; }.form-status[data-success=true] { padding: 16px; background: #e6f2e8; }.form-status[data-success=false] { color: #9a2530; }
   .contact-help { margin: 15px 0 0; font-size: .82rem; line-height: 1.6; }.contact-help[hidden] { display: none; }
   @media(max-width: 560px) { fieldset { grid-template-columns: 1fr; }form { box-shadow: 5px 5px 0 #061f16; }.captcha-row { gap: 12px; }.time-grid { grid-template-columns: 1fr; }.time-option { padding: 13px 16px; }.time-option small { display: inline; margin-left: 8px; }.time-option strong { display: inline; } }

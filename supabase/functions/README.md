@@ -107,7 +107,12 @@ Unterseesporthalle Radolfzell, Starts um 09:00, 12:00 und 15:00 Uhr.
 
 `contact-request/bambini-registration.mjs` prüft den Verein, die erforderliche
 Telefonnummer, mindestens eine der drei Wunschzeiten und die Bestätigung des
-Anmeldehinweises. Vorname, Nachname, E-Mail und Datenschutzbestätigung werden
+Anmeldehinweises. Im gemeinsamen Bambini-Formular können ein, zwei oder drei
+Teams gewählt werden. `teamCount` wird als ganze Zahl von 1 bis 3 geprüft;
+ältere Formulare ohne dieses Feld melden weiterhin ein Team an. Speicherung,
+Organisationsmail, Anmeldebestätigung und Zahlungsbetrag verwenden dieselbe
+Teamanzahl; die Gebühr wird serverseitig pro Mannschaft berechnet.
+Vorname, Nachname, E-Mail und Datenschutzbestätigung werden
 wie bei den übrigen Kontaktanfragen geprüft. Es werden keine Kinderdaten
 abgefragt.
 

@@ -10,12 +10,17 @@ export const BAMBINI_SUCCESS_MESSAGE = 'Vielen Dank! Eure Anmeldung ist bestäti
 
 /**
  * @param {Record<string, unknown>} body
- * @param {{title: string, date: string, timeSlots: readonly string[], venue: string, address?: string, fee: string, charityNote?: string}} event
+ * @param {{title: string, date: string, timeSlots: readonly string[], venue: string, address?: string, teamFee: number, fee: string, charityNote?: string}} event
  */
 export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
   const club = typeof body.clubName === 'string' ? body.clubName.trim() : '';
   const notes = typeof body.message === 'string' ? body.message.trim() : '';
   const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
+  // Older cached forms did not send a count and still register one team.
+  const teamCount = body.teamCount === undefined ? 1 : body.teamCount;
+  if (!Number.isInteger(teamCount) || teamCount < 1 || teamCount > 3) {
+    return { error: 'Bitte wähle eine Teamanzahl von 1, 2 oder 3 aus.' };
+  }
   if (club.length < 2 || club.length > 160 || /[\r\n\u0000-\u001f]/.test(club)) {
     return { error: 'Bitte gib euren Vereinsnamen an (2 bis 160 Zeichen).' };
   }
@@ -30,12 +35,16 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
   if (body.registrationAccepted !== true) return { error: 'Bitte bestätige die Angaben zur Anmeldung, zu den Wunschzeiten und zur Startgebühr.' };
 
   // Build the complete registration on the server; clients cannot change event or recipient.
+  const totalFee = teamCount * event.teamFee;
   return {
-    paymentAmount: `${event.fee} pro Mannschaft`,
+    teamCount,
+    paymentAmount: `${totalFee} € insgesamt`,
     confirmationDetails: [
       ['Verein', club],
+      ['Anzahl Mannschaften', String(teamCount)],
       ['Wunschzeiten (noch nicht zugeteilt)', event.timeSlots.filter((slot) => body.timeSlots.includes(slot)).map((slot) => `${slot} Uhr`).join(', ')],
       ['Startgebühr', `${event.fee} pro Mannschaft`],
+      ['Startgebühren insgesamt', `${totalFee} €`],
       ...(event.charityNote ? [['Guter Zweck', event.charityNote]] : []),
     ],
     confirmationNotes: notes,
@@ -44,12 +53,14 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
       'Mannschaftsanmeldung mit Wunschzeiten',
       '',
       `Verein: ${club}`,
+      `Anzahl Mannschaften: ${teamCount}`,
       `Priorisierte Zeitfenster: ${event.timeSlots.filter((slot) => body.timeSlots.includes(slot)).map((slot) => `${slot} Uhr`).join(', ')}`,
       '',
       `Termin: ${event.date}`,
       `Spielort: ${event.venue}`,
       ...(event.address ? [`Adresse: ${event.address}`] : []),
       `Startgebühr: ${event.fee} pro Mannschaft`,
+      `Startgebühren insgesamt: ${totalFee} €`,
       ...(event.charityNote ? [event.charityNote] : []),
       'Kontaktperson: Trainerin oder Trainer der Mannschaft',
       'Hinweis zur direkten Anmeldebestätigung, späteren Startzeitmitteilung und Startgebühr: akzeptiert',
