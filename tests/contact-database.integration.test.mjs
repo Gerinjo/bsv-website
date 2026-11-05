@@ -14,6 +14,7 @@ import {BAMBINI_EVENT} from '../supabase/functions/_shared/bambini-event.mjs';
 import {URMEL_EVENT} from '../supabase/functions/_shared/urmel-event.mjs';
 import {GIRLS_CUP_EVENT} from '../supabase/functions/_shared/girls-cup-event.mjs';
 import {getBambiniRouting,BAMBINI_SUCCESS_MESSAGE,prepareBambiniRegistration} from '../supabase/functions/contact-request/bambini-registration.mjs';
+import {TOURNAMENT_NOTIFICATION_RECIPIENT,buildTournamentNotification,deliverTournamentNotification} from '../supabase/functions/_shared/tournament-notification.mjs';
 
 const databaseUrl=process.env.CONTACT_DATABASE_TEST_URL;
 test('complete HTTP submission stores contact data through the real driver and prevents captcha reuse',{skip:!databaseUrl},async()=>{
@@ -47,6 +48,7 @@ test('complete HTTP submission stores contact data through the real driver and p
    Request,Response,URL,crypto,console,withContactDatabase,createClient:()=>rest,postgres:()=>sql,
    BAMBINI_EVENT,URMEL_EVENT,GIRLS_CUP_EVENT,getBambiniRouting,BAMBINI_SUCCESS_MESSAGE,prepareBambiniRegistration,
    buildEventConfirmation,deliverEventConfirmation,applyTeamAllocation,
+   TOURNAMENT_NOTIFICATION_RECIPIENT,buildTournamentNotification,deliverTournamentNotification,
    loadYouthSponsors:async()=>[],
    tournamentPayment,
    Deno:{env:{get:key=>({SUPABASE_URL:'https://example.org',SUPABASE_SERVICE_ROLE_KEY:'test-only',SUPABASE_DB_URL:databaseUrl,ALLOWED_ORIGINS:'https://bsvnordstern.de'})[key]},serve:fn=>{handle=fn}},

@@ -13,6 +13,7 @@ import { resolveContactRecipients } from '../supabase/functions/contact-request/
 import { eventSponsors } from './fixtures/event-sponsors.mjs';
 import { applyTeamAllocation } from '../supabase/functions/contact-request/team-allocation.mjs';
 import { tournamentPayment, YOUTH_TREASURY } from '../supabase/functions/_shared/tournament-payment.mjs';
+import { TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification } from '../supabase/functions/_shared/tournament-notification.mjs';
 
 const valid = (overrides = {}) => ({
   topic: BAMBINI_EVENT.topic, clubName: 'FC Testverein',
@@ -86,6 +87,7 @@ function harness({ emailFails = false, confirmationFails = false, internalFails 
       return { id: 'mail-123', mode: 'test' };
     },
     buildEventConfirmation, deliverEventConfirmation, applyTeamAllocation,
+    TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification,
     loadYouthSponsors: async () => eventSponsors,
     tournamentPayment,
     GIRLS_CUP_EVENT, GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration,
@@ -131,9 +133,7 @@ test('a registration stores all wishes and emails the private organizer with tra
   assert.equal(result.saved, true);
   assert.equal(result.notificationStatus, 'versendet');
   assert.match(result.message, /Anmeldung ist bestätigt/);
-  const recipient = app.operations.find((op) => op.table === 'contact_empfaenger');
-  assert.equal(recipient.filters.schluessel, 'person-jerome-ernsberger');
-  assert.equal(recipient.filters.aktiv, true);
+  assert.ok(!app.operations.some(op => op.table === 'contact_empfaenger'), 'Tournament delivery must not depend on the general contact address book');
   const saved = app.operations.find((op) => op.operation === 'insert').values;
   assert.equal(saved.thema, BAMBINI_EVENT.topic);
   assert.equal(saved.anfrageart, 'kontakt');
@@ -143,7 +143,8 @@ test('a registration stores all wishes and emails the private organizer with tra
   assert.match(saved.nachricht, /09:00 Uhr, 15:00 Uhr/);
   assert.equal(app.mails.length, 2);
   const { mail, options } = app.mails[0];
-  assert.deepEqual(mail.to, ['organizer@example.org']);
+  assert.deepEqual(mail.to, [TOURNAMENT_NOTIFICATION_RECIPIENT]);
+  assert.deepEqual(Array.from(saved.empfaenger_emails), [TOURNAMENT_NOTIFICATION_RECIPIENT]);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /Bambini-Anmeldung/);
   assert.match(mail.html, /09:00 Uhr, 15:00 Uhr/);
@@ -160,7 +161,7 @@ test('names, clubs and free text are escaped in organizer email HTML', async () 
   assert.match(app.mails[0].mail.html, /&lt;b&gt;Mara&lt;\/b&gt;/);
   assert.match(app.mails[0].mail.html, /FC &lt;Test&gt; &amp; Verein/);
   assert.match(app.mails[0].mail.html, /&lt;img src=x onerror=alert\(1\)&gt;<br>Noch eine Zeile/);
-  assert.doesNotMatch(app.mails[0].mail.html, /<img|<b>Mara/);
+  assert.doesNotMatch(app.mails[0].mail.html, /<img\s+src=x|<b>Mara/);
   const confirmation = app.mails[1].mail;
   assert.equal(confirmation.to, 'trainer@example.org');
   assert.match(confirmation.html, /&lt;b&gt;Mara&lt;\/b&gt;/);
@@ -177,7 +178,7 @@ test('every contact-based event sends a separate styled receipt to the applicant
     assert.equal(result.confirmationStatus, 'versendet');
     const { mail, options } = app.mails[1];
     assert.equal(mail.to, 'trainer@example.org');
-    assert.equal(mail.reply_to, 'organizer@example.org');
+    assert.equal(mail.reply_to, TOURNAMENT_NOTIFICATION_RECIPIENT);
     assert.equal(mail.cc, undefined);
     assert.equal(mail.bcc, undefined);
     assert.ok(mail.html.includes(event.title));
@@ -297,10 +298,11 @@ test('URMEL registrations use their own event facts and charity purpose with the
   assert.ok(saved.nachricht.includes(URMEL_EVENT.charityNote));
   assert.match(saved.nachricht, /09:00 Uhr, 12:00 Uhr, 15:00 Uhr/);
   const { mail } = app.mails[0];
-  assert.deepEqual(mail.to, ['organizer@example.org']);
+  assert.deepEqual(mail.to, [TOURNAMENT_NOTIFICATION_RECIPIENT]);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.ok(mail.subject.includes(URMEL_EVENT.title));
-  assert.ok(mail.html.includes(`Neue Mannschaftsanmeldung: ${URMEL_EVENT.title}`));
+  assert.match(mail.html, /Neue Mannschaftsanmeldung/);
+  assert.ok(mail.html.includes(URMEL_EVENT.title));
   assert.doesNotMatch(mail.html, /Weihnacht|Dezember|Unterseesporthalle|35 €|attacker@example.org|Startgebühr: 0/);
   const christmas = harness();
   await christmas.handle(request(valid()));
@@ -452,7 +454,7 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   })));
   assert.equal(response.status, 201);
   const { mail, options } = app.mails[0];
-  assert.deepEqual(mail.to, ['organizer@example.org']);
+  assert.deepEqual(mail.to, [TOURNAMENT_NOTIFICATION_RECIPIENT]);
   assert.equal(mail.reply_to, 'trainer@example.org');
   assert.match(mail.subject, /Girls-Cup-Anmeldung/);
   assert.match(mail.html, /20\.02\.2027[\s\S]*21\.02\.2027/);
@@ -462,7 +464,7 @@ test('Girls Cup organizer email includes trainer, ordered age groups, both dates
   assert.match(mail.html, /FC &lt;Test&gt; &amp; Verein/);
   assert.match(mail.html, /&lt;b&gt;Mara&lt;\/b&gt;/);
   assert.match(mail.html, /&lt;img src=x onerror=alert\(1\)&gt;/);
-  assert.doesNotMatch(mail.html, /<img|<b>Mara|2030|attacker@example.org|Wunschzeiten|Tombola/);
+  assert.doesNotMatch(mail.html, /<img\s+src=x|<b>Mara|2030|attacker@example.org|Wunschzeiten|Tombola/);
   assert.equal(options.idempotencyKey, 'girls-cup-registration/test/registration-123');
   const confirmation = app.mails[1].mail;
   assert.match(confirmation.text, /Startgebühren insgesamt: 100 €/);

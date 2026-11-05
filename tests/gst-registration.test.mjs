@@ -5,11 +5,12 @@ import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import { buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation } from '../supabase/functions/_shared/event-confirmation.mjs';
 import { eventSponsors } from './fixtures/event-sponsors.mjs';
+import { TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification } from '../supabase/functions/_shared/tournament-notification.mjs';
 
 const source = stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/gst2027-anmeldung/index.ts', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, ''));
 const valid = (overrides = {}) => ({ vorname: 'Mara', nachname: 'Muster', email: 'School@Example.org', telefon: '07732 123456', grundschule: 'Testschule', altersklasse: 'Mix 1. & 2. Klasse', mannschaftsname: 'Die Sterne', turniergebuehr: true, datenschutz: true, ...overrides });
 const request = body => new Request('https://example.org/gst2027-anmeldung', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-function harness({ insertError, mailFails = false } = {}) {
+function harness({ insertError, mailFails = false, internalFails = false } = {}) {
   const mails = [], operations = [];
   const db = { from(table) {
     const state = { table };
@@ -24,8 +25,9 @@ function harness({ insertError, mailFails = false } = {}) {
     Response, console: { error() {} }, createClient: () => db,
     Deno: { env: { get: key => ({ SUPABASE_URL: 'https://example.org', SUPABASE_SERVICE_ROLE_KEY: 'test-only' })[key] }, serve: fn => { handle = fn; } },
     buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation, getEmailRuntimeConfig: () => ({ mode: 'test' }),
+    TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification,
     loadYouthSponsors: async () => eventSponsors,
-    sendEmail: async (mail, options) => { mails.push({ mail, options }); if (mailFails) throw new Error('simulated provider rejection'); return { id: 'provider-id', mode: 'test' }; },
+    sendEmail: async (mail, options) => { mails.push({ mail, options }); if (mailFails || (internalFails && Array.isArray(mail.to))) throw new Error('simulated provider rejection'); return { id: 'provider-id', mode: 'test' }; },
   });
   return { handle, mails, operations };
 }
@@ -36,7 +38,13 @@ test('GST confirms validated school/team details, known address and pending date
     const response = await app.handle(request(valid({ altersklasse: competition, weitereInformationen: '<script>bad</script>', to: 'attacker@example.org', fee: 0, date: 'wrong' })));
     assert.equal(response.status, 201);
     assert.equal((await response.json()).confirmationStatus, 'versendet');
-    const { mail, options } = app.mails[0];
+    assert.equal(app.mails.length, 2);
+    const notification = app.mails[0].mail;
+    assert.deepEqual(notification.to, [TOURNAMENT_NOTIFICATION_RECIPIENT]);
+    assert.equal(notification.reply_to, 'school@example.org');
+    assert.match(notification.text, /Grundschule: Testschule/);
+    assert.match(notification.text, /Mannschaft: Die Sterne/);
+    const { mail, options } = app.mails[1];
     assert.equal(mail.to, 'school@example.org');
     assert.equal(app.operations.find(operation => operation.insert).insert.status, 'bestaetigt');
     assert.match(mail.text, /Teilnahme ist hiermit bestätigt/);
@@ -56,6 +64,17 @@ test('GST confirms validated school/team details, known address and pending date
     assert.doesNotMatch(mail.html, /<script>|attacker@example.org|wrong/);
     assert.equal(options.idempotencyKey, 'event-confirmation/test/gst_anmeldungen/gst-123');
   }
+});
+
+test('GST still confirms to the school when the independent organizer notification fails', async () => {
+  const app = harness({ internalFails: true });
+  const response = await app.handle(request(valid()));
+  const result = await response.json();
+  assert.equal(response.status, 201);
+  assert.equal(result.saved, true);
+  assert.equal(result.notificationStatus, 'fehler');
+  assert.equal(result.confirmationStatus, 'versendet');
+  assert.equal(app.operations.find(op => op.update?.benachrichtigung_status).update.benachrichtigung_status, 'fehler');
 });
 
 test('GST rejects invalid, bot, duplicate and unsaved registrations without sending a confirmation', async () => {

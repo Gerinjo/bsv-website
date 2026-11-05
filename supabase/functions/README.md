@@ -152,6 +152,18 @@ Zur Bereitstellung zuerst die Migration, dann die aktualisierte öffentliche Edg
 
 ## URMEL-Cup und Bodensee Indoor Girls Cup
 
+Alle Mannschaftsanmeldungen für Girls Cup, Dezember-Bambini, URMEL und
+Grundschulturnier senden eine interne Info an `jerome.ernsberger@bsvnordstern.de`.
+Diese feste Turnieradresse ist unabhängig vom allgemeinen Kontaktadressbuch;
+Reply-To ist die Kontaktperson der Anmeldung. `_shared/tournament-notification.mjs`
+verwendet den Girls-Cup-Rahmen mit Jugendpartnern und Textalternative. Diese
+vollständige Vorlage benötigt keinen Sponsor-Snapshot-RPC; ein Ausfall dieses
+RPCs verhindert die Turnier-Info deshalb nicht mehr. Vorübergehende Versandfehler
+werden bis zu dreimal mit derselben Idempotenzkennung versucht. Zustellstatus und
+Provider-ID werden getrennt von der Bestätigung an die anmeldende Person
+gespeichert. Das Grundschulturnier benötigt dafür die Migration
+`tournament_organizer_notifications`.
+
 Die URMEL-Anmeldung auf `/erlebnis/urmel-bambini-spieltag` nutzt dieselbe
 Wunschzeitenprüfung wie der Weihnachts-Spieltag. Eigene Veranstaltungsdaten
 stehen in `_shared/urmel-event.mjs`; das Thema lautet `event-urmel-cup`.

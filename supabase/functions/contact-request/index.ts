@@ -12,6 +12,7 @@ import { GIRLS_CUP_EVENT } from '../_shared/girls-cup-event.mjs';
 import { GIRLS_CUP_ROUTING, GIRLS_CUP_SUCCESS_MESSAGE, prepareGirlsCupRegistration } from './girls-cup-registration.mjs';
 import { URMEL_EVENT } from '../_shared/urmel-event.mjs';
 import { getBambiniRouting, BAMBINI_SUCCESS_MESSAGE, prepareBambiniRegistration } from './bambini-registration.mjs';
+import { TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification } from '../_shared/tournament-notification.mjs';
 
 const registrationEvents = [BAMBINI_EVENT, URMEL_EVENT];
 const getRegistrationEvent = (topic: string) => registrationEvents.find((event) => event.topic === topic);
@@ -164,7 +165,6 @@ Deno.serve(async (request) => {
   const girlsRegistration = topic === GIRLS_CUP_EVENT.topic ? prepareGirlsCupRegistration(body) : null;
   if (girlsRegistration?.error) return json({ ok: false, message: girlsRegistration.error }, 422, origin);
   let teamRegistration = bambini ?? girlsRegistration;
-  const registrationTitle = registrationEvent?.title ?? (girlsRegistration ? GIRLS_CUP_EVENT.title : null);
   const message = teamRegistration?.message ?? text(body.message, 5000);
   const captchaToken = text(body.captchaToken, 80);
   const captchaAnswer = typeof body.captchaAnswer === 'number'
@@ -215,7 +215,9 @@ Deno.serve(async (request) => {
   }
 
   let recipient;
-  try { recipient = await resolveContactRecipients({ db: supabase, routingKey: routing.routingKey, trainerLookup: !teamRegistration }); }
+  try { recipient = teamRegistration
+    ? { bezeichnung: 'Turnierorganisation · Jérôme Ernsberger', emails: [TOURNAMENT_NOTIFICATION_RECIPIENT] }
+    : await resolveContactRecipients({ db: supabase, routingKey: routing.routingKey }); }
   catch { return json({ ok: false, message: 'Die Kontaktzuordnung ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.' }, 503, origin); }
   if (!recipient.emails.length) {
     return json({ ok: false, message: 'Für dieses Anliegen ist momentan keine Kontaktadresse hinterlegt.' }, 422, origin);
@@ -264,51 +266,64 @@ Deno.serve(async (request) => {
     : '';
 
   let notificationStatus = 'versendet';
-  try {
-    const emailResult = await sendEmail({
-      to: recipient.emails,
-      reply_to: email,
-      subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : girlsRegistration ? 'Girls-Cup-Anmeldung' : 'Kontaktanfrage'}: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
-          <h2>${registrationTitle ? `Neue Mannschaftsanmeldung: ${escapeHtml(registrationTitle)}` : 'Neue Anfrage über bsvnordstern.de'}</h2>
-          <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px">
-            <tr><td><strong>Anliegen</strong></td><td>${escapeHtml(routing.inquiryLabel)}</td></tr>
-            <tr><td><strong>Zuordnung</strong></td><td>${escapeHtml(recipient.bezeichnung)}</td></tr>
-            ${friendlyMatchRows}
-            <tr><td><strong>Name</strong></td><td>${safeFullName}</td></tr>
-            <tr><td><strong>E-Mail</strong></td><td>${escapeHtml(email)}</td></tr>
-            <tr><td><strong>Telefon</strong></td><td>${phone ? escapeHtml(phone) : 'nicht angegeben'}</td></tr>
-          </table>
-          <h3>Nachricht</h3>
-          <p>${safeMessage}</p>
-        </div>`,
-    }, teamRegistration ? { idempotencyKey: `${bambini ? 'bambini-registration' : 'girls-cup-registration'}/${emailConfig.mode}/${inquiryId}`, timeoutMs: 15000 } : {});
+  if (teamRegistration) {
+    notificationStatus = await deliverTournamentNotification({
+      db: supabase, table: 'contact_anfragen', id: inquiryId, mode: emailConfig.mode, sendEmail,
+      idempotencyKey: `${bambini ? 'bambini-registration' : 'girls-cup-registration'}/${emailConfig.mode}/${inquiryId}`,
+      message: buildTournamentNotification({
+        event: registrationEvent ?? GIRLS_CUP_EVENT,
+        firstName, lastName, email, phone, message: allocatedMessage, reference: inquiryId,
+        subject: `BSV Nordstern ${bambini ? 'Bambini-Anmeldung' : 'Girls-Cup-Anmeldung'}: ${routing.inquiryLabel} von ${firstName} ${lastName}`,
+        sponsors: await loadYouthSponsors(),
+      }),
+    });
+  } else {
+    try {
+      const emailResult = await sendEmail({
+        to: recipient.emails,
+        reply_to: email,
+        subject: `BSV Nordstern Kontaktanfrage: ${routing.inquiryLabel} von ${firstName.replace(/[\r\n]/g, ' ')} ${lastName.replace(/[\r\n]/g, ' ')}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
+            <h2>Neue Anfrage über bsvnordstern.de</h2>
+            <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:14px">
+              <tr><td><strong>Anliegen</strong></td><td>${escapeHtml(routing.inquiryLabel)}</td></tr>
+              <tr><td><strong>Zuordnung</strong></td><td>${escapeHtml(recipient.bezeichnung)}</td></tr>
+              ${friendlyMatchRows}
+              <tr><td><strong>Name</strong></td><td>${safeFullName}</td></tr>
+              <tr><td><strong>E-Mail</strong></td><td>${escapeHtml(email)}</td></tr>
+              <tr><td><strong>Telefon</strong></td><td>${phone ? escapeHtml(phone) : 'nicht angegeben'}</td></tr>
+            </table>
+            <h3>Nachricht</h3>
+            <p>${safeMessage}</p>
+          </div>`,
+      });
 
-    const { error: updateError } = await supabase
-      .from('contact_anfragen')
-      .update({
-        benachrichtigung_status: 'versendet',
-        mail_modus: emailResult.mode,
-        resend_id: emailResult.id,
-        benachrichtigung_fehler: null,
-      })
-      .eq('id', inquiryId);
-    if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
-  } catch (error) {
-    notificationStatus = 'fehler';
-    const detail = error instanceof Error ? error.message.slice(0, 2000) : 'Unbekannter E-Mail-Fehler';
-    console.error('Kontakt-E-Mail konnte nicht versendet werden:', error);
+      const { error: updateError } = await supabase
+        .from('contact_anfragen')
+        .update({
+          benachrichtigung_status: 'versendet',
+          mail_modus: emailResult.mode,
+          resend_id: emailResult.id,
+          benachrichtigung_fehler: null,
+        })
+        .eq('id', inquiryId);
+      if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
+    } catch (error) {
+      notificationStatus = 'fehler';
+      const detail = error instanceof Error ? error.message.slice(0, 2000) : 'Unbekannter E-Mail-Fehler';
+      console.error('Kontakt-E-Mail konnte nicht versendet werden:', error);
 
-    const { error: updateError } = await supabase
-      .from('contact_anfragen')
-      .update({
-        benachrichtigung_status: 'fehler',
-        mail_modus: emailConfig.mode,
-        benachrichtigung_fehler: detail,
-      })
-      .eq('id', inquiryId);
-    if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
+      const { error: updateError } = await supabase
+        .from('contact_anfragen')
+        .update({
+          benachrichtigung_status: 'fehler',
+          mail_modus: emailConfig.mode,
+          benachrichtigung_fehler: detail,
+        })
+        .eq('id', inquiryId);
+      if (updateError) console.error('Kontaktstatus konnte nicht aktualisiert werden:', updateError);
+    }
   }
 
   // Send the applicant receipt even when the independent internal notification failed.

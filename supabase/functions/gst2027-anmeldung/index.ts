@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getEmailRuntimeConfig, sendEmail } from '../_shared/email-service.ts';
 import { buildEventConfirmation, CLUB_ADDRESS, deliverEventConfirmation } from '../_shared/event-confirmation.mjs';
 import { loadYouthSponsors } from '../_shared/youth-sponsors.mjs';
+import { TOURNAMENT_NOTIFICATION_RECIPIENT, buildTournamentNotification, deliverTournamentNotification } from '../_shared/tournament-notification.mjs';
 
 const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',')
@@ -121,27 +122,39 @@ Deno.serve(async (request) => {
     return json({ message: 'Die Anmeldung konnte nicht gespeichert werden.' }, 500, origin);
   }
 
-  const message = buildEventConfirmation({
-    event: {
+  const event = {
       title: 'Zeller Grundschulturnier 2027', date: 'Wird noch bekannt gegeben',
       venue: 'BSV-Sportgelände Radolfzell', address: CLUB_ADDRESS,
       url: 'https://bsvnordstern.de/gst2027/',
       nextSteps: 'Termin, Startzeiten, Blockeinteilung und genauer Ablauf werden noch bekannt gegeben. Wir informieren euch rechtzeitig vor dem Turnier.',
-    },
+    };
+  const details = [
+    ['Grundschule', grundschule], ['Mannschaft', mannschaftsname], ['Wettbewerb', altersklasse],
+    ['Beteiligung der Schule', altersklasse.startsWith('Mädchen') ? 'Einmal Waffelteig pro teilnehmender Mannschaft' : 'Ein Kuchen pro teilnehmender Mannschaft'],
+  ];
+  const mode = getEmailRuntimeConfig().mode;
+  const notificationStatus = await deliverTournamentNotification({
+    db: supabase, table: 'gst_anmeldungen', id: registration.id, mode, sendEmail,
+    message: buildTournamentNotification({
+      event, firstName: vorname, lastName: nachname, email, phone: telefon, reference: registration.id,
+      message: [...details.map(([label, value]) => `${label}: ${value}`), `Anmerkungen: ${weitereInformationen || 'Keine'}`].join('\n'),
+      sponsors: await loadYouthSponsors(),
+    }),
+  });
+  const message = buildEventConfirmation({
+    event,
     firstName: vorname, lastName: nachname, email, phone: telefon, reference: registration.id,
-    details: [
-      ['Grundschule', grundschule], ['Mannschaft', mannschaftsname], ['Wettbewerb', altersklasse],
-      ['Beteiligung der Schule', altersklasse.startsWith('Mädchen') ? 'Einmal Waffelteig pro teilnehmender Mannschaft' : 'Ein Kuchen pro teilnehmender Mannschaft'],
-    ],
+    details,
     notes: weitereInformationen,
     sponsors: await loadYouthSponsors(),
+    replyTo: TOURNAMENT_NOTIFICATION_RECIPIENT,
   });
   const confirmationStatus = await deliverEventConfirmation({
     db: supabase, table: 'gst_anmeldungen', id: registration.id,
-    message, mode: getEmailRuntimeConfig().mode, sendEmail,
+    message, mode, sendEmail,
   });
   return json({
-    saved: true, confirmationStatus,
+    saved: true, notificationStatus, confirmationStatus,
     message: confirmationStatus === 'versendet'
       ? 'Vielen Dank! Die Mannschaft wurde erfolgreich angemeldet. Eine Bestätigung wurde an deine E-Mail-Adresse gesendet.'
       : 'Vielen Dank! Die Mannschaft wurde erfolgreich angemeldet. Die Bestätigungsmail konnte leider nicht versendet werden. Bitte melde die Mannschaft nicht erneut an; bei Rückfragen erreicht ihr Jérôme Ernsberger über unsere Kontaktseite.',
