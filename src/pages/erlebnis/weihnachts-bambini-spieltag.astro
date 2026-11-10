@@ -7,8 +7,11 @@ import BambiniRegistrationForm from '../../components/BambiniRegistrationForm.as
 import BambiniPhotoGallery from '../../components/BambiniPhotoGallery.astro';
 import { withBase } from '../../utils/paths';
 import { BAMBINI_EVENT } from '../../../supabase/functions/_shared/bambini-event.mjs';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
+import bambiniSpielmodus from '../../assets/events/weihnachts-bambini-spielmodus.png';
+
+const spielmodusGross = await getImage({ src: bambiniSpielmodus, width: 1536, format: 'webp', quality: 95 });
 ---
 
 <Layout title={`${BAMBINI_EVENT.title} · 12.12.2026 | BSV Nordstern Radolfzell`} description="Weihnachtlicher Bambini-Spieltag am 12.12.2026 in der Unterseesporthalle Radolfzell. Mannschaft anmelden, Wunschzeiten auswählen und gemeinsam Fußballfreude erleben.">
@@ -50,6 +53,41 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
       </div>
     </section>
 
+    <section id="spielmodus" class="play-format" aria-labelledby="play-format-title">
+      <div class="shell">
+        <div class="section-heading">
+          <p class="eyebrow">So spielen unsere Bambinis</p>
+          <h2 id="play-format-title">Vier Felder.<br /><em>Ganz viel Spielzeit.</em></h2>
+          <p class="play-format-intro">Wir teilen das Spielfeld in der Halle in vier gleich große Spielfelder auf. Auf jeder Hallenhälfte treffen zwei Mannschaften aufeinander – mit zwei Spielen gleichzeitig auf den beiden Feldern dieser Hälfte.</p>
+        </div>
+
+        <div class="play-format-grid">
+          <article>
+            <h3>Zwei Teilteams. Acht Kinder im Einsatz.</h3>
+            <p>Jede Mannschaft bildet zwei Teilteams. Jedes Teilteam spielt mit drei Feldspielern und einem Torwart, also im <strong>3+1</strong>. So sind pro Mannschaft acht Kinder gleichzeitig auf dem Platz.</p>
+          </article>
+          <article>
+            <h3>12 Minuten. Nach 6 Minuten wechseln.</h3>
+            <p>Die Spielzeit beträgt insgesamt zwölf Minuten. Nach sechs Minuten tauschen die beiden Teilteams einer Mannschaft innerhalb ihrer Hallenhälfte die Felder. So spielen die Kinder in der zweiten Hälfte gegen die anderen Spieler der gegnerischen Mannschaft.</p>
+          </article>
+        </div>
+
+        <figure class="play-format-figure">
+          <a class="play-format-image-link" href={spielmodusGross.src} target="_blank" rel="noopener noreferrer" aria-label="Grafik zum Spielmodus vergrößern (öffnet in einem neuen Tab)">
+            <Image src={bambiniSpielmodus} width={1536} widths={[640, 960, 1160, 1536]} sizes="(max-width: 480px) calc(100vw - 34px), (max-width: 1208px) calc(100vw - 48px), 1160px" format="webp" quality={95} alt="Vier gleich große Spielfelder: links A1 gegen B1 und A2 gegen B2, rechts C1 gegen D1 und C2 gegen D2. Nach sechs Minuten tauschen B1 und B2 sowie D1 und D2 die Felder." loading="lazy" decoding="async" />
+            <span>Grafik vergrößern <span aria-hidden="true">↗</span></span>
+          </a>
+          <figcaption>Links spielen zunächst A1 gegen B1 und A2 gegen B2, nach sechs Minuten A1 gegen B2 und A2 gegen B1. Rechts spielen zunächst C1 gegen D1 und C2 gegen D2, danach C1 gegen D2 und C2 gegen D1.</figcaption>
+        </figure>
+
+        <aside class="play-format-option" aria-labelledby="play-format-option-title">
+          <p class="eyebrow">Option noch offen</p>
+          <h3 id="play-format-option-title">3 gegen 3 auf kleine Tore.</h3>
+          <p>Als mögliche Variante halten wir uns offen, auf dem zweiten Spielfeld jeder Hallenhälfte 3 gegen 3 ohne Torwart auf kleine Tore zu spielen. Auf dem anderen Feld bleibt es beim 3+1. Bei dieser Variante wären pro Mannschaft sieben Kinder gleichzeitig im Einsatz.</p>
+        </aside>
+      </div>
+    </section>
+
     <section class="times-section" aria-labelledby="times-title">
       <div class="shell times-grid">
         <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Eure Anmeldung wird direkt bestätigt. Die endgültige Startzeit teilen wir euch rechtzeitig vor dem Spieltag mit.</p></div>
@@ -72,6 +110,23 @@ import bambiniLogo from '../../assets/events/weihnachts-bambini-logo.png';
 </Layout>
 
 <style>
+  .play-format { padding: 70px 0 80px; border-top: 1px solid #dedfcd; scroll-margin-top: 110px; }
+  .play-format .eyebrow { color: var(--berry); }
+  .play-format-intro { max-width: 850px; }
+  .play-format-intro, .play-format-grid p, .play-format-option > p:not(.eyebrow) { color: #536353; font-size: .94rem; line-height: 1.8; margin-bottom: 0; }
+  .play-format-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; margin-bottom: 32px; }
+  .play-format-grid article { padding: 26px 28px; border-top: 3px solid #b4c3a4; background: #fffefa; }
+  .play-format h3 { margin: 0 0 14px; }
+  .play-format-figure { margin: 0; }
+  .play-format-image-link { display: block; border: 1px solid #dedfcd; background: #fffefa; color: var(--forest); text-decoration: none; }
+  .play-format-image-link:hover { border-color: var(--forest); }
+  .play-format-image-link :global(img) { display: block; width: 100%; height: auto; }
+  .play-format-image-link > span { display: flex; align-items: center; justify-content: flex-end; gap: 16px; padding: 14px 20px; border-top: 1px solid #dedfcd; font-size: .78rem; font-weight: 800; }
+  .play-format-figure figcaption { margin-top: 14px; color: #536353; font-size: .8rem; line-height: 1.7; }
+  .play-format-option { margin-top: 30px; padding: 26px 28px; border-left: 4px solid var(--gold); background: #f2ecda; }
+  .play-format-option .eyebrow { margin-bottom: 10px; }
+  @media (max-width: 780px) { .play-format-grid { grid-template-columns: 1fr; gap: 18px; } }
+  @media (max-width: 480px) { .play-format { padding-block: 50px; }.play-format-grid article, .play-format-option { padding: 22px 20px; } }
   .venue-address { margin: 7px 0 0; font-size: .78rem; line-height: 1.6; color: #536353; }
   .christmas-event { --forest: #0e3929; --gold: var(--bsv-yellow, #e4bf6a); --cream: #faf6ec; --berry: #a7323c; background: var(--cream); color: #173d2b; }
   .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
