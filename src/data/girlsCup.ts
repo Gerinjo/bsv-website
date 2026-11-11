@@ -1,7 +1,20 @@
 import { GIRLS_CUP_EVENT, GIRLS_CUP_FEE_LABEL } from '../../supabase/functions/_shared/girls-cup-event.mjs';
 
+const supporter = {
+  name: 'Sparkasse Hegau Bodensee',
+  credit: 'mit Unterstützung der Sparkasse Hegau Bodensee',
+  color: '#ee0000',
+  logoSrc: '/images/sponsors/synced/sparkasse-hegau-bodensee.png',
+  // Original vector logo from the Sparkasse Hegau-Bodensee website.
+  vectorLogoSrc: '/images/sponsors/sparkasse-hegau-bodensee.svg',
+  logoAlt: 'Logo der Sparkasse Hegau-Bodensee',
+  website: 'https://www.sparkasse-hegau-bodensee.de/',
+} as const;
+
 export const girlsCup = {
   ...GIRLS_CUP_EVENT,
+  supporter,
+  supportedTitle: `${GIRLS_CUP_EVENT.title} ${supporter.credit}`,
   id: 'bodensee-indoor-girls-cup',
   href: '/erlebnis/bodensee-indoor-girls-cup',
   fee: GIRLS_CUP_FEE_LABEL,

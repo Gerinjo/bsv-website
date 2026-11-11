@@ -23,6 +23,14 @@ test('static quality cards keep permanent portraits and defer expiring links unt
   assert.equal(local('[data-live-portrait]').length, 0);
 });
 
+test('quality cards refresh local portraits and missing images as well as temporary portraits', () => {
+  for (const image of ['/images/coach.jpg', '', signed(future())]) {
+    const $ = load(personCardMarkup({ name: 'Anna Beispiel', image }, { deferTemporaryImages: true, refreshPortraits: true }));
+    assert.equal($('[data-live-portrait]').attr('data-live-portrait'), 'Anna Beispiel');
+    assert.equal($('img').length, image === '/images/coach.jpg' ? 1 : 0);
+  }
+});
+
 test('quality portraits only use current youth trainers and safe, unexpired image URLs', () => {
   const fresh = signed(future());
   const result = qualityCoachPortraits(new Map([
@@ -68,6 +76,26 @@ test('feed outages preserve loaded images and removed portraits return to initia
   updateQualityCoachPortraits(dom.root, feed(''));
   assert.equal(dom.child().tag, 'span');
   assert.equal(dom.child().textContent, 'AB');
+});
+
+test('current portraits replace older local photos and preserve fallbacks for people absent from the feed', () => {
+  const dom = portraitDom('/images/old-portrait.jpg');
+  const original = dom.child();
+  updateQualityCoachPortraits(dom.root, new Map());
+  assert.equal(dom.child(), original);
+  const current = signed(future());
+  updateQualityCoachPortraits(dom.root, feed(current));
+  assert.equal(dom.child().src, current);
+  assert.notEqual(dom.child(), original);
+});
+
+test('a portrait on another youth team is used when the first assignment has none', () => {
+  const current = signed(future());
+  const portraits = qualityCoachPortraits(new Map([
+    ['jugend/u13-d1', [{ name: 'Anna Beispiel', image: '' }]],
+    ['jugend/u13-d2', [{ name: 'Anna Beispiel', image: current }]],
+  ]));
+  assert.equal(portraits.get('Anna Beispiel'), current);
 });
 
 test('a renewed portrait keeps the configured site base path for local images', () => {

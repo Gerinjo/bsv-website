@@ -6,7 +6,7 @@ export function qualityCoachPortraits(feed) {
   for (const [path, coaches] of feed) {
     if (!path.startsWith('jugend/')) continue;
     for (const coach of coaches) {
-      if (portraits.has(coach.name)) continue;
+      if (portraits.get(coach.name)) continue;
       const image = coach.image;
       const safe = typeof image === 'string' && (/^https:\/\//.test(image) || /^\/(?!\/)/.test(image));
       portraits.set(coach.name, safe && imageFresh(image) ? optimizedImageUrl(image, 900) : '');
@@ -20,6 +20,7 @@ export function updateQualityCoachPortraits(root, feed) {
   if (!portraits) return false;
   for (const portrait of root.querySelectorAll('[data-live-portrait]')) {
     const name = portrait.dataset.livePortrait;
+    if (!portraits.has(name)) continue;
     const source = portraits.get(name);
     const url = source && /^\/(?!\/)/.test(source) ? (root.dataset?.basePath || '').replace(/\/$/, '') + source : source;
     const current = portrait.querySelector('img');

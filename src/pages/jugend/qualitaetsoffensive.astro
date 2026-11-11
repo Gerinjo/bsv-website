@@ -12,8 +12,6 @@ type QualifiedCoach = {
   qualification: string;
   teams: string[];
   image?: string;
-  upcoming?: boolean;
-  nextQualification?: string;
 };
 
 const youthLinks = menu
@@ -29,56 +27,57 @@ Object.entries(teamProfiles)
       .filter((coach) => coach.qualification && coach.name !== 'Migo Jentsch' && coach.name !== 'Michael Jentsch')
       .forEach((coach) => {
         const team = teamNameByPath.get(path) ?? profile.kicker;
-        const existing = qualifiedByName.get(coach.name);
+        const name = coach.name === 'Marlia Burlander' ? 'Marlia-Lena Bulander' : coach.name;
+        const existing = qualifiedByName.get(name);
         if (existing) {
           if (!existing.teams.includes(team)) existing.teams.push(team);
           return;
         }
-        qualifiedByName.set(coach.name, {
-          name: coach.name,
-          qualification: coach.name === 'Luca Gastaudo'
-            ? 'DFB-Basis-Coach'
-            : coach.qualification!,
+        qualifiedByName.set(name, {
+          name,
+          qualification: coach.qualification!,
           teams: [team],
           image: coach.image,
         });
       });
   });
 
-const upcomingCoaches: QualifiedCoach[] = [
+const completedCoaches: QualifiedCoach[] = [
   {
     name: 'Mila Ernsberger',
-    qualification: 'DFB-Basis-Coach · Ausbildungsstart steht bevor',
+    qualification: 'DFB-Basis-Coach',
     teams: ['U6 G-Junioren Spielgruppe'],
     image: '/images/verein/personen/mila-ernsberger.jpg',
-    upcoming: true,
-    nextQualification: 'DFB-Basis-Coach',
   },
   {
     name: 'Marlia-Lena Bulander',
-    qualification: 'DFB-Basis-Coach · Ausbildungsstart steht bevor',
+    qualification: 'DFB-Basis-Coach',
     teams: ['U6 G-Junioren Spielgruppe'],
     image: '/images/verein/personen/marlia-burlander.jpg',
-    upcoming: true,
-    nextQualification: 'DFB-Basis-Coach',
-  },
-  {
-    name: 'Sven Goldhagen',
-    qualification: 'DFB-Basis-Coach · C-Lizenz: Ausbildungsstart steht bevor',
-    teams: ['U17 B-Juniorinnen'],
-    image: '/images/verein/personen/sven-goldhagen.jpg',
-    upcoming: true,
-    nextQualification: 'C-Lizenz',
   },
   {
     name: 'Luca Gastaudo',
-    qualification: 'DFB-Basis-Coach · C-Lizenz: Ausbildungsstart steht bevor',
+    qualification: 'C-Lizenz',
     teams: ['U7 G-Junioren Bambinis'],
     image: '/images/verein/personen/luca-gastaudo.jpg',
-    upcoming: true,
-    nextQualification: 'C-Lizenz',
   },
 ];
+
+for (const coach of completedCoaches) {
+  const existing = qualifiedByName.get(coach.name);
+  qualifiedByName.set(coach.name, {
+    ...coach,
+    teams: existing?.teams ?? coach.teams,
+    image: existing?.image || coach.image,
+  });
+}
+
+const upcomingCoaches: QualifiedCoach[] = [{
+  name: 'Sven Goldhagen',
+  qualification: 'DFB-Basis-Coach · C-Lizenz: Ausbildungsstart steht bevor',
+  teams: qualifiedByName.get('Sven Goldhagen')?.teams ?? ['U17 B-Juniorinnen'],
+  image: qualifiedByName.get('Sven Goldhagen')?.image || '/images/verein/personen/sven-goldhagen.jpg',
+}];
 
 const upcomingNames = new Set(upcomingCoaches.map((coach) => coach.name));
 const qualifiedCoaches = [...qualifiedByName.values()]
@@ -117,11 +116,11 @@ const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
       </div>
     </section>
 
-    <section class="upcoming-section">
-      <div class="shell upcoming-grid">
-        <div class="upcoming-copy"><span>Nächster Schritt</span><h2>Vier Trainer:innen.<br />Ein klares Ziel.</h2><p>Mila Ernsberger und Marlia-Lena Bulander stehen unmittelbar vor dem Beginn ihrer DFB-Basis-Coach-Ausbildung. Sven Goldhagen und Luca Gastaudo gehen den nächsten Schritt und starten bald mit der C-Lizenz-Ausbildung.</p></div>
-        <div class="upcoming-names">
-          {upcomingCoaches.map((coach, index) => <article><small>0{index + 1}</small><strong>{coach.name}</strong><span>{coach.nextQualification}</span><p>Ausbildungsstart steht bevor</p></article>)}
+    <section class="success-section">
+      <div class="shell success-grid">
+        <div class="success-copy"><span>Erfolgreich abgeschlossen</span><h2>Drei Abschlüsse.<br />Ein starkes Team.</h2><p>Mila Ernsberger und Marlia-Lena Bulander haben ihre Ausbildung zum DFB-Basis-Coach erfolgreich abgeschlossen. Luca Gastaudo hat die C-Lizenz erreicht. Wir gratulieren allen drei zu ihrem Abschluss!</p><p>Als Nächstes steht für Sven Goldhagen der Beginn der C-Lizenz-Ausbildung bevor.</p></div>
+        <div class="success-names">
+          {completedCoaches.map((coach, index) => <article><small>0{index + 1}</small><strong>{coach.name}</strong><span>{coach.qualification}</span><p>Ausbildung erfolgreich abgeschlossen</p></article>)}
         </div>
       </div>
     </section>
@@ -129,7 +128,7 @@ const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
     <section class="coaches-section shell">
       <div class="section-head"><div><span>Unsere Jugendtrainer:innen</span><h2>Qualifiziert.<br /><em>Und immer in Entwicklung.</em></h2></div><p>Die Übersicht zeigt alle in den aktuellen Jugendteam-Daten hinterlegten Aus- und Weiterbildungen sowie die unmittelbar bevorstehenden Ausbildungsstarts.</p></div>
       <div class="coach-grid" data-quality-coach-portraits data-base-path={import.meta.env.BASE_URL}>
-        <Fragment set:html={allCoaches.map(coach => personCardMarkup({...coach, role: 'Jugendtrainer:in'}, {withBase, deferTemporaryImages: true})).join('')} />
+        <Fragment set:html={allCoaches.map(coach => personCardMarkup({...coach, role: 'Jugendtrainer:in'}, {withBase, deferTemporaryImages: true, refreshPortraits: true})).join('')} />
       </div>
     </section>
 
@@ -159,8 +158,8 @@ const allCoaches = [...upcomingCoaches, ...qualifiedCoaches];
 
 <style>
   .quality-page{--green:#0d7b4d;--dark:var(--bsv-green-dark, #092f20);--lime:#d9f34a;overflow:hidden;background:#f6f7f3;color:var(--dark)}
-  .shell{width:min(1180px,calc(100% - 40px));margin-inline:auto}.quality-hero{padding:96px 0 78px;background:var(--dark);color:white}.hero-inner{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:70px;align-items:end}.back{display:inline-block;margin-bottom:42px;color:#b8c9c0;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}.eyebrow,.quality-intro span,.upcoming-copy>span,.section-head span,.quality-cta span{display:block;margin:0 0 18px;color:var(--lime);font-size:.72rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-copy h1{max-width:800px;margin:0;font-size:clamp(3rem,7vw,6.8rem);line-height:.88;letter-spacing:-.065em}.hero-copy h1 em{color:var(--lime);font-family:Georgia,serif;font-weight:400}.lead{max-width:690px;margin:30px 0 0;color:#dce8e1;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.65}.hero-statement{padding:34px;border-top:4px solid var(--lime);background:#12442f}.hero-statement span{color:var(--lime);font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-statement strong{display:block;margin:18px 0;font-size:1.65rem;line-height:1.15}.hero-statement p{margin:0;color:#d8e5de;line-height:1.65}.quality-intro{display:grid;grid-template-columns:1fr 1.1fr;gap:90px;padding-block:110px}.quality-intro span,.section-head span,.quality-cta span{color:var(--green)}.quality-intro h2,.section-head h2,.quality-cta h2,.upcoming-copy h2{margin:0;font-size:clamp(2.3rem,5vw,4.7rem);line-height:.95;letter-spacing:-.05em}.intro-copy p{margin:0 0 22px;color:#4e6258;font-size:1.08rem;line-height:1.8}.upcoming-section{padding:90px 0;background:var(--green);color:white}.upcoming-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center}.upcoming-copy p{max-width:620px;color:#e4f0e9;font-size:1.05rem;line-height:1.75}.upcoming-names{display:grid;gap:14px}.upcoming-names article{position:relative;padding:28px 30px 25px 76px;background:white;color:var(--dark)}.upcoming-names small{position:absolute;left:25px;top:30px;color:var(--green);font-weight:900}.upcoming-names strong,.upcoming-names span{display:block}.upcoming-names strong{font-size:1.35rem}.upcoming-names span{margin-top:7px;color:var(--green);font-weight:900}.upcoming-names p{margin:4px 0 0;color:#6c7c74;font-size:.82rem}.coaches-section{padding-block:110px}.section-head{display:flex;justify-content:space-between;gap:50px;align-items:end;margin-bottom:55px}.section-head h2 em{color:var(--green);font-family:Georgia,serif;font-weight:400}.section-head>p{max-width:410px;margin:0;color:#64736b;line-height:1.65}.coach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.coach-card{overflow:hidden;background:white;box-shadow:0 16px 45px rgb(9 47 32 / 8%)}.portrait{position:relative;display:grid;height:260px;place-items:center;overflow:hidden;background:#dfe7e1}.portrait img{width:100%;height:100%;object-fit:cover;object-position:top center}.portrait>span{font-size:3rem;font-weight:900;color:#8ba095}.portrait b{position:absolute;right:12px;bottom:12px;padding:8px 10px;background:var(--lime);color:var(--dark);font-size:.65rem;letter-spacing:.06em;text-transform:uppercase}.coach-info{padding:22px}.coach-info h3{margin:0 0 10px;font-size:1.16rem}.coach-info strong{display:block;color:var(--green);font-size:.82rem;line-height:1.4}.coach-info p{margin:12px 0 0;color:#738078;font-size:.74rem;line-height:1.45}.coach-card.upcoming{outline:2px solid var(--lime);outline-offset:-2px}.quality-cta{display:flex;justify-content:space-between;gap:40px;align-items:center;margin-bottom:100px;padding:55px 60px;background:var(--dark);color:white}.quality-cta h2{font-size:clamp(2rem,4vw,3.4rem)}.quality-cta p{max-width:650px;margin:15px 0 0;color:#c9d9d0;line-height:1.6}.quality-cta a{flex:none;padding:18px 22px;background:var(--lime);color:var(--dark);font-weight:900;text-decoration:none}.quality-cta a b{margin-left:12px}
-  @media(max-width:1000px){.coach-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-inner,.upcoming-grid{gap:40px}}
-  @media(max-width:760px){.quality-hero{padding:70px 0 55px}.hero-inner,.quality-intro,.upcoming-grid{grid-template-columns:1fr}.hero-inner,.quality-intro,.upcoming-grid{gap:45px}.quality-intro,.coaches-section{padding-block:75px}.section-head,.quality-cta{display:block}.section-head>p{margin-top:25px}.coach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quality-cta{padding:38px 30px}.quality-cta a{display:inline-block;margin-top:28px}}
-  @media(max-width:480px){.shell{width:min(100% - 26px,1180px)}.coach-grid{grid-template-columns:1fr 1fr;gap:10px}.portrait{height:190px}.coach-info{padding:15px}.coach-info h3{font-size:.95rem}.coach-info strong{font-size:.72rem}.upcoming-names article{padding-left:60px}.upcoming-names small{left:18px}.quality-cta{margin-bottom:65px}}
+  .shell{width:min(1180px,calc(100% - 40px));margin-inline:auto}.quality-hero{padding:96px 0 78px;background:var(--dark);color:white}.hero-inner{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:70px;align-items:end}.back{display:inline-block;margin-bottom:42px;color:#b8c9c0;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}.eyebrow,.quality-intro span,.success-copy>span,.section-head span,.quality-cta span{display:block;margin:0 0 18px;color:var(--lime);font-size:.72rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-copy h1{max-width:800px;margin:0;font-size:clamp(3rem,7vw,6.8rem);line-height:.88;letter-spacing:-.065em}.hero-copy h1 em{color:var(--lime);font-family:Georgia,serif;font-weight:400}.lead{max-width:690px;margin:30px 0 0;color:#dce8e1;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.65}.hero-statement{padding:34px;border-top:4px solid var(--lime);background:#12442f}.hero-statement span{color:var(--lime);font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.hero-statement strong{display:block;margin:18px 0;font-size:1.65rem;line-height:1.15}.hero-statement p{margin:0;color:#d8e5de;line-height:1.65}.quality-intro{display:grid;grid-template-columns:1fr 1.1fr;gap:90px;padding-block:110px}.quality-intro span,.section-head span,.quality-cta span{color:var(--green)}.quality-intro h2,.section-head h2,.quality-cta h2,.success-copy h2{margin:0;font-size:clamp(2.3rem,5vw,4.7rem);line-height:.95;letter-spacing:-.05em}.intro-copy p{margin:0 0 22px;color:#4e6258;font-size:1.08rem;line-height:1.8}.success-section{padding:90px 0;background:var(--green);color:white}.success-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center}.success-copy p{max-width:620px;color:#e4f0e9;font-size:1.05rem;line-height:1.75}.success-names{display:grid;gap:14px}.success-names article{position:relative;padding:28px 30px 25px 76px;background:white;color:var(--dark)}.success-names small{position:absolute;left:25px;top:30px;color:var(--green);font-weight:900}.success-names strong,.success-names span{display:block}.success-names strong{font-size:1.35rem}.success-names span{margin-top:7px;color:var(--green);font-weight:900}.success-names p{margin:4px 0 0;color:#6c7c74;font-size:.82rem}.coaches-section{padding-block:110px}.section-head{display:flex;justify-content:space-between;gap:50px;align-items:end;margin-bottom:55px}.section-head h2 em{color:var(--green);font-family:Georgia,serif;font-weight:400}.section-head>p{max-width:410px;margin:0;color:#64736b;line-height:1.65}.coach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.coach-card{overflow:hidden;background:white;box-shadow:0 16px 45px rgb(9 47 32 / 8%)}.portrait{position:relative;display:grid;height:260px;place-items:center;overflow:hidden;background:#dfe7e1}.portrait img{width:100%;height:100%;object-fit:cover;object-position:top center}.portrait>span{font-size:3rem;font-weight:900;color:#8ba095}.portrait b{position:absolute;right:12px;bottom:12px;padding:8px 10px;background:var(--lime);color:var(--dark);font-size:.65rem;letter-spacing:.06em;text-transform:uppercase}.coach-info{padding:22px}.coach-info h3{margin:0 0 10px;font-size:1.16rem}.coach-info strong{display:block;color:var(--green);font-size:.82rem;line-height:1.4}.coach-info p{margin:12px 0 0;color:#738078;font-size:.74rem;line-height:1.45}.coach-card.upcoming{outline:2px solid var(--lime);outline-offset:-2px}.quality-cta{display:flex;justify-content:space-between;gap:40px;align-items:center;margin-bottom:100px;padding:55px 60px;background:var(--dark);color:white}.quality-cta h2{font-size:clamp(2rem,4vw,3.4rem)}.quality-cta p{max-width:650px;margin:15px 0 0;color:#c9d9d0;line-height:1.6}.quality-cta a{flex:none;padding:18px 22px;background:var(--lime);color:var(--dark);font-weight:900;text-decoration:none}.quality-cta a b{margin-left:12px}
+  @media(max-width:1000px){.coach-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-inner,.success-grid{gap:40px}}
+  @media(max-width:760px){.quality-hero{padding:70px 0 55px}.hero-inner,.quality-intro,.success-grid{grid-template-columns:1fr}.hero-inner,.quality-intro,.success-grid{gap:45px}.quality-intro,.coaches-section{padding-block:75px}.section-head,.quality-cta{display:block}.section-head>p{margin-top:25px}.coach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quality-cta{padding:38px 30px}.quality-cta a{display:inline-block;margin-top:28px}}
+  @media(max-width:480px){.shell{width:min(100% - 26px,1180px)}.coach-grid{grid-template-columns:1fr 1fr;gap:10px}.portrait{height:190px}.coach-info{padding:15px}.coach-info h3{font-size:.95rem}.coach-info strong{font-size:.72rem}.success-names article{padding-left:60px}.success-names small{left:18px}.quality-cta{margin-bottom:65px}}
 </style>
