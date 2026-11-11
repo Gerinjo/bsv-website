@@ -48,6 +48,18 @@
         "description": ""
       },
       {
+        "audienceSlug": "gesamtverein",
+        "audienceLabel": "Gesamtverein",
+        "audienceGroup": "club",
+        "sponsorType": {
+          "slug": "stadionheft",
+          "label": "Stadionheft",
+          "sortOrder": 70,
+          "displayWeight": 1
+        },
+        "description": ""
+      },
+      {
         "audienceSlug": "herren-1",
         "audienceLabel": "1. Herren",
         "audienceGroup": "mens_team",
@@ -70,10 +82,22 @@
           "displayWeight": 1
         },
         "description": ""
+      },
+      {
+        "audienceSlug": "jugendabteilung",
+        "audienceLabel": "Jugendabteilung",
+        "audienceGroup": "youth_department",
+        "sponsorType": {
+          "slug": "eventsponsor",
+          "label": "Eventsponsor",
+          "sortOrder": 25,
+          "displayWeight": 3
+        },
+        "description": ""
       }
     ],
     "sortOrder": 10,
-    "sourceUpdatedAt": "2026-09-04T12:55:02.971483+00:00"
+    "sourceUpdatedAt": "2026-11-11T10:56:58.508165+00:00"
   },
   {
     "sourceId": "d81d247b-d07e-474c-a0cf-34600f0939b2",
@@ -1782,32 +1806,6 @@
     "logoSrc": "/images/sponsors/synced/schottle-fensterbau-gmbh.png",
     "logoAlt": "Logo von Schöttle Fensterbau GmbH",
     "website": "https://www.schoettle-fenster.de/",
-    "teamAudienceSlugs": [],
-    "teamAssignments": [],
-    "audienceAssignments": [
-      {
-        "audienceSlug": "gesamtverein",
-        "audienceLabel": "Gesamtverein",
-        "audienceGroup": "club",
-        "sponsorType": {
-          "slug": "stadionheft",
-          "label": "Stadionheft",
-          "sortOrder": 70,
-          "displayWeight": 1
-        },
-        "description": ""
-      }
-    ],
-    "sortOrder": 100,
-    "sourceUpdatedAt": "2026-11-01T12:16:29.89569+00:00"
-  },
-  {
-    "sourceId": "2aca241e-7a9b-410c-9135-0c3993582855",
-    "slug": "sparkasse-hegau-bodensee-stadionheft",
-    "name": "Sparkasse Hegau-Bodensee / Stadionheft",
-    "logoSrc": "/images/sponsors/synced/sparkasse-hegau-bodensee-stadionheft.png",
-    "logoAlt": "Logo von Sparkasse Hegau-Bodensee / Stadionheft",
-    "website": "https://www.sparkasse-hegau-bodensee.de/",
     "teamAudienceSlugs": [],
     "teamAssignments": [],
     "audienceAssignments": [
