@@ -257,6 +257,7 @@ Deno.serve(async (request) => {
 
   const inquiryId = inquiry.id as string;
   if (girlsRegistration) teamRegistration = applyTeamAllocation(girlsRegistration, inquiry.allocations);
+  else if (bambini && topic === BAMBINI_EVENT.topic) teamRegistration = applyTeamAllocation(bambini, inquiry.allocations, BAMBINI_EVENT);
   const allocatedMessage = teamRegistration?.message ?? message;
   const safeMessage = escapeHtml(allocatedMessage).replaceAll('\n', '<br>');
   const safeFullName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;

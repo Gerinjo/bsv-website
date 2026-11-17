@@ -11,4 +11,7 @@ export const BAMBINI_EVENT = Object.freeze({
   address: 'Markelfinger Str. 12, 78315 Radolfzell am Bodensee',
   teamFee,
   fee: `${teamFee} €`,
+  capacity: 18,
+  waitingCapacity: 4,
+  waitingListOnly: true,
 });

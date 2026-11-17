@@ -64,7 +64,9 @@ export function prepareBambiniRegistration(body, event = BAMBINI_EVENT) {
       `Startgebühren insgesamt: ${totalFee} €`,
       ...(event.charityNote ? [event.charityNote] : []),
       'Kontaktperson: Trainerin oder Trainer der Mannschaft',
-      'Hinweis zur direkten Anmeldebestätigung, späteren Startzeitmitteilung und Startgebühr: akzeptiert',
+      event.waitingListOnly
+        ? 'Hinweis zur Warteliste ohne Teilnahmezusage, späteren Startzeitmitteilung und Startgebühr erst nach Zusage: akzeptiert'
+        : 'Hinweis zur direkten Anmeldebestätigung, späteren Startzeitmitteilung und Startgebühr: akzeptiert',
       '',
       `Anmerkungen: ${notes || 'Keine'}`,
     ].join('\n'),

@@ -29,7 +29,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
             <tbody data-roster-confirmed><tr><td colspan="4">Mannschaften werden geladen …</td></tr></tbody>
           </table>
         </div>}
-      {girls && <div class="waiting"><h4>Warteliste <span data-waiting-count></span></h4><ol data-roster-waiting><li class="free">Wartelistenplätze werden geladen …</li></ol></div>}
+      {(girls || topic === BAMBINI_EVENT.topic) && <div class="waiting"><h4>Warteliste <span data-waiting-count></span></h4><ol data-roster-waiting><li class="free">Wartelistenplätze werden geladen …</li></ol></div>}
     </article>)}
   </div>
   <p class="roster-note">Hier erscheinen Vereins- und Mannschaftsnamen. Die Kontaktdaten der Anmeldenden werden nicht veröffentlicht.</p>

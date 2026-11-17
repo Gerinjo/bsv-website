@@ -398,6 +398,24 @@ test('waiting-only entries receive an explicit waiting list email without a paym
   assert.doesNotMatch(mail.text, /Teilnahme ist hiermit bestätigt|Eure Startgebühr|DE77/);
 });
 
+test('Christmas Bambini waiting teams receive numbered waiting places without a participation promise or payment request', async () => {
+  const app = harness({ allocationOverride: [
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 1, position: 21, status: 'waiting' },
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 2, position: 22, status: 'waiting' },
+  ] });
+  const response = await app.handle(request(valid({ teamCount: 2 })));
+  assert.equal(response.status, 201);
+  assert.match((await response.json()).message, /2 Teams auf der Warteliste/);
+  const mail = app.mails.find(({ mail }) => mail.to === 'trainer@example.org').mail;
+  assert.match(mail.subject, /^Warteliste/);
+  assert.match(mail.text, /Bambini · FC Testverein 1: Warteliste, Platz 3/);
+  assert.match(mail.text, /Bambini · FC Testverein 2: Warteliste, Platz 4/);
+  assert.match(mail.text, /Teilnahme ist noch nicht bestätigt/);
+  assert.match(mail.text, /Warteliste bitte noch nichts bezahlen/);
+  assert.doesNotMatch(mail.text, /Eure Teilnahme ist hiermit bestätigt|IBAN:|Bambini-Juniorinnen/);
+  assert.match(app.mails[0].mail.text, /Startgebühren insgesamt: 0 €/);
+});
+
 test('D-Juniorinnen waiting list starts after ten tournament places', async () => {
   const app = harness({ allocationOverride: [
     { category: 'D', clubName: 'FC Testverein', teamNumber: 1, position: 11, status: 'waiting' },

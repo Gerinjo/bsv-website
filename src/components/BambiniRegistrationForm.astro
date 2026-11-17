@@ -1,13 +1,14 @@
 ---
 import { withBase } from '../utils/paths';
 import { BAMBINI_EVENT } from '../../supabase/functions/_shared/bambini-event.mjs';
-interface Props { event?: { topic: string; timeSlots: readonly string[]; teamFee: number; fee: string }; }
+interface Props { event?: { topic: string; timeSlots: readonly string[]; teamFee: number; fee: string; waitingListOnly?: boolean; waitingCapacity?: number }; }
 const { event = BAMBINI_EVENT } = Astro.props;
 const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   || 'https://avbkhyptztqitlgqnajn.supabase.co/functions/v1/contact-request';
 ---
 
 <form data-bambini-registration data-endpoint={endpoint} data-topic={event.topic} data-team-fee={event.teamFee}>
+  {event.waitingListOnly && <p class="form-note"><strong>Ausgebucht – Anmeldung nur noch auf die Warteliste.</strong> Es gibt insgesamt {event.waitingCapacity} Wartelistenplätze. Die Teilnahme ist erst nach unserer persönlichen Zusage bestätigt. Bitte bezahlt bis dahin keine Startgebühr.</p>}
   <p class="form-note">Bitte gebt eure Trainerin oder euren Trainer als Kontaktperson an. Mit * markierte Felder sind Pflichtfelder.</p>
   <fieldset data-registration-fields>
     <legend>Euer Verein</legend>
@@ -17,7 +18,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
       <option value="2">2 Teams</option>
       <option value="3">3 Teams</option>
     </select></label>
-    <p id="team-fee-hint" class="field-hint full" role="status" aria-live="polite" aria-atomic="true">Startgebühr insgesamt: <strong data-total-fee>{event.fee}</strong> ({event.fee} pro Mannschaft).</p>
+    <p id="team-fee-hint" class="field-hint full" role="status" aria-live="polite" aria-atomic="true">{event.waitingListOnly ? 'Startgebühr erst nach Zusage: ' : 'Startgebühr insgesamt: '}<strong data-total-fee>{event.fee}</strong> ({event.fee} pro Mannschaft).</p>
   </fieldset>
   <fieldset data-registration-fields>
     <legend>Eure Trainerin / euer Trainer</legend>
@@ -37,14 +38,14 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT
   </fieldset>
   <fieldset class="finish" data-registration-fields>
     <legend>Anmeldung abschicken</legend>
-    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>Ich melde die ausgewählten Mannschaften als Trainerin oder Trainer an und akzeptiere die Startgebühr von {event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt. Die ausgewählten Zeitfenster sind Wünsche; die endgültigen Startzeiten werden später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
+    <label class="checkbox"><input name="registrationAccepted" type="checkbox" required /><span>{event.waitingListOnly ? `Ich melde die ausgewählten Mannschaften als Trainerin oder Trainer für die Warteliste an. Die Teilnahme ist noch nicht bestätigt. Erst nach einer persönlichen Zusage wird die Startgebühr von ${event.fee} pro Mannschaft fällig.` : `Ich melde die ausgewählten Mannschaften als Trainerin oder Trainer an und akzeptiere die Startgebühr von ${event.fee} pro Mannschaft. Die Anmeldung wird direkt bestätigt.`} Die ausgewählten Zeitfenster sind Wünsche; die endgültigen Startzeiten werden später mitgeteilt. Die Startgebühr kann bar vor Ort oder per Überweisung an die Jugendkasse bezahlt werden. *</span></label>
     <label class="checkbox"><input name="privacyAccepted" type="checkbox" required /><span>Ich bin mit der Veröffentlichung unseres Vereinsnamens, unserer Mannschaften und der gewählten Wunschzeiten in der Teilnehmerliste sowie mit der Verarbeitung meiner Angaben zur Organisation des Spieltags und zur Kontaktaufnahme einverstanden. Die <a href={withBase('/datenschutz#veranstaltungsanmeldungen')}>Datenschutzhinweise</a> habe ich gelesen. *</span></label>
     <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
     <div class="captcha-row">
       <label><span data-captcha-label>Spamschutz wird geladen …</span><input name="captchaAnswer" type="text" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="off" required /></label>
       <button type="button" class="reload" data-captcha-reload>Neue Aufgabe</button>
     </div>
-    <button class="submit" type="submit" disabled><span data-submit-label>Teams anmelden</span><span aria-hidden="true">↗</span></button>
+    <button class="submit" type="submit" disabled><span data-submit-label>{event.waitingListOnly ? 'Für die Warteliste anmelden' : 'Teams anmelden'}</span><span aria-hidden="true">↗</span></button>
   </fieldset>
   <p class="form-status" data-registration-status role="status" aria-live="polite" tabindex="-1"></p>
   <p class="contact-help" data-contact-help hidden>Für Rückfragen: <a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation</a>.</p>
