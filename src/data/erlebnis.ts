@@ -40,7 +40,7 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
     support: girlsCup.supporter,
     summary: `Hallenfußball in der ${girlsCup.venue}: E- und D-Juniorinnen am 20.02.2027, C- und B-Juniorinnen am 21.02.2027.`,
     facts: [...girlsCup.days.map((day) => `${day.date}: ${day.divisions.join(' & ')}`), `${girlsCup.venue} · ${girlsCup.address}`, girlsCup.fee],
-    actionLabel: 'Teams anmelden', actionHref: `${girlsCup.href}#anmeldung`, external: false, accent: '#e4bf6a', symbol: '⚽',
+    actionLabel: 'Teams anmelden', actionHref: girlsCup.href, external: false, accent: '#e4bf6a', symbol: '⚽',
     logoSrc: girlsCup.artwork, logoAlt: girlsCup.title, logoBackground: '#0e3929', date: girlsCup.date,
   },
   {
