@@ -88,7 +88,12 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT || 'https://avbkhy
           const table = card.querySelector<HTMLTableElement>('[data-time-slots]');
           const slots = table?.dataset.timeSlots?.split(',') ?? [];
           confirmed.forEach((team: { clubName: string; teamNumber: number; host: boolean; timeSlots?: string[] }) => list.append(table ? teamRow(team, slots) : item(teamName(team), team.host ? 'host' : '', team.host ? 'Gastgeber' : '')));
-          if (category.capacity) for (let i = confirmed.length; i < category.capacity; i++) list.append(item('Platz frei', 'free'));
+          if (category.capacity) for (let i = confirmed.length; i < category.capacity; i++) {
+            if (table) {
+              const row = document.createElement('tr');
+              const cell = document.createElement('td'); cell.colSpan = slots.length + 1; cell.className = 'free'; cell.textContent = 'Platz frei'; row.append(cell); list.append(row);
+            } else list.append(item('Platz frei', 'free'));
+          }
           card.querySelector<HTMLElement>('[data-roster-count]')!.textContent = category.capacity ? `${confirmed.length} von ${category.capacity} Turnierplätzen belegt` : `${confirmed.length} ${confirmed.length === 1 ? 'Mannschaft angemeldet' : 'Mannschaften angemeldet'}`;
           const queue = card.querySelector<HTMLOListElement>('[data-roster-waiting]');
           if (queue) {

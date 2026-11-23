@@ -38,6 +38,7 @@ const tournaments: HomeTournament[] = [
       { label: 'Spielort', value: `${BAMBINI_EVENT.venue} · ${BAMBINI_EVENT.address}`, wide: true },
       { label: 'Startzeiten', value: `${BAMBINI_EVENT.timeSlots.join(' · ')} Uhr` },
       { label: 'Startgebühr', value: BAMBINI_EVENT.fee },
+      { label: 'Teilnehmerfeld', value: `${BAMBINI_EVENT.capacity} Mannschaften, danach Warteliste` },
     ],
     href: '/erlebnis/weihnachts-bambini-spieltag', actionLabel: 'Mannschaft anmelden', signup: true,
   },

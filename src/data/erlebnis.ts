@@ -31,7 +31,7 @@ export const erlebnisCooperations: ErlebnisCooperation[] = [
   {
     id: 'weihnachts-bambini-spieltag', partner: 'Weihnachtlicher Bambini-Spieltag', title: 'Kleine Kicker. Große Weihnachtsfreude.', menuTitle: 'Weihnachtlicher Bambini-Spieltag', category: 'Bambini · Hallenspieltag',
     summary: 'Weihnachtlicher Hallenfußball in der Unterseesporthalle Radolfzell. Jedes Kind bekommt eine Überraschung – und vielleicht schaut der Nikolaus vorbei.',
-    facts: [`${BAMBINI_EVENT.date} · ${BAMBINI_EVENT.venue}`, BAMBINI_EVENT.address, 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', 'Mannschaft anmelden und Wunschzeiten auswählen'],
+    facts: [`${BAMBINI_EVENT.date} · ${BAMBINI_EVENT.venue}`, BAMBINI_EVENT.address, 'Startzeiten: 9:00, 12:00 und 15:00 Uhr', `${BAMBINI_EVENT.capacity} Mannschaften, danach Warteliste`],
     actionLabel: 'Mannschaft anmelden', actionHref: '/erlebnis/weihnachts-bambini-spieltag', external: false, accent: '#a7323c', symbol: '✦',
     logoSrc: bambiniLogoWeb.src, logoAlt: 'Eventlogo Weihnachtlicher Bambini-Spieltag · BSV Nordstern', logoBackground: '#0e3929', date: '12.12.2026',
   },

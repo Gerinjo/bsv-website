@@ -14,7 +14,7 @@ import bambiniSpielmodus from '../../assets/events/weihnachts-bambini-spielmodus
 const spielmodusGross = await getImage({ src: bambiniSpielmodus, width: 1536, format: 'webp', quality: 95 });
 ---
 
-<Layout title={`${BAMBINI_EVENT.title} · 12.12.2026 | BSV Nordstern Radolfzell`} description="Weihnachtlicher Bambini-Spieltag am 12.12.2026 in Radolfzell: mit 18 Teams ausgebucht. Jetzt für einen der vier Wartelistenplätze anmelden.">
+<Layout title={`${BAMBINI_EVENT.title} · 12.12.2026 | BSV Nordstern Radolfzell`} description={`Weihnachtlicher Bambini-Spieltag am ${BAMBINI_EVENT.date} in Radolfzell: Platz für ${BAMBINI_EVENT.capacity} Teams. Danach stehen ${BAMBINI_EVENT.waitingCapacity} Wartelistenplätze bereit.`}>
   <Header />
   <main class="christmas-event">
     <section class="hero" aria-labelledby="event-title">
@@ -24,8 +24,8 @@ const spielmodusGross = await getImage({ src: bambiniSpielmodus, width: 1536, fo
           <p class="eyebrow"><span aria-hidden="true">✦</span> {BAMBINI_EVENT.title}</p>
           <h1 id="event-title">Kleine Kicker.<br /><em>Große<br />Weihnachtsfreude.</em></h1>
           <p class="intro">Wenn Fußballfreude auf Weihnachtszauber trifft: Wir laden eure Bambini-Mannschaften zu einem fröhlichen Hallenspieltag beim BSV Nordstern ein. Gemeinsam spielen, miteinander lachen und einen besonderen Tag erleben.</p>
-          <p class="hero-note"><strong>Ausgebucht: Alle {BAMBINI_EVENT.capacity} Turnierplätze sind belegt.</strong><br />Anmeldungen sind nur noch für die {BAMBINI_EVENT.waitingCapacity} Wartelistenplätze möglich.</p>
-          <a class="button" href="#anmeldung">Zur Warteliste <span aria-hidden="true">↗</span></a>
+          <p class="hero-note"><strong>Erweitertes Teilnehmerfeld: Platz für {BAMBINI_EVENT.capacity} Mannschaften.</strong><br />Sobald alle Turnierplätze belegt sind, folgen {BAMBINI_EVENT.waitingCapacity} Wartelistenplätze.</p>
+          <a class="button" href="#anmeldung">Mannschaft anmelden <span aria-hidden="true">↗</span></a>
           <p class="hero-note">12.12.2026 · Unterseesporthalle Radolfzell</p>
         </div>
         <aside class="holiday-card" aria-label="Ein Spieltag voller Weihnachtsfreude">
@@ -91,7 +91,7 @@ const spielmodusGross = await getImage({ src: bambiniSpielmodus, width: 1536, fo
 
     <section class="times-section" aria-labelledby="times-title">
       <div class="shell times-grid">
-        <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung für die Warteliste an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Bei einem frei werdenden Platz melden wir uns persönlich. Die endgültige Startzeit teilen wir den teilnehmenden Teams rechtzeitig vor dem Spieltag mit.</p></div>
+        <div><p class="eyebrow">Damit es für eure Mannschaft passt</p><h2 id="times-title">Drei Startzeiten.<br /><em>Eure Wünsche zählen.</em></h2><p>Unser Spieltag startet in drei Zeitfenstern. Gebt bei der Anmeldung an, wann eure Mannschaft am liebsten dabei wäre. Ihr könnt mehrere Wunschzeiten auswählen.</p><p>Wir sammeln eure Wünsche und stimmen die Einteilung ab. Die endgültige Startzeit teilen wir den teilnehmenden Teams rechtzeitig vor dem Spieltag mit.</p></div>
         <ol class="time-list" aria-label="Mögliche Startzeiten">
           {BAMBINI_EVENT.timeSlots.map((slot, index) => <li><span>Start {index + 1}</span><strong>{slot}<small> Uhr</small></strong></li>)}
         </ol>
@@ -102,7 +102,7 @@ const spielmodusGross = await getImage({ src: bambiniSpielmodus, width: 1536, fo
 
     <section id="anmeldung" class="registration" aria-labelledby="registration-title">
       <div class="shell registration-grid">
-        <div class="registration-copy"><p class="eyebrow">Ausgebucht · {BAMBINI_EVENT.capacity} Teams</p><h2 id="registration-title">Euer Team.<br /><em>Auf der Warteliste.</em></h2><p>Alle Turnierplätze sind belegt. Wir bieten insgesamt {BAMBINI_EVENT.waitingCapacity} Wartelistenplätze an. Meldet eure Bambini-Mannschaft für die Warteliste an und verratet uns eure Wunschzeiten. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Ihr erhaltet euren Wartelistenplatz per E-Mail. Eure Teilnahme ist noch nicht bestätigt. Sobald ein Platz frei wird, melden wir uns persönlich. Bitte bezahlt bis zur Zusage keine Startgebühr.</p><div class="organizer"><span>Fragen zum Spieltag?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
+        <div class="registration-copy"><p class="eyebrow">Teilnehmerfeld · {BAMBINI_EVENT.capacity} Teams</p><h2 id="registration-title">Euer Team.<br /><em>Unser Spieltag.</em></h2><p>Meldet eure Bambini-Mannschaften an und verratet uns eure Wunschzeiten. Insgesamt stehen {BAMBINI_EVENT.capacity} Turnierplätze zur Verfügung. Als Kontaktperson benötigen wir eure Trainerin oder euren Trainer.</p><p>Ihr erhaltet den Platzstatus jeder Mannschaft per E-Mail. Sobald alle Turnierplätze belegt sind, vergeben wir bis zu {BAMBINI_EVENT.waitingCapacity} Wartelistenplätze. Ein Wartelistenplatz ist noch keine Teilnahmezusage. Für Mannschaften auf der Warteliste bezahlt ihr die Startgebühr erst nach unserer persönlichen Zusage.</p><div class="organizer"><span>Fragen zum Spieltag?</span><strong>Jérôme Ernsberger</strong><a href={withBase('/kontakt?thema=person-jerome-ernsberger')}>Kontakt zur Organisation <span aria-hidden="true">↗</span></a></div></div>
         <BambiniRegistrationForm />
       </div>
     </section>

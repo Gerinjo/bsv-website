@@ -400,8 +400,8 @@ test('waiting-only entries receive an explicit waiting list email without a paym
 
 test('Christmas Bambini waiting teams receive numbered waiting places without a participation promise or payment request', async () => {
   const app = harness({ allocationOverride: [
-    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 1, position: 21, status: 'waiting' },
-    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 2, position: 22, status: 'waiting' },
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 1, position: 27, status: 'waiting' },
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 2, position: 28, status: 'waiting' },
   ] });
   const response = await app.handle(request(valid({ teamCount: 2 })));
   assert.equal(response.status, 201);
@@ -414,6 +414,22 @@ test('Christmas Bambini waiting teams receive numbered waiting places without a 
   assert.match(mail.text, /Warteliste bitte noch nichts bezahlen/);
   assert.doesNotMatch(mail.text, /Eure Teilnahme ist hiermit bestätigt|IBAN:|Bambini-Juniorinnen/);
   assert.match(app.mails[0].mail.text, /Startgebühren insgesamt: 0 €/);
+});
+
+test('Christmas Bambini confirms position 24 and puts position 25 on the waiting list, charging only the confirmed team', async () => {
+  const app = harness({ allocationOverride: [
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 1, position: 24, status: 'confirmed' },
+    { category: 'Bambini', clubName: 'FC Testverein', teamNumber: 2, position: 25, status: 'waiting' },
+  ] });
+  const response = await app.handle(request(valid({ teamCount: 2 })));
+  assert.equal(response.status, 201);
+  assert.match((await response.json()).message, /1 Team bestätigt, 1 Team auf der Warteliste/);
+  const mail = app.mails.find(({ mail }) => mail.to === 'trainer@example.org').mail;
+  assert.match(mail.text, /Bambini · FC Testverein 1: Teilnahme bestätigt/);
+  assert.match(mail.text, /Bambini · FC Testverein 2: Warteliste, Platz 1/);
+  assert.match(mail.text, /35 € insgesamt/);
+  assert.doesNotMatch(mail.text, /70 €/);
+  assert.match(mail.text, /Warteliste bitte noch nichts bezahlen/);
 });
 
 test('D-Juniorinnen waiting list starts after ten tournament places', async () => {
