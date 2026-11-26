@@ -12,6 +12,16 @@ export interface StadiumMagazine {
 // Neue PDF-Ausgaben hier ergänzen; Übersicht und Leseansicht entstehen automatisch.
 export const stadiumMagazines: StadiumMagazine[] = [
   {
+    slug: '2026-27-ausgabe-5',
+    issue: 5,
+    season: '2026/27',
+    date: '2026-11-28',
+    dateLabel: '28.11.2026',
+    pages: 24,
+    pdf: '/dokumente/stadionheft/bsv-nordstern-stadionheft-2026-27-ausgabe-5.pdf',
+    cover: '/images/stadionheft/2026-27-ausgabe-5.jpg',
+  },
+  {
     slug: '2026-27-ausgabe-3',
     issue: 3,
     season: '2026/27',
